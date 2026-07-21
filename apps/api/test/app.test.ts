@@ -228,6 +228,31 @@ describe("detective archives API", () => {
     assert.equal(invalidLongReview.json().code, "INVALID_REVIEW");
   });
 
+  it("validates link feedback and catalog operations before database writes", async () => {
+    const invalidFeedback = await app.inject({
+      method: "POST",
+      url: "/api/v1/work-links/00000000-0000-4000-8000-000000000001/feedback",
+      payload: { reasonCode: "UNKNOWN" }
+    });
+    assert.equal(invalidFeedback.statusCode, 400);
+    assert.equal(invalidFeedback.json().code, "INVALID_LINK_FEEDBACK");
+
+    const clickWithoutDatabase = await app.inject({
+      method: "POST",
+      url: "/api/v1/work-links/00000000-0000-4000-8000-000000000001/click"
+    });
+    assert.equal(clickWithoutDatabase.statusCode, 503);
+    assert.equal(clickWithoutDatabase.json().code, "DATABASE_REQUIRED");
+
+    const invalidDetective = await app.inject({
+      method: "POST",
+      url: "/api/v1/admin/detectives",
+      payload: { slug: "INVALID", nameZh: "测试" }
+    });
+    assert.equal(invalidDetective.statusCode, 400);
+    assert.equal(invalidDetective.json().code, "INVALID_DETECTIVE");
+  });
+
   it("lists detectives with pagination", async () => {
     const response = await app.inject({ method: "GET", url: "/api/v1/detectives?pageSize=2" });
     const body = response.json();

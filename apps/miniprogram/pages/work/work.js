@@ -1,9 +1,11 @@
 const {
+  createWorkLinkFeedback,
   getShelfItem,
   getWork,
   hasAuthToken,
   listReviews,
   removeShelfItem,
+  trackWorkLinkClick,
   updateShelfItem
 } = require("../../services/api");
 
@@ -166,17 +168,59 @@ Page({
     }
   },
 
-  copyOfficialLink(event) {
-    const { url, provider } = event.currentTarget.dataset;
+  async copyOfficialLink(event) {
+    const { linkId, url, provider } = event.currentTarget.dataset;
     if (!url) return;
+    let targetUrl = url;
+    if (linkId) {
+      try {
+        const response = await trackWorkLinkClick(linkId);
+        targetUrl = response.data.url || url;
+      } catch (error) {
+        targetUrl = url;
+      }
+    }
     wx.setClipboardData({
-      data: url,
+      data: targetUrl,
       success() {
         wx.showModal({
           title: `已复制 ${provider || "正版渠道"} 链接`,
           content: "请在浏览器中打开。渠道内容、价格和可用地区以对方页面为准。",
           showCancel: false,
           confirmText: "知道了"
+        });
+      }
+    });
+  },
+
+  reportOfficialLink(event) {
+    const { linkId, provider } = event.currentTarget.dataset;
+    if (!linkId) return;
+    const choices = [
+      ["链接打不开", "BROKEN"],
+      ["跳转内容不正确", "WRONG_DESTINATION"],
+      ["当前地区不可用", "REGION_UNAVAILABLE"],
+      ["可能存在版权问题", "COPYRIGHT_CONCERN"],
+      ["其他问题", "OTHER"]
+    ];
+    wx.showActionSheet({
+      itemList: choices.map((item) => item[0]),
+      success: (selection) => {
+        const selected = choices[selection.tapIndex];
+        if (!selected) return;
+        wx.showModal({
+          title: `反馈 ${provider || "正版渠道"}`,
+          content: `确认提交“${selected[0]}”吗？我们会在后台复核。`,
+          confirmText: "提交反馈",
+          success: async (result) => {
+            if (!result.confirm) return;
+            try {
+              await createWorkLinkFeedback(linkId, { reasonCode: selected[1] });
+              wx.showToast({ title: "反馈已提交", icon: "success" });
+            } catch (error) {
+              wx.showToast({ title: error.message || "反馈失败", icon: "none" });
+            }
+          }
         });
       }
     });

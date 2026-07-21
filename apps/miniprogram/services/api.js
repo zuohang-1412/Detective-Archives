@@ -72,6 +72,17 @@ function getWork(slug) {
   return request(`/api/v1/works/${encodeURIComponent(slug)}`);
 }
 
+function trackWorkLinkClick(linkId) {
+  return request(`/api/v1/work-links/${encodeURIComponent(linkId)}/click`, { method: "POST" });
+}
+
+function createWorkLinkFeedback(linkId, data) {
+  return request(`/api/v1/work-links/${encodeURIComponent(linkId)}/feedback`, {
+    method: "POST",
+    data
+  });
+}
+
 function listPictureBookEntries(params = {}) {
   return request("/api/v1/picture-book", { data: params });
 }
@@ -215,6 +226,7 @@ async function deactivateAccount() {
 
 module.exports = {
   createComment,
+  createWorkLinkFeedback,
   createReport,
   createReview,
   deactivateAccount,
@@ -238,6 +250,7 @@ module.exports = {
   removeShelfItem,
   setCommentLike,
   setReviewLike,
+  trackWorkLinkClick,
   updateReview,
   updateShelfItem
 };

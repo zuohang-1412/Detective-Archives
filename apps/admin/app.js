@@ -25,8 +25,40 @@ const elements = {
   workYear: document.querySelector("#workYear"),
   workSummary: document.querySelector("#workSummary"),
   workFormError: document.querySelector("#workFormError"),
-  workList: document.querySelector("#workList")
+  workList: document.querySelector("#workList"),
+  detectiveForm: document.querySelector("#detectiveForm"),
+  detectiveFormTitle: document.querySelector("#detectiveFormTitle"),
+  detectiveName: document.querySelector("#detectiveName"),
+  detectiveCatalogId: document.querySelector("#detectiveCatalogId"),
+  detectiveSlug: document.querySelector("#detectiveSlug"),
+  detectiveOriginalName: document.querySelector("#detectiveOriginalName"),
+  detectiveEnglishName: document.querySelector("#detectiveEnglishName"),
+  detectiveCountry: document.querySelector("#detectiveCountry"),
+  detectiveEra: document.querySelector("#detectiveEra"),
+  detectiveSubjectKind: document.querySelector("#detectiveSubjectKind"),
+  detectiveCollection: document.querySelector("#detectiveCollection"),
+  detectiveCategory: document.querySelector("#detectiveCategory"),
+  detectiveCreator: document.querySelector("#detectiveCreator"),
+  detectiveMediaTypes: document.querySelector("#detectiveMediaTypes"),
+  detectiveAliases: document.querySelector("#detectiveAliases"),
+  detectiveTags: document.querySelector("#detectiveTags"),
+  detectiveCases: document.querySelector("#detectiveCases"),
+  detectiveSummary: document.querySelector("#detectiveSummary"),
+  detectiveSourceNote: document.querySelector("#detectiveSourceNote"),
+  detectiveSourceLabel: document.querySelector("#detectiveSourceLabel"),
+  detectiveSourceQuality: document.querySelector("#detectiveSourceQuality"),
+  detectiveSourceUrl: document.querySelector("#detectiveSourceUrl"),
+  detectiveVerification: document.querySelector("#detectiveVerification"),
+  detectiveSubmitButton: document.querySelector("#detectiveSubmitButton"),
+  cancelDetectiveEdit: document.querySelector("#cancelDetectiveEdit"),
+  detectiveFormError: document.querySelector("#detectiveFormError"),
+  detectiveList: document.querySelector("#detectiveList"),
+  linkFeedbackList: document.querySelector("#linkFeedbackList"),
+  userList: document.querySelector("#userList"),
+  auditList: document.querySelector("#auditList")
 };
+
+let editingDetective = null;
 
 function getToken() {
   return sessionStorage.getItem(tokenKey) || "";
@@ -76,6 +108,7 @@ function renderMetrics(data) {
     ["已发布作品", data.publishedWorkCount],
     ["待审内容", data.pendingReviewCount + data.pendingCommentCount],
     ["待处理举报", data.openReportCount],
+    ["链接反馈", data.openLinkFeedbackCount],
     ["待复核链接", data.staleLinkCount]
   ];
   elements.metrics.replaceChildren(...metrics.map(([label, value]) => {
@@ -222,7 +255,11 @@ function renderWorks(items) {
       item.links.forEach((link) => {
         const row = document.createElement("div");
         row.className = "link-row";
-        row.append(textElement("span", "", `${link.providerName} · ${link.isActive ? "启用" : "停用"}`));
+        row.append(textElement(
+          "span",
+          "",
+          `${link.providerName} · ${link.isActive ? "启用" : "停用"} · 点击 ${link.clickCount} · 待处理 ${link.openFeedbackCount}`
+        ));
         row.append(actionButton(link.isActive ? "停用" : "启用", "text-button", () => toggleWorkLink(link)));
         links.append(row);
       });
@@ -232,13 +269,223 @@ function renderWorks(items) {
   }));
 }
 
+function commaValues(value) {
+  return [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))];
+}
+
+function lineValues(value) {
+  return [...new Set(value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean))];
+}
+
+function detectivePayload() {
+  const sourceLabel = elements.detectiveSourceLabel.value.trim();
+  const sourceUrl = elements.detectiveSourceUrl.value.trim();
+  return {
+    catalogId: elements.detectiveCatalogId.value.trim() || undefined,
+    slug: elements.detectiveSlug.value.trim(),
+    nameZh: elements.detectiveName.value.trim(),
+    nameOriginal: elements.detectiveOriginalName.value.trim() || undefined,
+    nameEn: elements.detectiveEnglishName.value.trim() || undefined,
+    country: elements.detectiveCountry.value.trim() || undefined,
+    era: elements.detectiveEra.value.trim() || undefined,
+    subjectKind: elements.detectiveSubjectKind.value,
+    collection: elements.detectiveCollection.value,
+    category: elements.detectiveCategory.value || undefined,
+    mediaTypes: commaValues(elements.detectiveMediaTypes.value.toUpperCase()),
+    summary: elements.detectiveSummary.value.trim(),
+    sourceNote: elements.detectiveSourceNote.value.trim() || undefined,
+    verification: elements.detectiveVerification.value,
+    creatorName: elements.detectiveCreator.value.trim() || undefined,
+    aliases: commaValues(elements.detectiveAliases.value),
+    tags: commaValues(elements.detectiveTags.value),
+    featuredCases: lineValues(elements.detectiveCases.value),
+    sources: sourceLabel && sourceUrl ? [{
+      label: sourceLabel,
+      url: sourceUrl,
+      quality: elements.detectiveSourceQuality.value.trim().toUpperCase(),
+      verification: elements.detectiveVerification.value
+    }] : []
+  };
+}
+
+function resetDetectiveForm() {
+  editingDetective = null;
+  elements.detectiveForm.reset();
+  elements.detectiveSourceQuality.value = "PUBLISHER";
+  elements.detectiveFormTitle.textContent = "新建侦探档案";
+  elements.detectiveSubmitButton.textContent = "保存草稿";
+  elements.cancelDetectiveEdit.classList.add("hidden");
+  elements.detectiveFormError.textContent = "";
+}
+
+function editDetective(item) {
+  editingDetective = item;
+  elements.detectiveName.value = item.nameZh || "";
+  elements.detectiveCatalogId.value = item.catalogId || "";
+  elements.detectiveSlug.value = item.slug || "";
+  elements.detectiveOriginalName.value = item.nameOriginal || "";
+  elements.detectiveEnglishName.value = item.nameEn || "";
+  elements.detectiveCountry.value = item.country || "";
+  elements.detectiveEra.value = item.era || "";
+  elements.detectiveSubjectKind.value = item.subjectKind || "FICTIONAL";
+  elements.detectiveCollection.value = item.collection || "CORE";
+  elements.detectiveCategory.value = item.category || "";
+  elements.detectiveCreator.value = item.creatorName || "";
+  elements.detectiveMediaTypes.value = (item.mediaTypes || []).join(",");
+  elements.detectiveAliases.value = (item.aliases || []).join(",");
+  elements.detectiveTags.value = (item.tags || []).join(",");
+  elements.detectiveCases.value = (item.featuredCases || []).join("\n");
+  elements.detectiveSummary.value = item.summary || "";
+  elements.detectiveSourceNote.value = item.sourceNote || "";
+  const source = item.sources?.[0];
+  elements.detectiveSourceLabel.value = source?.label || "";
+  elements.detectiveSourceUrl.value = source?.url || "";
+  elements.detectiveSourceQuality.value = source?.quality || "PUBLISHER";
+  elements.detectiveVerification.value = item.verification || "SOURCE_CAPTURED";
+  elements.detectiveFormTitle.textContent = `编辑：${item.nameZh}`;
+  elements.detectiveSubmitButton.textContent = "保存修改";
+  elements.cancelDetectiveEdit.classList.remove("hidden");
+  elements.detectiveForm.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function changeDetectiveStatus(detectiveId, status) {
+  await api(`/admin/detectives/${detectiveId}/status`, { method: "POST", data: { status } });
+  await loadWorkspace();
+}
+
+function renderDetectives(items) {
+  if (!items.length) {
+    elements.detectiveList.replaceChildren(textElement("p", "empty", "尚无侦探档案"));
+    return;
+  }
+  elements.detectiveList.replaceChildren(...items.map((item) => {
+    const card = document.createElement("article");
+    card.className = "queue-card work-card";
+    const heading = document.createElement("div");
+    heading.className = "work-heading";
+    heading.append(textElement("h4", "queue-title", item.nameZh));
+    heading.append(textElement("span", `status status-${item.status.toLowerCase()}`, item.status));
+    card.append(heading);
+    card.append(textElement(
+      "div",
+      "queue-context",
+      `${item.catalogId || "未编号"} · ${item.slug} · ${item.country || "地区待补"}`
+    ));
+    card.append(textElement("p", "queue-body clamp", item.summary));
+    if (item.featuredCases.length) {
+      card.append(textElement("p", "case-list", `代表案件：${item.featuredCases.join("、")}`));
+    }
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    actions.append(actionButton("编辑", "secondary-small", () => editDetective(item)));
+    if (item.status === "DRAFT") {
+      actions.append(actionButton("提交审核", "approve-button", () => changeDetectiveStatus(item.id, "PENDING_REVIEW")));
+    } else if (item.status === "PENDING_REVIEW") {
+      actions.append(actionButton("发布", "approve-button", () => changeDetectiveStatus(item.id, "PUBLISHED")));
+    } else if (item.status === "PUBLISHED") {
+      actions.append(actionButton("隐藏", "reject-button", () => changeDetectiveStatus(item.id, "HIDDEN")));
+    } else if (item.status === "HIDDEN") {
+      actions.append(actionButton("恢复发布", "approve-button", () => changeDetectiveStatus(item.id, "PUBLISHED")));
+    }
+    card.append(actions);
+    return card;
+  }));
+}
+
+async function resolveLinkFeedback(item, status) {
+  const note = window.prompt("请输入处理结论（至少 2 个字）");
+  if (!note || note.trim().length < 2) return;
+  const deactivateLink = status === "RESOLVED"
+    && item.link.isActive
+    && window.confirm("是否同时停用这条正版链接？");
+  await api(`/admin/work-link-feedback/${item.id}`, {
+    method: "PATCH",
+    data: { status, resolutionNote: note.trim(), deactivateLink }
+  });
+  await loadWorkspace();
+}
+
+function renderLinkFeedback(items) {
+  if (!items.length) {
+    elements.linkFeedbackList.replaceChildren(textElement("p", "empty", "当前没有待处理的链接反馈"));
+    return;
+  }
+  elements.linkFeedbackList.replaceChildren(...items.map((item) => {
+    const card = document.createElement("article");
+    card.className = "queue-card";
+    card.append(textElement("div", "queue-context", `${item.link.workTitle} · ${item.reasonCode}`));
+    card.append(textElement("h4", "queue-title", item.link.providerName));
+    card.append(textElement("p", "queue-body break-all", item.link.url));
+    card.append(textElement("p", "case-list", `累计点击 ${item.clickCount} 次 · ${item.reporter?.displayName || "匿名反馈"}`));
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    actions.append(actionButton("处理", "approve-button", () => resolveLinkFeedback(item, "RESOLVED")));
+    actions.append(actionButton("驳回", "reject-button", () => resolveLinkFeedback(item, "REJECTED")));
+    card.append(actions);
+    return card;
+  }));
+}
+
+async function changeUserRole(user, select) {
+  await api(`/admin/users/${user.id}/role`, {
+    method: "PATCH",
+    data: { role: select.value }
+  });
+  await loadWorkspace();
+}
+
+function renderUsers(items) {
+  if (!items.length) {
+    elements.userList.replaceChildren(textElement("p", "empty", "尚无用户"));
+    return;
+  }
+  elements.userList.replaceChildren(...items.map((item) => {
+    const card = document.createElement("article");
+    card.className = "queue-card user-card";
+    card.append(textElement("h4", "queue-title", item.displayName));
+    card.append(textElement("div", "queue-context", `${item.providers.join(" / ") || "无登录身份"} · ${item.isActive ? "有效" : "已注销"}`));
+    const select = document.createElement("select");
+    ["USER", "EDITOR", "MODERATOR", "ADMIN"].forEach((role) => {
+      const option = textElement("option", "", role);
+      option.value = role;
+      option.selected = item.role === role;
+      select.append(option);
+    });
+    const actions = document.createElement("div");
+    actions.className = "role-actions";
+    actions.append(select);
+    actions.append(actionButton("保存角色", "secondary-small", () => changeUserRole(item, select)));
+    card.append(actions);
+    return card;
+  }));
+}
+
+function renderAuditLogs(items) {
+  if (!items.length) {
+    elements.auditList.replaceChildren(textElement("p", "empty", "尚无审计记录"));
+    return;
+  }
+  elements.auditList.replaceChildren(...items.map((item) => {
+    const row = document.createElement("article");
+    row.className = "audit-row";
+    row.append(textElement("strong", "", item.action));
+    row.append(textElement("span", "", `${item.resourceType} · ${item.actor?.displayName || "系统"}`));
+    row.append(textElement("time", "", new Date(item.createdAt).toLocaleString("zh-CN")));
+    return row;
+  }));
+}
+
 async function loadWorkspace() {
   elements.workspaceError.textContent = "";
   try {
-    const [dashboard, moderation, works] = await Promise.all([
+    const [dashboard, moderation, works, detectives, linkFeedback, users, audits] = await Promise.all([
       api("/admin/dashboard"),
       api("/admin/moderation"),
-      api("/admin/works")
+      api("/admin/works"),
+      api("/admin/detectives"),
+      api("/admin/work-link-feedback"),
+      api("/admin/users?pageSize=50"),
+      api("/admin/audit-logs?pageSize=50")
     ]);
     showWorkspace();
     renderMetrics(dashboard.data);
@@ -250,6 +497,10 @@ async function loadWorkspace() {
     renderContentQueue(elements.commentQueue, queue.comments, "COMMENT");
     renderReports(queue.reports);
     renderWorks(works.data);
+    renderDetectives(detectives.data);
+    renderLinkFeedback(linkFeedback.data);
+    renderUsers(users.data);
+    renderAuditLogs(audits.data);
   } catch (error) {
     elements.workspaceError.textContent = error.message;
   }
@@ -301,5 +552,37 @@ elements.workForm.addEventListener("submit", async (event) => {
   }
 });
 
-if (getToken()) loadWorkspace();
-else showLogin();
+elements.detectiveForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  elements.detectiveFormError.textContent = "";
+  try {
+    await api(
+      editingDetective ? `/admin/detectives/${editingDetective.id}` : "/admin/detectives",
+      {
+        method: editingDetective ? "PATCH" : "POST",
+        data: detectivePayload()
+      }
+    );
+    resetDetectiveForm();
+    await loadWorkspace();
+  } catch (error) {
+    elements.detectiveFormError.textContent = error.message;
+  }
+});
+elements.cancelDetectiveEdit.addEventListener("click", resetDetectiveForm);
+
+async function restoreAdminSession() {
+  if (!getToken()) {
+    showLogin();
+    return;
+  }
+  try {
+    const response = await api("/auth/refresh", { method: "POST" });
+    sessionStorage.setItem(tokenKey, response.data.token);
+    await loadWorkspace();
+  } catch (error) {
+    showLogin();
+  }
+}
+
+restoreAdminSession();

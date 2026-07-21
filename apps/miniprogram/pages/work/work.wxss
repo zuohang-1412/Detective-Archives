@@ -185,6 +185,17 @@
   font-weight: 700;
 }
 
+.link-actions {
+  display: grid;
+  gap: 10rpx;
+  text-align: right;
+}
+
+.feedback-action {
+  color: #777269;
+  font-size: 21rpx;
+}
+
 .retry {
   margin-top: 12rpx;
 }

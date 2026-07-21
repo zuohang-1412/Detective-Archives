@@ -6,6 +6,16 @@ import { getDetectiveBySlug, listDetectives } from "../repositories/detectives.j
 const listQuerySchema = z.object({
   q: z.string().trim().max(50).optional(),
   country: z.string().trim().max(30).optional(),
+  era: z.string().trim().max(80).optional(),
+  category: z.enum([
+    "WORLD_LITERATURE",
+    "SCREEN_DETECTIVES",
+    "JAPANESE_POPULAR",
+    "CHINESE_LITERATURE",
+    "HISTORICAL_JUSTICE"
+  ]).optional(),
+  subjectKind: z.enum(["FICTIONAL", "HISTORICAL"]).optional(),
+  tag: z.string().trim().max(40).optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(50).default(20)
 });
@@ -29,7 +39,7 @@ export const detectiveRoutes: FastifyPluginAsync<DetectiveRouteOptions> = async 
       });
     }
 
-    const { q, country, page, pageSize } = parsed.data;
+    const { page, pageSize } = parsed.data;
     const result = await listDetectives(options.database, parsed.data);
     return {
       data: result.data,

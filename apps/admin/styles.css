@@ -52,7 +52,7 @@ textarea { min-height: 110px; resize: vertical; }
 .error { min-height: 22px; margin-top: 16px; color: #a12d21 !important; font-size: 13px; }
 
 #workspace { margin-top: 44px; }
-.metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 46px; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 46px; }
 .metric-card { display: grid; gap: 7px; padding: 22px; }
 .metric-value { font: 700 32px Georgia, serif; }
 .metric-label { color: #777067; font-size: 13px; }
@@ -80,15 +80,29 @@ textarea { min-height: 110px; resize: vertical; }
 .secondary-small { padding: 9px 13px; border: 0; border-radius: 8px; background: #e2ded6; color: #343b40; font-size: 12px; font-weight: 700; cursor: pointer; }
 .link-list { margin-top: 15px; padding-top: 10px; border-top: 1px solid #e0d5c5; }
 .link-row { color: #6e675e; font-size: 12px; }
+.case-list { margin: 12px 0 0; color: #777067; font-size: 12px; line-height: 1.6; }
+.clamp { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.break-all { overflow-wrap: anywhere; }
+.management-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.user-card { margin-bottom: 0; }
+.role-actions { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 16px; }
+.role-actions select { padding: 9px 10px; }
+.audit-list { overflow: hidden; border: 1px solid rgba(23, 32, 39, .13); border-radius: 14px; background: #fffaf0; }
+.audit-row { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(180px, .8fr) auto; gap: 16px; padding: 14px 18px; border-bottom: 1px solid #e0d5c5; font-size: 12px; }
+.audit-row:last-child { border-bottom: 0; }
+.audit-row span, .audit-row time { color: #777067; }
 
 @media (max-width: 1050px) {
   .metrics { grid-template-columns: repeat(3, 1fr); }
   .queue-grid { grid-template-columns: 1fr; }
   .content-grid { grid-template-columns: 1fr; }
+  .management-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 620px) {
   .shell { width: min(100% - 28px, 1480px); padding-top: 22px; }
   h1 { font-size: 34px; }
   .metrics { grid-template-columns: repeat(2, 1fr); }
+  .management-grid { grid-template-columns: 1fr; }
+  .audit-row { grid-template-columns: 1fr; gap: 5px; }
 }

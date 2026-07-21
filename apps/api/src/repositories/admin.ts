@@ -12,6 +12,7 @@ export async function getAdminDashboard(database: DatabaseClient) {
     openReportCount: number;
     activeLinkCount: number;
     staleLinkCount: number;
+    openLinkFeedbackCount: number;
   }>(database, `
     SELECT
       (SELECT COUNT(*)::int FROM users WHERE is_active = TRUE) AS "userCount",
@@ -23,7 +24,9 @@ export async function getAdminDashboard(database: DatabaseClient) {
       (SELECT COUNT(*)::int FROM work_links WHERE is_active = TRUE) AS "activeLinkCount",
       (SELECT COUNT(*)::int FROM work_links
         WHERE is_active = TRUE
-          AND (last_checked_at IS NULL OR last_checked_at < NOW() - INTERVAL '90 days')) AS "staleLinkCount"
+          AND (last_checked_at IS NULL OR last_checked_at < NOW() - INTERVAL '90 days')) AS "staleLinkCount",
+      (SELECT COUNT(*)::int FROM work_link_feedback
+        WHERE status = 'OPEN') AS "openLinkFeedbackCount"
   `);
   return result.rows[0];
 }
@@ -235,7 +238,15 @@ export async function listAdminWorks(database: DatabaseClient, query?: string | 
           'url', link.url,
           'region', link.region,
           'isActive', link.is_active,
-          'lastCheckedAt', link.last_checked_at
+          'lastCheckedAt', link.last_checked_at,
+          'clickCount', (
+            SELECT COUNT(*)::int FROM work_link_click_events click
+            WHERE click.work_link_id = link.id
+          ),
+          'openFeedbackCount', (
+            SELECT COUNT(*)::int FROM work_link_feedback feedback
+            WHERE feedback.work_link_id = link.id AND feedback.status = 'OPEN'
+          )
         ) ORDER BY link.provider_name)
         FROM work_links link WHERE link.work_id = work.id
       ), '[]'::jsonb) AS links

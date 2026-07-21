@@ -90,6 +90,116 @@
             </section>
           </div>
         </div>
+
+        <div class="content-section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">DETECTIVE CATALOG</span>
+              <h2>侦探档案维护</h2>
+            </div>
+          </div>
+          <div class="content-grid">
+            <form id="detectiveForm" class="panel work-form">
+              <div class="work-heading">
+                <h3 id="detectiveFormTitle">新建侦探档案</h3>
+                <button id="cancelDetectiveEdit" class="text-button hidden" type="button">取消编辑</button>
+              </div>
+              <div class="inline-fields">
+                <label>中文名<input id="detectiveName" required maxlength="120"></label>
+                <label>档案编号<input id="detectiveCatalogId" maxlength="20" placeholder="EXT-WL-021"></label>
+              </div>
+              <label>英文标识<input id="detectiveSlug" required maxlength="100" pattern="[a-z0-9]+(?:-[a-z0-9]+)*"></label>
+              <div class="inline-fields">
+                <label>原文名<input id="detectiveOriginalName" maxlength="160"></label>
+                <label>英文名<input id="detectiveEnglishName" maxlength="160"></label>
+              </div>
+              <div class="inline-fields">
+                <label>国家或地区<input id="detectiveCountry" maxlength="60"></label>
+                <label>时代<input id="detectiveEra" maxlength="80" placeholder="维多利亚时代"></label>
+              </div>
+              <div class="inline-fields">
+                <label>主体类型
+                  <select id="detectiveSubjectKind">
+                    <option value="FICTIONAL">虚构侦探</option>
+                    <option value="HISTORICAL">历史人物</option>
+                  </select>
+                </label>
+                <label>目录
+                  <select id="detectiveCollection">
+                    <option value="CORE">核心目录</option>
+                    <option value="ARCHIVE_EXTENSION">扩展目录</option>
+                    <option value="HISTORICAL_CASES">历史断案</option>
+                  </select>
+                </label>
+              </div>
+              <label>分类
+                <select id="detectiveCategory">
+                  <option value="">未分类</option>
+                  <option value="WORLD_LITERATURE">世界文学</option>
+                  <option value="SCREEN_DETECTIVES">影视侦探</option>
+                  <option value="JAPANESE_POPULAR">日本大众文化</option>
+                  <option value="CHINESE_LITERATURE">华语文学</option>
+                  <option value="HISTORICAL_JUSTICE">历史断案</option>
+                </select>
+              </label>
+              <label>创作者<input id="detectiveCreator" maxlength="120"></label>
+              <label>媒介类型（英文逗号分隔）<input id="detectiveMediaTypes" maxlength="160" placeholder="NOVEL,SERIES"></label>
+              <label>别名（英文逗号分隔）<input id="detectiveAliases" maxlength="1000"></label>
+              <label>标签（英文逗号分隔）<input id="detectiveTags" maxlength="1000"></label>
+              <label>代表案件（每行一项）<textarea id="detectiveCases" maxlength="5000"></textarea></label>
+              <label>无剧透简介<textarea id="detectiveSummary" required minlength="10" maxlength="5000"></textarea></label>
+              <label>来源说明<textarea id="detectiveSourceNote" maxlength="2000"></textarea></label>
+              <div class="inline-fields">
+                <label>来源名称<input id="detectiveSourceLabel" maxlength="200"></label>
+                <label>来源质量<input id="detectiveSourceQuality" maxlength="30" value="PUBLISHER"></label>
+              </div>
+              <label>来源地址<input id="detectiveSourceUrl" type="url" maxlength="1000" placeholder="https://"></label>
+              <label>核验状态
+                <select id="detectiveVerification">
+                  <option value="SOURCE_CAPTURED">已记录来源</option>
+                  <option value="PRIMARY_SOURCE_CONFIRMED">一手来源确认</option>
+                  <option value="MISSING">待补来源</option>
+                </select>
+              </label>
+              <button id="detectiveSubmitButton" class="primary-button" type="submit">保存草稿</button>
+              <p id="detectiveFormError" class="error" role="alert"></p>
+            </form>
+            <section>
+              <h3>档案列表</h3>
+              <div id="detectiveList"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">LINK QUALITY</span>
+              <h2>正版链接反馈</h2>
+            </div>
+          </div>
+          <div id="linkFeedbackList" class="queue-grid"></div>
+        </div>
+
+        <div class="content-section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">ACCESS CONTROL</span>
+              <h2>用户与角色</h2>
+            </div>
+          </div>
+          <div id="userList" class="management-grid"></div>
+        </div>
+
+        <div class="content-section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">AUDIT TRAIL</span>
+              <h2>最近审计记录</h2>
+            </div>
+          </div>
+          <div id="auditList" class="audit-list"></div>
+        </div>
       </section>
     </main>
     <script src="/admin/app.js" defer></script>

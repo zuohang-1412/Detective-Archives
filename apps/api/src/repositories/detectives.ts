@@ -10,13 +10,23 @@ interface DetectiveRow {
   nameOriginal: string | null;
   nameEn: string | null;
   country: string | null;
+  era: string | null;
   subjectKind: string;
   collection: string;
+  category: string | null;
+  mediaTypes: string[];
   summary: string;
   verification: string;
   creatorName: string | null;
   aliases: string[];
   tags: string[];
+  featuredCases: string[];
+  sources: Array<{
+    label: string;
+    url: string;
+    quality: string;
+    verification: string;
+  }>;
   works: Array<{
     id: string;
     slug: string;
@@ -31,6 +41,10 @@ interface DetectiveRow {
 export interface ListDetectivesOptions {
   q?: string | undefined;
   country?: string | undefined;
+  era?: string | undefined;
+  category?: string | undefined;
+  subjectKind?: string | undefined;
+  tag?: string | undefined;
   page: number;
   pageSize: number;
 }
@@ -44,8 +58,11 @@ const detectiveSelect = `
     d.name_original AS "nameOriginal",
     d.name_en AS "nameEn",
     d.country,
+    d.era,
     d.subject_kind::text AS "subjectKind",
     d.catalog_collection::text AS collection,
+    d.catalog_category AS category,
+    d.media_types AS "mediaTypes",
     d.summary,
     d.verification::text AS verification,
     (
@@ -64,6 +81,21 @@ const detectiveSelect = `
       FROM detective_tags dt
       WHERE dt.detective_id = d.id
     ), ARRAY[]::varchar[]) AS tags,
+    COALESCE((
+      SELECT array_agg(feature.source_label ORDER BY feature.display_order, feature.source_label)
+      FROM detective_featured_works feature
+      WHERE feature.detective_id = d.id
+    ), ARRAY[]::varchar[]) AS "featuredCases",
+    COALESCE((
+      SELECT jsonb_agg(jsonb_build_object(
+        'label', source.source_label,
+        'url', source.source_url,
+        'quality', source.source_quality,
+        'verification', source.verification::text
+      ) ORDER BY source.source_id)
+      FROM detective_sources source
+      WHERE source.detective_id = d.id
+    ), '[]'::jsonb) AS sources,
     COALESCE((
       SELECT jsonb_agg(
         jsonb_build_object(
@@ -117,6 +149,25 @@ function databaseFilter(options: ListDetectivesOptions) {
     values.push(options.country);
     clauses.push(`d.country = $${values.length}`);
   }
+  if (options.era) {
+    values.push(options.era);
+    clauses.push(`d.era = $${values.length}`);
+  }
+  if (options.category) {
+    values.push(options.category);
+    clauses.push(`d.catalog_category = $${values.length}`);
+  }
+  if (options.subjectKind) {
+    values.push(options.subjectKind);
+    clauses.push(`d.subject_kind::text = $${values.length}`);
+  }
+  if (options.tag) {
+    values.push(options.tag);
+    clauses.push(`EXISTS (
+      SELECT 1 FROM detective_tags dt_filter
+      WHERE dt_filter.detective_id = d.id AND dt_filter.tag = $${values.length}
+    )`);
+  }
   return { where: clauses.join(" AND "), values };
 }
 
@@ -136,6 +187,10 @@ export async function listDetectives(
         .join(" ")
         .toLocaleLowerCase("zh-CN");
       return (!options.country || detective.country === options.country)
+        && (!options.era || searchable.includes(options.era.toLocaleLowerCase("zh-CN")))
+        && (!options.tag || detective.tags.includes(options.tag))
+        && (!options.category)
+        && (!options.subjectKind || options.subjectKind === "FICTIONAL")
         && (!normalizedQuery || searchable.includes(normalizedQuery));
     });
     const start = (options.page - 1) * options.pageSize;
@@ -174,7 +229,17 @@ export async function getDetectiveBySlug(
   }
   const result = await queryRows<DetectiveRow>(
     database,
-    `${detectiveSelect} WHERE d.status = 'PUBLISHED' AND d.slug = $1`,
+    `${detectiveSelect}
+     WHERE d.status = 'PUBLISHED'
+       AND (
+         d.slug = $1
+         OR EXISTS (
+           SELECT 1 FROM detective_slug_redirects redirect
+           WHERE redirect.detective_id = d.id AND redirect.old_slug = $1
+         )
+       )
+     ORDER BY CASE WHEN d.slug = $1 THEN 0 ELSE 1 END
+     LIMIT 1`,
     [slug]
   );
   return result.rows[0] ?? null;

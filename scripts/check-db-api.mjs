@@ -8,6 +8,8 @@ assert.ok(database, "PostgreSQL configuration is required for the database API c
 const testAdminLoginId = "detective-archives-admin-check";
 const testAdminPassword = "integration-admin-password";
 const testWorkSlug = "database-api-check-work";
+const testDetectiveSlug = "database-api-check-detective";
+const testDetectiveUpdatedSlug = "database-api-check-detective-updated";
 let deactivatedTestUserId = null;
 const testIdentitySubjects = [
   "detective-archives-db-api-check-primary",
@@ -80,6 +82,10 @@ async function cleanupTestUsers() {
     )
   `, [testIdentitySubjects]);
   await database.query("DELETE FROM works WHERE slug = $1", [testWorkSlug]);
+  await database.query("DELETE FROM detectives WHERE slug = ANY($1)", [[
+    testDetectiveSlug,
+    testDetectiveUpdatedSlug
+  ]]);
   await database.query(`
     DELETE FROM users
     WHERE id IN (
@@ -342,6 +348,121 @@ try {
   assert.equal(dashboardResponse.statusCode, 200, dashboardResponse.body);
   assert.ok(dashboardResponse.json().data.publishedDetectiveCount >= 26);
 
+  const usersResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/users?pageSize=100",
+    headers: adminAuthorization
+  });
+  assert.equal(usersResponse.statusCode, 200, usersResponse.body);
+  assert.ok(usersResponse.json().data.some((item) => item.id === editorUserId));
+  const setEditorRoleResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/users/${secondaryLoginResponse.json().data.user.id}/role`,
+    headers: adminAuthorization,
+    payload: { role: "EDITOR" }
+  });
+  assert.equal(setEditorRoleResponse.statusCode, 200, setEditorRoleResponse.body);
+  assert.equal(setEditorRoleResponse.json().data.role, "EDITOR");
+  const restoreUserRoleResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/users/${secondaryLoginResponse.json().data.user.id}/role`,
+    headers: adminAuthorization,
+    payload: { role: "USER" }
+  });
+  assert.equal(restoreUserRoleResponse.statusCode, 200, restoreUserRoleResponse.body);
+  const selfRoleResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/users/${adminUserId}/role`,
+    headers: adminAuthorization,
+    payload: { role: "USER" }
+  });
+  assert.equal(selfRoleResponse.statusCode, 400, selfRoleResponse.body);
+
+  const detectivePayload = {
+    catalogId: "TEST-001",
+    slug: testDetectiveSlug,
+    nameZh: "数据库接口测试侦探",
+    nameOriginal: "Database API Detective",
+    nameEn: "Database API Detective",
+    country: "测试地区",
+    era: "自动化测试时代",
+    subjectKind: "FICTIONAL",
+    collection: "ARCHIVE_EXTENSION",
+    category: "WORLD_LITERATURE",
+    mediaTypes: ["NOVEL"],
+    summary: "用于验证侦探档案创建、审核发布、地址变更与历史地址兼容的自动化测试资料。",
+    sourceNote: "仅供自动化集成测试",
+    verification: "SOURCE_CAPTURED",
+    creatorName: "自动化测试作者",
+    aliases: ["接口测试侦探"],
+    tags: ["自动化测试", "本格推理"],
+    featuredCases: ["测试庄园谜案", "接口密室事件"],
+    sources: [{
+      label: "自动化测试来源",
+      url: "https://example.com/database-api-detective",
+      quality: "PUBLISHER",
+      verification: "SOURCE_CAPTURED"
+    }]
+  };
+  const createDetectiveResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/admin/detectives",
+    headers: editorAuthorization,
+    payload: detectivePayload
+  });
+  assert.equal(createDetectiveResponse.statusCode, 201, createDetectiveResponse.body);
+  const managedDetectiveId = createDetectiveResponse.json().data.id;
+  const submitDetectiveResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/detectives/${managedDetectiveId}/status`,
+    headers: editorAuthorization,
+    payload: { status: "PENDING_REVIEW" }
+  });
+  assert.equal(submitDetectiveResponse.statusCode, 200, submitDetectiveResponse.body);
+  const forbiddenDetectivePublish = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/detectives/${managedDetectiveId}/status`,
+    headers: editorAuthorization,
+    payload: { status: "PUBLISHED" }
+  });
+  assert.equal(forbiddenDetectivePublish.statusCode, 403, forbiddenDetectivePublish.body);
+  const publishDetectiveResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/detectives/${managedDetectiveId}/status`,
+    headers: adminAuthorization,
+    payload: { status: "PUBLISHED" }
+  });
+  assert.equal(publishDetectiveResponse.statusCode, 200, publishDetectiveResponse.body);
+  const publicDetectiveResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/detectives/${testDetectiveSlug}`
+  });
+  assert.equal(publicDetectiveResponse.statusCode, 200, publicDetectiveResponse.body);
+  assert.deepEqual(publicDetectiveResponse.json().data.featuredCases, [
+    "测试庄园谜案",
+    "接口密室事件"
+  ]);
+  const updateDetectiveResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/detectives/${managedDetectiveId}`,
+    headers: adminAuthorization,
+    payload: { ...detectivePayload, slug: testDetectiveUpdatedSlug }
+  });
+  assert.equal(updateDetectiveResponse.statusCode, 200, updateDetectiveResponse.body);
+  const oldSlugResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/detectives/${testDetectiveSlug}`
+  });
+  assert.equal(oldSlugResponse.statusCode, 200, oldSlugResponse.body);
+  assert.equal(oldSlugResponse.json().data.slug, testDetectiveUpdatedSlug);
+  const adminDetectiveListResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/detectives?q=database-api-check",
+    headers: adminAuthorization
+  });
+  assert.equal(adminDetectiveListResponse.statusCode, 200, adminDetectiveListResponse.body);
+  assert.equal(adminDetectiveListResponse.json().data[0].id, managedDetectiveId);
+
   const createWorkResponse = await app.inject({
     method: "POST",
     url: "/api/v1/admin/works",
@@ -437,6 +558,58 @@ try {
   });
   assert.equal(publicManagedWork.statusCode, 200, publicManagedWork.body);
   assert.equal(publicManagedWork.json().data.links.length, 1);
+  const linkClickResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/work-links/${managedLinkId}/click`,
+    headers: authorization
+  });
+  assert.equal(linkClickResponse.statusCode, 200, linkClickResponse.body);
+  assert.equal(linkClickResponse.json().data.url, "https://example.com/detective-archives-integration-check");
+  const linkFeedbackResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/work-links/${managedLinkId}/feedback`,
+    headers: authorization,
+    payload: { reasonCode: "BROKEN", description: "自动化验证失效链接反馈" }
+  });
+  assert.equal(linkFeedbackResponse.statusCode, 201, linkFeedbackResponse.body);
+  const linkFeedbackId = linkFeedbackResponse.json().data.id;
+  const duplicateLinkFeedbackResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/work-links/${managedLinkId}/feedback`,
+    headers: authorization,
+    payload: { reasonCode: "BROKEN" }
+  });
+  assert.equal(duplicateLinkFeedbackResponse.statusCode, 409, duplicateLinkFeedbackResponse.body);
+  const linkFeedbackQueueResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/work-link-feedback",
+    headers: adminAuthorization
+  });
+  assert.equal(linkFeedbackQueueResponse.statusCode, 200, linkFeedbackQueueResponse.body);
+  assert.ok(linkFeedbackQueueResponse.json().data.some((item) => item.id === linkFeedbackId));
+  const resolveLinkFeedbackResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-link-feedback/${linkFeedbackId}`,
+    headers: adminAuthorization,
+    payload: {
+      status: "RESOLVED",
+      resolutionNote: "自动化验证已处理",
+      deactivateLink: true
+    }
+  });
+  assert.equal(resolveLinkFeedbackResponse.statusCode, 200, resolveLinkFeedbackResponse.body);
+  const hiddenAfterFeedbackResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${testWorkSlug}`
+  });
+  assert.equal(hiddenAfterFeedbackResponse.json().data.links.length, 0);
+  const reenableLinkResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}`,
+    headers: adminAuthorization,
+    payload: { isActive: true }
+  });
+  assert.equal(reenableLinkResponse.statusCode, 200, reenableLinkResponse.body);
   const disableLinkResponse = await app.inject({
     method: "PATCH",
     url: `/api/v1/admin/work-links/${managedLinkId}`,
@@ -655,6 +828,13 @@ try {
     )
   `, [adminUserId]);
   assert.ok(adminAuditResponse.rows[0].count >= 4);
+  const auditApiResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/audit-logs?action=USER_ROLE_CHANGE&pageSize=20",
+    headers: adminAuthorization
+  });
+  assert.equal(auditApiResponse.statusCode, 200, auditApiResponse.body);
+  assert.ok(auditApiResponse.json().data.length >= 2);
 
   const deactivationLoginResponse = await app.inject({
     method: "POST",
@@ -710,7 +890,7 @@ try {
   assert.equal(expiredResponse.statusCode, 401, expiredResponse.body);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, session rotation, roles, concurrency, account, community and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account, community and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();

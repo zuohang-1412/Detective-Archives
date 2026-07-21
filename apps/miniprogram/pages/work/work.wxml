@@ -110,8 +110,9 @@
       <view wx:if="{{!work.links.length}}" class="empty-links">正版渠道正在核验</view>
       <view
         wx:for="{{work.links}}"
-        wx:key="url"
+        wx:key="id"
         class="official-link"
+        data-link-id="{{item.id}}"
         data-url="{{item.url}}"
         data-provider="{{item.providerName}}"
         bindtap="copyOfficialLink"
@@ -120,7 +121,15 @@
           <view class="provider-name">{{item.providerName}}</view>
           <view class="provider-meta">{{item.region}} · {{item.linkType}}</view>
         </view>
-        <view class="copy-action">复制链接</view>
+        <view class="link-actions">
+          <view class="copy-action">复制链接</view>
+          <view
+            class="feedback-action"
+            data-link-id="{{item.id}}"
+            data-provider="{{item.providerName}}"
+            catchtap="reportOfficialLink"
+          >链接有误</view>
+        </view>
       </view>
     </view>
   </view>
