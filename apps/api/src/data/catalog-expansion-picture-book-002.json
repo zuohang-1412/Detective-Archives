@@ -1,0 +1,475 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-002",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "bunshun-kitsunebi-onihei",
+      "label": "文艺春秋：《狐火・鬼平犯科帳》",
+      "url": "https://books.bunshun.jp/ud/book/num/9784163021904",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-heike-densetsu",
+      "label": "KADOKAWA：《平家伝説殺人事件》",
+      "url": "https://www.kadokawa.co.jp/product/200704000317/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "prh-too-many-cooks",
+      "label": "Penguin Random House: Too Many Cooks",
+      "url": "https://www.penguinrandomhouse.com/books/174339/too-many-cooks-by-rex-stout/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "toei-tantei-monogatari",
+      "label": "东映视频：《探偵物語》Blu-ray BOX",
+      "url": "https://shop.toei-video.co.jp/products/bstd03798",
+      "quality": "OFFICIAL_VIDEO"
+    },
+    {
+      "id": "macmillan-silence-lambs",
+      "label": "Macmillan: The Silence of the Lambs",
+      "url": "https://us.macmillan.com/books/9780312924584/thesilenceofthelambs/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "agatha-christie-murder-announced",
+      "label": "Agatha Christie official: A Murder is Announced",
+      "url": "https://www.agathachristie.com/en/stories/a-murder-is-announced",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "prh-maltese-falcon",
+      "label": "Penguin Random House: The Maltese Falcon",
+      "url": "https://www.penguinrandomhouse.com/books/74438/the-maltese-falcon-special-edition-by-dashiell-hammett/9780679722649/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kobunsha-terminal-station",
+      "label": "光文社电子书店：《終着駅（ターミナル）殺人事件》",
+      "url": "https://www3.kobunsha.com/kappa/author/e/22003.html",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "fuji-furuhata-yogoreta-osho",
+      "label": "富士电视台：《古畑任三郎「汚れた王将」》",
+      "url": "https://www.fujitv.co.jp/fujitv/news/20250703.html",
+      "quality": "OFFICIAL_BROADCASTER"
+    },
+    {
+      "id": "fod-furuhata-series",
+      "label": "FOD：《古畑任三郎》",
+      "url": "https://fod.fujitv.co.jp/title/4194/",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "worldcat-curious-bride",
+      "label": "WorldCat: The Case of the Curious Bride",
+      "url": "https://search.worldcat.org/title/The-case-of-the-curious-bride/oclc/15151128",
+      "quality": "LIBRARY_CATALOG"
+    },
+    {
+      "id": "kadokawa-mikeneko-holmes",
+      "label": "KADOKAWA：《三毛猫ホームズの推理》",
+      "url": "https://www.kadokawa.co.jp/product/199999149781/",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-015-STD",
+      "pictureBookEntryIds": ["PB-015-STD"],
+      "slug": "heizo-hasegawa",
+      "nameZh": "长谷川平藏",
+      "nameOriginal": "長谷川平蔵",
+      "nameEn": "Heizo Hasegawa",
+      "country": "日本",
+      "era": "江户时代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SHORT_STORY", "SERIES"],
+      "summary": "池波正太郎笔下的火付盗贼改方长官，凭借现场判断、用人经验与对江户社会的理解追查盗贼案件。",
+      "creatorName": "池波正太郎",
+      "aliases": ["鬼平", "Hasegawa Heizo"],
+      "tags": ["时代推理", "江户", "执法者"],
+      "featuredCases": ["《狐火》"],
+      "sourceIds": ["bunshun-kitsunebi-onihei"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kitsunebi-onihei-hankacho",
+          "titleZh": "狐火·鬼平犯科帐",
+          "titleOriginal": "狐火・鬼平犯科帳",
+          "mediaType": "NOVEL",
+          "releaseYear": 1971,
+          "summary": "鬼平犯科帐系列作品，围绕江户盗贼组织、旧日关系与长谷川平藏的侦查和取舍展开。",
+          "sourceId": "bunshun-kitsunebi-onihei",
+          "linkType": "PUBLISHER",
+          "providerName": "文艺春秋",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-016-STD",
+      "pictureBookEntryIds": ["PB-016-STD"],
+      "slug": "mitsuhiko-asami",
+      "nameZh": "浅见光彦",
+      "nameOriginal": "浅見光彦",
+      "nameEn": "Mitsuhiko Asami",
+      "country": "日本",
+      "era": "20世纪后半叶至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "内田康夫笔下的自由撰稿人与业余侦探，常在旅行采访中进入地方历史、传说和家族秘密交织的案件。",
+      "creatorName": "内田康夫",
+      "aliases": ["Asami Mitsuhiko", "浅见侦探"],
+      "tags": ["旅行推理", "地方传说", "业余侦探"],
+      "featuredCases": ["《平家传说杀人事件》"],
+      "sourceIds": ["kadokawa-heike-densetsu"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "heike-densetsu-satsujin-jiken",
+          "titleZh": "平家传说杀人事件",
+          "titleOriginal": "平家伝説殺人事件",
+          "mediaType": "NOVEL",
+          "summary": "浅见光彦追查一连串可疑死亡，并在人物关系与平家传说所形成的地方背景中寻找案件关联。",
+          "sourceId": "kadokawa-heike-densetsu",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-017-STD",
+      "pictureBookEntryIds": ["PB-017-STD"],
+      "slug": "nero-wolfe",
+      "nameZh": "尼禄·伍尔夫",
+      "nameOriginal": "Nero Wolfe",
+      "nameEn": "Nero Wolfe",
+      "country": "美国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY", "SERIES"],
+      "summary": "雷克斯·斯托特笔下的私人侦探，习惯在纽约住所内分析案情，由助手阿奇·古德温负责外勤和叙事。",
+      "creatorName": "雷克斯·斯托特",
+      "aliases": ["尼罗·沃尔夫", "Nero Wolfe"],
+      "tags": ["安乐椅侦探", "美食", "纽约"],
+      "featuredCases": ["《厨师太多了》"],
+      "sourceIds": ["prh-too-many-cooks"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "too-many-cooks",
+          "titleZh": "厨师太多了",
+          "titleOriginal": "Too Many Cooks",
+          "mediaType": "NOVEL",
+          "summary": "伍尔夫离开熟悉的住所参加名厨聚会，却卷入厨师遇害事件，并与古德温共同锁定下毒者。",
+          "sourceId": "prh-too-many-cooks",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-018-STD",
+      "pictureBookEntryIds": ["PB-018-STD"],
+      "slug": "shunsaku-kudo",
+      "nameZh": "工藤俊作",
+      "nameOriginal": "工藤俊作",
+      "nameEn": "Shunsaku Kudo",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "电视剧《侦探物语》中的横滨私人侦探，以机动灵活的调查、街头人脉和带有喜剧感的行动方式处理委托。",
+      "creatorName": "小鹰信光",
+      "aliases": ["Kudo Shunsaku", "工藤侦探"],
+      "tags": ["私人侦探", "横滨", "电视剧"],
+      "featuredCases": ["《横滨蓝调》（图鉴推荐，作品与工藤俊作的对应关系待复核）"],
+      "sourceIds": ["toei-tantei-monogatari"],
+      "verification": "SOURCE_CAPTURED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "tantei-monogatari-tv",
+          "titleZh": "侦探物语",
+          "titleOriginal": "探偵物語",
+          "mediaType": "SERIES",
+          "releaseYear": 1979,
+          "summary": "以工藤俊作为主角的二十七集电视系列，通过各类委托展现横滨街头的犯罪、人情与侦探行动。",
+          "sourceId": "toei-tantei-monogatari",
+          "linkType": "BOOKSTORE",
+          "providerName": "东映视频",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-019-STD",
+      "pictureBookEntryIds": ["PB-019-STD"],
+      "slug": "hannibal-lecter",
+      "nameZh": "汉尼拔·莱克特",
+      "nameOriginal": "Hannibal Lecter",
+      "nameEn": "Hannibal Lecter",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "托马斯·哈里斯笔下兼具精神医学知识与高度危险性的罪犯角色，曾以心理分析协助调查人员理解连环案件。",
+      "creatorName": "托马斯·哈里斯",
+      "aliases": ["Hannibal Lecter", "莱克特医生"],
+      "tags": ["犯罪心理", "连环案件", "心理分析"],
+      "featuredCases": ["《沉默的羔羊》"],
+      "sourceIds": ["macmillan-silence-lambs"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-silence-of-the-lambs",
+          "titleZh": "沉默的羔羊",
+          "titleOriginal": "The Silence of the Lambs",
+          "mediaType": "NOVEL",
+          "releaseYear": 1988,
+          "summary": "FBI学员克拉丽丝·史达琳为追查连环案件接触被监禁的莱克特，在心理交锋中寻找识别凶手的线索。",
+          "sourceId": "macmillan-silence-lambs",
+          "linkType": "PUBLISHER",
+          "providerName": "Macmillan",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-020-STD",
+      "pictureBookEntryIds": ["PB-020-STD"],
+      "slug": "jane-marple",
+      "nameZh": "简·马普尔",
+      "nameOriginal": "Jane Marple",
+      "nameEn": "Jane Marple",
+      "country": "英国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY", "SERIES"],
+      "summary": "阿加莎·克里斯蒂笔下的乡村业余侦探，善于把熟悉的人性模式与眼前细节对照，从日常关系中识别谎言。",
+      "creatorName": "阿加莎·克里斯蒂",
+      "aliases": ["马普尔小姐", "Miss Marple"],
+      "tags": ["业余侦探", "乡村推理", "人性观察"],
+      "featuredCases": ["《谋杀启事》"],
+      "sourceIds": ["agatha-christie-murder-announced"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "a-murder-is-announced",
+          "titleZh": "谋杀启事",
+          "titleOriginal": "A Murder is Announced",
+          "mediaType": "NOVEL",
+          "releaseYear": 1950,
+          "summary": "乡村报纸预告某时某地将发生谋杀，聚会现场随后出现死亡事件，马普尔从身份与措辞中追查真相。",
+          "sourceId": "agatha-christie-murder-announced",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Agatha Christie Limited",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-021-STD",
+      "pictureBookEntryIds": ["PB-021-STD"],
+      "slug": "sam-spade",
+      "nameZh": "山姆·史培德",
+      "nameOriginal": "Sam Spade",
+      "nameEn": "Sam Spade",
+      "country": "美国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "达希尔·哈米特笔下的旧金山私人侦探，凭借独立准则、审慎盘问和对利益关系的判断应对危险委托。",
+      "creatorName": "达希尔·哈米特",
+      "aliases": ["萨姆·斯佩德", "Sam Spade"],
+      "tags": ["硬汉派", "私人侦探", "旧金山"],
+      "featuredCases": ["《马耳他黑鹰》"],
+      "sourceIds": ["prh-maltese-falcon"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-maltese-falcon",
+          "titleZh": "马耳他之鹰",
+          "titleOriginal": "The Maltese Falcon",
+          "mediaType": "NOVEL",
+          "releaseYear": 1930,
+          "summary": "史培德的搭档在跟踪任务中遇害，多方势力又围绕一尊黑鸟雕像展开争夺，他必须重建委托背后的真相。",
+          "sourceId": "prh-maltese-falcon",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-022-STD",
+      "pictureBookEntryIds": ["PB-022-STD"],
+      "slug": "shozo-totsugawa",
+      "nameZh": "十津川省三",
+      "nameOriginal": "十津川省三",
+      "nameEn": "Shozo Totsugawa",
+      "country": "日本",
+      "era": "20世纪后半叶至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "西村京太郎笔下的警视厅搜查一课警部，常从铁路时刻、移动路线和不在场证明中识别跨地域案件的漏洞。",
+      "creatorName": "西村京太郎",
+      "aliases": ["十津川警部", "Totsugawa Shozo"],
+      "tags": ["铁路推理", "警察侦探", "不在场证明"],
+      "featuredCases": ["《终点站杀人事件》"],
+      "sourceIds": ["kobunsha-terminal-station"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "terminal-station-murder-case",
+          "titleZh": "终点站杀人事件",
+          "titleOriginal": "終着駅（ターミナル）殺人事件",
+          "mediaType": "NOVEL",
+          "releaseYear": 1984,
+          "summary": "十津川警部调查与列车行程相连的命案，从临终信息、乘车路线和时间关系中检验嫌疑人的叙述。",
+          "sourceId": "kobunsha-terminal-station",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-023-STD",
+      "pictureBookEntryIds": ["PB-023-STD"],
+      "slug": "ninzaburo-furuhata",
+      "nameZh": "古畑任三郎",
+      "nameOriginal": "古畑任三郎",
+      "nameEn": "Ninzaburo Furuhata",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "三谷幸喜创作的电视警察侦探，以礼貌而持续的提问、细节观察和心理施压揭开观众已知凶手的作案手法。",
+      "creatorName": "三谷幸喜",
+      "aliases": ["Furuhata Ninzaburo", "古畑警部补"],
+      "tags": ["倒叙推理", "警察侦探", "电视剧"],
+      "featuredCases": ["《玷污的将帅》／《被玷污的棋王》（原题「汚れた王将」）"],
+      "sourceIds": ["fuji-furuhata-yogoreta-osho", "fod-furuhata-series"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "furuhata-ninzaburo-first-series",
+          "titleZh": "警部补·古畑任三郎（第一季）",
+          "titleOriginal": "警部補・古畑任三郎（第1シリーズ）",
+          "mediaType": "SERIES",
+          "releaseYear": 1994,
+          "summary": "古畑任三郎系列第一季通过先展示犯罪过程、再由侦探追问破绽的结构，呈现多起独立案件。",
+          "sourceId": "fod-furuhata-series",
+          "linkType": "STREAMING",
+          "providerName": "FOD",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-024-STD",
+      "pictureBookEntryIds": ["PB-024-STD"],
+      "slug": "perry-mason",
+      "nameZh": "佩里·梅森",
+      "nameOriginal": "Perry Mason",
+      "nameEn": "Perry Mason",
+      "country": "美国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "厄尔·斯坦利·加德纳笔下的辩护律师，通过调查证据、交叉询问和法庭策略为被指控的委托人厘清事实。",
+      "creatorName": "厄尔·斯坦利·加德纳",
+      "aliases": ["培利·梅森", "Perry Mason"],
+      "tags": ["法庭推理", "律师侦探", "证据调查"],
+      "featuredCases": ["《古怪的新娘》"],
+      "sourceIds": ["worldcat-curious-bride"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-case-of-the-curious-bride",
+          "titleZh": "古怪的新娘",
+          "titleOriginal": "The Case of the Curious Bride",
+          "mediaType": "NOVEL",
+          "releaseYear": 1934,
+          "summary": "佩里·梅森受一名已婚女子的复杂处境牵引进入命案调查，并通过证据和证词检验真实身份与责任。",
+          "sourceId": "worldcat-curious-bride",
+          "linkType": "LIBRARY",
+          "providerName": "WorldCat",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-025-STD",
+      "pictureBookEntryIds": ["PB-025-STD"],
+      "slug": "calico-cat-holmes",
+      "nameZh": "三毛猫福尔摩斯",
+      "nameOriginal": "三毛猫ホームズ",
+      "nameEn": "Calico Cat Holmes",
+      "country": "日本",
+      "era": "20世纪后半叶至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "赤川次郎系列中的三色猫，与刑警片山义太郎共同进入案件；它通过异常行动和反应提示容易被人忽略的线索。",
+      "creatorName": "赤川次郎",
+      "aliases": ["三色猫福尔摩斯", "ホームズ"],
+      "tags": ["动物侦探", "轻推理", "警察搭档"],
+      "featuredCases": ["《三毛猫福尔摩斯探案》／《三毛猫福尔摩斯的推理》"],
+      "sourceIds": ["kadokawa-mikeneko-holmes"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "mikeneko-holmes-no-suiri",
+          "titleZh": "三毛猫福尔摩斯的推理",
+          "titleOriginal": "三毛猫ホームズの推理",
+          "mediaType": "NOVEL",
+          "summary": "系列首作围绕女子宿舍相关案件展开，三毛猫福尔摩斯与片山义太郎在连续事件中追踪关键异常。",
+          "sourceId": "kadokawa-mikeneko-holmes",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}
