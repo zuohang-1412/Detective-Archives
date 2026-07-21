@@ -154,7 +154,7 @@ AI 任务失败可重试，但每次重试需要独立记录费用和模型信�
 
 边界情况：空搜索返回默认排序；无结果显示空状态；失效 ID 返回稳定的 404 错误。
 
-当前证据：人物列表和详情接口已在 `apps/api/src/routes/detectives.ts` 实现；第 1～108 卷图鉴索引、搜索、卷号筛选和详情接口已在 `apps/api/src/routes/picture-book.ts` 实现。小程序首页、图鉴索引和详情页位于 `apps/miniprogram/pages`。完整图鉴索引来自 `apps/api/src/data/picture-book-index.json`，114 位正式人物和 101 部作品已经接入 PostgreSQL，第 1～91 卷图鉴均可进入正式人物、代表作和正版入口。
+当前证据：人物列表和详情接口已在 `apps/api/src/routes/detectives.ts` 实现；第 1～108 卷图鉴索引、搜索、卷号筛选和详情接口已在 `apps/api/src/routes/picture-book.ts` 实现。小程序首页、图鉴索引和详情页位于 `apps/miniprogram/pages`。完整图鉴索引来自 `apps/api/src/data/picture-book-index.json`，125 位正式人物和 112 部作品已经接入 PostgreSQL，第 1～102 卷图鉴均可进入正式人物、代表作和正版入口。
 
 ### 6.2 作品与正版链接
 
@@ -397,7 +397,7 @@ DRAFT → QUEUED → GENERATING → SUCCEEDED → PENDING_REVIEW → PUBLISHED
 
 ### 已实现并有自动化证据
 
-- 109 条图鉴卷号索引、114 位正式目录人物、73 条原始推荐作品标签、101 部正式作品和 102 条有效正版链接。
+- 109 条图鉴卷号索引、125 位正式目录人物、73 条原始推荐作品标签、112 部正式作品和 113 条有效正版链接。
 - 公开目录、关键词与国家/时代/分类/标签筛选、侦探历史 slug 兼容、作品详情和正版链接查询。
 - 微信 code2Session 适配、哈希会话、单次令牌轮换、协议/隐私同意、退出和账号去标识化注销。
 - 用户隔离的个人书架、短评/长评、编辑后重审、回复、剧透折叠、幂等点赞、举报去重和作者软删除。

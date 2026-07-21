@@ -1,0 +1,472 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-009",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "apple-tv-sniffer",
+      "label": "Apple TV：《嗅觉搜查官》",
+      "url": "https://tv.apple.com/jp/show/%E3%82%B9%E3%83%8B%E3%83%83%E3%83%95%E3%82%A1%E3%83%BC%E5%97%85%E8%A6%9A%E6%8D%9C%E6%9F%BB%E5%AE%98/umc.cmc.2v2rbmvn6qy3bc0cymric2wcp",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "apple-tv-castle-flowers",
+      "label": "Apple TV: Castle — Flowers for Your Grave",
+      "url": "https://tv.apple.com/us/episode/flowers-for-your-grave/umc.cmc.1a7m16tukktk13awrobysdy2w?showId=umc.cmc.3lhrxm4vgsfmjkk2q54ukckf7",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "tbs-999-request-01",
+      "label": "TBS：《99.9-刑事专业律师-》request.01",
+      "url": "https://www.tbs.co.jp/999tbs/2016/story/",
+      "quality": "OFFICIAL_BROADCASTER"
+    },
+    {
+      "id": "shogakukan-yugami",
+      "label": "小学馆：《刑警弓神》系列",
+      "url": "https://bigcomicbros.net/work/6180/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tbs-unnatural-episode-1",
+      "label": "TBS：《非自然死亡》第 1 话“无名之毒”",
+      "url": "https://www.tbs.co.jp/unnatural2018/story/ep1.html",
+      "quality": "OFFICIAL_BROADCASTER"
+    },
+    {
+      "id": "tbs-kurokouchi-episode-1",
+      "label": "TBS：《黑河内》第 1 话“三亿元事件～昭和最后之谜”",
+      "url": "https://www.tbs.co.jp/kurokouchi/story/story01.html",
+      "quality": "OFFICIAL_BROADCASTER"
+    },
+    {
+      "id": "shogakukan-mystery-to-iu-nakare",
+      "label": "小学馆 flowers：《勿言推理》",
+      "url": "https://flowers.shogakukan.co.jp/work/300/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shogakukan-maomao-manga-1",
+      "label": "小学馆：《药屋少女的呢喃～猫猫的后宫解谜手帐～》第 1 卷",
+      "url": "https://e-comi.shogakukan.co.jp/books/091575150000d0000000",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "bbc-studios-sherlock-season-2",
+      "label": "BBC Studios: Sherlock Season Two",
+      "url": "https://www.bbcstudiospressroom.com/press/sherlock-season-two/",
+      "quality": "OFFICIAL_BROADCASTER"
+    },
+    {
+      "id": "shueisha-rohan-1",
+      "label": "集英社：《岸边露伴一动不动 1》",
+      "url": "https://www.shueisha.co.jp/books/items/contents.html?jdcn=08870872851126315501",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-hakozume-3",
+      "label": "讲谈社：《秘密内幕～女警的反击～》第 3 卷",
+      "url": "https://www.kodansha.co.jp/comic/products/0000312936",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-092-STD",
+      "pictureBookEntryIds": ["PB-092-STD"],
+      "slug": "shinichiro-hanaoka",
+      "nameZh": "华冈信一郎",
+      "nameOriginal": "華岡信一郎",
+      "nameEn": "Shinichiro Hanaoka",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "电视剧《嗅觉搜查官》的特殊嗅觉调查顾问，能从气味中分离出常人无法察觉的成分，并与刑警小向达郎合作，把气味痕迹转化为追查案件的线索。",
+      "creatorName": "林宏司、山冈润平",
+      "aliases": ["華岡信一郎", "嗅觉搜查官", "Shinichiro Hanaoka"],
+      "tags": ["嗅觉调查", "搜查顾问", "科学取证"],
+      "featuredCases": ["《嗅觉搜查官》"],
+      "sourceIds": ["apple-tv-sniffer"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-sniffer-japan",
+          "titleZh": "嗅觉搜查官",
+          "titleOriginal": "スニッファー 嗅覚捜査官",
+          "mediaType": "SERIES",
+          "releaseYear": 2016,
+          "summary": "拥有特殊嗅觉的华冈信一郎受邀协助调查，以现场残留的气味辨认物质、行动轨迹与人物关联，并与刑警搭档追索真相。",
+          "sourceId": "apple-tv-sniffer",
+          "linkType": "STREAMING",
+          "providerName": "Apple TV",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-093-STD",
+      "pictureBookEntryIds": ["PB-093-STD"],
+      "slug": "richard-castle",
+      "nameZh": "理查德·卡瑟尔",
+      "nameOriginal": "Richard Castle",
+      "nameEn": "Richard Castle",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "NOVEL"],
+      "summary": "电视剧《灵书妙探》中的畅销推理小说家，以犯罪写作经验、想象力和对故事结构的敏感协助纽约警探凯特·贝克特调查命案。",
+      "creatorName": "Andrew W. Marlowe",
+      "aliases": ["理查德·卡索", "里克·卡瑟尔", "Rick Castle", "Richard Castle"],
+      "tags": ["推理作家", "警察顾问", "搭档调查"],
+      "featuredCases": ["《Flowers for Your Grave》"],
+      "sourceIds": ["apple-tv-castle-flowers"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "castle-flowers-for-your-grave",
+          "titleZh": "献给你的坟墓的鲜花",
+          "titleOriginal": "Flowers for Your Grave",
+          "mediaType": "SERIES",
+          "releaseYear": 2009,
+          "summary": "一宗仿照畅销小说布置的命案使理查德·卡瑟尔加入贝克特的调查；他从作者视角检验凶手对故事桥段的模仿，并协助寻找下一步线索。",
+          "sourceId": "apple-tv-castle-flowers",
+          "linkType": "STREAMING",
+          "providerName": "Apple TV",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-094-STD",
+      "pictureBookEntryIds": ["PB-094-STD"],
+      "slug": "hiroto-miyama",
+      "nameZh": "深山大翔",
+      "nameOriginal": "深山大翔",
+      "nameEn": "Hiroto Miyama",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "《99.9-刑事专业律师-》中的刑事辩护律师，不满足于定罪率与既有卷宗，执着寻找被忽略的 0.1% 事实，以现场重建和反复验证厘清案件。",
+      "creatorName": "宇田学",
+      "aliases": ["99.9 的深山", "刑事专业律师深山", "Hiroto Miyama"],
+      "tags": ["律师调查", "现场重建", "刑事辩护"],
+      "featuredCases": ["《99.9-刑事专业律师- request.01》"],
+      "sourceIds": ["tbs-999-request-01"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "99-9-criminal-lawyer-request-01",
+          "titleZh": "99.9-刑事专业律师- request.01",
+          "titleOriginal": "99.9-刑事専門弁護士- request.01",
+          "mediaType": "SERIES",
+          "releaseYear": 2016,
+          "summary": "深山大翔加入斑目律师事务所刑事专业团队后接手杀人案件，在不利证据与高定罪率之下重新走访现场，寻找能改变结论的细小事实。",
+          "sourceId": "tbs-999-request-01",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "TBS",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-095-STD",
+      "pictureBookEntryIds": ["PB-095-STD"],
+      "slug": "yukimasa-yugami",
+      "nameZh": "弓神适当",
+      "nameOriginal": "弓神適当",
+      "nameEn": "Yukimasa Yugami",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "SERIES"],
+      "summary": "井浦秀夫《刑警弓神》中的刑警，不先入为主地把案件套进善恶二分，而是从人的欲望、谎言和灰色动机出发，采用非常规方式追查犯罪。",
+      "creatorName": "井浦秀夫",
+      "aliases": ["弓神適当", "刑警弓神", "Yukimasa Yugami"],
+      "tags": ["警察侦探", "非常规调查", "犯罪心理"],
+      "featuredCases": ["《杀人鬼的咒文》"],
+      "sourceIds": ["shogakukan-yugami"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "keiji-yugami-2-satsujinki-no-jumon",
+          "titleZh": "刑警弓神 2：杀人鬼的咒文",
+          "titleOriginal": "刑事ゆがみ 2 殺人鬼の呪文",
+          "mediaType": "COMIC",
+          "releaseYear": 2017,
+          "summary": "一具带有异常标记的女性遗体让弓神联想到多年前的连续案件；他重新审视相似手法与人物动机，追问所谓杀人鬼是否掩盖了另一层真相。",
+          "sourceId": "shogakukan-yugami",
+          "linkType": "PUBLISHER",
+          "providerName": "小学馆",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-096-STD",
+      "pictureBookEntryIds": ["PB-096-STD"],
+      "slug": "mikoto-misumi",
+      "nameZh": "三澄美琴",
+      "nameOriginal": "三澄ミコト",
+      "nameEn": "Mikoto Misumi",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "《非自然死亡》中 UDI 实验室的法医解剖医，通过遗体、检验结果和死亡环境调查非自然死因，强调为死者查明可以被证据支持的事实。",
+      "creatorName": "野木亚纪子",
+      "aliases": ["三澄ミコト", "UDI 的三澄", "Mikoto Misumi"],
+      "tags": ["法医", "非自然死亡", "科学取证"],
+      "featuredCases": ["《无名之毒》"],
+      "sourceIds": ["tbs-unnatural-episode-1"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "unnatural-namae-no-nai-doku",
+          "titleZh": "非自然死亡：无名之毒",
+          "titleOriginal": "Unnatural Death #1 名前のない毒",
+          "mediaType": "SERIES",
+          "releaseYear": 2018,
+          "summary": "一名突然死亡的青年被怀疑死于不明毒物，三澄美琴与 UDI 团队从解剖、病原与生活轨迹交叉验证，寻找真正死因和潜在风险。",
+          "sourceId": "tbs-unnatural-episode-1",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "TBS",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-097-STD",
+      "pictureBookEntryIds": ["PB-097-STD"],
+      "slug": "keita-kurokouchi",
+      "nameZh": "黑河内圭太",
+      "nameOriginal": "黒河内圭太",
+      "nameEn": "Keita Kurokouchi",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "SERIES"],
+      "summary": "《黑河内》中的神奈川县警警部补，熟知权力人物的弱点和未解案件情报，以游走规则边缘的手段追查横跨政商警界的犯罪网络。",
+      "creatorName": "Richard Woo、河野浩司",
+      "aliases": ["黒河内圭太", "黑河内警部补", "Keita Kurokouchi"],
+      "tags": ["警察侦探", "未解事件", "政治犯罪"],
+      "featuredCases": ["《黑河内》第 1～6 卷", "《三亿元事件～昭和最后之谜》"],
+      "sourceIds": ["tbs-kurokouchi-episode-1"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kurokouchi-episode-1",
+          "titleZh": "黑河内：三亿元事件～昭和最后之谜",
+          "titleOriginal": "クロコーチ 第1話 三億円事件～昭和最後の謎",
+          "mediaType": "SERIES",
+          "releaseYear": 2013,
+          "summary": "黑河内圭太介入一宗杀人调查，同时追索与三亿元事件有关的长期线索；当眼前案件与旧案秘密交汇，他开始逼近被权力掩盖的关联。",
+          "sourceId": "tbs-kurokouchi-episode-1",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "TBS",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-098-STD",
+      "pictureBookEntryIds": ["PB-098-STD"],
+      "slug": "totonou-kunou",
+      "nameZh": "久能整",
+      "nameOriginal": "久能整",
+      "nameEn": "Totonou Kunou",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "SERIES", "FILM"],
+      "summary": "田村由美《勿言推理》中的大学生，习惯细致观察言行并不断思考社会常识中的矛盾，常以长篇对话重组当事人的记忆与动机。",
+      "creatorName": "田村由美",
+      "aliases": ["勿言推理的久能整", "Totonou Kunou"],
+      "tags": ["大学生侦探", "观察推理", "对话解谜"],
+      "featuredCases": ["《短暂的列车》"],
+      "sourceIds": ["shogakukan-mystery-to-iu-nakare"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "mystery-to-iu-nakare-train",
+          "titleZh": "短暂的列车",
+          "titleOriginal": "つかの間のトレイン",
+          "mediaType": "COMIC",
+          "releaseYear": 2018,
+          "summary": "久能整在列车上注意到邻座乘客信件中的异常排列，并从文字信息与对方的反应推断隐藏请求，逐步触及一段家庭关系中的秘密。",
+          "sourceId": "shogakukan-mystery-to-iu-nakare",
+          "linkType": "PUBLISHER",
+          "providerName": "小学馆",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-099-STD",
+      "pictureBookEntryIds": ["PB-099-STD"],
+      "slug": "maomao-apothecary",
+      "nameZh": "猫猫",
+      "nameOriginal": "猫猫（マオマオ）",
+      "nameEn": "Maomao",
+      "country": "架空古代中国",
+      "era": "古代宫廷题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "ANIMATION"],
+      "summary": "《药屋少女的呢喃》的药师少女，熟悉药物、毒物与人体反应，被卷入后宫后以实验意识和医学知识调查疾病、下毒及宫廷异象。",
+      "creatorName": "日向夏",
+      "aliases": ["マオマオ", "药师猫猫", "Maomao"],
+      "tags": ["药师", "毒物调查", "宫廷推理"],
+      "featuredCases": ["《药屋少女的呢喃～猫猫的后宫解谜手帐～ 1》"],
+      "sourceIds": ["shogakukan-maomao-manga-1"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kusuriya-maomao-manga-1",
+          "titleZh": "药屋少女的呢喃～猫猫的后宫解谜手帐～ 1",
+          "titleOriginal": "薬屋のひとりごと～猫猫の後宮謎解き手帳～ 1",
+          "mediaType": "COMIC",
+          "releaseYear": 2018,
+          "summary": "被拐入后宫做下级宫女的猫猫听闻皇子接连衰弱，凭药学知识观察症状、环境和日常用品，开始查找疾病背后的共同原因。",
+          "sourceId": "shogakukan-maomao-manga-1",
+          "linkType": "PUBLISHER",
+          "providerName": "小学馆",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-100-STD",
+      "pictureBookEntryIds": ["PB-100-STD"],
+      "slug": "sherlock-holmes-bbc",
+      "nameZh": "夏洛克·福尔摩斯（BBC《神探夏洛克》）",
+      "nameOriginal": "Sherlock Holmes",
+      "nameEn": "Sherlock Holmes",
+      "country": "英国",
+      "era": "当代改编",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "BBC《神探夏洛克》把福尔摩斯置于现代伦敦；这一版本以快速观察、演绎推理、数字信息与现场实验协助警方处理高难度案件。",
+      "creatorName": "Steven Moffat、Mark Gatiss",
+      "aliases": ["神探夏洛克", "BBC 夏洛克", "Sherlock"],
+      "tags": ["现代改编", "演绎推理", "咨询侦探"],
+      "featuredCases": ["《情逢敌手》", "《贝尔戈维亚丑闻》"],
+      "sourceIds": ["bbc-studios-sherlock-season-2"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "sherlock-a-scandal-in-belgravia",
+          "titleZh": "贝尔戈维亚丑闻",
+          "titleOriginal": "A Scandal in Belgravia",
+          "mediaType": "SERIES",
+          "releaseYear": 2012,
+          "summary": "夏洛克受托处理艾琳·艾德勒掌握的敏感影像，在破解她设置的信息与心理较量时，也发现案件背后牵涉更复杂的国家安全风险。",
+          "sourceId": "bbc-studios-sherlock-season-2",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "BBC Studios",
+          "region": "UK"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-101-STD",
+      "pictureBookEntryIds": ["PB-101-STD"],
+      "slug": "rohan-kishibe",
+      "nameZh": "岸边露伴",
+      "nameOriginal": "岸辺露伴",
+      "nameEn": "Rohan Kishibe",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "SERIES", "FILM"],
+      "summary": "荒木飞吕彦笔下的漫画家，为收集创作素材主动接近怪异事件，凭敏锐观察和替身能力“天堂之门”读取人物经历、确认隐藏事实。",
+      "creatorName": "荒木飞吕彦",
+      "aliases": ["岸邊露伴", "露伴老师", "Rohan Kishibe"],
+      "tags": ["漫画家", "怪异调查", "超自然推理"],
+      "featuredCases": ["《富豪村》"],
+      "sourceIds": ["shueisha-rohan-1"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kishibe-rohan-fugoumura",
+          "titleZh": "岸边露伴一动不动：富豪村",
+          "titleOriginal": "岸辺露伴は動かない Episode #05 富豪村",
+          "mediaType": "COMIC",
+          "releaseYear": 2013,
+          "summary": "岸边露伴随编辑探访只向合格者出售住宅的山中村落，却发现访客必须接受严格礼仪考验；异常规则逐渐显露出危险代价。",
+          "sourceId": "shueisha-rohan-1",
+          "linkType": "PUBLISHER",
+          "providerName": "集英社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-102-STD",
+      "pictureBookEntryIds": ["PB-102-STD"],
+      "slug": "seiko-fuji",
+      "nameZh": "藤圣子",
+      "nameOriginal": "藤聖子",
+      "nameEn": "Seiko Fuji",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "ANIMATION", "SERIES"],
+      "summary": "泰三子《秘密内幕～女警的反击～》中的巡查部长，曾是刑事课王牌，拥有扎实的现场经验、观察力与人物画像能力，并指导新人川合麻依处理警务和案件。",
+      "creatorName": "泰三子",
+      "aliases": ["藤聖子", "Miss Perfect", "Seiko Fuji"],
+      "tags": ["女警", "刑事调查", "人物画像"],
+      "featuredCases": ["《胜负只在一瞬》"],
+      "sourceIds": ["kodansha-hakozume-3"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "hakozume-shoubu-wa-isshun",
+          "titleZh": "秘密内幕～女警的反击～：胜负只在一瞬",
+          "titleOriginal": "ハコヅメ～交番女子の逆襲～ その23 勝負は一瞬",
+          "mediaType": "COMIC",
+          "releaseYear": 2018,
+          "summary": "警方持续追查针对女高中生的犯罪者，藤圣子等人结合画像、防犯影像与蹲守推进搜查；川合也运用日常巡逻积累的观察判断可能的出现地点。",
+          "sourceId": "kodansha-hakozume-3",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}

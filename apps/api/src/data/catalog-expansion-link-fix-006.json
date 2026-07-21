@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-006",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace a Disney+ page that returns 404 to the automated health checker with ABC's stable official Castle program article while retaining the historical link as an inactive audit record.",
+  "sources": [
+    {
+      "id": "abc-castle-100-reasons",
+      "label": "ABC: 100 Reasons to Love Castle",
+      "url": "https://abc.com/news/9803c937-5e8e-4668-9879-2ac2743f287b/category/3722338",
+      "quality": "OFFICIAL_BROADCASTER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-093-STD",
+      "pictureBookEntryIds": [],
+      "slug": "richard-castle",
+      "nameZh": "理查德·卡瑟尔",
+      "nameOriginal": "Richard Castle",
+      "nameEn": "Richard Castle",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "NOVEL"],
+      "summary": "电视剧《灵书妙探》中的畅销推理小说家，以犯罪写作经验、想象力和对故事结构的敏感协助纽约警探凯特·贝克特调查命案。",
+      "creatorName": "Andrew W. Marlowe",
+      "aliases": ["理查德·卡索", "里克·卡瑟尔", "Rick Castle", "Richard Castle"],
+      "tags": ["推理作家", "警察顾问", "搭档调查"],
+      "featuredCases": ["《Flowers for Your Grave》"],
+      "sourceIds": ["abc-castle-100-reasons"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "castle-flowers-for-your-grave",
+          "titleZh": "献给你的坟墓的鲜花",
+          "titleOriginal": "Flowers for Your Grave",
+          "mediaType": "SERIES",
+          "releaseYear": 2009,
+          "summary": "一宗仿照畅销小说布置的命案使理查德·卡瑟尔加入贝克特的调查；他从作者视角检验凶手对故事桥段的模仿，并协助寻找下一步线索。",
+          "sourceId": "abc-castle-100-reasons",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "ABC / Hulu",
+          "region": "US",
+          "deactivateLinkUrls": [
+            "https://www.disneyplus.com/en-gs/browse/entity-30fb4e12-5a72-4fe6-85ff-ddb5e88d1a65"
+          ]
+        }
+      ]
+    }
+  ]
+}

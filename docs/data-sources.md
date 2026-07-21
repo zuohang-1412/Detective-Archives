@@ -111,6 +111,10 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-link-fix-003.json` 和 `catalog-expansion-link-fix-004.json` 保存第 70～80 卷巡检产生的纠错链：两个 Apple TV 单集地址经 GET 再确认仍为 404 后停止公开，分别换为 USA Network/Peacock 的全剧观看指引和 Universal Pictures 官方发行页；曾因地区重定向落到不可用页的 Hulu 地址也作为中间历史记录保留。巡检器现在会在 HEAD 返回非确定状态时再执行 GET，避免把“不支持 HEAD 但网页可正常打开”的正版站点误判失效。
 
+`apps/api/src/data/catalog-expansion-picture-book-009.json` 把第 92～102 卷的 11 位人物关联到正式档案和代表作品，包括华冈信一郎、理查德·卡瑟尔、深山大翔、弓神适当、三澄美琴、黑河内圭太、久能整、猫猫、BBC 版夏洛克·福尔摩斯、岸边露伴和藤圣子。该批次以 NHK/TBS/BBC/ABC 等播出机构及小学馆、集英社、讲谈社等出版社资料核验法医、律师、药师、漫画家等广义解谜者；BBC 版福尔摩斯使用独立档案，避免覆盖第 1 卷的文学原典人物。
+
+`apps/api/src/data/catalog-expansion-link-fix-005.json` 和 `catalog-expansion-link-fix-006.json` 保存第 92～102 卷的链接纠错链：Apple TV 两条地区深链确认返回 404 后停止公开，华冈信一郎改用 NHK 点播第 1 话；理查德·卡瑟尔先尝试 Disney+ 官方剧集页，但自动巡检仍返回 404，随后切换到明确介绍首集《Flowers for Your Grave》的 ABC 官方节目文章。全部历史链接仍作为停用审计记录保留，最终批次巡检 11 条均通过。
+
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 正版链接通过 `npm run links:check` 定时巡检。巡检只记录健康状态和连续失败次数，不自动下架；超时或失败必须由运营人员人工确认，避免把反爬、区域限制或临时网络问题误判为失效链接。

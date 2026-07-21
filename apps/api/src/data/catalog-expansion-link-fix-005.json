@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-005",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace two confirmed 404 Apple TV links with current official streaming pages while retaining the historical links as inactive audit records.",
+  "sources": [
+    {
+      "id": "nhk-on-demand-sniffer-episode-1",
+      "label": "NHK 点播：《嗅觉搜查官》第 1 话",
+      "url": "https://www.nhk-ondemand.jp/goods/G2016073749SA000/index.html",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "disney-plus-castle-series",
+      "label": "Disney+: Castle",
+      "url": "https://www.disneyplus.com/en-gs/browse/entity-30fb4e12-5a72-4fe6-85ff-ddb5e88d1a65",
+      "quality": "OFFICIAL_STREAMING"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-092-STD",
+      "pictureBookEntryIds": [],
+      "slug": "shinichiro-hanaoka",
+      "nameZh": "华冈信一郎",
+      "nameOriginal": "華岡信一郎",
+      "nameEn": "Shinichiro Hanaoka",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "电视剧《嗅觉搜查官》的特殊嗅觉调查顾问，能从气味中分离出常人无法察觉的成分，并与刑警小向达郎合作，把气味痕迹转化为追查案件的线索。",
+      "creatorName": "林宏司、山冈润平",
+      "aliases": ["華岡信一郎", "嗅觉搜查官", "Shinichiro Hanaoka"],
+      "tags": ["嗅觉调查", "搜查顾问", "科学取证"],
+      "featuredCases": ["《嗅觉搜查官》"],
+      "sourceIds": ["nhk-on-demand-sniffer-episode-1"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-sniffer-japan",
+          "titleZh": "嗅觉搜查官",
+          "titleOriginal": "スニッファー 嗅覚捜査官",
+          "mediaType": "SERIES",
+          "releaseYear": 2016,
+          "summary": "拥有特殊嗅觉的华冈信一郎受邀协助调查，以现场残留的气味辨认物质、行动轨迹与人物关联，并与刑警搭档追索真相。",
+          "sourceId": "nhk-on-demand-sniffer-episode-1",
+          "linkType": "STREAMING",
+          "providerName": "NHK 点播",
+          "region": "JP",
+          "deactivateLinkUrls": [
+            "https://tv.apple.com/jp/show/%E3%82%B9%E3%83%8B%E3%83%83%E3%83%95%E3%82%A1%E3%83%BC%E5%97%85%E8%A6%9A%E6%8D%9C%E6%9F%BB%E5%AE%98/umc.cmc.2v2rbmvn6qy3bc0cymric2wcp"
+          ]
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-093-STD",
+      "pictureBookEntryIds": [],
+      "slug": "richard-castle",
+      "nameZh": "理查德·卡瑟尔",
+      "nameOriginal": "Richard Castle",
+      "nameEn": "Richard Castle",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "NOVEL"],
+      "summary": "电视剧《灵书妙探》中的畅销推理小说家，以犯罪写作经验、想象力和对故事结构的敏感协助纽约警探凯特·贝克特调查命案。",
+      "creatorName": "Andrew W. Marlowe",
+      "aliases": ["理查德·卡索", "里克·卡瑟尔", "Rick Castle", "Richard Castle"],
+      "tags": ["推理作家", "警察顾问", "搭档调查"],
+      "featuredCases": ["《Flowers for Your Grave》"],
+      "sourceIds": ["disney-plus-castle-series"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "castle-flowers-for-your-grave",
+          "titleZh": "献给你的坟墓的鲜花",
+          "titleOriginal": "Flowers for Your Grave",
+          "mediaType": "SERIES",
+          "releaseYear": 2009,
+          "summary": "一宗仿照畅销小说布置的命案使理查德·卡瑟尔加入贝克特的调查；他从作者视角检验凶手对故事桥段的模仿，并协助寻找下一步线索。",
+          "sourceId": "disney-plus-castle-series",
+          "linkType": "STREAMING",
+          "providerName": "Disney+",
+          "region": "GLOBAL",
+          "deactivateLinkUrls": [
+            "https://tv.apple.com/us/episode/flowers-for-your-grave/umc.cmc.1a7m16tukktk13awrobysdy2w?showId=umc.cmc.3lhrxm4vgsfmjkk2q54ukckf7"
+          ]
+        }
+      ]
+    }
+  ]
+}
