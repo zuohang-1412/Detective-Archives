@@ -12,6 +12,29 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://detective_ci:detective_ci_password@127.0.0.1:5432/detective_archives
+      DETECTIVE_DB_NAME: detective_archives
+      PGDATABASE: detective_archives
+      PGHOST: 127.0.0.1
+      PGPASSWORD: detective_ci_password
+      PGPORT: 5432
+      PGSSLMODE: disable
+      PGUSER: detective_ci
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: detective_archives
+          POSTGRES_PASSWORD: detective_ci_password
+          POSTGRES_USER: detective_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U detective_ci -d detective_archives"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,4 +43,50 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run catalog:apply
+      - run: npm run check:db
+      - run: npm run check:db-api
       - run: docker build --tag detective-archives-api:test .
+      - name: Create empty runtime database
+        run: DETECTIVE_DB_NAME=detective_archives_container npm run db:create
+      - name: Start production image
+        run: |
+          docker run --detach \
+            --name detective-archives-api-ci \
+            --network host \
+            --read-only \
+            --tmpfs /tmp:size=32m,mode=1777 \
+            --security-opt no-new-privileges:true \
+            --env API_HOST=127.0.0.1 \
+            --env API_PORT=3000 \
+            --env CORS_ORIGIN=https://detective-archives.example \
+            --env DATABASE_URL=postgresql://detective_ci:detective_ci_password@127.0.0.1:5432/detective_archives_container \
+            --env DETECTIVE_DB_NAME=detective_archives_container \
+            --env PGSSLMODE=disable \
+            --env TRUST_PROXY=true \
+            --env WECHAT_APP_ID=wxci123456 \
+            --env WECHAT_APP_SECRET=ci-only-wechat-secret \
+            --env WECHAT_DEV_LOGIN=false \
+            --env ADMIN_LOGIN_ID=ci-operator \
+            --env ADMIN_LOGIN_PASSWORD=ci-only-admin-password \
+            --env METRICS_AUTH_TOKEN=ci-only-metrics-token-123 \
+            detective-archives-api:test
+      - name: Probe production runtime
+        env:
+          METRICS_AUTH_TOKEN: ci-only-metrics-token-123
+          RUNTIME_BASE_URL: http://127.0.0.1:3000
+        run: npm run check:runtime
+      - name: Verify runtime database
+        env:
+          DATABASE_URL: postgresql://detective_ci:detective_ci_password@127.0.0.1:5432/detective_archives_container
+          DETECTIVE_DB_NAME: detective_archives_container
+          PGDATABASE: detective_archives_container
+        run: npm run check:db
+      - name: Preserve container logs
+        if: always()
+        run: docker logs detective-archives-api-ci || true
+      - name: Stop production image
+        if: always()
+        run: docker rm --force detective-archives-api-ci || true
