@@ -1,4 +1,31 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import {
+  catalogSlugify,
+  loadCatalogBatches,
+  uniqueImportedWorks
+} from "./lib/catalog-batches.mjs";
+
+const [coreDetectives, coreWorkDetails, archiveDirectory, pictureBookCatalog, catalogBatches] =
+  await Promise.all([
+    readFile(new URL("../apps/api/src/data/core-detectives.json", import.meta.url), "utf8").then(JSON.parse),
+    readFile(new URL("../apps/api/src/data/core-work-details.json", import.meta.url), "utf8").then(JSON.parse),
+    readFile(new URL("../apps/api/src/data/archive-directory-index.json", import.meta.url), "utf8").then(JSON.parse),
+    readFile(new URL("../apps/api/src/data/picture-book-index.json", import.meta.url), "utf8").then(JSON.parse),
+    loadCatalogBatches()
+  ]);
+const expectedDetectiveCount = new Set([
+  ...coreDetectives.map((detective) => detective.slug),
+  ...archiveDirectory.entries.map((detective) => catalogSlugify(detective.names.en)),
+  ...catalogBatches.batches.flatMap(({ input }) =>
+    input.detectives.map((detective) => detective.slug)
+  )
+]).size;
+const expectedWorkCount = new Set([
+  ...coreWorkDetails.map((work) => work.slug),
+  ...uniqueImportedWorks(catalogBatches.batches).keys()
+]).size;
+const expectedPictureBookCount = pictureBookCatalog.coverage.entryCount;
 
 const baseUrl = new URL(process.env.RUNTIME_BASE_URL ?? "http://127.0.0.1:3000");
 const metricsToken = process.env.METRICS_AUTH_TOKEN;
@@ -52,18 +79,18 @@ assert.equal(health.status, "ok");
 assert.equal(health.service, "detective-archives-api");
 
 const detectives = await json("/api/v1/detectives?pageSize=1");
-assert.equal(detectives.pagination.total, 132);
+assert.equal(detectives.pagination.total, expectedDetectiveCount);
 assert.equal(detectives.data.length, 1);
 assert.equal(detectives.facets.categories.length, 5);
 assert.ok(detectives.facets.countries.includes("日本"));
 assert.ok(detectives.facets.tags.length > 10);
 
 const works = await json("/api/v1/works?pageSize=1");
-assert.equal(works.pagination.total, 120);
+assert.equal(works.pagination.total, expectedWorkCount);
 assert.equal(works.data.length, 1);
 
 const pictureBook = await json("/api/v1/picture-book?pageSize=1");
-assert.equal(pictureBook.pagination.total, 109);
+assert.equal(pictureBook.pagination.total, expectedPictureBookCount);
 assert.equal(pictureBook.data.length, 1);
 
 const missing = await json("/api/v1/detectives/not-a-real-detective", 404);
