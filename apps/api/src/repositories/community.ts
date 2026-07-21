@@ -164,6 +164,15 @@ export async function listMyReviews(database: DatabaseClient, userId: string) {
   return result.rows;
 }
 
+export async function getMyReview(
+  database: DatabaseClient,
+  userId: string,
+  reviewId: string
+) {
+  const reviews = await listMyReviews(database, userId);
+  return reviews.find((review) => review.id === reviewId) ?? null;
+}
+
 export async function createReview(
   database: DatabaseClient,
   userId: string,

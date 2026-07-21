@@ -172,6 +172,10 @@ function listMyReviews() {
   return request("/api/v1/me/reviews");
 }
 
+function getMyReview(reviewId) {
+  return request(`/api/v1/me/reviews/${encodeURIComponent(reviewId)}`);
+}
+
 function createReview(workId, data) {
   return request(`/api/v1/works/${encodeURIComponent(workId)}/reviews`, {
     method: "POST",
@@ -195,6 +199,10 @@ function createComment(reviewId, data) {
     method: "POST",
     data
   });
+}
+
+function deleteComment(commentId) {
+  return request(`/api/v1/comments/${encodeURIComponent(commentId)}`, { method: "DELETE" });
 }
 
 function setReviewLike(reviewId, liked) {
@@ -230,10 +238,12 @@ module.exports = {
   createReport,
   createReview,
   deactivateAccount,
+  deleteComment,
   deleteReview,
   getCurrentUser,
   getDetective,
   getShelfItem,
+  getMyReview,
   hasAuthToken,
   getWork,
   getReview,

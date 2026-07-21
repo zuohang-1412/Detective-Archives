@@ -6,6 +6,7 @@ import {
   createComment,
   createReport,
   createReview,
+  getMyReview,
   getPublicReview,
   listMyReviews,
   listPublicComments,
@@ -171,6 +172,20 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     return { data: await listMyReviews(options.database, user.id) };
   });
 
+  app.get("/me/reviews/:reviewId", async (request, reply) => {
+    const params = uuidParamsSchema.safeParse(request.params);
+    if (!params.success || !params.data.reviewId) {
+      return reply.code(400).send({ code: "INVALID_REVIEW_ID", message: "评价编号不合法" });
+    }
+    const user = await requireUser(options.database, request, reply);
+    if (!user || !options.database) return;
+    const review = await getMyReview(options.database, user.id, params.data.reviewId);
+    if (!review) {
+      return reply.code(404).send({ code: "REVIEW_NOT_FOUND", message: "未找到你的评价" });
+    }
+    return { data: review };
+  });
+
   app.patch("/reviews/:reviewId", async (request, reply) => {
     const params = uuidParamsSchema.safeParse(request.params);
     const body = reviewInputSchema.safeParse(request.body);
@@ -179,17 +194,27 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     }
     const user = await requireUser(options.database, request, reply);
     if (!user || !options.database) return;
-    const review = await updateReview(
-      options.database,
-      user.id,
-      params.data.reviewId,
-      body.data,
-      request.id
-    );
-    if (!review) {
-      return reply.code(404).send({ code: "REVIEW_NOT_FOUND", message: "未找到可修改的评价" });
+    try {
+      const review = await updateReview(
+        options.database,
+        user.id,
+        params.data.reviewId,
+        body.data,
+        request.id
+      );
+      if (!review) {
+        return reply.code(404).send({ code: "REVIEW_NOT_FOUND", message: "未找到可修改的评价" });
+      }
+      return { data: review };
+    } catch (error) {
+      if (databaseErrorCode(error) === "23505") {
+        return reply.code(409).send({
+          code: "REVIEW_ALREADY_EXISTS",
+          message: "你已经为这部作品写过同类型评价"
+        });
+      }
+      throw error;
     }
-    return { data: review };
   });
 
   app.delete("/reviews/:reviewId", async (request, reply) => {

@@ -1,6 +1,9 @@
 const {
   createComment,
   createReport,
+  deleteComment,
+  deleteReview,
+  getCurrentUser,
   getReview,
   hasAuthToken,
   setCommentLike,
@@ -26,6 +29,8 @@ Page({
     commentBody: "",
     commentSpoiler: false,
     replyTo: null,
+    viewerId: "",
+    actionId: "",
     submitting: false
   },
 
@@ -38,6 +43,10 @@ Page({
     this.loadReview();
   },
 
+  onShow() {
+    if (this.data.reviewId && !this.data.loading) this.loadReview();
+  },
+
   onPullDownRefresh() {
     this.loadReview().finally(() => wx.stopPullDownRefresh());
   },
@@ -46,16 +55,28 @@ Page({
     this.setData({ loading: true, error: "" });
     try {
       const response = await getReview(this.data.reviewId);
+      let viewerId = "";
+      if (hasAuthToken()) {
+        try {
+          const viewerResponse = await getCurrentUser();
+          viewerId = viewerResponse.data.id;
+        } catch (_error) {
+          viewerId = "";
+        }
+      }
       const review = {
         ...response.data,
+        isMine: response.data.author.id === viewerId,
         comments: response.data.comments.map((comment) => ({
           ...comment,
+          isMine: comment.author.id === viewerId,
           spoilerRevealed: !comment.containsSpoiler
         }))
       };
       this.setData({
         review,
-        spoilerRevealed: !review.containsSpoiler
+        spoilerRevealed: !review.containsSpoiler,
+        viewerId
       });
     } catch (error) {
       this.setData({ error: error.message || "评价读取失败" });
@@ -165,6 +186,61 @@ Page({
 
   reportComment(event) {
     this.openReport("COMMENT", event.currentTarget.dataset.commentId);
+  },
+
+  editReview() {
+    if (!this.data.review?.isMine) return;
+    wx.navigateTo({
+      url: `/pages/review-editor/review-editor?reviewId=${encodeURIComponent(this.data.review.id)}`
+    });
+  },
+
+  deleteOwnReview() {
+    if (!this.data.review?.isMine || this.data.actionId) return;
+    wx.showModal({
+      title: "删除评价",
+      content: "确定删除这条评价吗？删除后其他读者将无法查看。",
+      confirmText: "确认删除",
+      confirmColor: "#9f3123",
+      success: async (result) => {
+        if (!result.confirm) return;
+        this.setData({ actionId: this.data.review.id });
+        try {
+          await deleteReview(this.data.review.id);
+          wx.showToast({ title: "评价已删除", icon: "success" });
+          wx.navigateBack();
+        } catch (error) {
+          wx.showToast({ title: error.message || "删除失败", icon: "none" });
+        } finally {
+          this.setData({ actionId: "" });
+        }
+      }
+    });
+  },
+
+  deleteOwnComment(event) {
+    const { commentId } = event.currentTarget.dataset;
+    const comment = this.data.review?.comments.find((item) => item.id === commentId);
+    if (!comment?.isMine || this.data.actionId) return;
+    wx.showModal({
+      title: "删除回复",
+      content: "确定删除这条回复吗？",
+      confirmText: "确认删除",
+      confirmColor: "#9f3123",
+      success: async (result) => {
+        if (!result.confirm) return;
+        this.setData({ actionId: commentId });
+        try {
+          await deleteComment(commentId);
+          await this.loadReview();
+          wx.showToast({ title: "回复已删除", icon: "success" });
+        } catch (error) {
+          wx.showToast({ title: error.message || "删除失败", icon: "none" });
+        } finally {
+          this.setData({ actionId: "" });
+        }
+      }
+    });
   },
 
   openReport(targetType, targetId) {

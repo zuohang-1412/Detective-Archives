@@ -20,7 +20,9 @@
 
     <view class="review-actions">
       <text class="action {{review.likedByMe ? 'active' : ''}}" bindtap="toggleReviewLike">赞 {{review.likeCount}}</text>
-      <text class="action" bindtap="reportReview">举报</text>
+      <text wx:if="{{review.isMine}}" class="action" bindtap="editReview">编辑</text>
+      <text wx:if="{{review.isMine}}" class="action" bindtap="deleteOwnReview">删除</text>
+      <text wx:else class="action" bindtap="reportReview">举报</text>
     </view>
 
     <view class="discussion">
@@ -43,7 +45,8 @@
             bindtap="toggleCommentLike"
           >赞 {{item.likeCount}}</text>
           <text data-comment-id="{{item.id}}" data-author="{{item.author.displayName}}" bindtap="chooseReply">回复</text>
-          <text data-comment-id="{{item.id}}" bindtap="reportComment">举报</text>
+          <text wx:if="{{item.isMine}}" data-comment-id="{{item.id}}" bindtap="deleteOwnComment">删除</text>
+          <text wx:else data-comment-id="{{item.id}}" bindtap="reportComment">举报</text>
         </view>
       </view>
     </view>

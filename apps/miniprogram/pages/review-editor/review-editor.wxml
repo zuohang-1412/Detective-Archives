@@ -1,6 +1,7 @@
 <view class="page-shell">
   <text class="eyebrow">READER NOTE</text>
   <view class="section-title">写给《{{workTitle}}》</view>
+  <view wx:if="{{loading}}" class="state-message">正在读取原评价…</view>
   <view class="review-policy">请分享原创、友善且与作品有关的内容。含关键情节时务必开启剧透标记。</view>
 
   <view class="type-switch">
@@ -59,5 +60,5 @@
   </view>
 
   <view wx:if="{{error}}" class="error-note">{{error}}</view>
-  <button class="submit-button" loading="{{submitting}}" bindtap="submit">提交审核</button>
+  <button class="submit-button" disabled="{{loading}}" loading="{{submitting}}" bindtap="submit">{{editing ? '保存并重新提交' : '提交审核'}}</button>
 </view>

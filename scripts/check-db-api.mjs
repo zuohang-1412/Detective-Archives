@@ -690,6 +690,53 @@ try {
   assert.equal(reviewResponse.json().data.status, "PENDING_REVIEW");
   const reviewId = reviewResponse.json().data.id;
 
+  const ownPendingReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/me/reviews/${reviewId}`,
+    headers: authorization
+  });
+  assert.equal(ownPendingReviewResponse.statusCode, 200, ownPendingReviewResponse.body);
+  assert.equal(ownPendingReviewResponse.json().data.work.id, workId);
+  assert.equal(ownPendingReviewResponse.json().data.status, "PENDING_REVIEW");
+  const otherUsersReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/me/reviews/${reviewId}`,
+    headers: secondaryAuthorization
+  });
+  assert.equal(otherUsersReviewResponse.statusCode, 404, otherUsersReviewResponse.body);
+
+  const longReviewResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/works/${workId}/reviews`,
+    headers: authorization,
+    payload: {
+      reviewType: "LONG",
+      title: "用于验证评价类型冲突",
+      body: "长评与短评可以同时存在，但编辑时不能造成重复类型。",
+      containsSpoiler: false
+    }
+  });
+  assert.equal(longReviewResponse.statusCode, 201, longReviewResponse.body);
+  const longReviewId = longReviewResponse.json().data.id;
+  const conflictingReviewUpdate = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/reviews/${longReviewId}`,
+    headers: authorization,
+    payload: {
+      reviewType: "SHORT",
+      body: "不能覆盖已经存在的短评。",
+      containsSpoiler: false
+    }
+  });
+  assert.equal(conflictingReviewUpdate.statusCode, 409, conflictingReviewUpdate.body);
+  assert.equal(conflictingReviewUpdate.json().code, "REVIEW_ALREADY_EXISTS");
+  const removeLongReviewResponse = await app.inject({
+    method: "DELETE",
+    url: `/api/v1/reviews/${longReviewId}`,
+    headers: authorization
+  });
+  assert.equal(removeLongReviewResponse.statusCode, 204, removeLongReviewResponse.body);
+
   const duplicateReviewResponse = await app.inject({
     method: "POST",
     url: `/api/v1/works/${workId}/reviews`,

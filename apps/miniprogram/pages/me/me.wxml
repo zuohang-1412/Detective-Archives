@@ -68,14 +68,24 @@
         wx:for="{{reviews}}"
         wx:key="id"
         class="card my-review-card"
-        data-review-id="{{item.id}}"
-        data-status="{{item.status}}"
-        bindtap="openMyReview"
       >
-        <view class="review-main">
+        <view
+          class="review-main"
+          data-review-id="{{item.id}}"
+          data-status="{{item.status}}"
+          bindtap="openMyReview"
+        >
           <view class="review-work">{{item.work.titleZh}}</view>
           <view wx:if="{{item.title}}" class="review-title">{{item.title}}</view>
           <view class="review-excerpt">{{item.body}}</view>
+          <view class="review-controls">
+            <text data-review-id="{{item.id}}" catchtap="editMyReview">编辑</text>
+            <text
+              class="review-delete"
+              data-review-id="{{item.id}}"
+              catchtap="deleteMyReview"
+            >{{reviewActionId === item.id ? '删除中…' : '删除'}}</text>
+          </view>
         </view>
         <view class="review-status {{item.status === 'PUBLISHED' ? 'published' : ''}}">{{item.statusLabel}}</view>
       </view>

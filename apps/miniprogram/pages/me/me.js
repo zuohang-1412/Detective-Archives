@@ -1,5 +1,6 @@
 const {
   deactivateAccount,
+  deleteReview,
   getCurrentUser,
   hasAuthToken,
   listMyReviews,
@@ -33,6 +34,7 @@ Page({
     loading: false,
     loggingIn: false,
     agreementsAccepted: false,
+    reviewActionId: "",
     error: ""
   },
 
@@ -177,6 +179,39 @@ Page({
       content: review.body,
       showCancel: false,
       confirmText: "知道了"
+    });
+  },
+
+  editMyReview(event) {
+    const { reviewId } = event.currentTarget.dataset;
+    if (!reviewId) return;
+    wx.navigateTo({
+      url: `/pages/review-editor/review-editor?reviewId=${encodeURIComponent(reviewId)}`
+    });
+  },
+
+  deleteMyReview(event) {
+    const { reviewId } = event.currentTarget.dataset;
+    const review = this.data.reviews.find((item) => item.id === reviewId);
+    if (!review || this.data.reviewActionId) return;
+    wx.showModal({
+      title: "删除评价",
+      content: `确定删除《${review.work.titleZh}》下的这条评价吗？删除后其他读者将无法查看。`,
+      confirmText: "确认删除",
+      confirmColor: "#9f3123",
+      success: async (result) => {
+        if (!result.confirm) return;
+        this.setData({ reviewActionId: reviewId });
+        try {
+          await deleteReview(reviewId);
+          await this.refresh();
+          wx.showToast({ title: "评价已删除", icon: "success" });
+        } catch (error) {
+          wx.showToast({ title: error.message || "删除失败", icon: "none" });
+        } finally {
+          this.setData({ reviewActionId: "" });
+        }
+      }
     });
   },
 

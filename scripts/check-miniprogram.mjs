@@ -52,6 +52,11 @@ for (const page of appConfig.pages) {
 
 const archiveScript = await readFile(path.join(root, "pages/archive/archive.js"), "utf8");
 const archiveTemplate = await readFile(path.join(root, "pages/archive/archive.wxml"), "utf8");
+const apiScript = await readFile(path.join(root, "services/api.js"), "utf8");
+const meScript = await readFile(path.join(root, "pages/me/me.js"), "utf8");
+const meTemplate = await readFile(path.join(root, "pages/me/me.wxml"), "utf8");
+const reviewEditorScript = await readFile(path.join(root, "pages/review-editor/review-editor.js"), "utf8");
+const reviewDetailTemplate = await readFile(path.join(root, "pages/review-detail/review-detail.wxml"), "utf8");
 for (const filterName of ["country", "era", "category", "subjectKind", "tag"]) {
   if (!archiveScript.includes(`key: "${filterName}"`)) {
     throw new Error(`Archive page must expose the ${filterName} filter`);
@@ -67,6 +72,24 @@ if (!archiveTemplate.includes('bindchange="onFilterChange"')) {
 }
 if (!archiveTemplate.includes('bindtap="onLoadMore"')) {
   throw new Error("Archive template must expose detective pagination");
+}
+for (const apiBehavior of ["getMyReview", "updateReview", "deleteReview", "deleteComment"]) {
+  if (!apiScript.includes(`function ${apiBehavior}(`)) {
+    throw new Error(`Mini Program API must implement ${apiBehavior}`);
+  }
+}
+for (const behavior of ["editMyReview", "deleteMyReview"]) {
+  if (!meScript.includes(`${behavior}(`) || !meTemplate.includes(`catchtap="${behavior}"`)) {
+    throw new Error(`My Archives must expose ${behavior}`);
+  }
+}
+if (!reviewEditorScript.includes("getMyReview") || !reviewEditorScript.includes("updateReview")) {
+  throw new Error("Review editor must load and update an existing review");
+}
+for (const behavior of ["editReview", "deleteOwnReview", "deleteOwnComment"]) {
+  if (!reviewDetailTemplate.includes(`bindtap="${behavior}"`)) {
+    throw new Error(`Review detail must expose ${behavior}`);
+  }
 }
 
 console.log(`Mini program structure and syntax: OK (${appConfig.pages.length} pages)`);
