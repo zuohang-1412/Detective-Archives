@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-content-fix-001",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Correct mismatched closing punctuation in five featured-work labels discovered by the stratified content audit; preserve the underlying catalog facts and authoritative links.",
+  "sources": [
+    {
+      "id": "worldcat-tales-black-widowers",
+      "label": "WorldCat: Tales of the Black Widowers",
+      "url": "https://search.worldcat.org/title/Tales-of-the-Black-Widowers/oclc/810273",
+      "quality": "LIBRARY_CATALOG"
+    },
+    {
+      "id": "prh-moving-target",
+      "label": "Penguin Random House: The Moving Target",
+      "url": "https://www.penguinrandomhouse.com/books/105259/the-moving-target-by-ross-macdonald/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "worldcat-cop-hater",
+      "label": "WorldCat: Cop Hater",
+      "url": "https://search.worldcat.org/title/808418229",
+      "quality": "LIBRARY_CATALOG"
+    },
+    {
+      "id": "kodansha-decagon-house",
+      "label": "讲谈社：《十角館の殺人》",
+      "url": "https://www.kodansha.co.jp/book/products/0000204571",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "imidas-takagi-yoshifumi",
+      "label": "Imidas：高樹良文人物条目",
+      "url": "https://imidas.jp/rangai/detail/U-03-0-030-98.html",
+      "quality": "REFERENCE_DATABASE"
+    },
+    {
+      "id": "shueisha-nemurinaki-yoru",
+      "label": "集英社：《眠りなき夜》",
+      "url": "https://www.shueisha.co.jp/books/items/contents.html?isbn=978-4-08-749096-1&mode=1",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-037-STD",
+      "pictureBookEntryIds": [],
+      "slug": "henry-jackson-black-widowers",
+      "nameZh": "亨利·杰克逊",
+      "nameOriginal": "Henry Jackson",
+      "nameEn": "Henry Jackson",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["SHORT_STORY"],
+      "summary": "艾萨克·阿西莫夫笔下黑寡妇会聚餐的侍者，常在会员讨论陷入僵局时凭借倾听、常识和关键追问指出答案。",
+      "creatorName": "艾萨克·阿西莫夫",
+      "aliases": ["黑寡妇会的亨利", "Henry Jackson"],
+      "tags": ["安乐椅侦探", "短篇集", "聚餐推理"],
+      "featuredCases": ["《会心一笑》（The Acquisitive Chuckle）"],
+      "sourceIds": ["worldcat-tales-black-widowers"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "tales-of-the-black-widowers",
+          "titleZh": "黑寡妇会故事集",
+          "titleOriginal": "Tales of the Black Widowers",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1974,
+          "summary": "黑寡妇会成员在每月聚餐中提出离奇疑问，侍者亨利通过旁听讨论和简洁追问，为一系列日常谜团补上关键线索。",
+          "sourceId": "worldcat-tales-black-widowers",
+          "linkType": "LIBRARY",
+          "providerName": "WorldCat",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-039-STD",
+      "pictureBookEntryIds": [],
+      "slug": "lew-archer",
+      "nameZh": "卢·亚彻",
+      "nameOriginal": "Lew Archer",
+      "nameEn": "Lew Archer",
+      "country": "美国",
+      "era": "20世纪中后叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "罗斯·麦克唐纳笔下的南加州私人侦探，擅长从失踪、勒索与家庭秘密中追溯人物关系和长期累积的心理创伤。",
+      "creatorName": "罗斯·麦克唐纳",
+      "aliases": ["刘·亚契", "刘·亚彻", "Lew Archer"],
+      "tags": ["硬汉派", "私人侦探", "心理悬疑"],
+      "featuredCases": ["《移动的标靶》（The Moving Target）"],
+      "sourceIds": ["prh-moving-target"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-moving-target",
+          "titleZh": "移动目标",
+          "titleOriginal": "The Moving Target",
+          "mediaType": "NOVEL",
+          "summary": "亚彻受托寻找失踪富豪，沿着绑架线索进入南加州富裕阶层的复杂关系，并逐步揭开贪欲、怨恨和家庭秘密。",
+          "sourceId": "prh-moving-target",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-049-STD",
+      "pictureBookEntryIds": [],
+      "slug": "steve-carella",
+      "nameZh": "史蒂夫·卡雷拉",
+      "nameOriginal": "Steve Carella",
+      "nameEn": "Steve Carella",
+      "country": "美国",
+      "era": "20世纪中后叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "埃德·麦克贝恩第87分局系列的核心刑警，在虚构都市伊索拉与同事以走访、物证和团队协作处理连环重案。",
+      "creatorName": "埃德·麦克贝恩",
+      "aliases": ["史提夫·卡瑞拉", "斯蒂夫·卡雷拉", "Steve Carella"],
+      "tags": ["警察程序", "第87分局", "团队侦查"],
+      "featuredCases": ["《恨警官的人》（Cop Hater）"],
+      "sourceIds": ["worldcat-cop-hater"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "cop-hater",
+          "titleZh": "恨警官的人",
+          "titleOriginal": "Cop Hater",
+          "mediaType": "NOVEL",
+          "releaseYear": 1956,
+          "summary": "第87分局多名警员接连遭枪击，卡雷拉追查受害者关联和凶手动机，同时面对自己可能成为下一个目标的威胁。",
+          "sourceId": "worldcat-cop-hater",
+          "linkType": "LIBRARY",
+          "providerName": "WorldCat",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-054-STD",
+      "pictureBookEntryIds": [],
+      "slug": "kiyoshi-shimada",
+      "nameZh": "岛田洁",
+      "nameOriginal": "島田潔",
+      "nameEn": "Kiyoshi Shimada",
+      "country": "日本",
+      "era": "20世纪末",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "SERIES"],
+      "summary": "绫辻行人馆系列中的调查者，在本土一侧与江南孝明追查中村青司、青屋敷旧案和十角馆成员之间的联系。",
+      "creatorName": "绫辻行人",
+      "aliases": ["島田潔", "Kiyoshi Shimada"],
+      "tags": ["新本格", "馆系列", "孤岛谜案"],
+      "featuredCases": ["《十角馆杀人预告》（《十角馆事件》）"],
+      "sourceIds": ["kodansha-decagon-house"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-decagon-house-murders",
+          "titleZh": "十角馆事件",
+          "titleOriginal": "十角館の殺人",
+          "mediaType": "NOVEL",
+          "releaseYear": 1987,
+          "summary": "大学推理研究会成员登上建有十角馆的孤岛后接连遇害，岛田洁与江南在本土追查半年前青屋敷四重命案的真相。",
+          "sourceId": "kodansha-decagon-house",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-058-STD",
+      "pictureBookEntryIds": [],
+      "slug": "yoshifumi-takagi",
+      "nameZh": "高树良文",
+      "nameOriginal": "高樹良文",
+      "nameEn": "Yoshifumi Takagi",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL"],
+      "summary": "北方谦三硬汉小说中的警部，以直觉、执着调查和现场行动追查权力与暴力交织的案件，外号“老狗”。",
+      "creatorName": "北方谦三",
+      "aliases": ["高樹良文", "高树警部", "老狗", "Yoshifumi Takagi"],
+      "tags": ["硬汉派", "警部", "政治犯罪"],
+      "featuredCases": ["《不眠之夜》（《无眠之夜》）"],
+      "sourceIds": ["imidas-takagi-yoshifumi", "shueisha-nemurinaki-yoru"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "nemurinaki-yoru",
+          "titleZh": "无眠之夜",
+          "titleOriginal": "眠りなき夜",
+          "mediaType": "NOVEL",
+          "summary": "一名同僚被栽赃为杀人嫌疑人后死亡，调查逐渐指向大臣候选人的黑幕，高树良文等人卷入持续升级的对抗。",
+          "sourceId": "shueisha-nemurinaki-yoru",
+          "linkType": "PUBLISHER",
+          "providerName": "集英社",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-07-22",
+  "method": "Stratified sample across picture-book volumes 1-25, 26-58, 59-80, 81-102, 103-108, the volume 105 special edition, and every archive-directory category. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official platform, public institution or library records.",
+  "sampleCount": 29,
+  "samples": [
+    {
+      "recordId": "PB-004-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "arsene-lupin",
+      "workSlug": "arsene-lupin-gentleman-burglar",
+      "expected": {
+        "nameZh": "亚森·罗宾",
+        "creatorName": "莫里斯·勒布朗",
+        "featuredCase": "《怪盗绅士》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "gutenberg-arsene-lupin"],
+      "result": "PASS",
+      "note": "Community volume label and public-domain catalog agree on Arsène Lupin and the debut collection."
+    },
+    {
+      "recordId": "PB-014-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "cordelia-gray",
+      "workSlug": "an-unsuitable-job-for-a-woman",
+      "expected": {
+        "nameZh": "蔻蒂莉亚·葛蕾",
+        "creatorName": "P. D. 詹姆斯",
+        "featuredCase": "《不适合女性的职业》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "prh-unsuitable-job"],
+      "result": "PASS",
+      "note": "Publisher page identifies Cordelia Gray, P. D. James and the recommended novel."
+    },
+    {
+      "recordId": "PB-018-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "shunsaku-kudo",
+      "workSlug": "tantei-monogatari-tv",
+      "expected": {
+        "nameZh": "工藤俊作",
+        "creatorName": "小鹰信光",
+        "featuredCase": "《横滨蓝调》（图鉴推荐，作品与工藤俊作的对应关系待复核）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "toei-tantei-monogatari"],
+      "result": "FOLLOW_UP",
+      "note": "The community index records 工藤俊作 and 横滨蓝调, while the official Toei page confirms 探偵物語 but not that recommendation mapping.",
+      "nextAction": "Locate a publisher, broadcaster or original volume image that explicitly links 横滨蓝调 to 工藤俊作 before upgrading verification."
+    },
+    {
+      "recordId": "PB-025-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "calico-cat-holmes",
+      "workSlug": "mikeneko-holmes-no-suiri",
+      "expected": {
+        "nameZh": "三毛猫福尔摩斯",
+        "creatorName": "赤川次郎",
+        "featuredCase": "《三毛猫福尔摩斯探案》／《三毛猫福尔摩斯的推理》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "kadokawa-mikeneko-holmes"],
+      "result": "PASS",
+      "note": "KADOKAWA confirms the original title and creator; the translated title is retained as an alias."
+    },
+    {
+      "recordId": "PB-034-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "shigeru-hiiragi",
+      "workSlug": "utagawashiki-wa-basseyo",
+      "expected": {
+        "nameZh": "柊茂",
+        "creatorName": "和久峻三",
+        "featuredCase": "《疑者有罪》／《怀疑遭受惩罚》（图鉴旧译）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "ndl-utagawashiki-wa-basseyo", "kodansha-hiiragi-shigeru"],
+      "result": "PASS",
+      "note": "National-library and publisher records support the Japanese title, creator and character identity; the source translation is preserved as an alias."
+    },
+    {
+      "recordId": "PB-037-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "henry-jackson-black-widowers",
+      "workSlug": "tales-of-the-black-widowers",
+      "expected": {
+        "nameZh": "亨利·杰克逊",
+        "creatorName": "艾萨克·阿西莫夫",
+        "featuredCase": "《会心一笑》（The Acquisitive Chuckle）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "worldcat-tales-black-widowers"],
+      "result": "CORRECTED",
+      "correctionBatchKey": "catalog-expansion-content-fix-001",
+      "note": "Removed an unmatched closing Chinese book-title mark after the English alias."
+    },
+    {
+      "recordId": "PB-039-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "lew-archer",
+      "workSlug": "the-moving-target",
+      "expected": {
+        "nameZh": "卢·亚彻",
+        "creatorName": "罗斯·麦克唐纳",
+        "featuredCase": "《移动的标靶》（The Moving Target）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "prh-moving-target"],
+      "result": "CORRECTED",
+      "correctionBatchKey": "catalog-expansion-content-fix-001",
+      "note": "Removed an unmatched closing Chinese book-title mark after the English title."
+    },
+    {
+      "recordId": "PB-047-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "yuichiro-goda",
+      "workSlug": "marks-no-yama",
+      "expected": {
+        "nameZh": "合田雄一郎",
+        "creatorName": "高村薰",
+        "featuredCase": "《马克斯之山》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "kodansha-marks-no-yama"],
+      "result": "PASS",
+      "note": "Publisher record supports the original work title and creator."
+    },
+    {
+      "recordId": "PB-049-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "steve-carella",
+      "workSlug": "cop-hater",
+      "expected": {
+        "nameZh": "史蒂夫·卡雷拉",
+        "creatorName": "埃德·麦克贝恩",
+        "featuredCase": "《恨警官的人》（Cop Hater）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "worldcat-cop-hater"],
+      "result": "CORRECTED",
+      "correctionBatchKey": "catalog-expansion-content-fix-001",
+      "note": "Removed an unmatched closing Chinese book-title mark after the English title."
+    },
+    {
+      "recordId": "PB-054-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "kiyoshi-shimada",
+      "workSlug": "the-decagon-house-murders",
+      "expected": {
+        "nameZh": "岛田洁",
+        "creatorName": "绫辻行人",
+        "featuredCase": "《十角馆杀人预告》（《十角馆事件》）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "kodansha-decagon-house"],
+      "result": "CORRECTED",
+      "correctionBatchKey": "catalog-expansion-content-fix-001",
+      "note": "Removed an unmatched outer book-title mark while preserving both translated titles."
+    },
+    {
+      "recordId": "PB-058-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "yoshifumi-takagi",
+      "workSlug": "nemurinaki-yoru",
+      "expected": {
+        "nameZh": "高树良文",
+        "creatorName": "北方谦三",
+        "featuredCase": "《不眠之夜》（《无眠之夜》）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "imidas-takagi-yoshifumi", "shueisha-nemurinaki-yoru"],
+      "result": "CORRECTED",
+      "correctionBatchKey": "catalog-expansion-content-fix-001",
+      "note": "Removed an unmatched outer book-title mark while retaining the source translation and formal work title."
+    },
+    {
+      "recordId": "PB-059-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "bronx-mom",
+      "workSlug": "my-mother-the-detective",
+      "expected": {
+        "nameZh": "布朗克斯的妈妈",
+        "creatorName": "詹姆斯·亚菲",
+        "featuredCase": "《妈妈无所不知》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "openlibrary-my-mother-detective"],
+      "result": "PASS",
+      "note": "The exact community label remains an alias; the library record confirms James Yaffe and the collected work title."
+    },
+    {
+      "recordId": "PB-069-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "sergeant-richard-cuff",
+      "workSlug": "the-moonstone",
+      "expected": {
+        "nameZh": "理查德·卡夫警佐",
+        "creatorName": "威尔基·柯林斯",
+        "featuredCase": "《月亮宝石》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "penguin-moonstone"],
+      "result": "PASS",
+      "note": "The source spelling 理查德·克夫 is retained as an alias; publisher metadata supports The Moonstone."
+    },
+    {
+      "recordId": "PB-070-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "philip-trent",
+      "workSlug": "trents-last-case",
+      "expected": {
+        "nameZh": "菲利普·特伦特",
+        "creatorName": "E·C·本特利",
+        "featuredCase": "《特伦特最后一案》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "gutenberg-trents-last-case"],
+      "result": "PASS",
+      "note": "Public-domain catalog explicitly identifies Philip Trent, E. C. Bentley and Trent's Last Case."
+    },
+    {
+      "recordId": "PB-080-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "shioriko-shinokawa",
+      "workSlug": "biblia-bookstore-first",
+      "expected": {
+        "nameZh": "篠川栞子",
+        "creatorName": "三上延",
+        "featuredCase": "《古书堂事件手帖～栞子与她的奇异宾客～》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "kadokawa-biblia-first"],
+      "result": "PASS",
+      "note": "KADOKAWA confirms the work, creator and 栞子 character naming."
+    },
+    {
+      "recordId": "PB-081-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "susukino-handyman-ore",
+      "workSlug": "tantei-wa-bar-ni-iru",
+      "expected": {
+        "nameZh": "薄野的便利屋“我”",
+        "creatorName": "东直己",
+        "featuredCase": "《侦探在酒吧》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "hayakawa-tantei-bar"],
+      "result": "PASS",
+      "note": "Hayakawa confirms the work title and creator; the unnamed narrator is represented by a descriptive catalog name."
+    },
+    {
+      "recordId": "PB-091-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "riko-rinda",
+      "workSlug": "bannou-kanteishi-q-case-files-1",
+      "expected": {
+        "nameZh": "凜田莉子",
+        "creatorName": "松冈圭祐",
+        "featuredCase": "《万能鉴定士Q的事件簿 I》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "kadokawa-bannou-q"],
+      "result": "PASS",
+      "note": "KADOKAWA confirms the series title and creator; common simplified spelling remains an alias."
+    },
+    {
+      "recordId": "PB-092-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "shinichiro-hanaoka",
+      "workSlug": "the-sniffer-japan",
+      "expected": {
+        "nameZh": "华冈信一郎",
+        "creatorName": "林宏司、山冈润平",
+        "featuredCase": "《嗅觉搜查官》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "nhk-on-demand-sniffer-episode-1"],
+      "result": "PASS",
+      "note": "NHK's episode page confirms the Japanese series and the lead investigator context."
+    },
+    {
+      "recordId": "PB-102-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "seiko-fuji",
+      "workSlug": "hakozume-shoubu-wa-isshun",
+      "expected": {
+        "nameZh": "藤圣子",
+        "creatorName": "泰三子",
+        "featuredCase": "《胜负只在一瞬》"
+      },
+      "evidenceSourceIds": ["detective-conan-world-volume-pages", "kodansha-hakozume-3"],
+      "result": "PASS",
+      "note": "Volume index and Kodansha work metadata agree on the Hakozume entry."
+    },
+    {
+      "recordId": "PB-103-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "professor-layton",
+      "workSlug": "professor-layton-curious-village",
+      "expected": {
+        "nameZh": "雷顿教授",
+        "creatorName": "日野晃博",
+        "featuredCase": "《雷顿教授与不可思议的小镇》"
+      },
+      "evidenceSourceIds": ["detective-conan-world-volume-pages", "level5-layton-curious-village"],
+      "result": "PASS",
+      "note": "LEVEL-5's official product page confirms the game and Professor Layton identity."
+    },
+    {
+      "recordId": "PB-105-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "aya-rindo",
+      "workSlug": "undead-girl-vampire",
+      "expected": {
+        "nameZh": "轮堂鸦夜",
+        "creatorName": "青崎有吾",
+        "featuredCase": "《吸血鬼》"
+      },
+      "evidenceSourceIds": ["detective-conan-world-volume-pages", "kodansha-undead-girl-1"],
+      "result": "PASS",
+      "note": "Publisher record supports the series, creator and first-arc title."
+    },
+    {
+      "recordId": "PB-105-SP",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "shinichi-kudo",
+      "workSlug": "detective-conan-105-special",
+      "expected": {
+        "nameZh": "工藤新一",
+        "creatorName": "青山刚昌",
+        "featuredCase": "《名侦探柯南 105 初期设定笔记本附特装版》"
+      },
+      "evidenceSourceIds": ["shogakukan-volume-105-special", "shogakukan-conan-105-special"],
+      "result": "PASS",
+      "note": "Shogakukan confirms the volume 105 special edition and its initial-setting notebook."
+    },
+    {
+      "recordId": "PB-108-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "takao-ameku",
+      "workSlug": "ameku-odameido-no-dokuyaku",
+      "expected": {
+        "nameZh": "天久鹰央",
+        "creatorName": "知念实希人",
+        "featuredCase": "《量身定制的毒药》"
+      },
+      "evidenceSourceIds": ["detective-conan-world-volume-pages", "jitsugyo-ameku-complete"],
+      "result": "PASS",
+      "note": "Publisher contents confirm the complete edition and オーダーメイドの毒薬 entry."
+    },
+    {
+      "recordId": "EXT-WL-001",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "彼得·温西勋爵",
+        "creatorName": "多萝西·L·塞耶斯",
+        "featuredCase": "《谁的尸体？》"
+      },
+      "evidenceSourceIds": ["simon-schuster-lord-peter-wimsey"],
+      "result": "PASS",
+      "note": "Publisher collection metadata supports Lord Peter Wimsey and Dorothy L. Sayers."
+    },
+    {
+      "recordId": "EXT-SC-001",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "贝努瓦·布兰克",
+        "creatorName": "莱恩·约翰逊",
+        "featuredCase": "《玻璃洋葱》"
+      },
+      "evidenceSourceIds": ["netflix-glass-onion"],
+      "result": "PASS",
+      "note": "Netflix's official media center identifies Benoit Blanc and Rian Johnson."
+    },
+    {
+      "recordId": "EXT-JP-003",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "加贺恭一郎",
+        "creatorName": "东野圭吾",
+        "featuredCase": "《新参者》"
+      },
+      "evidenceSourceIds": ["kodansha-newcomer"],
+      "result": "PASS",
+      "note": "Kodansha publisher metadata supports the Kaga series work."
+    },
+    {
+      "recordId": "EXT-CN-001",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "霍桑",
+        "creatorName": "程小青",
+        "featuredCase": "《霍桑探案集》"
+      },
+      "evidenceSourceIds": ["wuhan-university-huo-sang"],
+      "result": "PASS",
+      "note": "Wuhan University Press explicitly describes Cheng Xiaoqing, Huo Sang and the collected stories."
+    },
+    {
+      "recordId": "HIS-CN-001",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "狄仁杰",
+        "creatorName": null,
+        "featuredCase": "《旧唐书·狄仁杰传》"
+      },
+      "evidenceSourceIds": ["ccdi-di-renjie"],
+      "result": "PASS",
+      "note": "The public-institution article confirms Di Renjie as a Tang official and distinguishes the later detective reputation."
+    },
+    {
+      "recordId": "HIS-CN-003",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "宋慈",
+        "creatorName": null,
+        "featuredCase": "《洗冤集录》"
+      },
+      "evidenceSourceIds": ["spp-song-ci"],
+      "result": "PASS",
+      "note": "The Supreme People's Procuratorate article confirms Song Ci's authorship and forensic-judicial role."
+    }
+  ]
+}
