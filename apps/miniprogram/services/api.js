@@ -36,8 +36,13 @@ function listPictureBookEntries(params = {}) {
   return request("/api/v1/picture-book", params);
 }
 
+function listArchiveDirectory(params = {}) {
+  return request("/api/v1/archive-directory", params);
+}
+
 module.exports = {
   getDetective,
+  listArchiveDirectory,
   listDetectives,
   listPictureBookEntries
 };

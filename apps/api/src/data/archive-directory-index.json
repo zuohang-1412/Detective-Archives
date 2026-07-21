@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "snapshotDate": "2026-07-21",
+  "contentPolicy": "Store factual catalog fields, original short summaries and source links only; do not copy source descriptions, covers or stills.",
+  "coverage": {
+    "extensionCount": 20,
+    "historicalCount": 3,
+    "entryCount": 23
+  },
+  "sources": [
+    {
+      "id": "simon-schuster-lord-peter-wimsey",
+      "label": "Simon & Schuster: The Dorothy L. Sayers Collection",
+      "url": "https://www.simonandschuster.com/books/The-Dorothy-L-Sayers-Collection/Sayers/9781398860704",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "pan-macmillan-inspector-morse",
+      "label": "Pan Macmillan: Inspector Morse Mysteries",
+      "url": "https://www.panmacmillan.com/series/inspector-morse-mysteries/panmac24536",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-pd-james",
+      "label": "Penguin Random House: P. D. James",
+      "url": "https://sites.prh.com/pdjames",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-kurt-wallander",
+      "label": "Penguin Random House: Kurt Wallander Series",
+      "url": "https://www.penguinrandomhouse.com/series/KWN/kurt-wallander-series/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-michael-connelly",
+      "label": "Penguin Random House: Michael Connelly",
+      "url": "https://www.penguinrandomhouse.com/authors/5522/michael-connelly/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "robert-galbraith-cormoran-strike",
+      "label": "Robert Galbraith: Cormoran Strike",
+      "url": "https://robert-galbraith.com/strike-characters/cormoran-strike/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "kerry-greenwood-phryne-fisher",
+      "label": "Kerry Greenwood: Books",
+      "url": "https://kerrygreenwood.com/books/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "simon-schuster-nancy-drew",
+      "label": "Simon & Schuster: Nancy Drew Series",
+      "url": "https://www.simonandschuster.com/series/Nancy-Drew",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "netflix-glass-onion",
+      "label": "Netflix Media Center: Glass Onion",
+      "url": "https://media.netflix.com/en/only-on-netflix/81458416",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "penguin-jessica-fletcher",
+      "label": "Penguin Random House: Jessica Fletcher",
+      "url": "https://www.penguinrandomhouse.com/authors/231924/jessica-fletcher/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "netflix-veronica-mars",
+      "label": "Netflix: Veronica Mars",
+      "url": "https://www.netflix.com/title/70142391",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "paramount-twin-peaks",
+      "label": "Paramount+: Twin Peaks",
+      "url": "https://www.paramountplus.com/gb/shows/video/723703585/",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "viz-death-note",
+      "label": "VIZ: Death Note",
+      "url": "https://www.viz.com/death-note",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-china-kindaichi",
+      "label": "讲谈社（北京）：金田一少年事件簿",
+      "url": "https://www.kodansha.com.cn/mhsnmh/index.jhtml",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-newcomer",
+      "label": "讲谈社：《新参者》",
+      "url": "https://www.kodansha.co.jp/book/products/0000206339",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kobunsha-reiko-himekawa",
+      "label": "光文社：姫川玲子系列官方网站",
+      "url": "https://special.kobunsha.com/himekawareiko/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "wuhan-university-huo-sang",
+      "label": "武汉大学出版社：程小青和他在中国侦探小说史上的影响",
+      "url": "https://www.wdp.com.cn/books/2024-08-07/10832.html",
+      "quality": "ACADEMIC_PUBLISHER"
+    },
+    {
+      "id": "quzhou-library-lu-ping",
+      "label": "衢州市图书馆：鲁平探案",
+      "url": "https://www.qzlib.com.cn/opac/book/900026177",
+      "quality": "LIBRARY"
+    },
+    {
+      "id": "worldcat-criminal-minds",
+      "label": "WorldCat：《心理罪：第七个读者》",
+      "url": "https://search.worldcat.org/title/%3A-Criminal-minds/oclc/908319065",
+      "quality": "LIBRARY"
+    },
+    {
+      "id": "hayakawa-death-notice",
+      "label": "Hayakawa Books: Death Notice",
+      "url": "https://www.hayakawabooks.com/n/n3f2ffc9ae90d?hl=en",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "ccdi-di-renjie",
+      "label": "中央纪委国家监委：狄仁杰",
+      "url": "https://m.ccdi.gov.cn/content/cf/83/26830.html",
+      "quality": "PUBLIC_INSTITUTION"
+    },
+    {
+      "id": "ccdi-bao-zheng",
+      "label": "中央纪委国家监委：包拯",
+      "url": "https://www.ccdi.gov.cn/yaowen/201804/t20180421_170375.html",
+      "quality": "PUBLIC_INSTITUTION"
+    },
+    {
+      "id": "spp-song-ci",
+      "label": "最高人民检察院：《洗冤集录》与宋慈",
+      "url": "https://www.spp.gov.cn/spp/llyj/201806/t20180619_382132.shtml",
+      "quality": "PUBLIC_INSTITUTION"
+    }
+  ],
+  "entries": [
+    {
+      "id": "EXT-WL-001",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "彼得·温西勋爵",
+        "original": "Lord Peter Wimsey",
+        "en": "Lord Peter Wimsey",
+        "aliases": ["彼得·温西", "Lord Peter"]
+      },
+      "region": "英国",
+      "creatorName": "多萝西·L·塞耶斯",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "英国贵族业余侦探，善于在社交礼仪和阶层关系中发现矛盾。",
+      "featuredWorks": ["《谁的尸体？》"],
+      "tags": ["黄金时代", "业余侦探", "英国推理"],
+      "sourceIds": ["simon-schuster-lord-peter-wimsey"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-002",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "莫尔斯探长",
+        "original": "Inspector Morse",
+        "en": "Inspector Morse",
+        "aliases": ["恩迪沃·莫尔斯", "Endeavour Morse"]
+      },
+      "region": "英国",
+      "creatorName": "科林·德克斯特",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "牛津警探，以文字、音乐修养和逆向推理审视复杂命案。",
+      "featuredWorks": ["《开往伍德斯托克的末班车》"],
+      "tags": ["警察小说", "牛津", "英国推理"],
+      "sourceIds": ["pan-macmillan-inspector-morse"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-003",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "亚当·达格利什",
+        "original": "Adam Dalgliesh",
+        "en": "Adam Dalgliesh",
+        "aliases": ["达格利什警长", "Dalgliesh"]
+      },
+      "region": "英国",
+      "creatorName": "P. D. 詹姆斯",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "兼具诗人身份的苏格兰场警官，调查风格冷静克制。",
+      "featuredWorks": ["《掩上她的脸》"],
+      "tags": ["警察小说", "文学推理", "苏格兰场"],
+      "sourceIds": ["penguin-pd-james"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-004",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "库尔特·瓦兰德",
+        "original": "Kurt Wallander",
+        "en": "Kurt Wallander",
+        "aliases": ["库尔特·维兰德", "瓦兰德警探"]
+      },
+      "region": "瑞典",
+      "creatorName": "亨宁·曼凯尔",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "瑞典刑警，以耐心走访和对社会环境的观察推进调查。",
+      "featuredWorks": ["《无脸杀手》"],
+      "tags": ["北欧犯罪", "警察小说", "社会派"],
+      "sourceIds": ["penguin-kurt-wallander"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-005",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "哈里·博斯",
+        "original": "Harry Bosch",
+        "en": "Harry Bosch",
+        "aliases": ["Hieronymus Bosch", "博斯警探"]
+      },
+      "region": "美国",
+      "creatorName": "迈克尔·康奈利",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "洛杉矶警探，坚持追索旧案和被忽视受害者的真相。",
+      "featuredWorks": ["《黑色回声》"],
+      "tags": ["硬汉派", "警察小说", "洛杉矶"],
+      "sourceIds": ["penguin-michael-connelly"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-006",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "科莫兰·斯特莱克",
+        "original": "Cormoran Strike",
+        "en": "Cormoran Strike",
+        "aliases": ["斯特莱克", "Strike"]
+      },
+      "region": "英国",
+      "creatorName": "罗伯特·加尔布雷思",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "退伍军人出身的伦敦私人侦探，依靠实地调查与证词交叉核对破案。",
+      "featuredWorks": ["《布谷鸟的呼唤》"],
+      "tags": ["私人侦探", "现代推理", "伦敦"],
+      "sourceIds": ["robert-galbraith-cormoran-strike"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-007",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "芙里妮·费雪",
+        "original": "Phryne Fisher",
+        "en": "Phryne Fisher",
+        "aliases": ["菲林·费雪", "费雪小姐"]
+      },
+      "region": "澳大利亚",
+      "creatorName": "凯瑞·格林伍德",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "活跃于二十世纪二十年代墨尔本的独立女性侦探。",
+      "featuredWorks": ["《可卡因蓝调》"],
+      "tags": ["女性侦探", "历史推理", "墨尔本"],
+      "sourceIds": ["kerry-greenwood-phryne-fisher"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-008",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "南茜·德鲁",
+        "original": "Nancy Drew",
+        "en": "Nancy Drew",
+        "aliases": ["南希·德鲁"]
+      },
+      "region": "美国",
+      "creatorName": "卡罗琳·基恩（集体笔名）",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "以好奇心、行动力和逻辑能力解决谜案的青年业余侦探。",
+      "featuredWorks": ["《古钟之谜》"],
+      "tags": ["青少年推理", "女性侦探", "业余侦探"],
+      "sourceIds": ["simon-schuster-nancy-drew"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-SC-001",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "names": {
+        "zh": "贝努瓦·布兰克",
+        "original": "Benoit Blanc",
+        "en": "Benoit Blanc",
+        "aliases": ["布兰克侦探"]
+      },
+      "region": "美国",
+      "creatorName": "莱恩·约翰逊",
+      "mediaTypes": ["FILM"],
+      "summary": "以谈话、观察和反常细节揭开封闭关系网中谎言的私人侦探。",
+      "featuredWorks": ["《利刃出鞘》", "《玻璃洋葱》"],
+      "tags": ["电影侦探", "封闭空间", "现代本格"],
+      "sourceIds": ["netflix-glass-onion"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-SC-002",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "names": {
+        "zh": "杰西卡·弗莱彻",
+        "original": "Jessica Fletcher",
+        "en": "Jessica Fletcher",
+        "aliases": ["J. B. Fletcher"]
+      },
+      "region": "美国",
+      "creatorName": "Peter S. Fischer、Richard Levinson、William Link",
+      "mediaTypes": ["SERIES", "NOVEL"],
+      "summary": "推理小说作家兼业余调查者，经常从日常人际关系中识破凶案。",
+      "featuredWorks": ["《女作家与谋杀案》"],
+      "tags": ["女性侦探", "舒适推理", "影视侦探"],
+      "sourceIds": ["penguin-jessica-fletcher"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-SC-003",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "names": {
+        "zh": "维罗妮卡·玛斯",
+        "original": "Veronica Mars",
+        "en": "Veronica Mars",
+        "aliases": ["美眉校探"]
+      },
+      "region": "美国",
+      "creatorName": "罗布·托马斯",
+      "mediaTypes": ["SERIES", "FILM", "NOVEL"],
+      "summary": "从校园调查成长为职业私家侦探的现代黑色侦探形象。",
+      "featuredWorks": ["《美眉校探》"],
+      "tags": ["青少年推理", "新黑色", "女性侦探"],
+      "sourceIds": ["netflix-veronica-mars"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-SC-004",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "names": {
+        "zh": "戴尔·库珀",
+        "original": "Dale Cooper",
+        "en": "Dale Cooper",
+        "aliases": ["库珀探员", "Agent Cooper"]
+      },
+      "region": "美国",
+      "creatorName": "大卫·林奇、马克·弗罗斯特",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "FBI 探员，结合规范调查、直觉和心理线索侦办劳拉·帕尔默案。",
+      "featuredWorks": ["《双峰》"],
+      "tags": ["FBI", "超现实", "影视侦探"],
+      "sourceIds": ["paramount-twin-peaks"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-JP-001",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "names": {
+        "zh": "L",
+        "original": "L Lawliet",
+        "en": "L Lawliet",
+        "aliases": ["L·Lawliet", "龙崎", "流河旱树"]
+      },
+      "region": "日本",
+      "creatorName": "大场鸫、小畑健",
+      "mediaTypes": ["COMIC", "ANIMATION", "FILM"],
+      "summary": "以极强分析能力和非常规手段追查连续神秘死亡事件的天才侦探。",
+      "featuredWorks": ["《死亡笔记》"],
+      "tags": ["漫画侦探", "心理博弈", "天才型"],
+      "sourceIds": ["viz-death-note"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-JP-002",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "names": {
+        "zh": "金田一一",
+        "original": "金田一一",
+        "en": "Hajime Kindaichi",
+        "aliases": ["金田一少年", "Hajime Kindaichi"]
+      },
+      "region": "日本",
+      "creatorName": "金成阳三郎、天树征丸、佐藤文也",
+      "mediaTypes": ["COMIC", "ANIMATION", "SERIES"],
+      "summary": "高中生侦探，擅长破解密室、不在场证明和连续杀人谜局。",
+      "featuredWorks": ["《金田一少年事件簿》"],
+      "tags": ["漫画侦探", "本格推理", "少年侦探"],
+      "sourceIds": ["kodansha-china-kindaichi"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-JP-003",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "names": {
+        "zh": "加贺恭一郎",
+        "original": "加賀恭一郎",
+        "en": "Kyoichiro Kaga",
+        "aliases": ["Kaga Kyoichiro"]
+      },
+      "region": "日本",
+      "creatorName": "东野圭吾",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "重视走访与人情关系的刑警，从生活细节中还原犯罪动机。",
+      "featuredWorks": ["《毕业》", "《新参者》"],
+      "tags": ["警察小说", "社会派", "日本推理"],
+      "sourceIds": ["kodansha-newcomer"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-JP-004",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "names": {
+        "zh": "姬川玲子",
+        "original": "姫川玲子",
+        "en": "Reiko Himekawa",
+        "aliases": ["Reiko Himekawa"]
+      },
+      "region": "日本",
+      "creatorName": "誉田哲也",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "直觉敏锐的女性刑警，在高压团队与复杂犯罪中坚持追查真相。",
+      "featuredWorks": ["《草莓之夜》"],
+      "tags": ["女性刑警", "警察小说", "日本推理"],
+      "sourceIds": ["kobunsha-reiko-himekawa"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-CN-001",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "names": {
+        "zh": "霍桑",
+        "original": "霍桑",
+        "en": "Huo Sang",
+        "aliases": ["神探霍桑"]
+      },
+      "region": "中国",
+      "creatorName": "程小青",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "程小青笔下活跃于近代上海的中国私家侦探，强调科学检验和逻辑推断。",
+      "featuredWorks": ["《霍桑探案集》"],
+      "tags": ["华语经典", "民国推理", "私家侦探"],
+      "sourceIds": ["wuhan-university-huo-sang"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-CN-002",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "names": {
+        "zh": "鲁平",
+        "original": "鲁平",
+        "en": "Lu Ping",
+        "aliases": ["侠盗鲁平", "东方亚森罗苹"]
+      },
+      "region": "中国",
+      "creatorName": "孙了红",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "兼具侠盗与调查者身份的民国推理人物，以冒险和反侦察见长。",
+      "featuredWorks": ["《侠盗鲁平》", "《血纸人》"],
+      "tags": ["华语经典", "民国推理", "侠盗"],
+      "sourceIds": ["quzhou-library-lu-ping"],
+      "verification": "SOURCE_CAPTURED"
+    },
+    {
+      "id": "EXT-CN-003",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "names": {
+        "zh": "方木",
+        "original": "方木",
+        "en": "Fang Mu",
+        "aliases": ["心理罪方木"]
+      },
+      "region": "中国",
+      "creatorName": "雷米",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "以犯罪心理分析协助调查的推理人物，关注罪案背后的心理机制。",
+      "featuredWorks": ["《心理罪：第七个读者》", "《心理罪：画像》"],
+      "tags": ["犯罪心理", "华语推理", "刑事调查"],
+      "sourceIds": ["worldcat-criminal-minds"],
+      "verification": "SOURCE_CAPTURED"
+    },
+    {
+      "id": "EXT-CN-004",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "names": {
+        "zh": "罗飞",
+        "original": "罗飞",
+        "en": "Luo Fei",
+        "aliases": ["刑警罗飞"]
+      },
+      "region": "中国",
+      "creatorName": "周浩晖",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "长期追查高智商犯罪的刑警，重视行为逻辑、证据链和心理博弈。",
+      "featuredWorks": ["《死亡通知单》", "《暗黑者》"],
+      "tags": ["刑警", "华语推理", "心理博弈"],
+      "sourceIds": ["hayakawa-death-notice"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "HIS-CN-001",
+      "collection": "HISTORICAL_CASES",
+      "category": "HISTORICAL_JUSTICE",
+      "names": {
+        "zh": "狄仁杰",
+        "original": "狄仁杰",
+        "en": "Di Renjie",
+        "aliases": ["狄公", "Judge Dee"]
+      },
+      "region": "中国·唐代",
+      "creatorName": null,
+      "mediaTypes": ["HISTORY", "NOVEL", "SERIES", "FILM"],
+      "summary": "唐代官员与司法人物；后世公案小说和《大唐狄公案》对其神探形象进行了文学重塑。",
+      "featuredWorks": ["《旧唐书·狄仁杰传》", "《大唐狄公案》"],
+      "tags": ["历史人物", "司法官", "文学重塑"],
+      "sourceIds": ["ccdi-di-renjie"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "HIS-CN-002",
+      "collection": "HISTORICAL_CASES",
+      "category": "HISTORICAL_JUSTICE",
+      "names": {
+        "zh": "包拯",
+        "original": "包拯",
+        "en": "Bao Zheng",
+        "aliases": ["包公", "包青天"]
+      },
+      "region": "中国·北宋",
+      "creatorName": null,
+      "mediaTypes": ["HISTORY", "NOVEL", "OPERA", "SERIES"],
+      "summary": "北宋官员，以清廉公正著称；民间公案、戏曲和影视塑造了广泛传播的包公断案形象。",
+      "featuredWorks": ["《宋史·包拯传》", "包公案故事"],
+      "tags": ["历史人物", "清官文化", "公案文学"],
+      "sourceIds": ["ccdi-bao-zheng"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "HIS-CN-003",
+      "collection": "HISTORICAL_CASES",
+      "category": "HISTORICAL_JUSTICE",
+      "names": {
+        "zh": "宋慈",
+        "original": "宋慈",
+        "en": "Song Ci",
+        "aliases": ["宋提刑"]
+      },
+      "region": "中国·南宋",
+      "creatorName": null,
+      "mediaTypes": ["HISTORY", "FORENSICS", "SERIES"],
+      "summary": "南宋刑狱官员与《洗冤集录》作者，代表以现场检验和证据辨析处理刑狱的传统。",
+      "featuredWorks": ["《洗冤集录》"],
+      "tags": ["历史人物", "法医学", "刑狱检验"],
+      "sourceIds": ["spp-song-ci"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    }
+  ]
+}

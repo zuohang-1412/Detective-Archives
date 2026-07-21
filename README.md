@@ -10,6 +10,7 @@
 - TypeScript API：健康检查、侦探列表、关键词筛选、分页、详情查询。
 - 三位演示侦探及代表作品数据。
 - 第 1～108 卷名侦探图鉴索引，共 109 条记录（含第 105 卷特装版）。
+- 20 位图鉴之外的知名虚构侦探，以及 3 位独立展示的历史断案人物。
 - PostgreSQL 完整数据模型蓝图。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
@@ -53,6 +54,9 @@ npm run dev:api
 - `GET /api/v1/picture-book?pageSize=150`
 - `GET /api/v1/picture-book?q=鲁邦`
 - `GET /api/v1/picture-book/PB-105-SP`
+- `GET /api/v1/archive-directory?collection=ARCHIVE_EXTENSION&pageSize=50`
+- `GET /api/v1/archive-directory?collection=HISTORICAL_CASES&pageSize=50`
+- `GET /api/v1/archive-directory/EXT-CN-001`
 
 ### 3. 打开小程序
 
@@ -68,7 +72,7 @@ npm run check
 
 该命令依次执行类型检查、API 测试和生产构建。
 
-图鉴数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：
+图鉴与扩展目录数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：
 
 ```bash
 npm run catalog:sync

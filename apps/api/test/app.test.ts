@@ -118,4 +118,62 @@ describe("detective archives API", () => {
     assert.equal(response.statusCode, 400);
     assert.equal(response.json().code, "INVALID_QUERY");
   });
+
+  it("lists archive extensions separately from historical subjects", async () => {
+    const extensionsResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory?collection=ARCHIVE_EXTENSION&pageSize=50"
+    });
+    const extensionsBody = extensionsResponse.json();
+    assert.equal(extensionsResponse.statusCode, 200);
+    assert.equal(extensionsBody.data.length, 20);
+    assert.equal(extensionsBody.coverage.extensionCount, 20);
+    assert.ok(extensionsBody.data.every((entry: { id: string }) => entry.id.startsWith("EXT-")));
+
+    const historicalResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory?collection=HISTORICAL_CASES&pageSize=50"
+    });
+    const historicalBody = historicalResponse.json();
+    assert.equal(historicalResponse.statusCode, 200);
+    assert.equal(historicalBody.data.length, 3);
+    assert.ok(historicalBody.data.every((entry: { id: string }) => entry.id.startsWith("HIS-")));
+  });
+
+  it("searches archive-directory aliases and representative works", async () => {
+    const aliasResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory?q=%E5%8D%97%E5%B8%8C"
+    });
+    assert.equal(aliasResponse.statusCode, 200);
+    assert.equal(aliasResponse.json().data[0].id, "EXT-WL-008");
+
+    const workResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory?q=%E5%BF%83%E7%90%86%E7%BD%AA"
+    });
+    assert.equal(workResponse.statusCode, 200);
+    assert.equal(workResponse.json().data[0].id, "EXT-CN-003");
+  });
+
+  it("returns one archive-directory entry and its sources", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory/his-cn-003"
+    });
+    const body = response.json();
+    assert.equal(response.statusCode, 200);
+    assert.equal(body.data.names.zh, "宋慈");
+    assert.equal(body.sources.length, 1);
+    assert.equal(body.sources[0].quality, "PUBLIC_INSTITUTION");
+  });
+
+  it("rejects an invalid archive-directory collection", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory?collection=UNKNOWN"
+    });
+    assert.equal(response.statusCode, 400);
+    assert.equal(response.json().code, "INVALID_QUERY");
+  });
 });

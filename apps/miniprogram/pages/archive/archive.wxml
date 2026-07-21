@@ -1,14 +1,25 @@
 <view class="page-shell">
   <text class="eyebrow">ARCHIVE SEARCH</text>
-  <view class="section-title">名侦探图鉴索引</view>
-  <view wx:if="{{coverage}}" class="coverage-note">
-    已收录第 1～{{coverage.latestPublishedVolume}} 卷，共 {{coverage.entryCount}} 条图鉴记录
+  <view class="section-title">{{sectionTitle}}</view>
+
+  <view class="catalog-tabs">
+    <view
+      wx:for="{{sections}}"
+      wx:key="id"
+      class="catalog-tab {{activeSection === item.id ? 'active' : ''}}"
+      data-section="{{item.id}}"
+      bindtap="onSectionChange"
+    >{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{coverageText}}" class="coverage-note">
+    {{coverageText}}
   </view>
 
   <view class="search-box">
     <input
       class="search-input"
-      placeholder="侦探名称、别名或推荐作品"
+      placeholder="{{searchPlaceholder}}"
       value="{{query}}"
       confirm-type="search"
       bindinput="onQueryInput"
@@ -22,32 +33,62 @@
   <view wx:elif="{{error}}" class="state-message">{{error}}</view>
   <view wx:elif="{{!entries.length}}" class="state-message">没有找到匹配档案</view>
   <view wx:else class="result-list">
-    <view
-      wx:for="{{entries}}"
-      wx:key="id"
-      class="card result-card"
-      data-id="{{item.id}}"
-      data-name="{{item.names.zh}}"
-      data-slug="{{item.detectiveSlug}}"
-      bindtap="openEntry"
-    >
-      <view class="volume-badge">
-        <text class="volume-number">{{item.volumeNo}}</text>
-        <text class="volume-label">卷</text>
-      </view>
-      <view class="result-main">
-        <view class="result-title-row">
-          <view class="result-name">{{item.names.zh}}</view>
-          <text wx:if="{{item.edition === 'SPECIAL'}}" class="edition-tag">特装版</text>
+    <block wx:if="{{activeSection === 'pictureBook'}}">
+      <view
+        wx:for="{{entries}}"
+        wx:key="id"
+        class="card result-card"
+        data-id="{{item.id}}"
+        data-name="{{item.names.zh}}"
+        data-slug="{{item.detectiveSlug}}"
+        bindtap="openEntry"
+      >
+        <view class="volume-badge">
+          <text class="volume-number">{{item.volumeNo}}</text>
+          <text class="volume-label">卷</text>
         </view>
-        <view class="muted result-meta">编号 {{item.id}}</view>
-        <view wx:if="{{item.recommendedWorks.length}}" class="result-summary">
-          推荐作品：{{item.recommendedWorks[0]}}
+        <view class="result-main">
+          <view class="result-title-row">
+            <view class="result-name">{{item.names.zh}}</view>
+            <text wx:if="{{item.edition === 'SPECIAL'}}" class="edition-tag">特装版</text>
+          </view>
+          <view class="muted result-meta">编号 {{item.id}}</view>
+          <view wx:if="{{item.recommendedWorks.length}}" class="result-summary">
+            推荐作品：{{item.recommendedWorks[0]}}
+          </view>
+          <view wx:else class="result-summary pending">推荐作品待核验</view>
         </view>
-        <view wx:else class="result-summary pending">推荐作品待核验</view>
+        <view wx:if="{{item.detectiveSlug}}" class="detail-state ready">查看档案</view>
+        <view wx:else class="detail-state">待补全</view>
       </view>
-      <view wx:if="{{item.detectiveSlug}}" class="detail-state ready">查看档案</view>
-      <view wx:else class="detail-state">待补全</view>
-    </view>
+    </block>
+
+    <block wx:else>
+      <view
+        wx:for="{{entries}}"
+        wx:key="id"
+        class="card result-card directory-card"
+        data-id="{{item.id}}"
+        data-name="{{item.names.zh}}"
+        bindtap="openEntry"
+      >
+        <view class="archive-badge {{item.collection === 'HISTORICAL_CASES' ? 'historical' : ''}}">
+          {{item.collectionLabel}}
+        </view>
+        <view class="result-main">
+          <view class="result-title-row">
+            <view class="result-name">{{item.names.zh}}</view>
+            <text class="directory-category">{{item.categoryLabel}}</text>
+          </view>
+          <view class="muted result-meta">{{item.names.original}} · {{item.region}}</view>
+          <view wx:if="{{item.creatorName}}" class="muted result-meta">创作者 {{item.creatorName}}</view>
+          <view class="result-summary">{{item.summary}}</view>
+          <view class="featured-work">
+            {{item.collection === 'HISTORICAL_CASES' ? '相关文献' : '代表作品'}}：{{item.featuredWorks[0]}}
+          </view>
+        </view>
+        <view class="detail-state ready">查看简介</view>
+      </view>
+    </block>
   </view>
 </view>
