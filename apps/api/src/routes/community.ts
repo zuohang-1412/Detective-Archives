@@ -1,11 +1,13 @@
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { bearerToken, findActiveSession } from "../auth/session.js";
+import type { ContentSafetyCheck } from "../auth/wechat-content-safety.js";
 import type { DatabaseClient } from "../db/types.js";
 import {
   createComment,
   createReport,
   createReview,
+  type ContentSafetyAudit,
   getMyReview,
   getPublicReview,
   listMyReviews,
@@ -46,7 +48,14 @@ const reportInputSchema = z.object({
 
 interface CommunityRouteOptions {
   database?: DatabaseClient;
+  contentSafetyCheck?: ContentSafetyCheck;
 }
+
+type ContentSafetyDecision = ContentSafetyAudit | {
+  status: "RISKY";
+  label?: number | undefined;
+  traceId?: string | undefined;
+};
 
 async function requireUser(
   database: DatabaseClient | undefined,
@@ -75,6 +84,38 @@ function databaseErrorCode(error: unknown) {
   return typeof error === "object" && error !== null && "code" in error
     ? String(error.code)
     : null;
+}
+
+async function assessContent(
+  checker: ContentSafetyCheck | undefined,
+  user: { wechatOpenId: string | null },
+  content: string,
+  request: FastifyRequest
+): Promise<ContentSafetyDecision> {
+  if (!checker) return { status: "NOT_CONFIGURED" };
+  if (!user.wechatOpenId) return { status: "UNAVAILABLE" };
+  try {
+    const result = await checker({
+      openId: user.wechatOpenId,
+      content,
+      scene: 2
+    });
+    const details = {
+      ...(result.label !== undefined ? { label: result.label } : {}),
+      ...(result.traceId ? { traceId: result.traceId } : {})
+    };
+    if (result.suggestion === "risky") return { status: "RISKY", ...details };
+    return {
+      status: result.suggestion === "review" ? "REVIEW" : "PASS",
+      ...details
+    };
+  } catch (error) {
+    request.log.warn({
+      errorName: error instanceof Error ? error.name : "UnknownError",
+      requestId: request.id
+    }, "content safety service unavailable; content remains pending for manual review");
+    return { status: "UNAVAILABLE" };
+  }
 }
 
 export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async (
@@ -122,13 +163,26 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     }
     const user = await requireUser(options.database, request, reply);
     if (!user || !options.database) return;
+    const contentSafety = await assessContent(
+      options.contentSafetyCheck,
+      user,
+      [body.data.title, body.data.body].filter(Boolean).join("\n"),
+      request
+    );
+    if (contentSafety.status === "RISKY") {
+      return reply.code(422).send({
+        code: "CONTENT_NOT_ALLOWED",
+        message: "内容未通过安全检查，请修改后重试"
+      });
+    }
     try {
       const review = await createReview(
         options.database,
         user.id,
         params.data.workId,
         body.data,
-        request.id
+        request.id,
+        contentSafety
       );
       if (!review) {
         return reply.code(404).send({ code: "WORK_NOT_FOUND", message: "未找到可评价的作品" });
@@ -194,13 +248,26 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     }
     const user = await requireUser(options.database, request, reply);
     if (!user || !options.database) return;
+    const contentSafety = await assessContent(
+      options.contentSafetyCheck,
+      user,
+      [body.data.title, body.data.body].filter(Boolean).join("\n"),
+      request
+    );
+    if (contentSafety.status === "RISKY") {
+      return reply.code(422).send({
+        code: "CONTENT_NOT_ALLOWED",
+        message: "内容未通过安全检查，请修改后重试"
+      });
+    }
     try {
       const review = await updateReview(
         options.database,
         user.id,
         params.data.reviewId,
         body.data,
-        request.id
+        request.id,
+        contentSafety
       );
       if (!review) {
         return reply.code(404).send({ code: "REVIEW_NOT_FOUND", message: "未找到可修改的评价" });
@@ -246,6 +313,18 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     }
     const user = await requireUser(options.database, request, reply);
     if (!user || !options.database) return;
+    const contentSafety = await assessContent(
+      options.contentSafetyCheck,
+      user,
+      body.data.body,
+      request
+    );
+    if (contentSafety.status === "RISKY") {
+      return reply.code(422).send({
+        code: "CONTENT_NOT_ALLOWED",
+        message: "内容未通过安全检查，请修改后重试"
+      });
+    }
     const comment = await createComment(
       options.database,
       user.id,
@@ -253,7 +332,8 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
       body.data.parentId ?? null,
       body.data.body,
       body.data.containsSpoiler,
-      request.id
+      request.id,
+      contentSafety
     );
     if (!comment) {
       return reply.code(404).send({ code: "REVIEW_NOT_FOUND", message: "未找到可回复的评价" });

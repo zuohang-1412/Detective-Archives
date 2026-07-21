@@ -35,7 +35,7 @@ function request(path, options = {}) {
         "content-type": "application/json",
         ...(token ? { authorization: `Bearer ${token}` } : {})
       },
-      timeout: 8000,
+      timeout: options.timeout || 8000,
       success(response) {
         if (response.statusCode >= 200 && response.statusCode < 300) {
           resolve(response.data);
@@ -179,14 +179,16 @@ function getMyReview(reviewId) {
 function createReview(workId, data) {
   return request(`/api/v1/works/${encodeURIComponent(workId)}/reviews`, {
     method: "POST",
-    data
+    data,
+    timeout: 20000
   });
 }
 
 function updateReview(reviewId, data) {
   return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}`, {
     method: "PATCH",
-    data
+    data,
+    timeout: 20000
   });
 }
 
@@ -197,7 +199,8 @@ function deleteReview(reviewId) {
 function createComment(reviewId, data) {
   return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}/comments`, {
     method: "POST",
-    data
+    data,
+    timeout: 20000
   });
 }
 

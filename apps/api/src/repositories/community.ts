@@ -11,6 +11,12 @@ export interface ReviewInput {
   containsSpoiler: boolean;
 }
 
+export interface ContentSafetyAudit {
+  status: "PASS" | "REVIEW" | "UNAVAILABLE" | "NOT_CONFIGURED";
+  label?: number | undefined;
+  traceId?: string | undefined;
+}
+
 interface ReviewRow {
   id: string;
   workId: string;
@@ -178,7 +184,8 @@ export async function createReview(
   userId: string,
   workId: string,
   input: ReviewInput,
-  requestId: string
+  requestId: string,
+  contentSafety: ContentSafetyAudit
 ) {
   const result = await queryRows<{ id: string }>(database, `
     WITH created AS (
@@ -191,8 +198,10 @@ export async function createReview(
       WHERE work.id = $2 AND work.status = 'PUBLISHED'
       RETURNING id
     ), audit AS (
-      INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
-      SELECT $1, 'REVIEW_CREATE', 'REVIEW', id, $8 FROM created
+      INSERT INTO audit_logs (
+        actor_id, action, resource_type, resource_id, request_id, metadata
+      )
+      SELECT $1, 'REVIEW_CREATE', 'REVIEW', id, $8, $9::jsonb FROM created
     )
     SELECT id FROM created
   `, [
@@ -203,7 +212,8 @@ export async function createReview(
     input.body,
     input.rating ?? null,
     input.containsSpoiler,
-    requestId
+    requestId,
+    { contentSafety }
   ]);
   const id = result.rows[0]?.id;
   if (!id) return null;
@@ -216,7 +226,8 @@ export async function updateReview(
   userId: string,
   reviewId: string,
   input: ReviewInput,
-  requestId: string
+  requestId: string,
+  contentSafety: ContentSafetyAudit
 ) {
   const result = await queryRows<{ id: string }>(database, `
     WITH changed AS (
@@ -232,8 +243,10 @@ export async function updateReview(
       WHERE id = $2 AND user_id = $1 AND deleted_at IS NULL
       RETURNING id
     ), audit AS (
-      INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
-      SELECT $1, 'REVIEW_UPDATE', 'REVIEW', id, $8 FROM changed
+      INSERT INTO audit_logs (
+        actor_id, action, resource_type, resource_id, request_id, metadata
+      )
+      SELECT $1, 'REVIEW_UPDATE', 'REVIEW', id, $8, $9::jsonb FROM changed
     )
     SELECT id FROM changed
   `, [
@@ -244,7 +257,8 @@ export async function updateReview(
     input.body,
     input.rating ?? null,
     input.containsSpoiler,
-    requestId
+    requestId,
+    { contentSafety }
   ]);
   if (!result.rows[0]) return null;
   const reviews = await listMyReviews(database, userId);
@@ -314,7 +328,8 @@ export async function createComment(
   parentId: string | null,
   body: string,
   containsSpoiler: boolean,
-  requestId: string
+  requestId: string,
+  contentSafety: ContentSafetyAudit
 ) {
   const result = await queryRows<{ id: string; status: string }>(database, `
     WITH created AS (
@@ -338,11 +353,13 @@ export async function createComment(
         )
       RETURNING id, status::text
     ), audit AS (
-      INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
-      SELECT $1, 'COMMENT_CREATE', 'COMMENT', id, $6 FROM created
+      INSERT INTO audit_logs (
+        actor_id, action, resource_type, resource_id, request_id, metadata
+      )
+      SELECT $1, 'COMMENT_CREATE', 'COMMENT', id, $6, $7::jsonb FROM created
     )
     SELECT id, status FROM created
-  `, [userId, reviewId, parentId, body, containsSpoiler, requestId]);
+  `, [userId, reviewId, parentId, body, containsSpoiler, requestId, { contentSafety }]);
   return result.rows[0] ?? null;
 }
 

@@ -13,6 +13,7 @@ import {
 } from "prom-client";
 import type { AdminCredentialValidator } from "./auth/admin.js";
 import type { WechatCodeExchange } from "./auth/wechat.js";
+import type { ContentSafetyCheck } from "./auth/wechat-content-safety.js";
 import type { DatabaseClient } from "./db/types.js";
 import { archiveDirectoryRoutes } from "./routes/archive-directory.js";
 import { adminRoutes } from "./routes/admin.js";
@@ -32,6 +33,7 @@ export interface BuildAppOptions {
   metricsAuthToken?: string;
   database?: DatabaseClient;
   wechatCodeExchange?: WechatCodeExchange;
+  contentSafetyCheck?: ContentSafetyCheck;
   sessionTtlSeconds?: number;
   adminCredentialValidator?: AdminCredentialValidator;
 }
@@ -198,6 +200,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
     prefix: "/api/v1",
     ...(options.database ? { database: options.database } : {}),
     ...(options.wechatCodeExchange ? { wechatCodeExchange: options.wechatCodeExchange } : {}),
+    ...(options.contentSafetyCheck ? { contentSafetyCheck: options.contentSafetyCheck } : {}),
     ...(options.sessionTtlSeconds ? { sessionTtlSeconds: options.sessionTtlSeconds } : {}),
     ...(options.adminCredentialValidator
       ? { adminCredentialValidator: options.adminCredentialValidator }

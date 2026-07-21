@@ -11,6 +11,7 @@ const [
   linkHealthWorkflow,
   backupWorkflow,
   backupScript,
+  apiServer,
   deployScript,
   rollbackScript
 ] = await Promise.all([
@@ -21,6 +22,7 @@ const [
   readFile(path.join(root, ".github/workflows/link-health.yml"), "utf8"),
   readFile(path.join(root, ".github/workflows/database-backup.yml"), "utf8"),
   readFile(path.join(root, "ops/backup-postgres.sh"), "utf8"),
+  readFile(path.join(root, "apps/api/src/server.ts"), "utf8"),
   readFile(path.join(root, "ops/deploy-release.sh"), "utf8"),
   readFile(path.join(root, "ops/rollback-release.sh"), "utf8")
 ]);
@@ -62,6 +64,7 @@ assert.match(backupWorkflow, /verify-backup\.sh/, "Scheduled backups must verify
 assert.match(backupScript, /BACKUP_DIRECTORY must be an absolute dedicated directory/, "Backup cleanup must require a dedicated absolute directory");
 assert.match(backupScript, /client\/server major version mismatch/, "Backups must reject a PostgreSQL client/server major version mismatch");
 assert.match(backupScript, /sha256sum/, "Backups must record an integrity checksum");
+assert.match(apiServer, /createWechatContentSafetyCheckFromEnv/, "Production API must initialize WeChat content safety");
 assert.match(deployScript, /npm run release:check/, "Deployments must run the production release gate");
 assert.match(deployScript, /backup-postgres\.sh/, "Deployments must create a pre-release database backup");
 assert.match(deployScript, /npm run check:db/, "Deployments must verify the migrated production database");

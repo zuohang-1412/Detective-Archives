@@ -127,6 +127,19 @@ async function cleanupTestUsers() {
 await cleanupTestUsers();
 const app = await buildApp({
   database,
+  contentSafetyCheck: async ({ openId, content }) => {
+    assert.ok(testIdentitySubjects.includes(openId));
+    if (content.includes("机器拒绝")) {
+      return { suggestion: "risky", label: 300, traceId: "integration-risky" };
+    }
+    if (content.includes("需要人工复核")) {
+      return { suggestion: "review", label: 200, traceId: "integration-review" };
+    }
+    if (content.includes("安全服务故障")) {
+      throw new Error("simulated content safety outage");
+    }
+    return { suggestion: "pass", label: 100, traceId: "integration-pass" };
+  },
   wechatCodeExchange: async (code) => ({
     providerSubject: code === "secondary-user"
       ? testIdentitySubjects[1]
@@ -675,13 +688,26 @@ try {
   assert.equal(isolatedShelfResponse.statusCode, 200, isolatedShelfResponse.body);
   assert.equal(isolatedShelfResponse.json().data, null);
 
+  const rejectedRiskyReviewResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/works/${workId}/reviews`,
+    headers: authorization,
+    payload: {
+      reviewType: "SHORT",
+      body: "机器拒绝这段测试内容。",
+      containsSpoiler: false
+    }
+  });
+  assert.equal(rejectedRiskyReviewResponse.statusCode, 422, rejectedRiskyReviewResponse.body);
+  assert.equal(rejectedRiskyReviewResponse.json().code, "CONTENT_NOT_ALLOWED");
+
   const reviewResponse = await app.inject({
     method: "POST",
     url: `/api/v1/works/${workId}/reviews`,
     headers: authorization,
     payload: {
       reviewType: "SHORT",
-      body: "线索铺陈很公平，结尾值得回看。",
+      body: "这段评价需要人工复核，但仍应保持待审核。",
       rating: 5,
       containsSpoiler: true
     }
@@ -698,6 +724,16 @@ try {
   assert.equal(ownPendingReviewResponse.statusCode, 200, ownPendingReviewResponse.body);
   assert.equal(ownPendingReviewResponse.json().data.work.id, workId);
   assert.equal(ownPendingReviewResponse.json().data.status, "PENDING_REVIEW");
+  const reviewSafetyAudit = await database.query(`
+    SELECT metadata->'contentSafety' AS safety
+    FROM audit_logs
+    WHERE action = 'REVIEW_CREATE' AND resource_id = $1
+  `, [reviewId]);
+  assert.deepEqual(reviewSafetyAudit.rows[0].safety, {
+    status: "REVIEW",
+    label: 200,
+    traceId: "integration-review"
+  });
   const otherUsersReviewResponse = await app.inject({
     method: "GET",
     url: `/api/v1/me/reviews/${reviewId}`,
@@ -712,12 +748,18 @@ try {
     payload: {
       reviewType: "LONG",
       title: "用于验证评价类型冲突",
-      body: "长评与短评可以同时存在，但编辑时不能造成重复类型。",
+      body: "安全服务故障时仍进入人工待审，但不能自动公开。",
       containsSpoiler: false
     }
   });
   assert.equal(longReviewResponse.statusCode, 201, longReviewResponse.body);
   const longReviewId = longReviewResponse.json().data.id;
+  const unavailableSafetyAudit = await database.query(`
+    SELECT metadata->'contentSafety' AS safety
+    FROM audit_logs
+    WHERE action = 'REVIEW_CREATE' AND resource_id = $1
+  `, [longReviewId]);
+  assert.deepEqual(unavailableSafetyAudit.rows[0].safety, { status: "UNAVAILABLE" });
   const conflictingReviewUpdate = await app.inject({
     method: "PATCH",
     url: `/api/v1/reviews/${longReviewId}`,

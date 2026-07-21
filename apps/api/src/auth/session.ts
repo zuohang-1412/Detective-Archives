@@ -13,6 +13,7 @@ export interface AuthUser {
 
 export interface SessionRow extends AuthUser {
   sessionId: string;
+  wechatOpenId: string | null;
 }
 
 export function sessionTokenHash(token: string) {
@@ -50,7 +51,13 @@ export async function findActiveSession(
       account.display_name AS "displayName",
       account.avatar_url AS "avatarUrl",
       account.bio,
-      account.role::text AS role
+      account.role::text AS role,
+      (
+        SELECT identity.provider_subject
+        FROM user_identities identity
+        WHERE identity.user_id = account.id AND identity.provider = 'WECHAT'
+        LIMIT 1
+      ) AS "wechatOpenId"
   `, [sessionTokenHash(token)]);
   return result.rows[0] ?? null;
 }

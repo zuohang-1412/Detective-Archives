@@ -1,12 +1,14 @@
 import { buildApp } from "./app.js";
 import { createAdminCredentialValidatorFromEnv } from "./auth/admin.js";
 import { createWechatCodeExchangeFromEnv } from "./auth/wechat.js";
+import { createWechatContentSafetyCheckFromEnv } from "./auth/wechat-content-safety.js";
 import { createDatabasePoolFromEnv } from "./db/pool.js";
 import { loadRuntimeConfig } from "./runtime-config.js";
 
 const config = loadRuntimeConfig();
 const database = createDatabasePoolFromEnv();
 const wechatCodeExchange = createWechatCodeExchangeFromEnv();
+const contentSafetyCheck = createWechatContentSafetyCheckFromEnv();
 const adminCredentialValidator = createAdminCredentialValidatorFromEnv();
 const app = await buildApp({
   logger: {
@@ -32,6 +34,7 @@ const app = await buildApp({
   ...(config.metricsAuthToken ? { metricsAuthToken: config.metricsAuthToken } : {}),
   ...(database ? { database } : {}),
   ...(wechatCodeExchange ? { wechatCodeExchange } : {}),
+  ...(contentSafetyCheck ? { contentSafetyCheck } : {}),
   ...(adminCredentialValidator ? { adminCredentialValidator } : {}),
   sessionTtlSeconds: config.sessionTtlSeconds
 });
