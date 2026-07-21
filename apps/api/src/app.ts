@@ -7,6 +7,10 @@ import { pictureBookRoutes } from "./routes/picture-book.js";
 export interface BuildAppOptions {
   logger?: boolean;
   corsOrigin?: string;
+  database?: {
+    query(sql: string): Promise<unknown>;
+    end(): Promise<void>;
+  };
 }
 
 export async function buildApp(options: BuildAppOptions = {}) {
@@ -25,6 +29,38 @@ export async function buildApp(options: BuildAppOptions = {}) {
     status: "ok",
     service: "detective-archives-api"
   }));
+
+  app.get("/ready", async (_request, reply) => {
+    if (!options.database) {
+      return reply.code(503).send({
+        status: "not_ready",
+        service: "detective-archives-api",
+        database: "not_configured"
+      });
+    }
+
+    try {
+      await options.database.query("SELECT 1");
+      return {
+        status: "ready",
+        service: "detective-archives-api",
+        database: "connected"
+      };
+    } catch (error) {
+      app.log.error({ err: error }, "database readiness check failed");
+      return reply.code(503).send({
+        status: "not_ready",
+        service: "detective-archives-api",
+        database: "unavailable"
+      });
+    }
+  });
+
+  if (options.database) {
+    app.addHook("onClose", async () => {
+      await options.database?.end();
+    });
+  }
 
   await app.register(detectiveRoutes, { prefix: "/api/v1" });
   await app.register(pictureBookRoutes, { prefix: "/api/v1" });

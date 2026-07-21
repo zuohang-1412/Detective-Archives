@@ -11,7 +11,7 @@
 - 三位演示侦探及代表作品数据。
 - 第 1～108 卷名侦探图鉴索引，共 109 条记录（含第 105 卷特装版）。
 - 20 位图鉴之外的知名虚构侦探，以及 3 位独立展示的历史断案人物。
-- PostgreSQL 完整数据模型蓝图。
+- PostgreSQL 运行时连接、初始迁移、目录初始化和完整性检查。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
@@ -24,7 +24,7 @@ apps/
   api/             TypeScript + Fastify API
   miniprogram/     原生微信小程序
 database/
-  schema.sql       PostgreSQL 数据模型蓝图
+  schema.sql       PostgreSQL 初始结构迁移
 docs/
   PRD-v0.1.md      完整 MVP 产品需求文档
   architecture.md  技术架构与安全边界
@@ -39,7 +39,17 @@ docs/
 npm install
 ```
 
-### 2. 启动 API
+### 2. 初始化数据库
+
+配置 `DATABASE_URL`，或配置 `PGHOST`、`PGPORT`、`PGDATABASE`、`PGUSER`、`PGPASSWORD` 和 `PGSSLMODE`。首次创建独立数据库并导入目录：
+
+```bash
+npm run db:setup
+```
+
+默认创建 `detective_archives`；可通过 `DETECTIVE_DB_NAME` 修改。初始化完成后，API 的 `DATABASE_URL` 或 `PGDATABASE` 需要指向该数据库。
+
+### 3. 启动 API
 
 ```bash
 npm run dev:api
@@ -48,6 +58,7 @@ npm run dev:api
 默认地址为 `http://127.0.0.1:3000`，可访问：
 
 - `GET /health`
+- `GET /ready`
 - `GET /api/v1/detectives`
 - `GET /api/v1/detectives?q=波洛`
 - `GET /api/v1/detectives/sherlock-holmes`
@@ -58,7 +69,7 @@ npm run dev:api
 - `GET /api/v1/archive-directory?collection=HISTORICAL_CASES&pageSize=50`
 - `GET /api/v1/archive-directory/EXT-CN-001`
 
-### 3. 打开小程序
+### 4. 打开小程序
 
 使用微信开发者工具导入仓库根目录。开发阶段使用游客 AppID，接口地址由 `apps/miniprogram/app.js` 中的 `apiBaseUrl` 控制。
 
@@ -71,6 +82,12 @@ npm run check
 ```
 
 该命令依次执行类型检查、API 测试和生产构建。
+
+连接数据库后可执行真实数据完整性检查：
+
+```bash
+npm run check:db
+```
 
 图鉴与扩展目录数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：
 

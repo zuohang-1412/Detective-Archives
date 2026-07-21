@@ -11,6 +11,8 @@ CREATE TYPE moderation_action AS ENUM ('PUBLISH', 'HIDE', 'RESTORE', 'REJECT', '
 CREATE TYPE ai_task_status AS ENUM ('DRAFT', 'QUEUED', 'GENERATING', 'SUCCEEDED', 'FAILED', 'PENDING_REVIEW', 'PUBLISHED', 'REJECTED');
 CREATE TYPE picture_book_edition AS ENUM ('STANDARD', 'SPECIAL');
 CREATE TYPE verification_status AS ENUM ('MISSING', 'SOURCE_CAPTURED', 'PRIMARY_SOURCE_CONFIRMED');
+CREATE TYPE detective_subject_kind AS ENUM ('FICTIONAL', 'HISTORICAL');
+CREATE TYPE catalog_collection AS ENUM ('CORE', 'ARCHIVE_EXTENSION', 'HISTORICAL_CASES');
 
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -36,7 +38,7 @@ CREATE TABLE user_identities (
 
 CREATE TABLE creators (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name_zh VARCHAR(120) NOT NULL,
+  name_zh VARCHAR(120) NOT NULL UNIQUE,
   name_original VARCHAR(160),
   country VARCHAR(60),
   summary TEXT,
@@ -47,12 +49,18 @@ CREATE TABLE creators (
 
 CREATE TABLE detectives (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  catalog_id VARCHAR(20) UNIQUE,
   slug VARCHAR(100) NOT NULL UNIQUE,
   name_zh VARCHAR(120) NOT NULL,
   name_original VARCHAR(160),
+  name_en VARCHAR(160),
   country VARCHAR(60),
+  subject_kind detective_subject_kind NOT NULL DEFAULT 'FICTIONAL',
+  catalog_collection catalog_collection NOT NULL DEFAULT 'CORE',
+  media_types VARCHAR(30)[] NOT NULL DEFAULT '{}',
   summary TEXT NOT NULL,
   source_note TEXT,
+  verification verification_status NOT NULL DEFAULT 'SOURCE_CAPTURED',
   status content_status NOT NULL DEFAULT 'DRAFT',
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -70,6 +78,31 @@ CREATE TABLE detective_tags (
   detective_id UUID NOT NULL REFERENCES detectives(id) ON DELETE CASCADE,
   tag VARCHAR(40) NOT NULL,
   PRIMARY KEY (detective_id, tag)
+);
+
+CREATE TABLE detective_aliases (
+  detective_id UUID NOT NULL REFERENCES detectives(id) ON DELETE CASCADE,
+  alias VARCHAR(160) NOT NULL,
+  PRIMARY KEY (detective_id, alias)
+);
+
+CREATE TABLE detective_sources (
+  detective_id UUID NOT NULL REFERENCES detectives(id) ON DELETE CASCADE,
+  source_id VARCHAR(100) NOT NULL,
+  source_label VARCHAR(200) NOT NULL,
+  source_url TEXT NOT NULL,
+  source_quality VARCHAR(30) NOT NULL,
+  verification verification_status NOT NULL DEFAULT 'SOURCE_CAPTURED',
+  PRIMARY KEY (detective_id, source_id)
+);
+
+CREATE TABLE detective_featured_works (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  detective_id UUID NOT NULL REFERENCES detectives(id) ON DELETE CASCADE,
+  work_id UUID,
+  source_label VARCHAR(240) NOT NULL,
+  display_order SMALLINT NOT NULL DEFAULT 0,
+  UNIQUE (detective_id, source_label)
 );
 
 CREATE TABLE picture_book_sources (
@@ -118,6 +151,10 @@ CREATE TABLE works (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE detective_featured_works
+  ADD CONSTRAINT detective_featured_works_work_id_fkey
+  FOREIGN KEY (work_id) REFERENCES works(id) ON DELETE SET NULL;
 
 CREATE TABLE picture_book_recommendations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -268,6 +305,7 @@ CREATE TABLE audit_logs (
 );
 
 CREATE INDEX idx_detectives_status_published ON detectives (status, published_at DESC);
+CREATE INDEX idx_detectives_collection ON detectives (catalog_collection, status, published_at DESC);
 CREATE INDEX idx_works_status_type ON works (status, media_type, published_at DESC);
 CREATE INDEX idx_picture_book_volume ON picture_book_entries (volume_no, edition);
 CREATE INDEX idx_work_links_active ON work_links (work_id, is_active);

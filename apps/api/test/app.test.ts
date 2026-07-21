@@ -23,6 +23,62 @@ describe("detective archives API", () => {
     });
   });
 
+  it("reports not ready when the database is not configured", async () => {
+    const response = await app.inject({ method: "GET", url: "/ready" });
+    assert.equal(response.statusCode, 503);
+    assert.deepEqual(response.json(), {
+      status: "not_ready",
+      service: "detective-archives-api",
+      database: "not_configured"
+    });
+  });
+
+  it("reports ready when the database responds", async () => {
+    let ended = false;
+    const readyApp = await buildApp({
+      database: {
+        async query(sql) {
+          assert.equal(sql, "SELECT 1");
+          return { rows: [{ value: 1 }] };
+        },
+        async end() {
+          ended = true;
+        }
+      }
+    });
+
+    const response = await readyApp.inject({ method: "GET", url: "/ready" });
+    assert.equal(response.statusCode, 200);
+    assert.deepEqual(response.json(), {
+      status: "ready",
+      service: "detective-archives-api",
+      database: "connected"
+    });
+    await readyApp.close();
+    assert.equal(ended, true);
+  });
+
+  it("reports unavailable without leaking a database error", async () => {
+    const unavailableApp = await buildApp({
+      database: {
+        async query() {
+          throw new Error("internal connection detail");
+        },
+        async end() {}
+      }
+    });
+
+    const response = await unavailableApp.inject({ method: "GET", url: "/ready" });
+    assert.equal(response.statusCode, 503);
+    assert.deepEqual(response.json(), {
+      status: "not_ready",
+      service: "detective-archives-api",
+      database: "unavailable"
+    });
+    assert.equal(response.body.includes("internal connection detail"), false);
+    await unavailableApp.close();
+  });
+
   it("lists detectives with pagination", async () => {
     const response = await app.inject({ method: "GET", url: "/api/v1/detectives?pageSize=2" });
     const body = response.json();
