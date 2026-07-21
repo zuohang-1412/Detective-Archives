@@ -36,6 +36,7 @@ if (!Array.isArray(appConfig.pages) || appConfig.pages.length === 0) {
 }
 
 await checkScript(path.join(root, "app.js"));
+await checkScript(path.join(root, "config.js"));
 await parseJson(path.join(root, "sitemap.json"));
 await checkScript(path.join(root, "services/api.js"));
 

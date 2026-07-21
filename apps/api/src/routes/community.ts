@@ -107,7 +107,9 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     };
   });
 
-  app.post("/works/:workId/reviews", async (request, reply) => {
+  app.post("/works/:workId/reviews", {
+    config: { rateLimit: { max: 20, timeWindow: "1 minute" } }
+  }, async (request, reply) => {
     const params = uuidParamsSchema.safeParse(request.params);
     const body = reviewInputSchema.safeParse(request.body);
     if (!params.success || !params.data.workId || !body.success) {
@@ -209,7 +211,9 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     return reply.code(204).send();
   });
 
-  app.post("/reviews/:reviewId/comments", async (request, reply) => {
+  app.post("/reviews/:reviewId/comments", {
+    config: { rateLimit: { max: 30, timeWindow: "1 minute" } }
+  }, async (request, reply) => {
     const params = uuidParamsSchema.safeParse(request.params);
     const body = commentInputSchema.safeParse(request.body);
     if (!params.success || !params.data.reviewId || !body.success) {
@@ -283,7 +287,9 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     }
   }
 
-  app.post("/reports", async (request, reply) => {
+  app.post("/reports", {
+    config: { rateLimit: { max: 10, timeWindow: "1 minute" } }
+  }, async (request, reply) => {
     const body = reportInputSchema.safeParse(request.body);
     if (!body.success) {
       return reply.code(400).send({ code: "INVALID_REPORT", message: "举报信息不合法" });

@@ -36,7 +36,9 @@ interface AuthRouteOptions {
 }
 
 export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, options) => {
-  app.post("/auth/admin", async (request, reply) => {
+  app.post("/auth/admin", {
+    config: { rateLimit: { max: 5, timeWindow: "1 minute" } }
+  }, async (request, reply) => {
     const parsed = adminLoginSchema.safeParse(request.body);
     if (!parsed.success) {
       return reply.code(400).send({ code: "INVALID_LOGIN_REQUEST", message: "登录信息不合法" });
@@ -55,7 +57,9 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
     return reply.code(201).send({ data: result });
   });
 
-  app.post("/auth/wechat", async (request, reply) => {
+  app.post("/auth/wechat", {
+    config: { rateLimit: { max: 10, timeWindow: "1 minute" } }
+  }, async (request, reply) => {
     const parsed = loginSchema.safeParse(request.body);
     if (!parsed.success) {
       return reply.code(400).send({

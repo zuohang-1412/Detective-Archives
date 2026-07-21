@@ -2,37 +2,70 @@ import { buildApp } from "./app.js";
 import { createAdminCredentialValidatorFromEnv } from "./auth/admin.js";
 import { createWechatCodeExchangeFromEnv } from "./auth/wechat.js";
 import { createDatabasePoolFromEnv } from "./db/pool.js";
+import { loadRuntimeConfig } from "./runtime-config.js";
 
-function positiveInteger(value: string | undefined, fallback: number, name: string) {
-  const parsed = Number.parseInt(value ?? String(fallback), 10);
-  if (!Number.isInteger(parsed) || parsed < 1) {
-    throw new Error(`${name} must be a positive integer`);
-  }
-  return parsed;
-}
-
-const port = Number.parseInt(process.env.API_PORT ?? "3000", 10);
-const host = process.env.API_HOST ?? "127.0.0.1";
+const config = loadRuntimeConfig();
 const database = createDatabasePoolFromEnv();
 const wechatCodeExchange = createWechatCodeExchangeFromEnv();
 const adminCredentialValidator = createAdminCredentialValidatorFromEnv();
 const app = await buildApp({
-  logger: true,
-  corsOrigin: process.env.CORS_ORIGIN ?? "*",
+  logger: {
+    level: config.logLevel,
+    redact: {
+      paths: [
+        "req.headers.authorization",
+        "req.headers.cookie",
+        "request.headers.authorization",
+        "request.headers.cookie",
+        "body.code",
+        "body.password",
+        "password",
+        "token"
+      ],
+      censor: "[REDACTED]"
+    }
+  },
+  corsOrigin: config.corsOrigin,
+  trustProxy: config.trustProxy,
+  rateLimitMax: config.rateLimitMax,
+  rateLimitWindowMs: config.rateLimitWindowMs,
+  ...(config.metricsAuthToken ? { metricsAuthToken: config.metricsAuthToken } : {}),
   ...(database ? { database } : {}),
   ...(wechatCodeExchange ? { wechatCodeExchange } : {}),
   ...(adminCredentialValidator ? { adminCredentialValidator } : {}),
-  sessionTtlSeconds: positiveInteger(
-    process.env.SESSION_TTL_SECONDS,
-    2_592_000,
-    "SESSION_TTL_SECONDS"
-  )
+  sessionTtlSeconds: config.sessionTtlSeconds
+});
+
+database?.on("error", (error) => {
+  app.log.error({ err: error }, "unexpected idle database client error");
 });
 
 try {
-  await app.listen({ port, host });
+  await app.listen({ port: config.port, host: config.host });
 } catch (error) {
   app.log.error(error);
   await app.close();
   process.exit(1);
 }
+
+let shuttingDown = false;
+async function shutdown(signal: string) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  app.log.info({ signal }, "graceful shutdown started");
+  const forcedExit = setTimeout(() => {
+    app.log.error("graceful shutdown timed out");
+    process.exit(1);
+  }, 10_000).unref();
+  try {
+    await app.close();
+    clearTimeout(forcedExit);
+    process.exit(0);
+  } catch (error) {
+    app.log.error({ err: error }, "graceful shutdown failed");
+    process.exit(1);
+  }
+}
+
+process.once("SIGTERM", () => void shutdown("SIGTERM"));
+process.once("SIGINT", () => void shutdown("SIGINT"));

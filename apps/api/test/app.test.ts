@@ -21,6 +21,64 @@ describe("detective archives API", () => {
       status: "ok",
       service: "detective-archives-api"
     });
+    assert.equal(response.headers["cache-control"], "no-store");
+    assert.equal(typeof response.headers["x-request-id"], "string");
+    assert.equal(response.headers["x-content-type-options"], "nosniff");
+    assert.match(response.headers["content-security-policy"] ?? "", /default-src 'self'/);
+  });
+
+  it("protects metrics when a monitoring token is configured", async () => {
+    const metricsApp = await buildApp({ metricsAuthToken: "monitoring-token-for-tests" });
+    const unauthorized = await metricsApp.inject({ method: "GET", url: "/metrics" });
+    assert.equal(unauthorized.statusCode, 401);
+
+    const response = await metricsApp.inject({
+      method: "GET",
+      url: "/metrics",
+      headers: { authorization: "Bearer monitoring-token-for-tests" }
+    });
+    assert.equal(response.statusCode, 200);
+    assert.match(response.headers["content-type"] ?? "", /text\/plain/);
+    assert.match(response.body, /detective_archives_http_requests_total/);
+    await metricsApp.close();
+  });
+
+  it("allows configured origins to issue PUT requests", async () => {
+    const corsApp = await buildApp({ corsOrigin: "https://console.example.com" });
+    const response = await corsApp.inject({
+      method: "OPTIONS",
+      url: "/api/v1/me/shelf/example",
+      headers: {
+        origin: "https://console.example.com",
+        "access-control-request-method": "PUT"
+      }
+    });
+    assert.equal(response.statusCode, 204);
+    assert.equal(response.headers["access-control-allow-origin"], "https://console.example.com");
+    assert.match(response.headers["access-control-allow-methods"] ?? "", /PUT/);
+    await corsApp.close();
+  });
+
+  it("rate limits non-operational endpoints", async () => {
+    const limitedApp = await buildApp({ rateLimitMax: 2, rateLimitWindowMs: 60_000 });
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const response = await limitedApp.inject({ method: "GET", url: "/api/v1/detectives" });
+      assert.equal(response.statusCode, 200);
+    }
+    const limited = await limitedApp.inject({ method: "GET", url: "/api/v1/detectives" });
+    assert.equal(limited.statusCode, 429);
+    assert.equal(limited.json().code, "RATE_LIMITED");
+    await limitedApp.close();
+  });
+
+  it("rejects oversized bodies without exposing internals", async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/wechat",
+      payload: { code: "x".repeat(1024 * 1024), agreements: {} }
+    });
+    assert.equal(response.statusCode, 413);
+    assert.deepEqual(response.json(), { code: "PAYLOAD_TOO_LARGE", message: "请求内容过大" });
   });
 
   it("serves the built-in operations console", async () => {
@@ -84,6 +142,25 @@ describe("detective archives API", () => {
     });
     assert.equal(response.body.includes("internal connection detail"), false);
     await unavailableApp.close();
+  });
+
+  it("returns a stable 500 response without leaking repository errors", async () => {
+    const failingApp = await buildApp({
+      database: {
+        async query() {
+          throw new Error("private database host and SQL detail");
+        },
+        async end() {}
+      }
+    });
+    const response = await failingApp.inject({ method: "GET", url: "/api/v1/detectives" });
+    assert.equal(response.statusCode, 500);
+    assert.deepEqual(response.json(), {
+      code: "INTERNAL_SERVER_ERROR",
+      message: "服务暂时不可用，请稍后再试"
+    });
+    assert.equal(response.body.includes("private database"), false);
+    await failingApp.close();
   });
 
   it("keeps login and shelf writes unavailable without server configuration", async () => {

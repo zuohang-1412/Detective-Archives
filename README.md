@@ -16,10 +16,12 @@
 - 短评/长评、剧透折叠、回复、点赞、举报、作者软删除和默认待审核流程。
 - 内置运营后台：独立管理员登录、数据概览、评价/回复审核、举报处理、用户处置、作品与正版链接维护。
 - 登录前协议/隐私确认、同意时间留存，以及撤销身份、会话和个人内容的账号注销流程。
+- 安全响应头、登录与社区限流、生产配置硬校验、请求指标和优雅停机。
+- Docker/Caddy 部署基线、CI 质量门禁、数据库备份脚本与上线运行手册。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
-侦探资料维护深化、上线基础设施和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
+侦探资料维护深化和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
 
 ## 项目结构
 
@@ -106,7 +108,17 @@ npm run dev:api
 使用微信开发者工具导入仓库根目录。开发阶段使用游客 AppID，接口地址由 `apps/miniprogram/app.js` 中的 `apiBaseUrl` 控制。
 
 接入真实小程序前，需要替换 `project.config.json` 中的 AppID，并为生产环境配置合法的 HTTPS API 域名。
-同时需要在 `apps/miniprogram/app.js` 中填写真实运营主体和隐私联系渠道；生产预检会拒绝这些字段保留占位文本。
+同时需要在 `apps/miniprogram/config.js` 中填写真实运营主体和隐私联系渠道；生产预检会拒绝这些字段保留占位文本。
+
+生产配置可通过环境变量一次写入（均为公开发布信息，不包含 AppSecret）：
+
+```bash
+MINIPROGRAM_APP_ID=wx... \
+PUBLIC_API_BASE_URL=https://api.example.com \
+OPERATOR_NAME=运营主体全称 \
+PRIVACY_CONTACT=privacy@example.com \
+npm run config:miniprogram
+```
 
 ## 质量检查
 
@@ -124,6 +136,14 @@ npm run check:db-api
 ```
 
 第二条命令会通过真实 PostgreSQL 仓储检查六条公开 API 主链路，执行前需要先完成生产构建。
+
+生产环境变量和小程序发布信息就绪后，执行完整上线预检：
+
+```bash
+npm run release:check
+```
+
+部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。
 
 图鉴与扩展目录数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：
 
