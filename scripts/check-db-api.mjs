@@ -845,6 +845,28 @@ try {
     WHERE action = 'REVIEW_CREATE' AND resource_id = $1
   `, [longReviewId]);
   assert.deepEqual(unavailableSafetyAudit.rows[0].safety, { status: "UNAVAILABLE" });
+  const rejectLongReviewResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/REVIEW/${longReviewId}`,
+    headers: adminAuthorization,
+    payload: { action: "REJECT", reason: "集成检查拒绝" }
+  });
+  assert.equal(rejectLongReviewResponse.statusCode, 200, rejectLongReviewResponse.body);
+  assert.equal(rejectLongReviewResponse.json().data.status, "REJECTED");
+  const rejectedOwnReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/me/reviews/${longReviewId}`,
+    headers: authorization
+  });
+  assert.equal(rejectedOwnReviewResponse.statusCode, 200, rejectedOwnReviewResponse.body);
+  assert.equal(rejectedOwnReviewResponse.json().data.status, "REJECTED");
+  const invalidRejectedRestoreResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/REVIEW/${longReviewId}`,
+    headers: adminAuthorization,
+    payload: { action: "RESTORE", reason: "拒绝内容不能直接恢复" }
+  });
+  assert.equal(invalidRejectedRestoreResponse.statusCode, 404, invalidRejectedRestoreResponse.body);
   const conflictingReviewUpdate = await app.inject({
     method: "PATCH",
     url: `/api/v1/reviews/${longReviewId}`,
@@ -857,6 +879,19 @@ try {
   });
   assert.equal(conflictingReviewUpdate.statusCode, 409, conflictingReviewUpdate.body);
   assert.equal(conflictingReviewUpdate.json().code, "REVIEW_ALREADY_EXISTS");
+  const resubmitRejectedReviewResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/reviews/${longReviewId}`,
+    headers: authorization,
+    payload: {
+      reviewType: "LONG",
+      title: "修改后重新提交审核",
+      body: "作者修改被拒绝的内容后，应重新进入待审核状态。",
+      containsSpoiler: false
+    }
+  });
+  assert.equal(resubmitRejectedReviewResponse.statusCode, 200, resubmitRejectedReviewResponse.body);
+  assert.equal(resubmitRejectedReviewResponse.json().data.status, "PENDING_REVIEW");
   const removeLongReviewResponse = await app.inject({
     method: "DELETE",
     url: `/api/v1/reviews/${longReviewId}`,

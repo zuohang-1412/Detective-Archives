@@ -149,7 +149,11 @@ export async function moderateContent(
   requestId: string
 ) {
   const table = targetType === "REVIEW" ? "reviews" : "comments";
-  const status = action === "PUBLISH" || action === "RESTORE" ? "PUBLISHED" : "HIDDEN";
+  const status = action === "PUBLISH" || action === "RESTORE"
+    ? "PUBLISHED"
+    : action === "REJECT"
+      ? "REJECTED"
+      : "HIDDEN";
   return withTransaction(database, async (connection) => {
     const changed = await queryRows<{ id: string; status: string }>(connection, `
       UPDATE ${table}
@@ -159,9 +163,17 @@ export async function moderateContent(
           ELSE published_at
         END,
         updated_at = NOW()
-      WHERE id = $1 AND deleted_at IS NULL
+      WHERE id = $1
+        AND deleted_at IS NULL
+        AND CASE $3::text
+          WHEN 'PUBLISH' THEN status = 'PENDING_REVIEW'
+          WHEN 'REJECT' THEN status = 'PENDING_REVIEW'
+          WHEN 'HIDE' THEN status = 'PUBLISHED'
+          WHEN 'RESTORE' THEN status = 'HIDDEN'
+          ELSE FALSE
+        END
       RETURNING id, status::text
-    `, [targetId, status]);
+    `, [targetId, status, action]);
     const content = changed.rows[0];
     if (!content) return null;
     await connection.query(`

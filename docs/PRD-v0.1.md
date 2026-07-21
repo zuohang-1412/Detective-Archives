@@ -315,12 +315,12 @@ AI 任务失败可重试，但每次重试需要独立记录费用和模型信�
 ### 10.1 内容状态
 
 ```text
-DRAFT → PENDING_REVIEW → PUBLISHED
-                     ↘ HIDDEN → PUBLISHED
-PUBLISHED → ARCHIVED
+DRAFT → PENDING_REVIEW ─┬→ PUBLISHED → HIDDEN → PUBLISHED
+                        └→ REJECTED → PENDING_REVIEW（作者修改后重提）
+PUBLISHED / HIDDEN → ARCHIVED
 ```
 
-普通用户只能访问 `PUBLISHED` 内容。隐藏与归档不得删除书架、评价和审计关联。
+普通用户只能访问 `PUBLISHED` 内容。`REJECTED` 仅作者可见且不能由审核员直接恢复；隐藏与归档不得删除书架、评价和审计关联。
 
 ### 10.2 阅读/观看状态
 
