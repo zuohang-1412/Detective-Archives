@@ -202,9 +202,17 @@ try {
     ["/api/v1/archive-directory?q=%E5%BF%83%E7%90%86%E7%BD%AA", (body) => {
       assert.equal(body.data[0].id, "EXT-CN-003");
     }],
-    ["/api/v1/picture-book?pageSize=150", (body) => assert.equal(body.pagination.total, 109)],
+    ["/api/v1/picture-book?pageSize=150", (body) => {
+      assert.equal(body.pagination.total, 109);
+      assert.equal(body.data[0].id, "PB-001-STD");
+      assert.equal(body.data[0].linkedRecommendations[0].workSlug, "the-valley-of-fear");
+    }],
     ["/api/v1/picture-book?q=%E9%B2%81%E9%82%A6", (body) => {
       assert.equal(body.data[0].id, "PB-004-STD");
+      assert.equal(
+        body.data[0].linkedRecommendations[0].workSlug,
+        "arsene-lupin-gentleman-burglar"
+      );
     }],
     ["/api/v1/works?pageSize=50", (body) => assert.equal(body.pagination.total, expectedPublishedWorkCount)],
     ["/api/v1/works/d-slope-murder-case", (body) => assert.equal(body.data.links.length, 2)],

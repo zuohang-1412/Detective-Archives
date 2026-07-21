@@ -98,6 +98,11 @@ if (!archiveTemplate.includes('bindchange="onFilterChange"')) {
 if (!archiveTemplate.includes('bindtap="onLoadMore"')) {
   throw new Error("Archive template must expose detective pagination");
 }
+if (!archiveScript.includes("openRecommendedWork(")
+  || !archiveTemplate.includes('catchtap="openRecommendedWork"')
+  || !archiveTemplate.includes("linkedRecommendations")) {
+  throw new Error("Picture-book entries must link mapped recommendations to formal works");
+}
 for (const apiBehavior of ["getMyReview", "updateReview", "deleteReview", "deleteComment", "createAppeal"]) {
   if (!apiScript.includes(`function ${apiBehavior}(`)) {
     throw new Error(`Mini Program API must implement ${apiBehavior}`);

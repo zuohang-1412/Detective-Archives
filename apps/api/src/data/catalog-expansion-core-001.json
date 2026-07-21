@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-core-001",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace the three source-captured MVP seed profiles with source-backed catalog records and connect volumes 1 to 3 to their exact recommended works while preserving the original picture-book labels.",
+  "sources": [
+    {
+      "id": "gutenberg-valley-of-fear",
+      "label": "Project Gutenberg: The Valley of Fear",
+      "url": "https://www.gutenberg.org/ebooks/3776",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "aozora-golden-mask",
+      "label": "青空文库：黄金仮面",
+      "url": "https://www.aozora.gr.jp/cards/001779/card57241.html",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "agatha-christie-death-on-the-nile",
+      "label": "Agatha Christie Official: Death on the Nile",
+      "url": "https://www.agathachristie.com/en/stories/death-on-the-nile",
+      "quality": "OFFICIAL_CREATOR"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-001-STD",
+      "pictureBookEntryIds": ["PB-001-STD"],
+      "slug": "sherlock-holmes",
+      "nameZh": "夏洛克·福尔摩斯",
+      "nameOriginal": "Sherlock Holmes",
+      "nameEn": "Sherlock Holmes",
+      "country": "英国",
+      "era": "19世纪末至20世纪初",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "居住在伦敦贝克街的咨询侦探，重视现场观察、物证和演绎推理，常由华生医生记录案件经过。",
+      "creatorName": "阿瑟·柯南·道尔",
+      "aliases": ["福尔摩斯", "Sherlock Holmes"],
+      "tags": ["古典推理", "演绎法", "伦敦"],
+      "featuredCases": ["《恐怖谷》"],
+      "sourceIds": ["gutenberg-valley-of-fear"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-valley-of-fear",
+          "titleZh": "恐怖谷",
+          "titleOriginal": "The Valley of Fear",
+          "mediaType": "NOVEL",
+          "releaseYear": 1915,
+          "summary": "福尔摩斯收到一封暗号警告后调查庄园命案，并从现场矛盾追索到一段与秘密组织和莫里亚蒂有关的往事。",
+          "sourceId": "gutenberg-valley-of-fear",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-002-STD",
+      "pictureBookEntryIds": ["PB-002-STD"],
+      "slug": "kogoro-akechi",
+      "nameZh": "明智小五郎",
+      "nameOriginal": "明智小五郎",
+      "nameEn": "Kogoro Akechi",
+      "country": "日本",
+      "era": "20世纪前期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "NOVEL"],
+      "summary": "江户川乱步笔下的名侦探，活跃于都市犯罪与怪奇谜案，凭观察、心理判断和乔装追查对手。",
+      "creatorName": "江户川乱步",
+      "aliases": ["Akechi Kogoro", "Kogoro Akechi"],
+      "tags": ["日本推理", "都市怪奇", "经典侦探"],
+      "featuredCases": ["《黄金甲面人》"],
+      "sourceIds": ["aozora-golden-mask"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kogoro-akechi-golden-mask",
+          "titleZh": "黄金假面",
+          "titleOriginal": "黄金仮面",
+          "mediaType": "NOVEL",
+          "releaseYear": 1930,
+          "summary": "神秘的黄金假面人在东京制造连续事件，明智小五郎从看似怪诞的行动中追查真实身份与犯罪计划。",
+          "sourceId": "aozora-golden-mask",
+          "linkType": "LIBRARY",
+          "providerName": "青空文库",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-003-STD",
+      "pictureBookEntryIds": ["PB-003-STD"],
+      "slug": "hercule-poirot",
+      "nameZh": "赫尔克里·波洛",
+      "nameOriginal": "Hercule Poirot",
+      "nameEn": "Hercule Poirot",
+      "country": "比利时",
+      "era": "20世纪",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "阿加莎·克里斯蒂笔下的比利时侦探，重视秩序、人物心理和证词矛盾，以“灰色脑细胞”梳理真相。",
+      "creatorName": "阿加莎·克里斯蒂",
+      "aliases": ["波洛", "Hercule Poirot"],
+      "tags": ["黄金时代", "本格推理", "心理分析"],
+      "featuredCases": ["《尼罗河上的惨案》"],
+      "sourceIds": ["agatha-christie-death-on-the-nile"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "death-on-the-nile-novel",
+          "titleZh": "尼罗河上的惨案",
+          "titleOriginal": "Death on the Nile",
+          "mediaType": "NOVEL",
+          "releaseYear": 1937,
+          "summary": "尼罗河游船上的新婚女子遇害，波洛在封闭旅程中梳理爱情、嫉妒、身份与不相容证词之间的关系。",
+          "sourceId": "agatha-christie-death-on-the-nile",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Agatha Christie Official",
+          "region": "GLOBAL"
+        }
+      ]
+    }
+  ],
+  "pictureBookRecommendationMappings": [
+    { "entryId": "PB-001-STD", "sourceLabel": "恐怖谷", "workSlug": "the-valley-of-fear" },
+    { "entryId": "PB-002-STD", "sourceLabel": "黄金甲面人", "workSlug": "kogoro-akechi-golden-mask" },
+    { "entryId": "PB-003-STD", "sourceLabel": "尼罗河上的惨案", "workSlug": "death-on-the-nile-novel" }
+  ]
+}

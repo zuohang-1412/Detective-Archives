@@ -69,8 +69,14 @@ try {
   assert.equal(content.rows[0]?.detectiveStatus, "ARCHIVED");
   assert.equal(content.rows[0]?.workStatus, "ARCHIVED");
   assert.equal(content.rows[0]?.hasActiveLink, false);
+  const recommendation = await client.query(`
+    SELECT work_id AS "workId"
+    FROM picture_book_recommendations
+    WHERE entry_id = 'PB-001-STD' AND source_label = '恐怖谷'
+  `);
+  assert.equal(recommendation.rows[0]?.workId, null);
 } finally {
   await client.end();
 }
 
-console.log("Catalog rollback compensation: OK (latest-only, archived content, inactive links, immutable audit)");
+console.log("Catalog rollback compensation: OK (latest-only, archived content, unmapped recommendation, inactive links, immutable audit)");

@@ -267,6 +267,12 @@ Page({
     return this.search({ reset: true });
   },
 
+  openRecommendedWork(event) {
+    const workSlug = event.currentTarget.dataset.workSlug;
+    if (!workSlug) return;
+    wx.navigateTo({ url: `/pages/work/work?slug=${encodeURIComponent(workSlug)}` });
+  },
+
   openEntry(event) {
     const { slug, id, name } = event.currentTarget.dataset;
     if (this.data.activeSection === "detectives") {

@@ -45,5 +45,12 @@
         }
       ]
     }
+  ],
+  "pictureBookRecommendationMappings": [
+    {
+      "entryId": "PB-001-STD",
+      "sourceLabel": "恐怖谷",
+      "workSlug": "catalog-rollback-test-work"
+    }
   ]
 }

@@ -257,6 +257,17 @@
   line-height: 1.5;
 }
 
+.recommendation-link {
+  display: inline-flex;
+  margin-top: 14rpx;
+  padding: 9rpx 15rpx;
+  border-radius: 999rpx;
+  background: #f1e3d0;
+  color: #8b3a2c;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
 .detail-state {
   min-width: 86rpx;
   color: #9a9185;

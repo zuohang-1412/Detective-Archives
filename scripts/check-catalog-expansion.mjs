@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { loadCatalogBatches, uniqueImportedWorks } from "./lib/catalog-batches.mjs";
+import {
+  linkedPictureBookRecommendations,
+  loadCatalogBatches,
+  uniqueImportedWorks
+} from "./lib/catalog-batches.mjs";
 
 const { manifest, batches } = await loadCatalogBatches();
 assert.equal(manifest.schemaVersion, 1);
@@ -27,20 +31,36 @@ for (const { input, filename } of batches) {
     assert.ok(
       input.detectives.length
         || (input.archiveDetectiveSlugs ?? []).length
-        || (input.archiveWorkSlugs ?? []).length,
+        || (input.archiveWorkSlugs ?? []).length
+        || (input.pictureBookRecommendationMappings ?? []).length
+        || (input.pictureBookRecommendationUnmappings ?? []).length,
       `${filename}: rollback batch must contain compensation`
     );
   } else {
     assert.equal(input.rollbackReason, undefined, `${filename}: rollbackReason requires rollbackOf`);
     assert.deepEqual(input.archiveDetectiveSlugs ?? [], [], `${filename}: archive detectives require rollbackOf`);
     assert.deepEqual(input.archiveWorkSlugs ?? [], [], `${filename}: archive works require rollbackOf`);
-    assert.ok(Array.isArray(input.sources) && input.sources.length > 0);
-    assert.ok(Array.isArray(input.detectives) && input.detectives.length > 0);
+    assert.deepEqual(
+      input.pictureBookRecommendationUnmappings ?? [],
+      [],
+      `${filename}: recommendation unmapping requires rollbackOf`
+    );
+    assert.ok(
+      input.detectives.length > 0 || (input.pictureBookRecommendationMappings ?? []).length > 0,
+      `${filename}: forward batch must contain catalog records or recommendation mappings`
+    );
+    assert.equal(
+      Boolean(input.sources.length),
+      Boolean(input.detectives.length),
+      `${filename}: catalog records require both sources and detectives`
+    );
   }
   batchKeys.add(input.batchKey);
   previousBatchKey = input.batchKey;
   assert.ok(Array.isArray(input.sources));
   assert.ok(Array.isArray(input.detectives));
+  assert.ok(Array.isArray(input.pictureBookRecommendationMappings ?? []));
+  assert.ok(Array.isArray(input.pictureBookRecommendationUnmappings ?? []));
 
   for (const slug of input.archiveDetectiveSlugs ?? []) {
     assert.equal(knownDetectiveSlugs.has(slug), true, `${filename}: cannot archive unknown detective ${slug}`);
@@ -104,6 +124,23 @@ for (const { input, filename } of batches) {
     }
   }
 
+  const mappingKeys = new Set();
+  for (const mapping of input.pictureBookRecommendationMappings ?? []) {
+    assert.match(mapping.entryId, /^PB-\d{3}-(STD|SP)$/);
+    assert.equal(knownWorkSlugs.has(mapping.workSlug), true, `${filename}: unknown mapped work ${mapping.workSlug}`);
+    const key = `${mapping.entryId}\u0000${mapping.sourceLabel}`;
+    assert.equal(mappingKeys.has(key), false, `${filename}: duplicate recommendation mapping ${mapping.entryId}`);
+    mappingKeys.add(key);
+  }
+  const unmappingKeys = new Set();
+  for (const unmapping of input.pictureBookRecommendationUnmappings ?? []) {
+    assert.match(unmapping.entryId, /^PB-\d{3}-(STD|SP)$/);
+    const key = `${unmapping.entryId}\u0000${unmapping.sourceLabel}`;
+    assert.equal(unmappingKeys.has(key), false, `${filename}: duplicate recommendation unmapping ${unmapping.entryId}`);
+    assert.equal(mappingKeys.has(key), false, `${filename}: recommendation cannot be mapped and unmapped together`);
+    unmappingKeys.add(key);
+  }
+
   const serialized = JSON.stringify(input).toLowerCase();
   for (const forbidden of ["coverurl", "imageurl", "sourcetext", "excerpt", "fulltext"]) {
     assert.equal(serialized.includes(`\"${forbidden}\"`), false, `${filename}: forbidden field ${forbidden}`);
@@ -111,6 +148,7 @@ for (const { input, filename } of batches) {
 }
 
 const uniqueWorks = uniqueImportedWorks(batches);
+const recommendationMappings = linkedPictureBookRecommendations(batches);
 const [packageJson, importerScript, runnerScript] = await Promise.all([
   readFile(path.resolve("package.json"), "utf8").then(JSON.parse),
   readFile(path.resolve("scripts/catalog-import.mjs"), "utf8"),
@@ -121,6 +159,8 @@ assert.match(packageJson.scripts["catalog:rollback:apply"], /--rollback --apply/
 for (const rollbackCapability of [
   "archiveDetectiveSlugs",
   "archiveWorkSlugs",
+  "pictureBookRecommendationMappings",
+  "pictureBookRecommendationUnmappings",
   "CATALOG_BATCH_NOOP",
   "status = 'ROLLED_BACK'",
   "Rollback target is no longer latest"
@@ -129,5 +169,5 @@ for (const rollbackCapability of [
 }
 assert.match(runnerScript, /batch\.input\.rollbackOf/);
 console.log(
-  `Catalog expansion integrity: OK (${batches.length} batches, ${detectiveRecordCount} detective records, ${uniqueWorks.size} formal works, ${pictureBookIds.size} picture-book links)`
+  `Catalog expansion integrity: OK (${batches.length} batches, ${detectiveRecordCount} detective records, ${uniqueWorks.size} formal works, ${pictureBookIds.size} picture-book links, ${recommendationMappings.size} recommendation mappings)`
 );

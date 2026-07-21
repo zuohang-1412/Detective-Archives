@@ -5,7 +5,7 @@
 - 标准版：第 1～108 卷，每卷一条。
 - 特装版：第 105 卷额外一条“工藤新一”。
 - 数据总量：109 条。
-- 已提取推荐作品：73 条；其余保持 `MISSING`，不推测补齐。
+- 已提取推荐作品标签：73 条；其中 45 条已关联正式作品，其余 28 条保留原始标签等待核验；没有提取到推荐作的条目继续保持 `MISSING`，不推测补齐。
 - 稳定编号格式：`PB-{三位卷号}-{STD|SP}`，例如 `PB-001-STD`、`PB-105-SP`。
 
 截至数据快照日 2026-07-21，小学馆既刊目录和卷册资料显示最新出版至第 108 卷。
@@ -134,10 +134,14 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-content-fix-001.json` 是分层内容审计产生的第 18 个不可变批次。它只修正第 37、39、49、54、58 卷代表作品标签中多余的结束书名号，完整保留人物、作品、来源和原图鉴译名；对应的 5 条修正均由 `npm run check:content-audit` 锁定，防止后续批次重新引入同类问题。
 
-`apps/api/src/data/catalog-expansion-content-fix-002.json` 是第 19 个不可变批次。它使用东映官方全话目录、鲁邦官方人物页和中央公论新社书目，解决最后两条 `SOURCE_CAPTURED` 正式人物记录：纠正工藤俊作的推荐话标题和无来源地点描述，为钱形幸一补入图鉴真正推荐的《鲁邦三世⑥》及出版社入口；图鉴旧译继续保留在代表案件标签中用于检索和审计。
+`apps/api/src/data/catalog-expansion-content-fix-002.json` 是第 19 个不可变批次。它使用东映官方全话目录、鲁邦官方人物页和中央公论新社书目，解决扩展图鉴审计发现的两条 `SOURCE_CAPTURED` 人物记录：纠正工藤俊作的推荐话标题和无来源地点描述，为钱形幸一补入图鉴真正推荐的《鲁邦三世⑥》及出版社入口；图鉴旧译继续保留在代表案件标签中用于检索和审计。
+
+`apps/api/src/data/catalog-expansion-recommendation-map-001.json` 是第 20 个不可变批次。它不新增或改写人物、作品和原始图鉴标签，只把 42 条名称可精确对应的推荐记录关联到既有正式作品；图鉴 API 和小程序因此可以直接进入作品详情与正版渠道。其余 31 条继续保持未映射，等待独立来源核验。导入器会校验图鉴编号、原始标签和作品 slug，补偿批次可通过 `pictureBookRecommendationUnmappings` 解除错误映射而不删除原始事实。
+
+`apps/api/src/data/catalog-expansion-core-001.json` 是第 21 个不可变批次。它以 Project Gutenberg《The Valley of Fear》、青空文库《黄金仮面》和 Agatha Christie Official《Death on the Nile》补齐第 1～3 卷基础种子人物的来源、时代、分类、别名和图鉴指定作品，并将“恐怖谷”“黄金甲面人”“尼罗河上的惨案”三个原始标签关联到正式作品。由此推荐直达达到 45/73，三位核心人物均升级为 `PRIMARY_SOURCE_CONFIRMED`；原图鉴旧译仍原样保留。
 
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
-错误批次采用前向补偿，不删除可能已有书架、评价或审计引用的记录。补偿文件必须位于清单末尾，以 `rollbackOf` 指向紧邻的最新批次、填写不少于 10 字的 `rollbackReason`，并恢复旧档案或通过 `archiveDetectiveSlugs` / `archiveWorkSlugs` 归档新内容。先执行 `npm run catalog:rollback:preflight -- --file=...`，确认差异后再执行 `npm run catalog:rollback:apply -- --file=...`。成功后原批次标记为 `ROLLED_BACK`，补偿批次标记为 `APPLIED`，重复执行保持幂等；归档作品的公开链接会同步停用。
+错误批次采用前向补偿，不删除可能已有书架、评价或审计引用的记录。补偿文件必须位于清单末尾，以 `rollbackOf` 指向紧邻的最新批次、填写不少于 10 字的 `rollbackReason`，并恢复旧档案、通过 `archiveDetectiveSlugs` / `archiveWorkSlugs` 归档新内容，或用 `pictureBookRecommendationUnmappings` 解除错误推荐映射。先执行 `npm run catalog:rollback:preflight -- --file=...`，确认差异后再执行 `npm run catalog:rollback:apply -- --file=...`。成功后原批次标记为 `ROLLED_BACK`，补偿批次标记为 `APPLIED`，重复执行保持幂等；归档作品的公开链接会同步停用，原始图鉴推荐标签始终保留。
 
 正版链接通过 `npm run links:check` 定时巡检。巡检区分健康、确认失效和暂无法确认三种结果：只有 GET 明确返回 400、404 或 410 才累计确认失败；超时、反爬、429、451、5xx 或抓取失败保存为待人工复核。任何结果都不会自动下架，运营人员须在后台复核并记录处理动作。

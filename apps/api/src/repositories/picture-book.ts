@@ -15,6 +15,14 @@ interface PictureBookRow {
   recommendedVerification: string;
   aliases: string[];
   recommendedWorks: string[];
+  linkedRecommendations: Array<{
+    sourceLabel: string;
+    workSlug: string;
+    titleZh: string;
+    titleOriginal: string | null;
+    mediaType: string;
+    releaseYear: number | null;
+  }>;
   sourceIds: string[];
   sourceUrls: string[];
   sourceLabel: string;
@@ -59,6 +67,21 @@ const pictureBookSelect = `
       WHERE pbr.entry_id = pbe.id
     ), ARRAY[]::varchar[]) AS "recommendedWorks",
     COALESCE((
+      SELECT jsonb_agg(
+        jsonb_build_object(
+          'sourceLabel', pbr.source_label,
+          'workSlug', work.slug,
+          'titleZh', work.title_zh,
+          'titleOriginal', work.title_original,
+          'mediaType', work.media_type::text,
+          'releaseYear', work.release_year
+        ) ORDER BY pbr.display_order
+      )
+      FROM picture_book_recommendations pbr
+      JOIN works work ON work.id = pbr.work_id AND work.status = 'PUBLISHED'
+      WHERE pbr.entry_id = pbe.id
+    ), '[]'::jsonb) AS "linkedRecommendations",
+    COALESCE((
       SELECT array_agg(pbes.source_id ORDER BY pbes.source_id)
       FROM picture_book_entry_sources pbes
       WHERE pbes.entry_id = pbe.id
@@ -93,6 +116,7 @@ function toPictureBookEntry(row: PictureBookRow) {
       aliases: row.aliases
     },
     recommendedWorks: row.recommendedWorks,
+    linkedRecommendations: row.linkedRecommendations,
     detectiveSlug: row.detectiveSlug,
     releaseDate: row.releaseDate,
     sourceIds: row.sourceIds,
@@ -192,7 +216,10 @@ export async function listPictureBookEntries(
     });
     const start = (options.page - 1) * options.pageSize;
     return {
-      data: filtered.slice(start, start + options.pageSize),
+      data: filtered.slice(start, start + options.pageSize).map((entry) => ({
+        ...entry,
+        linkedRecommendations: []
+      })),
       total: filtered.length,
       coverage: fallbackCatalog.coverage,
       snapshotDate: fallbackCatalog.snapshotDate
@@ -225,7 +252,8 @@ export async function listPictureBookEntries(
 
 export async function getPictureBookEntry(database: DatabaseClient | undefined, id: string) {
   if (!database) {
-    return fallbackCatalog.entries.find((item) => item.id === id) ?? null;
+    const entry = fallbackCatalog.entries.find((item) => item.id === id);
+    return entry ? { ...entry, linkedRecommendations: [] } : null;
   }
   const result = await queryRows<PictureBookRow>(
     database,

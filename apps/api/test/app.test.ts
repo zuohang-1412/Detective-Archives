@@ -410,6 +410,7 @@ describe("detective archives API", () => {
     assert.equal(body.coverage.standardVolumeCount, 108);
     assert.equal(body.coverage.latestPublishedVolume, 108);
     assert.equal(body.pagination.total, 109);
+    assert.deepEqual(body.data[0].linkedRecommendations, []);
   });
 
   it("searches picture-book names, aliases and recommended works", async () => {

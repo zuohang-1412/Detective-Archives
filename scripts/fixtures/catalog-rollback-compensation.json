@@ -8,5 +8,11 @@
   "snapshotDate": "2026-07-22",
   "contentPolicy": "Forward compensation never deletes user-facing relations and records an explicit rollback reason and batch key.",
   "sources": [],
-  "detectives": []
+  "detectives": [],
+  "pictureBookRecommendationUnmappings": [
+    {
+      "entryId": "PB-001-STD",
+      "sourceLabel": "恐怖谷"
+    }
+  ]
 }

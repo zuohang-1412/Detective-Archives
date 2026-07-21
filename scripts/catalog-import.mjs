@@ -36,6 +36,15 @@ const workSchema = z.object({
     z.url().refine((url) => url.startsWith("https://"), "replacement URL must use HTTPS")
   ).max(20).default([])
 });
+const pictureBookRecommendationMappingSchema = z.object({
+  entryId: z.string().regex(/^PB-\d{3}-(?:STD|SP)$/),
+  sourceLabel: z.string().min(1).max(240),
+  workSlug: slugSchema.max(120)
+});
+const pictureBookRecommendationUnmappingSchema = z.object({
+  entryId: z.string().regex(/^PB-\d{3}-(?:STD|SP)$/),
+  sourceLabel: z.string().min(1).max(240)
+});
 const detectiveSchema = z.object({
   catalogId: z.string().min(1).max(20),
   pictureBookEntryIds: z.array(z.string().min(1).max(20)).max(20).default([]),
@@ -72,8 +81,22 @@ const importSchema = z.object({
   snapshotDate: z.iso.date(),
   contentPolicy: z.string().min(10).max(1000),
   sources: z.array(sourceSchema).max(500).default([]),
-  detectives: z.array(detectiveSchema).max(500).default([])
+  detectives: z.array(detectiveSchema).max(500).default([]),
+  pictureBookRecommendationMappings: z.array(
+    pictureBookRecommendationMappingSchema
+  ).max(500).default([]),
+  pictureBookRecommendationUnmappings: z.array(
+    pictureBookRecommendationUnmappingSchema
+  ).max(500).default([])
 }).superRefine((input, context) => {
+  const hasCatalogRecords = input.sources.length > 0 || input.detectives.length > 0;
+  if (hasCatalogRecords && (!input.sources.length || !input.detectives.length)) {
+    context.addIssue({
+      code: "custom",
+      path: [],
+      message: "catalog records require both sources and detectives"
+    });
+  }
   if (input.rollbackOf) {
     if (!input.rollbackReason) {
       context.addIssue({ code: "custom", path: ["rollbackReason"], message: "rollback reason is required" });
@@ -83,7 +106,9 @@ const importSchema = z.object({
     }
     if (!input.detectives.length
       && !input.archiveDetectiveSlugs.length
-      && !input.archiveWorkSlugs.length) {
+      && !input.archiveWorkSlugs.length
+      && !input.pictureBookRecommendationMappings.length
+      && !input.pictureBookRecommendationUnmappings.length) {
       context.addIssue({ code: "custom", path: [], message: "rollback batch must contain compensation" });
     }
   } else {
@@ -93,8 +118,19 @@ const importSchema = z.object({
     if (input.archiveDetectiveSlugs.length || input.archiveWorkSlugs.length) {
       context.addIssue({ code: "custom", path: [], message: "archive operations require rollbackOf" });
     }
-    if (!input.sources.length || !input.detectives.length) {
-      context.addIssue({ code: "custom", path: [], message: "catalog batch requires sources and detectives" });
+    if (input.pictureBookRecommendationUnmappings.length) {
+      context.addIssue({
+        code: "custom",
+        path: ["pictureBookRecommendationUnmappings"],
+        message: "recommendation unmapping requires rollbackOf"
+      });
+    }
+    if (!hasCatalogRecords && !input.pictureBookRecommendationMappings.length) {
+      context.addIssue({
+        code: "custom",
+        path: [],
+        message: "catalog batch requires records or recommendation mappings"
+      });
     }
   }
 });
@@ -145,6 +181,21 @@ for (const value of duplicates(input.archiveDetectiveSlugs)) {
 for (const value of duplicates(input.archiveWorkSlugs)) {
   errors.push(`duplicate archived work slug: ${value}`);
 }
+const recommendationKey = (item) => `${item.entryId}\u0000${item.sourceLabel}`;
+for (const value of duplicates(input.pictureBookRecommendationMappings.map(recommendationKey))) {
+  errors.push(`duplicate picture-book recommendation mapping: ${value.replace("\u0000", " / ")}`);
+}
+for (const value of duplicates(input.pictureBookRecommendationUnmappings.map(recommendationKey))) {
+  errors.push(`duplicate picture-book recommendation unmapping: ${value.replace("\u0000", " / ")}`);
+}
+const mappedRecommendationKeys = new Set(
+  input.pictureBookRecommendationMappings.map(recommendationKey)
+);
+for (const item of input.pictureBookRecommendationUnmappings) {
+  if (mappedRecommendationKeys.has(recommendationKey(item))) {
+    errors.push(`${item.entryId} / ${item.sourceLabel}: cannot map and unmap the same recommendation`);
+  }
+}
 for (const detective of input.detectives) {
   if (input.archiveDetectiveSlugs.includes(detective.slug)) {
     errors.push(`${detective.slug}: cannot restore and archive the same detective`);
@@ -156,6 +207,7 @@ for (const detective of input.detectives) {
   }
 }
 const allWorks = input.detectives.flatMap((detective) => detective.works);
+const uniqueWorks = new Map(allWorks.map((work) => [work.slug, work]));
 for (const value of duplicates(allWorks.map((work) => work.slug))) {
   const versions = allWorks.filter((work) => work.slug === value);
   if (new Set(versions.map((work) => JSON.stringify(work))).size > 1) {
@@ -200,10 +252,15 @@ try {
     }
   }
 
-  const workSlugs = [...new Set(allWorks.map((work) => work.slug))];
+  const workSlugs = [...new Set([
+    ...allWorks.map((work) => work.slug),
+    ...input.pictureBookRecommendationMappings.map((mapping) => mapping.workSlug)
+  ])];
   const existingWorks = workSlugs.length
     ? await client.query(`
-      SELECT id, slug, title_zh AS "titleZh" FROM works WHERE slug = ANY($1)
+      SELECT id, slug, title_zh AS "titleZh", status::text
+      FROM works
+      WHERE slug = ANY($1)
     `, [workSlugs])
     : { rows: [] };
   const existingWorksBySlug = new Map(existingWorks.rows.map((row) => [row.slug, row]));
@@ -303,7 +360,50 @@ try {
     }
   }
 
-  const uniqueWorks = new Map(allWorks.map((work) => [work.slug, work]));
+  const recommendationRequests = [
+    ...input.pictureBookRecommendationMappings,
+    ...input.pictureBookRecommendationUnmappings
+  ];
+  const existingRecommendations = recommendationRequests.length
+    ? await client.query(`
+      SELECT
+        recommendation.entry_id AS "entryId",
+        recommendation.source_label AS "sourceLabel",
+        work.slug AS "workSlug"
+      FROM picture_book_recommendations recommendation
+      LEFT JOIN works work ON work.id = recommendation.work_id
+      WHERE (recommendation.entry_id, recommendation.source_label) IN (
+        SELECT * FROM UNNEST($1::text[], $2::text[])
+      )
+    `, [
+      recommendationRequests.map((request) => request.entryId),
+      recommendationRequests.map((request) => request.sourceLabel)
+    ])
+    : { rows: [] };
+  const recommendationsByKey = new Map(
+    existingRecommendations.rows.map((row) => [recommendationKey(row), row])
+  );
+  for (const mapping of input.pictureBookRecommendationMappings) {
+    const key = recommendationKey(mapping);
+    const existingWork = existingWorksBySlug.get(mapping.workSlug);
+    if (!recommendationsByKey.has(key)) {
+      errors.push(`${mapping.entryId}: recommendation label does not exist: ${mapping.sourceLabel}`);
+    }
+    if (!existingWork && !uniqueWorks.has(mapping.workSlug)) {
+      errors.push(`${mapping.entryId}: mapped work does not exist: ${mapping.workSlug}`);
+    } else if (existingWork?.status !== "PUBLISHED" && !uniqueWorks.has(mapping.workSlug)) {
+      errors.push(`${mapping.entryId}: mapped work is not published: ${mapping.workSlug}`);
+    }
+  }
+  for (const unmapping of input.pictureBookRecommendationUnmappings) {
+    const existing = recommendationsByKey.get(recommendationKey(unmapping));
+    if (!existing) {
+      errors.push(`${unmapping.entryId}: recommendation label does not exist: ${unmapping.sourceLabel}`);
+    } else if (!existing.workSlug) {
+      warnings.push(`${unmapping.entryId}: recommendation is already unmapped: ${unmapping.sourceLabel}`);
+    }
+  }
+
   const preview = {
     batchKey: input.batchKey,
     checksum,
@@ -318,6 +418,8 @@ try {
       pictureBookLinks: pictureBookIds.length,
       officialLinks: [...uniqueWorks.values()].length,
       linkDeactivations: linkDeactivationRequests.length,
+      pictureBookRecommendationMappings: input.pictureBookRecommendationMappings.length,
+      pictureBookRecommendationUnmappings: input.pictureBookRecommendationUnmappings.length,
       detectiveArchives: input.archiveDetectiveSlugs.length,
       workArchives: input.archiveWorkSlugs.length
     },
@@ -534,6 +636,37 @@ try {
               is_active = TRUE,
               updated_at = NOW()
           `, [workId, work.linkType, work.providerName, source.url, work.region]);
+        }
+      }
+
+      for (const mapping of input.pictureBookRecommendationMappings) {
+        const changed = await client.query(`
+          UPDATE picture_book_recommendations recommendation
+          SET work_id = work.id
+          FROM works work
+          WHERE recommendation.entry_id = $1
+            AND recommendation.source_label = $2
+            AND work.slug = $3
+            AND work.status = 'PUBLISHED'
+          RETURNING recommendation.id
+        `, [mapping.entryId, mapping.sourceLabel, mapping.workSlug]);
+        if (changed.rowCount !== 1) {
+          throw new Error(
+            `${mapping.entryId}: recommendation mapping changed before apply: ${mapping.sourceLabel}`
+          );
+        }
+      }
+      for (const unmapping of input.pictureBookRecommendationUnmappings) {
+        const changed = await client.query(`
+          UPDATE picture_book_recommendations
+          SET work_id = NULL
+          WHERE entry_id = $1 AND source_label = $2
+          RETURNING id
+        `, [unmapping.entryId, unmapping.sourceLabel]);
+        if (changed.rowCount !== 1) {
+          throw new Error(
+            `${unmapping.entryId}: recommendation unmapping changed before apply: ${unmapping.sourceLabel}`
+          );
         }
       }
 

@@ -4,6 +4,7 @@ import path from "node:path";
 import pg from "pg";
 import {
   catalogSlugify,
+  linkedPictureBookRecommendations,
   loadCatalogBatches,
   uniqueImportedWorks
 } from "./lib/catalog-batches.mjs";
@@ -29,6 +30,7 @@ const pictureBookCatalog = JSON.parse(await readFile(
 ));
 const { batches } = await loadCatalogBatches();
 const importedWorks = uniqueImportedWorks(batches);
+const expectedRecommendationMappings = linkedPictureBookRecommendations(batches);
 const allImportedWorks = new Map(
   batches.flatMap(({ input }) => input.detectives)
     .flatMap((detective) => detective.works)
@@ -125,6 +127,35 @@ try {
   const recommendationCount = await client.query(
     "SELECT COUNT(*)::int AS count FROM picture_book_recommendations"
   );
+  const mappedRecommendationCount = await client.query(`
+    SELECT COUNT(*)::int AS count
+    FROM picture_book_recommendations
+    WHERE work_id IS NOT NULL
+  `);
+  const verifiedCoreSeedCount = await client.query(`
+    SELECT COUNT(*)::int AS count
+    FROM detectives detective
+    WHERE detective.catalog_id = ANY($1)
+      AND detective.verification = 'PRIMARY_SOURCE_CONFIRMED'
+      AND EXISTS (
+        SELECT 1 FROM detective_sources source
+        WHERE source.detective_id = detective.id
+      )
+      AND EXISTS (
+        SELECT 1 FROM detective_featured_works featured
+        WHERE featured.detective_id = detective.id
+      )
+  `, [["PB-001-STD", "PB-002-STD", "PB-003-STD"]]);
+  const invalidMappedRecommendationCount = await client.query(`
+    SELECT COUNT(*)::int AS count
+    FROM picture_book_recommendations recommendation
+    JOIN works work ON work.id = recommendation.work_id
+    WHERE work.status <> 'PUBLISHED'
+      OR NOT EXISTS (
+        SELECT 1 FROM work_links link
+        WHERE link.work_id = work.id AND link.is_active = TRUE
+      )
+  `);
   const sourceCount = await client.query(
     "SELECT COUNT(*)::int AS count FROM detective_sources"
   );
@@ -168,6 +199,13 @@ try {
   expect(pictureBookCount.rows[0].count, pictureBookCatalog.coverage.entryCount, "picture-book entry count");
   expect(linkedPictureBookCount.rows[0].count, expectedPictureBookLinkCount, "linked picture-book entry count");
   expect(recommendationCount.rows[0].count, pictureBookCatalog.coverage.entriesWithRecommendedWorks, "picture-book recommendation count");
+  expect(
+    mappedRecommendationCount.rows[0].count,
+    expectedRecommendationMappings.size,
+    "mapped picture-book recommendation count"
+  );
+  expect(invalidMappedRecommendationCount.rows[0].count, 0, "unavailable mapped recommendation count");
+  expect(verifiedCoreSeedCount.rows[0].count, 3, "verified volumes 1 to 3 detective count");
   expect(sourceCount.rows[0].count, expectedSourceCount, "directory source relation count");
   expect(workCount.rows[0].count, expectedWorkCount, "published work count");
   expect(workLinkCount.rows[0].count, expectedActiveLinkCount, "active official work link count");
@@ -186,7 +224,7 @@ try {
     throw new Error(failures.join("; "));
   }
 
-  console.log(`Database integrity: OK (${expectedDetectiveCount} detectives, ${expectedWorkCount} works, ${pictureBookCatalog.coverage.entryCount} picture-book entries)`);
+  console.log(`Database integrity: OK (${expectedDetectiveCount} detectives, ${expectedWorkCount} works, ${pictureBookCatalog.coverage.entryCount} picture-book entries, ${expectedRecommendationMappings.size} linked recommendations)`);
 } finally {
   await client.end();
 }

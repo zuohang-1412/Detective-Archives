@@ -52,3 +52,16 @@ export function uniqueImportedWorks(batches) {
   }
   return works;
 }
+
+export function linkedPictureBookRecommendations(batches) {
+  const mappings = new Map();
+  for (const { input } of batches) {
+    for (const mapping of input.pictureBookRecommendationMappings ?? []) {
+      mappings.set(`${mapping.entryId}\u0000${mapping.sourceLabel}`, mapping);
+    }
+    for (const unmapping of input.pictureBookRecommendationUnmappings ?? []) {
+      mappings.delete(`${unmapping.entryId}\u0000${unmapping.sourceLabel}`);
+    }
+  }
+  return mappings;
+}
