@@ -2,6 +2,7 @@ const { getDetective } = require("../../services/api");
 
 Page({
   data: {
+    slug: "",
     detective: null,
     loading: true,
     error: ""
@@ -12,13 +13,15 @@ Page({
       this.setData({ loading: false, error: "缺少档案标识" });
       return;
     }
-    this.loadDetective(options.slug);
+    this.setData({ slug: options.slug });
+    this.loadDetective();
   },
 
-  async loadDetective(slug) {
+  async loadDetective() {
+    if (!this.data.slug) return;
     this.setData({ loading: true, error: "" });
     try {
-      const response = await getDetective(slug);
+      const response = await getDetective(this.data.slug);
       this.setData({ detective: response.data });
       wx.setNavigationBarTitle({ title: response.data.nameZh });
     } catch (error) {
@@ -26,6 +29,14 @@ Page({
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  retryLoad() {
+    return this.loadDetective();
+  },
+
+  returnToArchive() {
+    wx.switchTab({ url: "/pages/archive/archive" });
   },
 
   openWork(event) {

@@ -31,6 +31,7 @@ Page({
     reviewsHasMore: false,
     reviewsLoading: false,
     reviewsLoadingMore: false,
+    reviewsError: "",
     loading: true,
     error: ""
   },
@@ -70,7 +71,9 @@ Page({
   },
 
   async loadReviews(workId, page = 1, append = false) {
-    this.setData(append ? { reviewsLoadingMore: true } : { reviewsLoading: true });
+    this.setData(append
+      ? { reviewsLoadingMore: true }
+      : { reviewsLoading: true, reviewsError: "" });
     try {
       const response = await listReviews(workId, { page, pageSize: 10 });
       const reviews = response.data.map((review) => ({
@@ -80,14 +83,29 @@ Page({
       this.setData({
         reviews: append ? [...this.data.reviews, ...reviews] : reviews,
         reviewPage: page,
-        reviewsHasMore: page < response.pagination.totalPages
+        reviewsHasMore: page < response.pagination.totalPages,
+        reviewsError: ""
       });
     } catch (error) {
-      if (!append) this.setData({ reviews: [] });
+      if (!append) {
+        this.setData({
+          reviews: [],
+          reviewsError: error.message || "评价读取失败，请稍后重试"
+        });
+      }
       else wx.showToast({ title: "更多评价读取失败", icon: "none" });
     } finally {
       this.setData(append ? { reviewsLoadingMore: false } : { reviewsLoading: false });
     }
+  },
+
+  retryReviews() {
+    if (!this.data.work || this.data.reviewsLoading) return Promise.resolve();
+    return this.loadReviews(this.data.work.id);
+  },
+
+  returnToArchive() {
+    wx.switchTab({ url: "/pages/archive/archive" });
   },
 
   loadMoreReviews() {

@@ -95,10 +95,16 @@ Page({
         commentsHasMore: response.data.commentPagination.page < response.data.commentPagination.totalPages
       });
     } catch (error) {
-      this.setData({ error: error.message || "评价读取失败" });
+      this.setData({ review: null, error: error.message || "评价读取失败" });
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  goBack() {
+    wx.navigateBack({
+      fail: () => wx.switchTab({ url: "/pages/archive/archive" })
+    });
   },
 
   async loadMoreComments() {

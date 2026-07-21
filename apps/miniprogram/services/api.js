@@ -50,7 +50,10 @@ function request(path, options = {}) {
         reject(error);
       },
       fail(error) {
-        reject(new Error(error.errMsg || "网络连接失败"));
+        const message = /timeout/i.test(error.errMsg || "")
+          ? "请求超时，请检查网络后重试"
+          : "网络连接失败，请检查网络后重试";
+        reject(new Error(message));
       }
     });
   });

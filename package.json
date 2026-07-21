@@ -25,7 +25,7 @@
     "check:production-api": "npm run build && node scripts/check-api-production-config.mjs",
     "check:performance": "node scripts/check-runtime-performance.mjs",
     "check:runtime": "node scripts/check-runtime-smoke.mjs",
-    "check:miniprogram": "node scripts/check-miniprogram.mjs",
+    "check:miniprogram": "node scripts/check-miniprogram.mjs && node scripts/check-miniprogram-resilience.mjs",
     "check:link-safety": "node scripts/check-link-safety.mjs",
     "check:works": "node scripts/check-core-works.mjs",
     "config:miniprogram": "node scripts/configure-miniprogram.mjs",

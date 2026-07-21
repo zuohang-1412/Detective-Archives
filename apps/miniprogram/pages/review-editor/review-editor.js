@@ -14,6 +14,7 @@ Page({
     editing: false,
     loading: false,
     submitting: false,
+    loadError: "",
     error: ""
   },
 
@@ -25,7 +26,7 @@ Page({
       return;
     }
     if (!options.workId) {
-      this.setData({ error: "缺少作品编号" });
+      this.setData({ loadError: "缺少作品编号" });
       return;
     }
     this.setData({
@@ -35,6 +36,8 @@ Page({
   },
 
   async loadReview() {
+    if (!this.data.reviewId) return;
+    this.setData({ loading: true, loadError: "", error: "" });
     try {
       const response = await getMyReview(this.data.reviewId);
       const review = response.data;
@@ -45,13 +48,24 @@ Page({
         title: review.title || "",
         body: review.body,
         ratingIndex: Number(review.rating || 0),
-        containsSpoiler: review.containsSpoiler
+        containsSpoiler: review.containsSpoiler,
+        loadError: ""
       });
     } catch (error) {
-      this.setData({ error: error.message || "评价读取失败" });
+      this.setData({ loadError: error.message || "评价读取失败" });
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  retryLoad() {
+    return this.loadReview();
+  },
+
+  goBack() {
+    wx.navigateBack({
+      fail: () => wx.switchTab({ url: "/pages/archive/archive" })
+    });
   },
 
   changeType(event) {

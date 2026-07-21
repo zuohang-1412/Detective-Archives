@@ -1,6 +1,12 @@
 <view class="page-shell">
   <view wx:if="{{loading}}" class="state-message">正在展开档案…</view>
-  <view wx:elif="{{error}}" class="state-message">{{error}}</view>
+  <view wx:elif="{{error}}" class="state-message">
+    <view class="state-copy">{{error}}</view>
+    <view class="state-actions">
+      <button wx:if="{{slug}}" class="state-action" bindtap="retryLoad">重新读取</button>
+      <button class="state-action secondary" bindtap="returnToArchive">返回档案室</button>
+    </view>
+  </view>
   <view wx:elif="{{detective}}">
     <view class="profile-head">
       <text class="eyebrow">DETECTIVE FILE</text>
@@ -16,6 +22,7 @@
     <view class="work-section">
       <text class="eyebrow">REPRESENTATIVE WORKS</text>
       <view class="section-title">代表作品</view>
+      <view wx:if="{{!detective.works.length}}" class="state-message">代表作品正在核验整理。</view>
       <view
         wx:for="{{detective.works}}"
         wx:key="id"

@@ -37,6 +37,7 @@ Page({
     agreementsAccepted: false,
     shelfActionId: "",
     reviewActionId: "",
+    loadError: "",
     error: ""
   },
 
@@ -50,10 +51,17 @@ Page({
 
   async refresh() {
     if (!hasAuthToken()) {
-      this.setData({ loggedIn: false, user: null, items: [], reviews: [], loading: false });
+      this.setData({
+        loggedIn: false,
+        user: null,
+        items: [],
+        reviews: [],
+        loading: false,
+        loadError: ""
+      });
       return;
     }
-    this.setData({ loading: true, error: "" });
+    this.setData({ loading: true, loadError: "", error: "" });
     try {
       const [userResponse, shelfResponse, reviewResponse] = await Promise.all([
         getCurrentUser(),
@@ -74,11 +82,11 @@ Page({
         ...review,
         statusLabel: reviewStatusLabels[review.status] || review.status
       }));
-      this.setData({ loggedIn: true, user: userResponse.data, items, reviews });
+      this.setData({ loggedIn: true, user: userResponse.data, items, reviews, loadError: "" });
     } catch (error) {
       this.setData({
         loggedIn: hasAuthToken(),
-        error: error.message || "档案馆读取失败"
+        loadError: error.message || "档案馆读取失败，请稍后重试"
       });
     } finally {
       this.setData({ loading: false });

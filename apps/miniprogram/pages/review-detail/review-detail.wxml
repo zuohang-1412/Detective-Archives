@@ -1,6 +1,12 @@
 <view class="page-shell">
   <view wx:if="{{loading}}" class="state-message">正在展开读者笔记…</view>
-  <view wx:elif="{{error}}" class="state-message" bindtap="loadReview">{{error}}</view>
+  <view wx:elif="{{error}}" class="state-message">
+    <view class="state-copy">{{error}}</view>
+    <view class="state-actions">
+      <button wx:if="{{reviewId}}" class="state-action" bindtap="loadReview">重新读取</button>
+      <button class="state-action secondary" bindtap="goBack">返回上一页</button>
+    </view>
+  </view>
   <block wx:elif="{{review}}">
     <view class="review-head">
       <text class="eyebrow">READER NOTE</text>

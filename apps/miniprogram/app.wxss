@@ -42,3 +42,35 @@ page {
   color: #777269;
   text-align: center;
 }
+
+.state-copy {
+  line-height: 1.65;
+}
+
+.state-actions {
+  display: flex;
+  justify-content: center;
+  gap: 18rpx;
+  margin-top: 28rpx;
+}
+
+.state-action {
+  min-width: 200rpx;
+  margin: 0;
+  padding: 0 24rpx;
+  border-radius: 9rpx;
+  background: #9f3123;
+  color: #fffaf0;
+  font-size: 24rpx;
+  line-height: 72rpx;
+}
+
+.state-action.secondary {
+  border: 1rpx solid #b9aa94;
+  background: transparent;
+  color: #6d655b;
+}
+
+.state-action::after {
+  border: 0;
+}

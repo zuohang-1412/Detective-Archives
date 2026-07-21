@@ -24,7 +24,15 @@
 
   <view wx:if="{{error}}" class="error-note">{{error}}</view>
 
-  <block wx:if="{{loggedIn}}">
+  <view wx:if="{{loadError}}" class="state-message">
+    <view class="state-copy">{{loadError}}</view>
+    <view class="state-actions">
+      <button class="state-action" bindtap="refresh">重新读取</button>
+      <button class="state-action secondary" bindtap="goArchive">前往档案室</button>
+    </view>
+  </view>
+
+  <block wx:if="{{loggedIn && !loadError}}">
     <view class="shelf-tabs">
       <view
         wx:for="{{tabs}}"

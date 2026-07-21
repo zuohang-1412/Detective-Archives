@@ -30,6 +30,28 @@ async function checkScript(filePath) {
   }
 }
 
+async function checkTemplate(filePath) {
+  const source = (await readFile(filePath, "utf8")).replace(/<!--[\s\S]*?-->/g, "");
+  const stack = [];
+  const tagPattern = /<\/?([a-zA-Z][\w-]*)\b[^>]*>/g;
+  let match;
+  while ((match = tagPattern.exec(source))) {
+    const fullTag = match[0];
+    const tagName = match[1];
+    if (fullTag.startsWith("</")) {
+      const openTag = stack.pop();
+      if (openTag !== tagName) {
+        throw new Error(`Unbalanced WXML in ${filePath}: expected </${openTag || "none"}> but found </${tagName}>`);
+      }
+    } else if (!fullTag.endsWith("/>")) {
+      stack.push(tagName);
+    }
+  }
+  if (stack.length) {
+    throw new Error(`Unbalanced WXML in ${filePath}: missing </${stack.at(-1)}>`);
+  }
+}
+
 const appConfig = await parseJson(appConfigPath);
 if (!Array.isArray(appConfig.pages) || appConfig.pages.length === 0) {
   throw new Error("app.json must declare at least one page");
@@ -43,7 +65,7 @@ await checkScript(path.join(root, "services/api.js"));
 for (const page of appConfig.pages) {
   const base = path.join(root, page);
   await Promise.all([
-    assertFile(`${base}.wxml`),
+    checkTemplate(`${base}.wxml`),
     assertFile(`${base}.wxss`),
     parseJson(`${base}.json`),
     checkScript(`${base}.js`)

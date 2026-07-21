@@ -1,0 +1,335 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import vm from "node:vm";
+
+const root = path.resolve("apps/miniprogram");
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function setDataValue(target, key, value) {
+  const parts = key.match(/[^.[\]]+/g) || [];
+  let current = target;
+  parts.forEach((part, index) => {
+    if (index === parts.length - 1) {
+      current[part] = value;
+      return;
+    }
+    const nextPart = parts[index + 1];
+    if (current[part] === undefined || current[part] === null) {
+      current[part] = /^\d+$/.test(nextPart) ? [] : {};
+    }
+    current = current[part];
+  });
+}
+
+function wxStub() {
+  return {
+    navigateBack(options = {}) {
+      options.success?.();
+    },
+    navigateTo() {},
+    setNavigationBarTitle() {},
+    showActionSheet() {},
+    showModal() {},
+    showToast() {},
+    stopPullDownRefresh() {},
+    switchTab() {}
+  };
+}
+
+async function loadPage(pageName, api) {
+  const source = await readFile(path.join(root, `pages/${pageName}/${pageName}.js`), "utf8");
+  let definition;
+  vm.runInNewContext(source, {
+    Page(pageDefinition) {
+      definition = pageDefinition;
+    },
+    require(request) {
+      if (request === "../../services/api") return api;
+      throw new Error(`Unexpected require from ${pageName}: ${request}`);
+    },
+    wx: wxStub()
+  }, { filename: `${pageName}.js` });
+  assert.ok(definition, `${pageName} must register a Page`);
+  const instance = {
+    ...definition,
+    data: clone(definition.data),
+    setData(values, callback) {
+      Object.entries(values).forEach(([key, value]) => setDataValue(this.data, key, value));
+      callback?.();
+    }
+  };
+  return instance;
+}
+
+async function assertRequestFailureMessage(errMsg, expected) {
+  const source = await readFile(path.join(root, "services/api.js"), "utf8");
+  const module = { exports: {} };
+  vm.runInNewContext(source, {
+    getApp: () => ({ globalData: { apiBaseUrl: "https://api.example.test" } }),
+    module,
+    exports: module.exports,
+    wx: {
+      getStorageSync: () => "",
+      removeStorageSync() {},
+      request(options) {
+        options.fail({ errMsg });
+      },
+      setStorageSync() {}
+    }
+  }, { filename: "services/api.js" });
+  await assert.rejects(module.exports.listDetectives(), (error) => {
+    assert.equal(error.message, expected);
+    return true;
+  });
+}
+
+async function assertHttpErrorMessage(statusCode, responseData, expected) {
+  const source = await readFile(path.join(root, "services/api.js"), "utf8");
+  const module = { exports: {} };
+  vm.runInNewContext(source, {
+    getApp: () => ({ globalData: { apiBaseUrl: "https://api.example.test" } }),
+    module,
+    exports: module.exports,
+    wx: {
+      getStorageSync: () => "session-token",
+      removeStorageSync() {},
+      request(options) {
+        options.success({ statusCode, data: responseData });
+      },
+      setStorageSync() {}
+    }
+  }, { filename: "services/api.js" });
+  await assert.rejects(module.exports.listDetectives(), (error) => {
+    assert.equal(error.message, expected);
+    assert.equal(error.statusCode, statusCode);
+    assert.equal(error.code, responseData.code);
+    return true;
+  });
+}
+
+await assertRequestFailureMessage(
+  "request:fail timeout",
+  "请求超时，请检查网络后重试"
+);
+await assertRequestFailureMessage(
+  "request:fail connection reset",
+  "网络连接失败，请检查网络后重试"
+);
+await assertHttpErrorMessage(
+  403,
+  { code: "ACCESS_DENIED", message: "你没有权限查看这项内容" },
+  "你没有权限查看这项内容"
+);
+await assertHttpErrorMessage(
+  404,
+  { code: "CONTENT_NOT_FOUND", message: "内容已删除或不再公开" },
+  "内容已删除或不再公开"
+);
+
+let homeFails = true;
+const home = await loadPage("home", {
+  async listDetectives() {
+    if (homeFails) throw new Error("首页网络失败");
+    return { data: [{ id: "detective-1", slug: "detective-1" }] };
+  }
+});
+await home.loadFeatured();
+assert.equal(home.data.loading, false);
+assert.equal(home.data.error, "首页网络失败");
+homeFails = false;
+await home.loadFeatured();
+assert.equal(home.data.error, "");
+assert.equal(home.data.detectives.length, 1);
+
+let archiveFails = true;
+const archive = await loadPage("archive", {
+  async listDetectives() {
+    if (archiveFails) throw new Error("目录网络失败");
+    return {
+      data: [],
+      facets: { countries: [], eras: [], categories: [], subjectKinds: [], tags: [] },
+      pagination: { page: 1, total: 0, totalPages: 1 }
+    };
+  },
+  async listPictureBookEntries() {
+    return { data: [], coverage: { latestPublishedVolume: 108, entryCount: 109 } };
+  },
+  async listArchiveDirectory() {
+    return { data: [], coverage: { extensionCount: 20, historicalCount: 3 } };
+  }
+});
+archive.searchRequestId = 0;
+await archive.search();
+assert.equal(archive.data.loading, false);
+assert.equal(archive.data.error, "目录网络失败");
+archiveFails = false;
+await archive.retrySearch();
+assert.equal(archive.data.error, "");
+assert.equal(archive.data.coverage.total, 0);
+
+let detectiveFails = true;
+const detective = await loadPage("detective", {
+  async getDetective() {
+    if (detectiveFails) throw new Error("人物档案网络失败");
+    return { data: { id: "detective-1", nameZh: "测试侦探", works: [] } };
+  }
+});
+detective.setData({ slug: "detective-1" });
+await detective.loadDetective();
+assert.equal(detective.data.error, "人物档案网络失败");
+detectiveFails = false;
+await detective.retryLoad();
+assert.equal(detective.data.error, "");
+assert.equal(detective.data.detective.nameZh, "测试侦探");
+
+let workFails = true;
+let reviewsFail = true;
+const work = await loadPage("work", {
+  async createWorkLinkFeedback() {},
+  async getShelfItem() {},
+  async getWork() {
+    if (workFails) throw new Error("作品网络失败");
+    return {
+      data: {
+        id: "work-1",
+        slug: "work-1",
+        titleZh: "测试作品",
+        type: "NOVEL",
+        links: [],
+        creators: [],
+        detectives: []
+      }
+    };
+  },
+  hasAuthToken: () => false,
+  async listReviews() {
+    if (reviewsFail) throw new Error("评价网络失败");
+    return { data: [], pagination: { page: 1, totalPages: 1 } };
+  },
+  async removeShelfItem() {},
+  async trackWorkLinkClick() {},
+  async updateShelfItem() {}
+});
+work.setData({ slug: "work-1" });
+await work.loadWork();
+assert.equal(work.data.error, "作品网络失败");
+workFails = false;
+await work.loadWork();
+assert.equal(work.data.error, "");
+assert.equal(work.data.work.titleZh, "测试作品");
+assert.equal(work.data.reviewsError, "评价网络失败");
+reviewsFail = false;
+await work.retryReviews();
+assert.equal(work.data.reviewsError, "");
+assert.equal(work.data.reviews.length, 0);
+
+let meFails = true;
+const me = await loadPage("me", {
+  async deactivateAccount() {},
+  async deleteReview() {},
+  async getCurrentUser() {
+    if (meFails) throw new Error("私人档案网络失败");
+    return { data: { id: "user-1", displayName: "测试读者" } };
+  },
+  hasAuthToken: () => true,
+  async listMyReviews() {
+    return { data: [] };
+  },
+  async listShelf() {
+    return { data: [] };
+  },
+  async loginWechat() {},
+  async logout() {},
+  async removeShelfItem() {},
+  async updateShelfItem() {}
+});
+await me.refresh();
+assert.equal(me.data.loading, false);
+assert.equal(me.data.loadError, "私人档案网络失败");
+meFails = false;
+await me.refresh();
+assert.equal(me.data.loadError, "");
+assert.equal(me.data.loggedIn, true);
+
+let detailFails = true;
+const reviewDetail = await loadPage("review-detail", {
+  async createComment() {},
+  async createReport() {},
+  async deleteComment() {},
+  async deleteReview() {},
+  async getCurrentUser() {},
+  async getReview() {
+    if (detailFails) throw new Error("评价详情网络失败");
+    return {
+      data: {
+        id: "review-1",
+        author: { id: "user-2", displayName: "其他读者" },
+        comments: [],
+        containsSpoiler: false,
+        commentPagination: { page: 1, totalPages: 1 }
+      }
+    };
+  },
+  hasAuthToken: () => false,
+  async setCommentLike() {},
+  async setReviewLike() {}
+});
+reviewDetail.setData({ reviewId: "review-1" });
+await reviewDetail.loadReview();
+assert.equal(reviewDetail.data.error, "评价详情网络失败");
+assert.equal(reviewDetail.data.review, null);
+detailFails = false;
+await reviewDetail.loadReview();
+assert.equal(reviewDetail.data.error, "");
+assert.equal(reviewDetail.data.review.id, "review-1");
+
+let editorFails = true;
+const reviewEditor = await loadPage("review-editor", {
+  async createReview() {},
+  async getMyReview() {
+    if (editorFails) throw new Error("评价编辑网络失败");
+    return {
+      data: {
+        id: "review-1",
+        workId: "work-1",
+        work: { titleZh: "测试作品" },
+        reviewType: "SHORT",
+        title: null,
+        body: "测试正文",
+        rating: null,
+        containsSpoiler: false
+      }
+    };
+  },
+  async updateReview() {}
+});
+reviewEditor.setData({ reviewId: "review-1", editing: true });
+await reviewEditor.loadReview();
+assert.equal(reviewEditor.data.loading, false);
+assert.equal(reviewEditor.data.loadError, "评价编辑网络失败");
+editorFails = false;
+await reviewEditor.retryLoad();
+assert.equal(reviewEditor.data.loadError, "");
+assert.equal(reviewEditor.data.body, "测试正文");
+
+const retryBindings = [
+  ["home", "loadFeatured", "轻触重试"],
+  ["archive", "retrySearch", "重新检索"],
+  ["detective", "retryLoad", "重新读取"],
+  ["work", "loadWork", "重新读取"],
+  ["work", "retryReviews", "重新读取评价"],
+  ["me", "refresh", "重新读取"],
+  ["review-detail", "loadReview", "重新读取"],
+  ["review-editor", "retryLoad", "重新读取"]
+];
+for (const [pageName, method, label] of retryBindings) {
+  const template = await readFile(path.join(root, `pages/${pageName}/${pageName}.wxml`), "utf8");
+  assert.ok(template.includes(`bindtap="${method}"`), `${pageName} must bind ${method}`);
+  assert.ok(template.includes(label), `${pageName} must explain the retry action`);
+}
+
+console.log("Mini program resilience: OK (network messages, failure states and retries)");

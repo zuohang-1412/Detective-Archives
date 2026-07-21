@@ -57,7 +57,12 @@
   </block>
 
   <view wx:if="{{loading}}" class="state-message">正在检索档案…</view>
-  <view wx:elif="{{error}}" class="state-message">{{error}}</view>
+  <view wx:elif="{{error}}" class="state-message">
+    <view class="state-copy">{{error}}</view>
+    <view class="state-actions">
+      <button class="state-action" bindtap="retrySearch">重新检索</button>
+    </view>
+  </view>
   <view wx:elif="{{!entries.length}}" class="state-message">没有找到匹配档案</view>
   <view wx:else class="result-list">
     <block wx:if="{{activeSection === 'detectives'}}">

@@ -1,8 +1,11 @@
 <view class="page-shell">
   <view wx:if="{{loading}}" class="state-message">正在调取作品资料…</view>
-  <view wx:elif="{{error}}" class="state-message" bindtap="loadWork">
-    <view>{{error}}</view>
-    <view class="retry">轻触重试</view>
+  <view wx:elif="{{error}}" class="state-message">
+    <view class="state-copy">{{error}}</view>
+    <view class="state-actions">
+      <button wx:if="{{slug}}" class="state-action" bindtap="loadWork">重新读取</button>
+      <button class="state-action secondary" bindtap="returnToArchive">返回档案室</button>
+    </view>
   </view>
   <view wx:elif="{{work}}">
     <view class="work-head">
@@ -74,6 +77,12 @@
         <text class="write-review" bindtap="writeReview">写评价</text>
       </view>
       <view wx:if="{{reviewsLoading}}" class="review-empty">正在读取评价…</view>
+      <view wx:elif="{{reviewsError}}" class="state-message">
+        <view class="state-copy">{{reviewsError}}</view>
+        <view class="state-actions">
+          <button class="state-action" bindtap="retryReviews">重新读取评价</button>
+        </view>
+      </view>
       <view wx:elif="{{!reviews.length}}" class="review-empty">还没有公开评价，来写下第一份阅读感受。</view>
       <view wx:else>
         <view wx:for="{{reviews}}" wx:key="id" class="card review-card">

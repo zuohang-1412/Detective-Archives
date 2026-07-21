@@ -1,64 +1,73 @@
 <view class="page-shell">
-  <text class="eyebrow">READER NOTE</text>
-  <view class="section-title">写给《{{workTitle}}》</view>
   <view wx:if="{{loading}}" class="state-message">正在读取原评价…</view>
-  <view class="review-policy">请分享原创、友善且与作品有关的内容。含关键情节时务必开启剧透标记。</view>
-
-  <view class="type-switch">
-    <view
-      class="type-option {{reviewType === 'SHORT' ? 'active' : ''}}"
-      data-type="SHORT"
-      bindtap="changeType"
-    >短评</view>
-    <view
-      class="type-option {{reviewType === 'LONG' ? 'active' : ''}}"
-      data-type="LONG"
-      bindtap="changeType"
-    >长评 / 读后感</view>
-  </view>
-
-  <view wx:if="{{reviewType === 'LONG'}}" class="field">
-    <view class="field-label">标题</view>
-    <input
-      class="text-input"
-      maxlength="160"
-      placeholder="给这篇长评一个标题"
-      value="{{title}}"
-      bindinput="inputTitle"
-    />
-  </view>
-
-  <view class="field">
-    <view class="field-label">正文</view>
-    <textarea
-      class="body-input"
-      maxlength="10000"
-      auto-height
-      placeholder="写下你的阅读感受、推理体验或观后感…"
-      value="{{body}}"
-      bindinput="inputBody"
-    />
-    <view class="character-count">{{body.length}} / 10000</view>
-  </view>
-
-  <view class="setting-row">
-    <view>
-      <view class="field-label">评分</view>
-      <view class="setting-copy">可选，不评分也可以提交</view>
+  <view wx:elif="{{loadError}}" class="state-message">
+    <view class="state-copy">{{loadError}}</view>
+    <view class="state-actions">
+      <button wx:if="{{reviewId}}" class="state-action" bindtap="retryLoad">重新读取</button>
+      <button class="state-action secondary" bindtap="goBack">返回上一页</button>
     </view>
-    <picker mode="selector" range="{{ratingOptions}}" value="{{ratingIndex}}" bindchange="changeRating">
-      <view class="picker-value">{{ratingOptions[ratingIndex]}} ›</view>
-    </picker>
   </view>
+  <block wx:else>
+    <text class="eyebrow">READER NOTE</text>
+    <view class="section-title">写给《{{workTitle}}》</view>
+    <view class="review-policy">请分享原创、友善且与作品有关的内容。含关键情节时务必开启剧透标记。</view>
 
-  <view class="setting-row">
-    <view>
-      <view class="field-label">包含剧透</view>
-      <view class="setting-copy">开启后，正文默认折叠</view>
+    <view class="type-switch">
+      <view
+        class="type-option {{reviewType === 'SHORT' ? 'active' : ''}}"
+        data-type="SHORT"
+        bindtap="changeType"
+      >短评</view>
+      <view
+        class="type-option {{reviewType === 'LONG' ? 'active' : ''}}"
+        data-type="LONG"
+        bindtap="changeType"
+      >长评 / 读后感</view>
     </view>
-    <switch color="#9f3123" checked="{{containsSpoiler}}" bindchange="changeSpoiler" />
-  </view>
 
-  <view wx:if="{{error}}" class="error-note">{{error}}</view>
-  <button class="submit-button" disabled="{{loading}}" loading="{{submitting}}" bindtap="submit">{{editing ? '保存并重新提交' : '提交审核'}}</button>
+    <view wx:if="{{reviewType === 'LONG'}}" class="field">
+      <view class="field-label">标题</view>
+      <input
+        class="text-input"
+        maxlength="160"
+        placeholder="给这篇长评一个标题"
+        value="{{title}}"
+        bindinput="inputTitle"
+      />
+    </view>
+
+    <view class="field">
+      <view class="field-label">正文</view>
+      <textarea
+        class="body-input"
+        maxlength="10000"
+        auto-height
+        placeholder="写下你的阅读感受、推理体验或观后感…"
+        value="{{body}}"
+        bindinput="inputBody"
+      />
+      <view class="character-count">{{body.length}} / 10000</view>
+    </view>
+
+    <view class="setting-row">
+      <view>
+        <view class="field-label">评分</view>
+        <view class="setting-copy">可选，不评分也可以提交</view>
+      </view>
+      <picker mode="selector" range="{{ratingOptions}}" value="{{ratingIndex}}" bindchange="changeRating">
+        <view class="picker-value">{{ratingOptions[ratingIndex]}} ›</view>
+      </picker>
+    </view>
+
+    <view class="setting-row">
+      <view>
+        <view class="field-label">包含剧透</view>
+        <view class="setting-copy">开启后，正文默认折叠</view>
+      </view>
+      <switch color="#9f3123" checked="{{containsSpoiler}}" bindchange="changeSpoiler" />
+    </view>
+
+    <view wx:if="{{error}}" class="error-note">{{error}}</view>
+    <button class="submit-button" disabled="{{submitting}}" loading="{{submitting}}" bindtap="submit">{{editing ? '保存并重新提交' : '提交审核'}}</button>
+  </block>
 </view>

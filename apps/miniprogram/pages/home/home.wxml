@@ -19,6 +19,12 @@
     <view>{{error}}</view>
     <view class="retry-text">轻触重试</view>
   </view>
+  <view wx:elif="{{!detectives.length}}" class="state-message">
+    <view class="state-copy">本期精选正在整理，你仍可以浏览完整档案目录。</view>
+    <view class="state-actions">
+      <button class="state-action" bindtap="openArchive">进入档案室</button>
+    </view>
+  </view>
   <view wx:else>
     <view
       wx:for="{{detectives}}"

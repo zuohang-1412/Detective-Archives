@@ -263,6 +263,10 @@ Page({
     }
   },
 
+  retrySearch() {
+    return this.search({ reset: true });
+  },
+
   openEntry(event) {
     const { slug, id, name } = event.currentTarget.dataset;
     if (this.data.activeSection === "detectives") {
