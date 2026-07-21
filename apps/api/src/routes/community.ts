@@ -24,6 +24,10 @@ const reviewListSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(50).default(20)
 });
+const reviewDetailQuerySchema = z.object({
+  commentPage: z.coerce.number().int().min(1).default(1),
+  commentPageSize: z.coerce.number().int().min(1).max(50).default(20)
+});
 const reviewInputSchema = z.object({
   reviewType: z.enum(["SHORT", "LONG"]),
   title: z.string().trim().max(160).optional(),
@@ -201,8 +205,12 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
 
   app.get("/reviews/:reviewId", async (request, reply) => {
     const params = uuidParamsSchema.safeParse(request.params);
+    const query = reviewDetailQuerySchema.safeParse(request.query);
     if (!params.success || !params.data.reviewId) {
       return reply.code(400).send({ code: "INVALID_REVIEW_ID", message: "评价编号不合法" });
+    }
+    if (!query.success) {
+      return reply.code(400).send({ code: "INVALID_REVIEW_QUERY", message: "回复分页条件不合法" });
     }
     if (!options.database) {
       return reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
@@ -215,15 +223,45 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
     const comments = await listPublicComments(
       options.database,
       params.data.reviewId,
-      viewer?.id ?? null
+      viewer?.id ?? null,
+      query.data.commentPage,
+      query.data.commentPageSize
     );
-    return { data: { ...review, comments } };
+    return {
+      data: {
+        ...review,
+        comments: comments.data,
+        commentPagination: {
+          page: query.data.commentPage,
+          pageSize: query.data.commentPageSize,
+          total: comments.total,
+          totalPages: Math.ceil(comments.total / query.data.commentPageSize)
+        }
+      }
+    };
   });
 
   app.get("/me/reviews", async (request, reply) => {
+    const query = reviewListSchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.code(400).send({ code: "INVALID_REVIEW_QUERY", message: "评价查询条件不合法" });
+    }
     const user = await requireUser(options.database, request, reply);
     if (!user || !options.database) return;
-    return { data: await listMyReviews(options.database, user.id) };
+    const result = await listMyReviews(
+      options.database,
+      user.id,
+      query.data.page,
+      query.data.pageSize
+    );
+    return {
+      data: result.data,
+      pagination: {
+        ...query.data,
+        total: result.total,
+        totalPages: Math.ceil(result.total / query.data.pageSize)
+      }
+    };
   });
 
   app.get("/me/reviews/:reviewId", async (request, reply) => {

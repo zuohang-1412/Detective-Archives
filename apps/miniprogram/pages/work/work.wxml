@@ -100,6 +100,12 @@
             bindtap="openReview"
           >赞 {{item.likeCount}} · 回复 {{item.commentCount}} · 查看讨论</view>
         </view>
+        <button
+          wx:if="{{reviewsHasMore}}"
+          class="load-more-reviews"
+          loading="{{reviewsLoadingMore}}"
+          bindtap="loadMoreReviews"
+        >加载更多评价</button>
       </view>
     </view>
 

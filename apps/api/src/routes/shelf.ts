@@ -10,7 +10,11 @@ import {
 } from "../repositories/shelf.js";
 
 const statusSchema = z.enum(["WISHLIST", "IN_PROGRESS", "COMPLETED", "PAUSED", "DROPPED"]);
-const listQuerySchema = z.object({ status: statusSchema.optional() });
+const listQuerySchema = z.object({
+  status: statusSchema.optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(50)
+});
 const workParamsSchema = z.object({ workId: z.uuid() });
 const updateSchema = z.object({
   status: statusSchema,
@@ -47,8 +51,22 @@ export const shelfRoutes: FastifyPluginAsync<ShelfRouteOptions> = async (app, op
     }
     const user = await authenticatedUser(options.database, request, reply);
     if (!user || !options.database) return;
-    const data = await listShelfItems(options.database, user.id, query.data.status);
-    return { data };
+    const result = await listShelfItems(
+      options.database,
+      user.id,
+      query.data.status,
+      query.data.page,
+      query.data.pageSize
+    );
+    return {
+      data: result.data,
+      pagination: {
+        page: query.data.page,
+        pageSize: query.data.pageSize,
+        total: result.total,
+        totalPages: Math.ceil(result.total / query.data.pageSize)
+      }
+    };
   });
 
   app.get("/me/shelf/:workId", async (request, reply) => {

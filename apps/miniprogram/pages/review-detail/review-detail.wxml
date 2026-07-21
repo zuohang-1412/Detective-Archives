@@ -27,7 +27,7 @@
 
     <view class="discussion">
       <text class="eyebrow">DISCUSSION</text>
-      <view class="section-title">回复 {{review.comments.length}}</view>
+      <view class="section-title">回复 {{review.commentCount}}</view>
       <view wx:if="{{!review.comments.length}}" class="empty-comments">还没有公开回复。</view>
       <view wx:for="{{review.comments}}" wx:key="id" class="comment-card">
         <view class="comment-author">{{item.author.displayName}}</view>
@@ -49,6 +49,12 @@
           <text wx:else data-comment-id="{{item.id}}" bindtap="reportComment">举报</text>
         </view>
       </view>
+      <button
+        wx:if="{{commentsHasMore}}"
+        class="load-more"
+        loading="{{commentsLoading}}"
+        bindtap="loadMoreComments"
+      >加载更多回复</button>
     </view>
 
     <view class="reply-editor">

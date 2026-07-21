@@ -63,6 +63,19 @@
   font-size: 21rpx;
 }
 
+.load-more-reviews {
+  margin: 24rpx 0 0;
+  border: 1rpx solid #bbae99;
+  border-radius: 9rpx;
+  background: transparent;
+  color: #6d655b;
+  font-size: 23rpx;
+}
+
+.load-more-reviews::after {
+  border: 0;
+}
+
 .review-title {
   margin-top: 17rpx;
   font-family: Georgia, "Times New Roman", serif;

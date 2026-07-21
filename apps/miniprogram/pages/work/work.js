@@ -27,7 +27,10 @@ Page({
     shelfItem: null,
     shelfUpdating: false,
     reviews: [],
+    reviewPage: 1,
+    reviewsHasMore: false,
     reviewsLoading: false,
+    reviewsLoadingMore: false,
     loading: true,
     error: ""
   },
@@ -66,20 +69,35 @@ Page({
     }
   },
 
-  async loadReviews(workId) {
-    this.setData({ reviewsLoading: true });
+  async loadReviews(workId, page = 1, append = false) {
+    this.setData(append ? { reviewsLoadingMore: true } : { reviewsLoading: true });
     try {
-      const response = await listReviews(workId, { pageSize: 10 });
+      const response = await listReviews(workId, { page, pageSize: 10 });
       const reviews = response.data.map((review) => ({
         ...review,
         spoilerRevealed: !review.containsSpoiler
       }));
-      this.setData({ reviews });
+      this.setData({
+        reviews: append ? [...this.data.reviews, ...reviews] : reviews,
+        reviewPage: page,
+        reviewsHasMore: page < response.pagination.totalPages
+      });
     } catch (error) {
-      this.setData({ reviews: [] });
+      if (!append) this.setData({ reviews: [] });
+      else wx.showToast({ title: "更多评价读取失败", icon: "none" });
     } finally {
-      this.setData({ reviewsLoading: false });
+      this.setData(append ? { reviewsLoadingMore: false } : { reviewsLoading: false });
     }
+  },
+
+  loadMoreReviews() {
+    if (
+      !this.data.work
+      || !this.data.reviewsHasMore
+      || this.data.reviewsLoading
+      || this.data.reviewsLoadingMore
+    ) return;
+    this.loadReviews(this.data.work.id, this.data.reviewPage + 1, true);
   },
 
   writeReview() {

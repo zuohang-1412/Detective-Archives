@@ -68,6 +68,19 @@
   font-size: 24rpx;
 }
 
+.load-more {
+  margin: 24rpx 0 0;
+  border: 1rpx solid #bbae99;
+  border-radius: 9rpx;
+  background: transparent;
+  color: #6d655b;
+  font-size: 23rpx;
+}
+
+.load-more::after {
+  border: 0;
+}
+
 .comment-card {
   padding: 28rpx 0;
   border-top: 1rpx solid #d8cbb8;

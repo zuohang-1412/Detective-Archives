@@ -20,6 +20,11 @@ for (const healthLabel of ["确认失效链接", "待人工复核", "超期未�
     throw new Error(`Admin UI must expose link health state: ${healthLabel}`);
   }
 }
+for (const paginationCapability of ["listAllAdminPages", "listAllModerationPages", "pageSize=50"]) {
+  if (!script.includes(paginationCapability)) {
+    throw new Error(`Admin UI must load bounded paginated data: ${paginationCapability}`);
+  }
+}
 
 const html = await readFile(path.join(root, "index.html"), "utf8");
 for (const asset of ["/admin/styles.css", "/admin/app.js"]) {

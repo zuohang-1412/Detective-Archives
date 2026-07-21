@@ -59,7 +59,9 @@ const shelfSelect = `
 export async function listShelfItems(
   database: DatabaseClient,
   userId: string,
-  status?: ProgressStatus | undefined
+  status: ProgressStatus | undefined,
+  page: number,
+  pageSize: number
 ) {
   const values: unknown[] = [userId];
   const clauses = ["shelf.user_id = $1", "work.status = 'PUBLISHED'"];
@@ -67,12 +69,23 @@ export async function listShelfItems(
     values.push(status);
     clauses.push(`shelf.status::text = $${values.length}`);
   }
+  const countResult = await queryRows<{ total: string }>(database, `
+    SELECT COUNT(*)::text AS total
+    FROM shelf_items shelf
+    JOIN works work ON work.id = shelf.work_id
+    WHERE ${clauses.join(" AND ")}
+  `, values);
+  values.push(pageSize, (page - 1) * pageSize);
   const result = await queryRows<ShelfRow>(database, `
     ${shelfSelect}
     WHERE ${clauses.join(" AND ")}
-    ORDER BY shelf.updated_at DESC
+    ORDER BY shelf.updated_at DESC, shelf.id
+    LIMIT $${values.length - 1} OFFSET $${values.length}
   `, values);
-  return result.rows;
+  return {
+    data: result.rows,
+    total: Number.parseInt(countResult.rows[0]?.total ?? "0", 10)
+  };
 }
 
 export async function getShelfItem(

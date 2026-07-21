@@ -308,6 +308,14 @@ try {
   });
   assert.equal(shelfResponse.statusCode, 200, shelfResponse.body);
   assert.equal(shelfResponse.json().data.length, 1);
+  assert.equal(shelfResponse.json().pagination.total, 1);
+  assert.equal(shelfResponse.json().pagination.totalPages, 1);
+  const invalidShelfPaginationResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/shelf?pageSize=51",
+    headers: authorization
+  });
+  assert.equal(invalidShelfPaginationResponse.statusCode, 400, invalidShelfPaginationResponse.body);
 
   const secondaryLoginResponse = await app.inject({
     method: "POST",
@@ -408,11 +416,18 @@ try {
 
   const usersResponse = await app.inject({
     method: "GET",
-    url: "/api/v1/admin/users?pageSize=100",
+    url: "/api/v1/admin/users?pageSize=50",
     headers: adminAuthorization
   });
   assert.equal(usersResponse.statusCode, 200, usersResponse.body);
   assert.ok(usersResponse.json().data.some((item) => item.id === editorUserId));
+  assert.ok(usersResponse.json().pagination.total >= usersResponse.json().data.length);
+  const oversizedAdminPageResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/users?pageSize=51",
+    headers: adminAuthorization
+  });
+  assert.equal(oversizedAdminPageResponse.statusCode, 400, oversizedAdminPageResponse.body);
   const setEditorRoleResponse = await app.inject({
     method: "PATCH",
     url: `/api/v1/admin/users/${secondaryLoginResponse.json().data.user.id}/role`,
@@ -520,6 +535,7 @@ try {
   });
   assert.equal(adminDetectiveListResponse.statusCode, 200, adminDetectiveListResponse.body);
   assert.equal(adminDetectiveListResponse.json().data[0].id, managedDetectiveId);
+  assert.equal(adminDetectiveListResponse.json().pagination.total, 1);
 
   const createWorkResponse = await app.inject({
     method: "POST",
@@ -535,6 +551,13 @@ try {
   });
   assert.equal(createWorkResponse.statusCode, 201, createWorkResponse.body);
   const managedWorkId = createWorkResponse.json().data.id;
+  const adminWorkListResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/works?q=database-api-check&pageSize=1",
+    headers: adminAuthorization
+  });
+  assert.equal(adminWorkListResponse.statusCode, 200, adminWorkListResponse.body);
+  assert.equal(adminWorkListResponse.json().pagination.total, 1);
   const forbiddenEditorPublish = await app.inject({
     method: "POST",
     url: `/api/v1/admin/works/${managedWorkId}/status`,
@@ -645,6 +668,7 @@ try {
   });
   assert.equal(linkFeedbackQueueResponse.statusCode, 200, linkFeedbackQueueResponse.body);
   assert.ok(linkFeedbackQueueResponse.json().data.some((item) => item.id === linkFeedbackId));
+  assert.ok(linkFeedbackQueueResponse.json().pagination.total >= 1);
   const resolveLinkFeedbackResponse = await app.inject({
     method: "PATCH",
     url: `/api/v1/admin/work-link-feedback/${linkFeedbackId}`,
@@ -724,6 +748,14 @@ try {
   assert.equal(ownPendingReviewResponse.statusCode, 200, ownPendingReviewResponse.body);
   assert.equal(ownPendingReviewResponse.json().data.work.id, workId);
   assert.equal(ownPendingReviewResponse.json().data.status, "PENDING_REVIEW");
+  const myReviewsPageResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/reviews?page=1&pageSize=1",
+    headers: authorization
+  });
+  assert.equal(myReviewsPageResponse.statusCode, 200, myReviewsPageResponse.body);
+  assert.equal(myReviewsPageResponse.json().data.length, 1);
+  assert.equal(myReviewsPageResponse.json().pagination.total, 1);
   const reviewSafetyAudit = await database.query(`
     SELECT metadata->'contentSafety' AS safety
     FROM audit_logs
@@ -805,6 +837,13 @@ try {
   });
   assert.equal(pendingReviewQueue.statusCode, 200, pendingReviewQueue.body);
   assert.ok(pendingReviewQueue.json().data.reviews.some((item) => item.id === reviewId));
+  assert.ok(pendingReviewQueue.json().pagination.reviews.total >= 1);
+  const oversizedModerationPageResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/moderation?pageSize=51",
+    headers: adminAuthorization
+  });
+  assert.equal(oversizedModerationPageResponse.statusCode, 400, oversizedModerationPageResponse.body);
   const publishReviewResponse = await app.inject({
     method: "POST",
     url: `/api/v1/admin/moderation/REVIEW/${reviewId}`,
@@ -855,7 +894,15 @@ try {
   });
   assert.equal(reviewDetailResponse.statusCode, 200, reviewDetailResponse.body);
   assert.equal(reviewDetailResponse.json().data.comments.length, 1);
+  assert.equal(reviewDetailResponse.json().data.commentPagination.total, 1);
+  assert.equal(reviewDetailResponse.json().data.commentPagination.totalPages, 1);
   assert.equal(reviewDetailResponse.json().data.likedByMe, false);
+  const invalidCommentPaginationResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/reviews/${reviewId}?commentPageSize=51`
+  });
+  assert.equal(invalidCommentPaginationResponse.statusCode, 400, invalidCommentPaginationResponse.body);
+  assert.equal(invalidCommentPaginationResponse.json().code, "INVALID_REVIEW_QUERY");
 
   const concurrentReportResponses = await Promise.all(Array.from({ length: 2 }, () => app.inject({
     method: "POST",

@@ -40,8 +40,32 @@ export async function getAdminDashboard(database: DatabaseClient) {
   return result.rows[0];
 }
 
-export async function getModerationQueue(database: DatabaseClient) {
-  const [reviewResult, commentResult, reportResult] = await Promise.all([
+export async function getModerationQueue(
+  database: DatabaseClient,
+  page: number,
+  pageSize: number
+) {
+  const offset = (page - 1) * pageSize;
+  const [
+    reviewCount,
+    commentCount,
+    reportCount,
+    reviewResult,
+    commentResult,
+    reportResult
+  ] = await Promise.all([
+    queryRows<{ total: number }>(database, `
+      SELECT COUNT(*)::int AS total FROM reviews
+      WHERE status = 'PENDING_REVIEW' AND deleted_at IS NULL
+    `),
+    queryRows<{ total: number }>(database, `
+      SELECT COUNT(*)::int AS total FROM comments
+      WHERE status = 'PENDING_REVIEW' AND deleted_at IS NULL
+    `),
+    queryRows<{ total: number }>(database, `
+      SELECT COUNT(*)::int AS total FROM reports
+      WHERE status IN ('OPEN', 'PROCESSING')
+    `),
     queryRows(database, `
       SELECT
         review.id,
@@ -57,9 +81,9 @@ export async function getModerationQueue(database: DatabaseClient) {
       JOIN users author ON author.id = review.user_id
       JOIN works work ON work.id = review.work_id
       WHERE review.status = 'PENDING_REVIEW' AND review.deleted_at IS NULL
-      ORDER BY review.created_at
-      LIMIT 100
-    `),
+      ORDER BY review.created_at, review.id
+      LIMIT $1 OFFSET $2
+    `, [pageSize, offset]),
     queryRows(database, `
       SELECT
         comment.id,
@@ -77,9 +101,9 @@ export async function getModerationQueue(database: DatabaseClient) {
       JOIN users author ON author.id = comment.user_id
       JOIN reviews review ON review.id = comment.review_id
       WHERE comment.status = 'PENDING_REVIEW' AND comment.deleted_at IS NULL
-      ORDER BY comment.created_at
-      LIMIT 100
-    `),
+      ORDER BY comment.created_at, comment.id
+      LIMIT $1 OFFSET $2
+    `, [pageSize, offset]),
     queryRows(database, `
       SELECT
         report.id,
@@ -101,14 +125,17 @@ export async function getModerationQueue(database: DatabaseClient) {
       FROM reports report
       JOIN users reporter ON reporter.id = report.reporter_id
       WHERE report.status IN ('OPEN', 'PROCESSING')
-      ORDER BY report.created_at
-      LIMIT 100
-    `)
+      ORDER BY report.created_at, report.id
+      LIMIT $1 OFFSET $2
+    `, [pageSize, offset])
   ]);
   return {
     reviews: reviewResult.rows,
     comments: commentResult.rows,
-    reports: reportResult.rows
+    reports: reportResult.rows,
+    reviewTotal: reviewCount.rows[0]?.total ?? 0,
+    commentTotal: commentCount.rows[0]?.total ?? 0,
+    reportTotal: reportCount.rows[0]?.total ?? 0
   };
 }
 
@@ -226,7 +253,18 @@ export interface AdminWorkInput {
   creatorName?: string | undefined;
 }
 
-export async function listAdminWorks(database: DatabaseClient, query?: string | undefined) {
+export async function listAdminWorks(
+  database: DatabaseClient,
+  options: { q?: string | undefined; page: number; pageSize: number }
+) {
+  const count = await queryRows<{ total: number }>(database, `
+    SELECT COUNT(*)::int AS total
+    FROM works work
+    WHERE $1::text IS NULL
+      OR work.title_zh ILIKE '%' || $1 || '%'
+      OR work.title_original ILIKE '%' || $1 || '%'
+      OR work.slug ILIKE '%' || $1 || '%'
+  `, [options.q ?? null]);
   const result = await queryRows(database, `
     SELECT
       work.id,
@@ -268,10 +306,10 @@ export async function listAdminWorks(database: DatabaseClient, query?: string | 
       OR work.title_zh ILIKE '%' || $1 || '%'
       OR work.title_original ILIKE '%' || $1 || '%'
       OR work.slug ILIKE '%' || $1 || '%'
-    ORDER BY work.updated_at DESC
-    LIMIT 200
-  `, [query ?? null]);
-  return result.rows;
+    ORDER BY work.updated_at DESC, work.id
+    LIMIT $2 OFFSET $3
+  `, [options.q ?? null, options.pageSize, (options.page - 1) * options.pageSize]);
+  return { data: result.rows, total: count.rows[0]?.total ?? 0 };
 }
 
 async function replaceWorkCreator(

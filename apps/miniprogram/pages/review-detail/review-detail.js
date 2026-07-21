@@ -31,6 +31,9 @@ Page({
     replyTo: null,
     viewerId: "",
     actionId: "",
+    commentPage: 1,
+    commentsHasMore: false,
+    commentsLoading: false,
     submitting: false
   },
 
@@ -54,7 +57,10 @@ Page({
   async loadReview() {
     this.setData({ loading: true, error: "" });
     try {
-      const response = await getReview(this.data.reviewId);
+      const response = await getReview(this.data.reviewId, {
+        commentPage: 1,
+        commentPageSize: 20
+      });
       let viewerId = "";
       if (hasAuthToken()) {
         try {
@@ -76,12 +82,43 @@ Page({
       this.setData({
         review,
         spoilerRevealed: !review.containsSpoiler,
-        viewerId
+        viewerId,
+        commentPage: 1,
+        commentsHasMore: response.data.commentPagination.page < response.data.commentPagination.totalPages
       });
     } catch (error) {
       this.setData({ error: error.message || "评价读取失败" });
     } finally {
       this.setData({ loading: false });
+    }
+  },
+
+  async loadMoreComments() {
+    if (!this.data.review || !this.data.commentsHasMore || this.data.commentsLoading) return;
+    const nextPage = this.data.commentPage + 1;
+    this.setData({ commentsLoading: true });
+    try {
+      const response = await getReview(this.data.reviewId, {
+        commentPage: nextPage,
+        commentPageSize: 20
+      });
+      const existing = new Set(this.data.review.comments.map((comment) => comment.id));
+      const comments = response.data.comments
+        .filter((comment) => !existing.has(comment.id))
+        .map((comment) => ({
+          ...comment,
+          isMine: comment.author.id === this.data.viewerId,
+          spoilerRevealed: !comment.containsSpoiler
+        }));
+      this.setData({
+        "review.comments": [...this.data.review.comments, ...comments],
+        commentPage: nextPage,
+        commentsHasMore: nextPage < response.data.commentPagination.totalPages
+      });
+    } catch (error) {
+      wx.showToast({ title: error.message || "更多回复读取失败", icon: "none" });
+    } finally {
+      this.setData({ commentsLoading: false });
     }
   },
 

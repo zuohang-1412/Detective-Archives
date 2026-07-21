@@ -103,7 +103,7 @@ export async function listPublicReviews(
       AND review.status = 'PUBLISHED'
       AND review.deleted_at IS NULL
       AND author.is_active = TRUE
-    ORDER BY review.published_at DESC, review.created_at DESC
+    ORDER BY review.published_at DESC, review.created_at DESC, review.id
     LIMIT $3 OFFSET $4
   `, [viewerId, workId, pageSize, (page - 1) * pageSize]);
   return {
@@ -127,9 +127,8 @@ export async function getPublicReview(
   return result.rows[0] ?? null;
 }
 
-export async function listMyReviews(database: DatabaseClient, userId: string) {
-  const result = await queryRows<ReviewRow>(database, `
-    SELECT
+const myReviewSelect = `
+  SELECT
       review.id,
       review.work_id AS "workId",
       review.review_type::text AS "reviewType",
@@ -161,13 +160,32 @@ export async function listMyReviews(database: DatabaseClient, userId: string) {
         SELECT 1 FROM review_likes likes
         WHERE likes.review_id = review.id AND likes.user_id = $1
       ) AS "likedByMe"
-    FROM reviews review
-    JOIN users account ON account.id = review.user_id
-    JOIN works work ON work.id = review.work_id
-    WHERE review.user_id = $1 AND review.deleted_at IS NULL
-    ORDER BY review.updated_at DESC
+  FROM reviews review
+  JOIN users account ON account.id = review.user_id
+  JOIN works work ON work.id = review.work_id
+`;
+
+export async function listMyReviews(
+  database: DatabaseClient,
+  userId: string,
+  page: number,
+  pageSize: number
+) {
+  const countResult = await queryRows<{ total: string }>(database, `
+    SELECT COUNT(*)::text AS total
+    FROM reviews
+    WHERE user_id = $1 AND deleted_at IS NULL
   `, [userId]);
-  return result.rows;
+  const result = await queryRows<ReviewRow>(database, `
+    ${myReviewSelect}
+    WHERE review.user_id = $1 AND review.deleted_at IS NULL
+    ORDER BY review.updated_at DESC, review.id
+    LIMIT $2 OFFSET $3
+  `, [userId, pageSize, (page - 1) * pageSize]);
+  return {
+    data: result.rows,
+    total: Number.parseInt(countResult.rows[0]?.total ?? "0", 10)
+  };
 }
 
 export async function getMyReview(
@@ -175,8 +193,11 @@ export async function getMyReview(
   userId: string,
   reviewId: string
 ) {
-  const reviews = await listMyReviews(database, userId);
-  return reviews.find((review) => review.id === reviewId) ?? null;
+  const result = await queryRows<ReviewRow>(database, `
+    ${myReviewSelect}
+    WHERE review.user_id = $1 AND review.id = $2 AND review.deleted_at IS NULL
+  `, [userId, reviewId]);
+  return result.rows[0] ?? null;
 }
 
 export async function createReview(
@@ -217,8 +238,7 @@ export async function createReview(
   ]);
   const id = result.rows[0]?.id;
   if (!id) return null;
-  const reviews = await listMyReviews(database, userId);
-  return reviews.find((review) => review.id === id) ?? null;
+  return getMyReview(database, userId, id);
 }
 
 export async function updateReview(
@@ -261,8 +281,7 @@ export async function updateReview(
     { contentSafety }
   ]);
   if (!result.rows[0]) return null;
-  const reviews = await listMyReviews(database, userId);
-  return reviews.find((review) => review.id === reviewId) ?? null;
+  return getMyReview(database, userId, reviewId);
 }
 
 export async function softDeleteReview(
@@ -289,8 +308,19 @@ export async function softDeleteReview(
 export async function listPublicComments(
   database: DatabaseClient,
   reviewId: string,
-  viewerId: string | null
+  viewerId: string | null,
+  page: number,
+  pageSize: number
 ) {
+  const countResult = await queryRows<{ total: string }>(database, `
+    SELECT COUNT(*)::text AS total
+    FROM comments comment
+    JOIN users author ON author.id = comment.user_id
+    WHERE comment.review_id = $1
+      AND comment.status = 'PUBLISHED'
+      AND comment.deleted_at IS NULL
+      AND author.is_active = TRUE
+  `, [reviewId]);
   const result = await queryRows<CommentRow>(database, `
     SELECT
       comment.id,
@@ -316,9 +346,13 @@ export async function listPublicComments(
       AND comment.status = 'PUBLISHED'
       AND comment.deleted_at IS NULL
       AND author.is_active = TRUE
-    ORDER BY comment.published_at, comment.created_at
-  `, [viewerId, reviewId]);
-  return result.rows;
+    ORDER BY comment.published_at, comment.created_at, comment.id
+    LIMIT $3 OFFSET $4
+  `, [viewerId, reviewId, pageSize, (page - 1) * pageSize]);
+  return {
+    data: result.rows,
+    total: Number.parseInt(countResult.rows[0]?.total ?? "0", 10)
+  };
 }
 
 export async function createComment(

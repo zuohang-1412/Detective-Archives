@@ -57,6 +57,9 @@ const meScript = await readFile(path.join(root, "pages/me/me.js"), "utf8");
 const meTemplate = await readFile(path.join(root, "pages/me/me.wxml"), "utf8");
 const reviewEditorScript = await readFile(path.join(root, "pages/review-editor/review-editor.js"), "utf8");
 const reviewDetailTemplate = await readFile(path.join(root, "pages/review-detail/review-detail.wxml"), "utf8");
+const reviewDetailScript = await readFile(path.join(root, "pages/review-detail/review-detail.js"), "utf8");
+const workScript = await readFile(path.join(root, "pages/work/work.js"), "utf8");
+const workTemplate = await readFile(path.join(root, "pages/work/work.wxml"), "utf8");
 for (const filterName of ["country", "era", "category", "subjectKind", "tag"]) {
   if (!archiveScript.includes(`key: "${filterName}"`)) {
     throw new Error(`Archive page must expose the ${filterName} filter`);
@@ -90,6 +93,15 @@ for (const behavior of ["editReview", "deleteOwnReview", "deleteOwnComment"]) {
   if (!reviewDetailTemplate.includes(`bindtap="${behavior}"`)) {
     throw new Error(`Review detail must expose ${behavior}`);
   }
+}
+if (!apiScript.includes("async function listAllPages(")) {
+  throw new Error("Private shelf and review lists must load bounded API pages");
+}
+if (!workScript.includes("loadMoreReviews(") || !workTemplate.includes('bindtap="loadMoreReviews"')) {
+  throw new Error("Work detail must expose public review pagination");
+}
+if (!reviewDetailScript.includes("loadMoreComments(") || !reviewDetailTemplate.includes('bindtap="loadMoreComments"')) {
+  throw new Error("Review detail must expose public comment pagination");
 }
 
 console.log(`Mini program structure and syntax: OK (${appConfig.pages.length} pages)`);

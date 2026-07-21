@@ -49,7 +49,11 @@ const suspensionBodySchema = z.object({
 });
 const workParamsSchema = z.object({ workId: z.uuid() });
 const linkParamsSchema = z.object({ linkId: z.uuid() });
-const workQuerySchema = z.object({ q: z.string().trim().max(80).optional() });
+const listQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(50)
+});
+const workQuerySchema = listQuerySchema.extend({ q: z.string().trim().max(80).optional() });
 const workInputSchema = z.object({
   slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120),
   titleZh: z.string().trim().min(1).max(200),
@@ -118,7 +122,7 @@ const userQuerySchema = z.object({
   q: z.string().trim().max(80).optional(),
   role: z.enum(["USER", "EDITOR", "MODERATOR", "ADMIN"]).optional(),
   page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(50)
+  pageSize: z.coerce.number().int().min(1).max(50).default(50)
 });
 const roleBodySchema = z.object({
   role: z.enum(["USER", "EDITOR", "MODERATOR", "ADMIN"])
@@ -128,7 +132,7 @@ const auditQuerySchema = z.object({
   resourceType: z.string().trim().regex(/^[A-Z0-9_]+$/).max(50).optional(),
   actorId: z.uuid().optional(),
   page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(50)
+  pageSize: z.coerce.number().int().min(1).max(50).default(50)
 });
 const feedbackParamsSchema = z.object({ feedbackId: z.uuid() });
 const feedbackResolutionSchema = z.object({
@@ -154,9 +158,36 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
   });
 
   app.get("/admin/moderation", async (request, reply) => {
+    const query = listQuerySchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.code(400).send({ code: "INVALID_QUERY", message: "审核队列分页条件不合法" });
+    }
     const user = await authorizeRoles(options.database, request, reply, ["MODERATOR", "ADMIN"]);
     if (!user || !options.database) return;
-    return { data: await getModerationQueue(options.database) };
+    const result = await getModerationQueue(options.database, query.data.page, query.data.pageSize);
+    return {
+      data: {
+        reviews: result.reviews,
+        comments: result.comments,
+        reports: result.reports
+      },
+      pagination: {
+        page: query.data.page,
+        pageSize: query.data.pageSize,
+        reviews: {
+          total: result.reviewTotal,
+          totalPages: Math.ceil(result.reviewTotal / query.data.pageSize)
+        },
+        comments: {
+          total: result.commentTotal,
+          totalPages: Math.ceil(result.commentTotal / query.data.pageSize)
+        },
+        reports: {
+          total: result.reportTotal,
+          totalPages: Math.ceil(result.reportTotal / query.data.pageSize)
+        }
+      }
+    };
   });
 
   app.post("/admin/moderation/:targetType/:targetId", async (request, reply) => {
@@ -236,7 +267,16 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
     }
     const user = await authorizeRoles(options.database, request, reply, ["EDITOR", "ADMIN"]);
     if (!user || !options.database) return;
-    return { data: await listAdminWorks(options.database, query.data.q) };
+    const result = await listAdminWorks(options.database, query.data);
+    return {
+      data: result.data,
+      pagination: {
+        page: query.data.page,
+        pageSize: query.data.pageSize,
+        total: result.total,
+        totalPages: Math.ceil(result.total / query.data.pageSize)
+      }
+    };
   });
 
   app.post("/admin/works", async (request, reply) => {
@@ -360,7 +400,16 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
     }
     const user = await authorizeRoles(options.database, request, reply, ["EDITOR", "ADMIN"]);
     if (!user || !options.database) return;
-    return { data: await listAdminDetectives(options.database, query.data.q) };
+    const result = await listAdminDetectives(options.database, query.data);
+    return {
+      data: result.data,
+      pagination: {
+        page: query.data.page,
+        pageSize: query.data.pageSize,
+        total: result.total,
+        totalPages: Math.ceil(result.total / query.data.pageSize)
+      }
+    };
   });
 
   app.post("/admin/detectives", async (request, reply) => {
@@ -516,9 +565,22 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
   });
 
   app.get("/admin/work-link-feedback", async (request, reply) => {
+    const query = listQuerySchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.code(400).send({ code: "INVALID_QUERY", message: "链接反馈分页条件不合法" });
+    }
     const user = await authorizeRoles(options.database, request, reply, ["EDITOR", "ADMIN"]);
     if (!user || !options.database) return;
-    return { data: await listAdminWorkLinkFeedback(options.database) };
+    const result = await listAdminWorkLinkFeedback(options.database, query.data.page, query.data.pageSize);
+    return {
+      data: result.data,
+      pagination: {
+        page: query.data.page,
+        pageSize: query.data.pageSize,
+        total: result.total,
+        totalPages: Math.ceil(result.total / query.data.pageSize)
+      }
+    };
   });
 
   app.patch("/admin/work-link-feedback/:feedbackId", async (request, reply) => {

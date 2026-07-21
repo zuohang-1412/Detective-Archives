@@ -43,7 +43,14 @@ export async function createWorkLinkFeedback(
   return result.rows[0] ?? null;
 }
 
-export async function listAdminWorkLinkFeedback(database: DatabaseClient) {
+export async function listAdminWorkLinkFeedback(
+  database: DatabaseClient,
+  page: number,
+  pageSize: number
+) {
+  const count = await queryRows<{ total: number }>(database, `
+    SELECT COUNT(*)::int AS total FROM work_link_feedback WHERE status = 'OPEN'
+  `);
   const result = await queryRows(database, `
     SELECT
       feedback.id,
@@ -71,10 +78,10 @@ export async function listAdminWorkLinkFeedback(database: DatabaseClient) {
     JOIN works work ON work.id = link.work_id
     LEFT JOIN users account ON account.id = feedback.user_id
     WHERE feedback.status = 'OPEN'
-    ORDER BY feedback.created_at
-    LIMIT 200
-  `);
-  return result.rows;
+    ORDER BY feedback.created_at, feedback.id
+    LIMIT $1 OFFSET $2
+  `, [pageSize, (page - 1) * pageSize]);
+  return { data: result.rows, total: count.rows[0]?.total ?? 0 };
 }
 
 export async function handleWorkLinkFeedback(

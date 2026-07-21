@@ -33,8 +33,18 @@ export interface AdminDetectiveInput {
 
 export async function listAdminDetectives(
   database: DatabaseClient,
-  query?: string | undefined
+  options: { q?: string | undefined; page: number; pageSize: number }
 ) {
+  const count = await queryRows<{ total: number }>(database, `
+    SELECT COUNT(*)::int AS total
+    FROM detectives detective
+    WHERE $1::text IS NULL
+      OR detective.name_zh ILIKE '%' || $1 || '%'
+      OR detective.name_original ILIKE '%' || $1 || '%'
+      OR detective.name_en ILIKE '%' || $1 || '%'
+      OR detective.slug ILIKE '%' || $1 || '%'
+      OR detective.catalog_id ILIKE '%' || $1 || '%'
+  `, [options.q ?? null]);
   const result = await queryRows(database, `
     SELECT
       detective.id,
@@ -88,10 +98,10 @@ export async function listAdminDetectives(
       OR detective.name_en ILIKE '%' || $1 || '%'
       OR detective.slug ILIKE '%' || $1 || '%'
       OR detective.catalog_id ILIKE '%' || $1 || '%'
-    ORDER BY detective.updated_at DESC, detective.name_zh
-    LIMIT 300
-  `, [query ?? null]);
-  return result.rows;
+    ORDER BY detective.updated_at DESC, detective.name_zh, detective.id
+    LIMIT $2 OFFSET $3
+  `, [options.q ?? null, options.pageSize, (options.page - 1) * options.pageSize]);
+  return { data: result.rows, total: count.rows[0]?.total ?? 0 };
 }
 
 async function replaceDetectiveRelations(
@@ -360,7 +370,7 @@ export async function listAdminUsers(
       ), ARRAY[]::varchar[]) AS providers
     FROM users account
     WHERE ${where}
-    ORDER BY account.created_at DESC
+    ORDER BY account.created_at DESC, account.id
     LIMIT $${values.length + 1} OFFSET $${values.length + 2}
   `, [...values, options.pageSize, (options.page - 1) * options.pageSize]);
   return { data: rows.rows, total: count.rows[0]?.total ?? 0 };
@@ -448,7 +458,7 @@ export async function listAdminAuditLogs(
     FROM audit_logs audit
     LEFT JOIN users actor ON actor.id = audit.actor_id
     WHERE ${where}
-    ORDER BY audit.created_at DESC
+    ORDER BY audit.created_at DESC, audit.id
     LIMIT $${values.length + 1} OFFSET $${values.length + 2}
   `, [...values, options.pageSize, (options.page - 1) * options.pageSize]);
   return { data: rows.rows, total: count.rows[0]?.total ?? 0 };

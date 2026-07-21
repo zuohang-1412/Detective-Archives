@@ -81,6 +81,52 @@ async function api(path, options = {}) {
   return body;
 }
 
+const maxAutomaticPages = 100;
+
+function pagedPath(path, page) {
+  return `${path}${path.includes("?") ? "&" : "?"}page=${page}&pageSize=50`;
+}
+
+async function listAllAdminPages(path) {
+  const data = [];
+  let page = 1;
+  let totalPages = 1;
+  let total = 0;
+  do {
+    const response = await api(pagedPath(path, page));
+    data.push(...response.data);
+    total = response.pagination?.total ?? data.length;
+    totalPages = response.pagination?.totalPages ?? 1;
+    page += 1;
+  } while (page <= totalPages && page <= maxAutomaticPages);
+  if (page <= totalPages) throw new Error("后台列表超过自动加载上限，请先使用筛选条件缩小范围");
+  return { data, total };
+}
+
+async function listAllModerationPages() {
+  const result = { reviews: [], comments: [], reports: [] };
+  const totals = { reviews: 0, comments: 0, reports: 0 };
+  let page = 1;
+  let totalPages = 1;
+  do {
+    const response = await api(pagedPath("/admin/moderation", page));
+    result.reviews.push(...response.data.reviews);
+    result.comments.push(...response.data.comments);
+    result.reports.push(...response.data.reports);
+    for (const type of ["reviews", "comments", "reports"]) {
+      totals[type] = response.pagination?.[type]?.total ?? result[type].length;
+    }
+    totalPages = Math.max(
+      response.pagination?.reviews?.totalPages ?? 1,
+      response.pagination?.comments?.totalPages ?? 1,
+      response.pagination?.reports?.totalPages ?? 1
+    );
+    page += 1;
+  } while (page <= totalPages && page <= maxAutomaticPages);
+  if (page <= totalPages) throw new Error("待处理内容超过自动加载上限，请分批处理后刷新");
+  return { data: result, totals };
+}
+
 function textElement(tag, className, text) {
   const element = document.createElement(tag);
   if (className) element.className = className;
@@ -489,19 +535,19 @@ async function loadWorkspace() {
   try {
     const [dashboard, moderation, works, detectives, linkFeedback, users, audits] = await Promise.all([
       api("/admin/dashboard"),
-      api("/admin/moderation"),
-      api("/admin/works"),
-      api("/admin/detectives"),
-      api("/admin/work-link-feedback"),
-      api("/admin/users?pageSize=50"),
-      api("/admin/audit-logs?pageSize=50")
+      listAllModerationPages(),
+      listAllAdminPages("/admin/works"),
+      listAllAdminPages("/admin/detectives"),
+      listAllAdminPages("/admin/work-link-feedback"),
+      listAllAdminPages("/admin/users"),
+      listAllAdminPages("/admin/audit-logs")
     ]);
     showWorkspace();
     renderMetrics(dashboard.data);
     const queue = moderation.data;
-    elements.reviewCount.textContent = String(queue.reviews.length);
-    elements.commentCount.textContent = String(queue.comments.length);
-    elements.reportCount.textContent = String(queue.reports.length);
+    elements.reviewCount.textContent = String(moderation.totals.reviews);
+    elements.commentCount.textContent = String(moderation.totals.comments);
+    elements.reportCount.textContent = String(moderation.totals.reports);
     renderContentQueue(elements.reviewQueue, queue.reviews, "REVIEW");
     renderContentQueue(elements.commentQueue, queue.comments, "COMMENT");
     renderReports(queue.reports);

@@ -56,6 +56,19 @@ function request(path, options = {}) {
   });
 }
 
+async function listAllPages(path, data = {}) {
+  const collected = [];
+  for (let page = 1; page <= 100; page += 1) {
+    const response = await request(path, {
+      data: { ...data, page, pageSize: 50 }
+    });
+    collected.push(...response.data);
+    const totalPages = response.pagination?.totalPages || 1;
+    if (page >= totalPages) return { ...response, data: collected };
+  }
+  throw new Error("列表记录过多，请缩小筛选范围");
+}
+
 function listDetectives(params = {}) {
   return request("/api/v1/detectives", { data: params });
 }
@@ -140,7 +153,7 @@ async function logout() {
 }
 
 function listShelf(status) {
-  return request("/api/v1/me/shelf", { data: status ? { status } : {} });
+  return listAllPages("/api/v1/me/shelf", status ? { status } : {});
 }
 
 function getShelfItem(workId) {
@@ -164,12 +177,12 @@ function listReviews(workId, params = {}) {
   return request(`/api/v1/works/${encodeURIComponent(workId)}/reviews`, { data: params });
 }
 
-function getReview(reviewId) {
-  return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}`);
+function getReview(reviewId, params = {}) {
+  return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}`, { data: params });
 }
 
 function listMyReviews() {
-  return request("/api/v1/me/reviews");
+  return listAllPages("/api/v1/me/reviews");
 }
 
 function getMyReview(reviewId) {
