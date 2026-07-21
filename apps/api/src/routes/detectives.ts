@@ -1,7 +1,11 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import type { DatabaseClient } from "../db/types.js";
-import { getDetectiveBySlug, listDetectives } from "../repositories/detectives.js";
+import {
+  getDetectiveBySlug,
+  listDetectiveFacets,
+  listDetectives
+} from "../repositories/detectives.js";
 
 const listQuerySchema = z.object({
   q: z.string().trim().max(50).optional(),
@@ -40,9 +44,13 @@ export const detectiveRoutes: FastifyPluginAsync<DetectiveRouteOptions> = async 
     }
 
     const { page, pageSize } = parsed.data;
-    const result = await listDetectives(options.database, parsed.data);
+    const [result, facets] = await Promise.all([
+      listDetectives(options.database, parsed.data),
+      listDetectiveFacets(options.database)
+    ]);
     return {
       data: result.data,
+      facets,
       pagination: {
         page,
         pageSize,

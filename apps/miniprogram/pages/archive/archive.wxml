@@ -29,6 +29,33 @@
     <text class="search-action" bindtap="onSearch">搜索</text>
   </view>
 
+  <block wx:if="{{activeSection === 'detectives'}}">
+    <view class="filter-toolbar">
+      <view class="filter-toggle {{selectedFilterCount ? 'active' : ''}}" bindtap="onToggleFilters">
+        筛选{{selectedFilterCount ? ' · ' + selectedFilterCount : ''}}
+      </view>
+      <view wx:if="{{selectedFilterCount}}" class="filter-clear" bindtap="onClearFilters">重置筛选</view>
+    </view>
+    <view wx:if="{{filtersVisible}}" class="filter-panel">
+      <picker
+        wx:for="{{filterFields}}"
+        wx:key="key"
+        mode="selector"
+        range="{{item.options}}"
+        range-key="label"
+        value="{{item.selectedIndex}}"
+        data-key="{{item.key}}"
+        bindchange="onFilterChange"
+      >
+        <view class="filter-field {{item.active ? 'active' : ''}}">
+          <text class="filter-field-label">{{item.label}}</text>
+          <text class="filter-field-value">{{item.selectedLabel}}</text>
+          <text class="filter-field-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+  </block>
+
   <view wx:if="{{loading}}" class="state-message">正在检索档案…</view>
   <view wx:elif="{{error}}" class="state-message">{{error}}</view>
   <view wx:elif="{{!entries.length}}" class="state-message">没有找到匹配档案</view>
@@ -115,4 +142,14 @@
       </view>
     </block>
   </view>
+
+  <view
+    wx:if="{{activeSection === 'detectives' && entries.length && hasMore}}"
+    class="load-more {{loadingMore ? 'disabled' : ''}}"
+    bindtap="onLoadMore"
+  >{{loadingMore ? '正在加载更多…' : '加载更多档案'}}</view>
+  <view
+    wx:elif="{{activeSection === 'detectives' && entries.length && !loading && !hasMore}}"
+    class="list-complete"
+  >已展示全部 {{coverage.total}} 位人物</view>
 </view>

@@ -50,4 +50,23 @@ for (const page of appConfig.pages) {
   ]);
 }
 
+const archiveScript = await readFile(path.join(root, "pages/archive/archive.js"), "utf8");
+const archiveTemplate = await readFile(path.join(root, "pages/archive/archive.wxml"), "utf8");
+for (const filterName of ["country", "era", "category", "subjectKind", "tag"]) {
+  if (!archiveScript.includes(`key: "${filterName}"`)) {
+    throw new Error(`Archive page must expose the ${filterName} filter`);
+  }
+}
+for (const behavior of ["onFilterChange", "onClearFilters", "onLoadMore", "onReachBottom"]) {
+  if (!archiveScript.includes(`${behavior}(`)) {
+    throw new Error(`Archive page must implement ${behavior}`);
+  }
+}
+if (!archiveTemplate.includes('bindchange="onFilterChange"')) {
+  throw new Error("Archive template must bind the detective filter picker");
+}
+if (!archiveTemplate.includes('bindtap="onLoadMore"')) {
+  throw new Error("Archive template must expose detective pagination");
+}
+
 console.log(`Mini program structure and syntax: OK (${appConfig.pages.length} pages)`);

@@ -260,6 +260,9 @@ describe("detective archives API", () => {
     assert.equal(body.data.length, 2);
     assert.equal(body.pagination.total, 3);
     assert.equal(body.pagination.totalPages, 2);
+    assert.deepEqual(body.facets.countries, ["比利时", "日本", "英国"].sort());
+    assert.deepEqual(body.facets.subjectKinds, ["FICTIONAL"]);
+    assert.ok(body.facets.tags.includes("古典推理"));
   });
 
   it("filters detectives by keyword", async () => {

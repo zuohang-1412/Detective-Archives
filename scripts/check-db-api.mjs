@@ -147,9 +147,23 @@ const app = await buildApp({
 try {
   const checks = [
     ["/ready", (body) => assert.equal(body.database, "connected")],
-    ["/api/v1/detectives?pageSize=50", (body) => assert.equal(body.pagination.total, expectedPublishedDetectiveCount)],
+    ["/api/v1/detectives?pageSize=50", (body) => {
+      assert.equal(body.pagination.total, expectedPublishedDetectiveCount);
+      assert.equal(body.facets.categories.length, 5);
+      assert.ok(body.facets.countries.includes("日本"));
+      assert.ok(body.facets.subjectKinds.includes("FICTIONAL"));
+      assert.ok(body.facets.tags.length > 10);
+    }],
     ["/api/v1/detectives/sherlock-holmes", (body) => {
       assert.equal(body.data.works[0].slug, "a-study-in-scarlet");
+    }],
+    ["/api/v1/detectives?country=%E6%97%A5%E6%9C%AC&era=%E5%BD%93%E4%BB%A3&category=JAPANESE_POPULAR&subjectKind=FICTIONAL&tag=%E6%9C%AC%E6%A0%BC%E6%8E%A8%E7%90%86&pageSize=50", (body) => {
+      assert.ok(body.pagination.total > 0);
+      assert.ok(body.data.every((detective) => detective.country === "日本"));
+      assert.ok(body.data.every((detective) => detective.era === "当代"));
+      assert.ok(body.data.every((detective) => detective.category === "JAPANESE_POPULAR"));
+      assert.ok(body.data.every((detective) => detective.subjectKind === "FICTIONAL"));
+      assert.ok(body.data.every((detective) => detective.tags.includes("本格推理")));
     }],
     ["/api/v1/archive-directory?pageSize=50", (body) => assert.equal(body.pagination.total, 23)],
     ["/api/v1/archive-directory?q=%E5%BF%83%E7%90%86%E7%BD%AA", (body) => {

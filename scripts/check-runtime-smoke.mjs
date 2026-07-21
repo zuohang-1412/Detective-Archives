@@ -54,6 +54,9 @@ assert.equal(health.service, "detective-archives-api");
 const detectives = await json("/api/v1/detectives?pageSize=1");
 assert.equal(detectives.pagination.total, 132);
 assert.equal(detectives.data.length, 1);
+assert.equal(detectives.facets.categories.length, 5);
+assert.ok(detectives.facets.countries.includes("日本"));
+assert.ok(detectives.facets.tags.length > 10);
 
 const works = await json("/api/v1/works?pageSize=1");
 assert.equal(works.pagination.total, 119);

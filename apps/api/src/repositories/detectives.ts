@@ -49,6 +49,14 @@ export interface ListDetectivesOptions {
   pageSize: number;
 }
 
+export interface DetectiveFacets {
+  countries: string[];
+  eras: string[];
+  categories: string[];
+  subjectKinds: string[];
+  tags: string[];
+}
+
 const detectiveSelect = `
   SELECT
     d.id,
@@ -217,6 +225,62 @@ export async function listDetectives(
   return {
     data: rows.rows,
     total: Number.parseInt(countResult.rows[0]?.total ?? "0", 10)
+  };
+}
+
+export async function listDetectiveFacets(
+  database: DatabaseClient | undefined
+): Promise<DetectiveFacets> {
+  if (!database) {
+    return {
+      countries: [...new Set(fallbackDetectives.map((detective) => detective.country))].sort(),
+      eras: [],
+      categories: [],
+      subjectKinds: ["FICTIONAL"],
+      tags: [...new Set(fallbackDetectives.flatMap((detective) => detective.tags))].sort()
+    };
+  }
+
+  const result = await queryRows<DetectiveFacets>(database, `
+    SELECT
+      ARRAY(
+        SELECT DISTINCT country
+        FROM detectives
+        WHERE status = 'PUBLISHED' AND country IS NOT NULL AND country <> ''
+        ORDER BY country
+      ) AS countries,
+      ARRAY(
+        SELECT DISTINCT era
+        FROM detectives
+        WHERE status = 'PUBLISHED' AND era IS NOT NULL AND era <> ''
+        ORDER BY era
+      ) AS eras,
+      ARRAY(
+        SELECT DISTINCT catalog_category
+        FROM detectives
+        WHERE status = 'PUBLISHED' AND catalog_category IS NOT NULL
+        ORDER BY catalog_category
+      ) AS categories,
+      ARRAY(
+        SELECT DISTINCT subject_kind::text
+        FROM detectives
+        WHERE status = 'PUBLISHED'
+        ORDER BY subject_kind::text
+      ) AS "subjectKinds",
+      ARRAY(
+        SELECT DISTINCT tag.tag
+        FROM detective_tags tag
+        JOIN detectives detective ON detective.id = tag.detective_id
+        WHERE detective.status = 'PUBLISHED'
+        ORDER BY tag.tag
+      ) AS tags
+  `);
+  return result.rows[0] ?? {
+    countries: [],
+    eras: [],
+    categories: [],
+    subjectKinds: [],
+    tags: []
   };
 }
 
