@@ -31,7 +31,10 @@ const workSchema = z.object({
     "PUBLISHER", "BOOKSTORE", "LIBRARY", "STREAMING", "OFFICIAL_SITE", "OTHER"
   ]),
   providerName: z.string().min(1).max(100),
-  region: z.string().min(1).max(30).default("GLOBAL")
+  region: z.string().min(1).max(30).default("GLOBAL"),
+  deactivateLinkUrls: z.array(
+    z.url().refine((url) => url.startsWith("https://"), "replacement URL must use HTTPS")
+  ).max(20).default([])
 });
 const detectiveSchema = z.object({
   catalogId: z.string().min(1).max(20),
@@ -158,6 +161,31 @@ try {
     }
   }
 
+  const linkDeactivationRequests = allWorks.flatMap((work) =>
+    work.deactivateLinkUrls.map((url) => ({ workSlug: work.slug, url }))
+  );
+  if (linkDeactivationRequests.length) {
+    const existingRequestedLinks = await client.query(`
+      SELECT work.slug AS "workSlug", link.url
+      FROM work_links link
+      JOIN works work ON work.id = link.work_id
+      WHERE (work.slug, link.url) IN (
+        SELECT * FROM UNNEST($1::text[], $2::text[])
+      )
+    `, [
+      linkDeactivationRequests.map((request) => request.workSlug),
+      linkDeactivationRequests.map((request) => request.url)
+    ]);
+    const foundRequestedLinks = new Set(
+      existingRequestedLinks.rows.map((row) => `${row.workSlug}\u0000${row.url}`)
+    );
+    for (const request of linkDeactivationRequests) {
+      if (!foundRequestedLinks.has(`${request.workSlug}\u0000${request.url}`)) {
+        errors.push(`${request.workSlug}: replacement target link does not exist: ${request.url}`);
+      }
+    }
+  }
+
   const pictureBookIds = [...new Set(input.detectives.flatMap((detective) => detective.pictureBookEntryIds))];
   if (pictureBookIds.length) {
     const pictureBooks = await client.query(`
@@ -181,7 +209,8 @@ try {
       workCreates: [...uniqueWorks.values()].filter((work) => !existingWorksBySlug.has(work.slug)).length,
       workUpdates: [...uniqueWorks.values()].filter((work) => existingWorksBySlug.has(work.slug)).length,
       pictureBookLinks: pictureBookIds.length,
-      officialLinks: [...uniqueWorks.values()].length
+      officialLinks: [...uniqueWorks.values()].length,
+      linkDeactivations: linkDeactivationRequests.length
     },
     warnings,
     errors
@@ -334,6 +363,13 @@ try {
             `Catalog import ${input.batchKey}; source ${work.sourceId}`
           ]);
           const workId = workResult.rows[0].id;
+          if (work.deactivateLinkUrls.length) {
+            await client.query(`
+              UPDATE work_links
+              SET is_active = FALSE, updated_at = NOW()
+              WHERE work_id = $1 AND url = ANY($2)
+            `, [workId, work.deactivateLinkUrls]);
+          }
           await client.query(`
             INSERT INTO detective_works (detective_id, work_id, is_recommended, recommendation_order)
             VALUES ($1, $2, TRUE, $3)

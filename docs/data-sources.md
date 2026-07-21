@@ -89,6 +89,10 @@ npm run check:directory
 - 芙里妮·费雪：《可卡因蓝调》
 - 南茜·德鲁：《古钟之谜》
 
-每个批次先执行 `npm run catalog:preflight`，检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充使用新的批次文件与批次键。
+`apps/api/src/data/catalog-expansion-picture-book-001.json` 是第二个不可变批次，把第 4～14 卷的 11 位人物关联到正式档案和代表作品，包括亚森·罗宾、梅古雷、金田一耕助、科伦坡、钱形平次、菲利普·马洛、奥古斯特·杜宾、埃勒里·奎因、V·I·渥许斯基、布朗神父和蔻蒂莉亚·葛蕾。来源限定为出版社、创作者官网、公共数字图书馆、国家图书馆目录、博物馆馆藏以及正版流媒体或官方商店页面。
+
+`apps/api/src/data/catalog-expansion-link-fix-001.json` 记录首个不可变链接纠错：Apple TV 单集地址在生产网络确认返回 404 后，保留原记录但停止公开，并替换为可访问且明确列出《离别酒》的 Prime Video 第三季正版页面。纠错批次不覆盖或删除历史证据。
+
+`apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 正版链接通过 `npm run links:check` 定时巡检。巡检只记录健康状态和连续失败次数，不自动下架；超时或失败必须由运营人员人工确认，避免把反爬、区域限制或临时网络问题误判为失效链接。

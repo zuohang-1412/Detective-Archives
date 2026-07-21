@@ -1,0 +1,485 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-001",
+  "snapshotDate": "2026-07-21",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "gutenberg-arsene-lupin",
+      "label": "Project Gutenberg: Arsène Lupin, Gentleman-Burglar",
+      "url": "https://www.gutenberg.org/ebooks/6133",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "penguin-maigret-sets-a-trap",
+      "label": "Penguin: Maigret Sets a Trap",
+      "url": "https://www.penguin.co.uk/books/288991/maigret-sets-a-trap-by-simenon-georges/9780241297643",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-gokumonto",
+      "label": "KADOKAWA: 獄門島 金田一耕助ファイル 3",
+      "url": "https://www.kadokawa.co.jp/product/199999130403/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "peacock-columbo",
+      "label": "Peacock: Columbo",
+      "url": "https://www.peacocktv.com/watch-online/tv/columbo/6941257837221375112/seasons/1",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "apple-tv-any-old-port",
+      "label": "Apple TV: Any Old Port in a Storm",
+      "url": "https://tv.apple.com/ca/episode/any-old-port-in-a-storm/umc.cmc.785gk8ny3bb8x7jhvtoml4xst?showId=umc.cmc.tlqu4d3qgskmhwd0qw5868tw",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "aozora-zenigata-heiji",
+      "label": "青空文庫: 銭形平次捕物控",
+      "url": "https://www.aozora.gr.jp/cards/001670/card54740.html",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "prh-long-goodbye",
+      "label": "Penguin Random House: The Long Goodbye",
+      "url": "https://www.penguinrandomhouse.com/books/26047/the-long-goodbye-by-raymond-chandler/paperback",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "morgan-long-goodbye",
+      "label": "The Morgan Library & Museum: The Long Good-bye",
+      "url": "https://www.themorgan.org/printed-books/85985",
+      "quality": "MUSEUM_LIBRARY"
+    },
+    {
+      "id": "gutenberg-rue-morgue",
+      "label": "Project Gutenberg: The Murders in the Rue Morgue",
+      "url": "https://www.gutenberg.org/ebooks/74548",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "simon-schuster-egyptian-cross",
+      "label": "Simon & Schuster: The Egyptian Cross Mystery",
+      "url": "https://www.simonandschuster.com/books/The-Egyptian-Cross-Mystery/Ellery-Queen/Ellery-Queen-Detective/9781613161777",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "ndl-egyptian-cross",
+      "label": "National Diet Library: The Egyptian Cross Mystery",
+      "url": "https://ndlsearch.ndl.go.jp/en/books/R100000136-I1971430859824424198",
+      "quality": "NATIONAL_LIBRARY"
+    },
+    {
+      "id": "sara-paretsky-deadlock",
+      "label": "Sara Paretsky: Deadlock",
+      "url": "https://saraparetsky.com/books/novels/deadlock/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "gutenberg-father-brown",
+      "label": "Project Gutenberg: The Innocence of Father Brown",
+      "url": "https://www.gutenberg.org/ebooks/204",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "prh-unsuitable-job",
+      "label": "Penguin Random House: An Unsuitable Job for a Woman",
+      "url": "https://www.penguinrandomhouse.com/books/86518/an-unsuitable-job-for-a-woman-by-pd-james/",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-004-STD",
+      "pictureBookEntryIds": ["PB-004-STD"],
+      "slug": "arsene-lupin",
+      "nameZh": "亚森·罗宾",
+      "nameOriginal": "Arsène Lupin",
+      "nameEn": "Arsène Lupin",
+      "country": "法国",
+      "era": "19世纪末至20世纪初",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["SHORT_STORY", "NOVEL", "SERIES"],
+      "summary": "法国文学中的怪盗绅士，擅长伪装、身份转换和利用对手预期完成行动。",
+      "creatorName": "莫里斯·勒布朗",
+      "aliases": ["鲁邦", "Arsene Lupin"],
+      "tags": ["怪盗", "法国推理", "变装"],
+      "featuredCases": ["《怪盗绅士》"],
+      "sourceIds": ["gutenberg-arsene-lupin"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "arsene-lupin-gentleman-burglar",
+          "titleZh": "怪盗绅士",
+          "titleOriginal": "Arsène Lupin, gentleman-cambrioleur",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1907,
+          "summary": "收录亚森·罗宾早期冒险的短篇集，通过盗窃、越狱和身份伪装展现这位怪盗的行动方式。",
+          "sourceId": "gutenberg-arsene-lupin",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-005-STD",
+      "pictureBookEntryIds": ["PB-005-STD"],
+      "slug": "jules-maigret",
+      "nameZh": "儒勒·梅古雷",
+      "nameOriginal": "Jules Maigret",
+      "nameEn": "Jules Maigret",
+      "country": "法国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "巴黎司法警察局探长，重视环境、人物习惯和心理压力，常通过耐心观察接近真相。",
+      "creatorName": "乔治·西默农",
+      "aliases": ["梅古雷", "Inspector Maigret"],
+      "tags": ["警察侦探", "心理推理", "巴黎"],
+      "featuredCases": ["《布下梅古雷陷阱》"],
+      "sourceIds": ["penguin-maigret-sets-a-trap"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "maigret-sets-a-trap",
+          "titleZh": "布下梅古雷陷阱",
+          "titleOriginal": "Maigret tend un piège",
+          "mediaType": "NOVEL",
+          "summary": "蒙马特连续发生女性遇害事件，梅古雷在调查受阻后组织诱捕行动，并从嫌疑人的心理反应继续追查。",
+          "sourceId": "penguin-maigret-sets-a-trap",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin",
+          "region": "GB"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-006-STD",
+      "pictureBookEntryIds": ["PB-006-STD"],
+      "slug": "kosuke-kindaichi",
+      "nameZh": "金田一耕助",
+      "nameOriginal": "金田一耕助",
+      "nameEn": "Kosuke Kindaichi",
+      "country": "日本",
+      "era": "昭和时期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "横沟正史笔下的私人侦探，常在封闭地域、家族历史和地方习俗交织的案件中寻找矛盾。",
+      "creatorName": "横沟正史",
+      "aliases": ["Kindaichi Kosuke", "金田一侦探"],
+      "tags": ["本格推理", "日本推理", "家族谜案"],
+      "featuredCases": ["《狱门岛》"],
+      "sourceIds": ["kadokawa-gokumonto"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "gokumonto",
+          "titleZh": "狱门岛",
+          "titleOriginal": "獄門島",
+          "mediaType": "NOVEL",
+          "summary": "金田一耕助受战友临终嘱托前往狱门岛，在岛上连续事件与家族关系中追查遗言所指向的危险。",
+          "sourceId": "kadokawa-gokumonto",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-007-STD",
+      "pictureBookEntryIds": ["PB-007-STD"],
+      "slug": "lieutenant-columbo",
+      "nameZh": "科伦坡",
+      "nameOriginal": "Lieutenant Columbo",
+      "nameEn": "Lieutenant Columbo",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "洛杉矶凶杀组警探，以看似随意的提问、反复核对细节和识别叙述矛盾逐步逼近嫌疑人。",
+      "creatorName": "理查德·莱文森、威廉·林克",
+      "aliases": ["Columbo", "科伦坡警督"],
+      "tags": ["倒叙推理", "警察侦探", "电视经典"],
+      "featuredCases": ["《离别酒》"],
+      "sourceIds": ["peacock-columbo", "apple-tv-any-old-port"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "any-old-port-in-a-storm",
+          "titleZh": "离别酒",
+          "titleOriginal": "Any Old Port in a Storm",
+          "mediaType": "SERIES",
+          "releaseYear": 1973,
+          "summary": "酒庄经营者试图把亲属死亡伪装成意外，科伦坡围绕酒窖、气温和葡萄酒状态之间的矛盾展开追查。",
+          "sourceId": "apple-tv-any-old-port",
+          "linkType": "STREAMING",
+          "providerName": "Apple TV",
+          "region": "CA"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-008-STD",
+      "pictureBookEntryIds": ["PB-008-STD"],
+      "slug": "heiji-zenigata",
+      "nameZh": "钱形平次",
+      "nameOriginal": "銭形平次",
+      "nameEn": "Heiji Zenigata",
+      "country": "日本",
+      "era": "江户时代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "FILM", "SERIES"],
+      "summary": "以江户为舞台的捕物名人，依靠现场判断、人情经验和标志性的投掷铜钱追捕犯人。",
+      "creatorName": "野村胡堂",
+      "aliases": ["Zenigata Heiji", "钱形捕快"],
+      "tags": ["捕物小说", "时代推理", "江户"],
+      "featuredCases": ["《钱形平次捕物控》"],
+      "sourceIds": ["aozora-zenigata-heiji"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "zenigata-heiji-torimono-hikae",
+          "titleZh": "钱形平次捕物控",
+          "titleOriginal": "銭形平次捕物控",
+          "mediaType": "SHORT_STORY",
+          "summary": "以钱形平次和八五郎为中心的捕物故事系列，围绕江户市井中的命案、盗案与人情纠葛展开。",
+          "sourceId": "aozora-zenigata-heiji",
+          "linkType": "LIBRARY",
+          "providerName": "青空文库",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-009-STD",
+      "pictureBookEntryIds": ["PB-009-STD"],
+      "slug": "philip-marlowe",
+      "nameZh": "菲利普·马洛",
+      "nameOriginal": "Philip Marlowe",
+      "nameEn": "Philip Marlowe",
+      "country": "美国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "洛杉矶私人侦探，在权力、金钱与暴力交错的城市环境中坚持个人判断和职业底线。",
+      "creatorName": "雷蒙德·钱德勒",
+      "aliases": ["Marlowe", "马洛"],
+      "tags": ["硬汉派", "私人侦探", "洛杉矶"],
+      "featuredCases": ["《漫长的告别》"],
+      "sourceIds": ["prh-long-goodbye", "morgan-long-goodbye"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-long-goodbye",
+          "titleZh": "漫长的告别",
+          "titleOriginal": "The Long Goodbye",
+          "mediaType": "NOVEL",
+          "releaseYear": 1953,
+          "summary": "马洛帮助处境窘迫的退伍军人后卷入一桩死亡事件，并在友谊、背叛和利益关系中继续追查。",
+          "sourceId": "prh-long-goodbye",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-010-STD",
+      "pictureBookEntryIds": ["PB-010-STD"],
+      "slug": "c-auguste-dupin",
+      "nameZh": "C·奥古斯特·杜宾",
+      "nameOriginal": "C. Auguste Dupin",
+      "nameEn": "C. Auguste Dupin",
+      "country": "法国",
+      "era": "19世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["SHORT_STORY"],
+      "summary": "爱伦·坡笔下的巴黎业余分析者，以观察、演绎和重建他人思路处理看似不可能的案件。",
+      "creatorName": "埃德加·爱伦·坡",
+      "aliases": ["奥古斯都·杜宾", "Dupin"],
+      "tags": ["演绎推理", "古典推理", "巴黎"],
+      "featuredCases": ["《莫格街凶杀案》"],
+      "sourceIds": ["gutenberg-rue-morgue"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-murders-in-the-rue-morgue",
+          "titleZh": "莫格街凶杀案",
+          "titleOriginal": "The Murders in the Rue Morgue",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1841,
+          "summary": "巴黎一处密闭房间发生双重命案，杜宾从证词中的语言矛盾和现场异常痕迹推导出非常规答案。",
+          "sourceId": "gutenberg-rue-morgue",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-011-STD",
+      "pictureBookEntryIds": ["PB-011-STD"],
+      "slug": "ellery-queen",
+      "nameZh": "埃勒里·奎因",
+      "nameOriginal": "Ellery Queen",
+      "nameEn": "Ellery Queen",
+      "country": "美国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "RADIO", "SERIES"],
+      "summary": "兼具作家与业余侦探身份的公平推理代表人物，常依据完整线索建立并检验多套解释。",
+      "creatorName": "弗雷德里克·丹奈、曼弗雷德·李",
+      "aliases": ["埃勒里.奎恩", "Ellery Queen"],
+      "tags": ["公平推理", "黄金时代", "逻辑谜题"],
+      "featuredCases": ["《埃及十字架之谜》"],
+      "sourceIds": ["simon-schuster-egyptian-cross", "ndl-egyptian-cross"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-egyptian-cross-mystery",
+          "titleZh": "埃及十字架之谜",
+          "titleOriginal": "The Egyptian Cross Mystery",
+          "mediaType": "NOVEL",
+          "releaseYear": 1932,
+          "summary": "多起具有相似十字形布置的命案跨地域发生，埃勒里·奎因从重复模式、人物移动和公开线索中寻找关联。",
+          "sourceId": "simon-schuster-egyptian-cross",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-012-STD",
+      "pictureBookEntryIds": ["PB-012-STD"],
+      "slug": "v-i-warshawski",
+      "nameZh": "V·I·渥许斯基",
+      "nameOriginal": "V. I. Warshawski",
+      "nameEn": "V. I. Warshawski",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "芝加哥私人侦探，擅长调查企业与社会机构中的利益链，并持续为弱势当事人追索证据。",
+      "creatorName": "萨拉·帕雷茨基",
+      "aliases": ["Vic Warshawski", "维克·渥许斯基"],
+      "tags": ["女性侦探", "硬汉派", "芝加哥"],
+      "featuredCases": ["《夺命码头》"],
+      "sourceIds": ["sara-paretsky-deadlock"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "deadlock",
+          "titleZh": "夺命码头",
+          "titleOriginal": "Deadlock",
+          "mediaType": "NOVEL",
+          "releaseYear": 1984,
+          "summary": "渥许斯基不接受表亲在码头意外身亡的结论，沿五大湖航运业中的交易、勒索和破坏线索展开调查。",
+          "sourceId": "sara-paretsky-deadlock",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Sara Paretsky",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-013-STD",
+      "pictureBookEntryIds": ["PB-013-STD"],
+      "slug": "father-brown",
+      "nameZh": "布朗神父",
+      "nameOriginal": "Father Brown",
+      "nameEn": "Father Brown",
+      "country": "英国",
+      "era": "20世纪初",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["SHORT_STORY", "SERIES"],
+      "summary": "外表朴素的天主教神父，凭借对人的动机、弱点和道德选择的理解识别犯罪逻辑。",
+      "creatorName": "G. K. 切斯特顿",
+      "aliases": ["Father Brown", "布朗教士"],
+      "tags": ["心理推理", "短篇经典", "英国推理"],
+      "featuredCases": ["《奇妙的脚步声》"],
+      "sourceIds": ["gutenberg-father-brown"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-innocence-of-father-brown",
+          "titleZh": "布朗神父的天真",
+          "titleOriginal": "The Innocence of Father Brown",
+          "mediaType": "SHORT_STORY",
+          "summary": "收录布朗神父早期案件的短篇集，其中《奇妙的脚步声》通过环境声响和身份错位揭开盗窃计划。",
+          "sourceId": "gutenberg-father-brown",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-014-STD",
+      "pictureBookEntryIds": ["PB-014-STD"],
+      "slug": "cordelia-gray",
+      "nameZh": "蔻蒂莉亚·葛蕾",
+      "nameOriginal": "Cordelia Gray",
+      "nameEn": "Cordelia Gray",
+      "country": "英国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "年轻的私人侦探，在经验和资源有限的情况下独立核查委托，并从人物关系中发现被掩盖的事实。",
+      "creatorName": "P. D. 詹姆斯",
+      "aliases": ["Cordelia Gray", "科迪莉亚·格雷"],
+      "tags": ["女性侦探", "私人侦探", "英国推理"],
+      "featuredCases": ["《不适合女性的职业》"],
+      "sourceIds": ["prh-unsuitable-job"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "an-unsuitable-job-for-a-woman",
+          "titleZh": "不适合女性的职业",
+          "titleOriginal": "An Unsuitable Job for a Woman",
+          "mediaType": "NOVEL",
+          "summary": "年轻侦探蔻蒂莉亚受托调查一名学生被认定为自杀的原因，逐步发现现场与家族叙述中的疑点。",
+          "sourceId": "prh-unsuitable-job",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    }
+  ]
+}

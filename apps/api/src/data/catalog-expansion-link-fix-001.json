@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-001",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace one confirmed broken release link with a verified legal streaming storefront while retaining the historical link as an inactive audit record.",
+  "sources": [
+    {
+      "id": "prime-video-columbo-season-3",
+      "label": "Prime Video: Columbo Season 3",
+      "url": "https://www.primevideo.com/-/es/detail/0IH3RXBSQKMRDPSX3NFF70A8H2?tr=es",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "peacock-columbo",
+      "label": "Peacock: Columbo",
+      "url": "https://www.peacocktv.com/watch-online/tv/columbo/6941257837221375112/seasons/1",
+      "quality": "OFFICIAL_STREAMING"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-007-STD",
+      "pictureBookEntryIds": [],
+      "slug": "lieutenant-columbo",
+      "nameZh": "科伦坡",
+      "nameOriginal": "Lieutenant Columbo",
+      "nameEn": "Lieutenant Columbo",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "洛杉矶凶杀组警探，以看似随意的提问、反复核对细节和识别叙述矛盾逐步逼近嫌疑人。",
+      "creatorName": "理查德·莱文森、威廉·林克",
+      "aliases": ["Columbo", "科伦坡警督"],
+      "tags": ["倒叙推理", "警察侦探", "电视经典"],
+      "featuredCases": ["《离别酒》"],
+      "sourceIds": ["prime-video-columbo-season-3", "peacock-columbo"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "any-old-port-in-a-storm",
+          "titleZh": "离别酒",
+          "titleOriginal": "Any Old Port in a Storm",
+          "mediaType": "SERIES",
+          "releaseYear": 1973,
+          "summary": "酒庄经营者试图把亲属死亡伪装成意外，科伦坡围绕酒窖、气温和葡萄酒状态之间的矛盾展开追查。",
+          "sourceId": "prime-video-columbo-season-3",
+          "linkType": "STREAMING",
+          "providerName": "Prime Video",
+          "region": "ES",
+          "deactivateLinkUrls": [
+            "https://tv.apple.com/ca/episode/any-old-port-in-a-storm/umc.cmc.785gk8ny3bb8x7jhvtoml4xst?showId=umc.cmc.tlqu4d3qgskmhwd0qw5868tw"
+          ]
+        }
+      ]
+    }
+  ]
+}

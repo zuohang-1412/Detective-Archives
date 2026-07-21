@@ -3,19 +3,36 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { buildApp } from "../apps/api/dist/app.js";
 import { createDatabasePoolFromEnv } from "../apps/api/dist/db/pool.js";
+import {
+  catalogSlugify,
+  loadCatalogBatches,
+  uniqueImportedWorks
+} from "./lib/catalog-batches.mjs";
 
 const database = createDatabasePoolFromEnv();
 assert.ok(database, "PostgreSQL configuration is required for the database API check");
 const testAdminLoginId = "detective-archives-admin-check";
 const testAdminPassword = "integration-admin-password";
 const testWorkSlug = "database-api-check-work";
-const catalogExpansion = JSON.parse(await readFile(
-  new URL("../apps/api/src/data/catalog-expansion.json", import.meta.url),
-  "utf8"
+const coreDetectives = JSON.parse(await readFile(
+  new URL("../apps/api/src/data/core-detectives.json", import.meta.url), "utf8"
 ));
-const expectedPublishedWorkCount = 5 + new Set(
-  catalogExpansion.detectives.flatMap((detective) => detective.works.map((work) => work.slug))
-).size;
+const coreWorkDetails = JSON.parse(await readFile(
+  new URL("../apps/api/src/data/core-work-details.json", import.meta.url), "utf8"
+));
+const archiveDirectory = JSON.parse(await readFile(
+  new URL("../apps/api/src/data/archive-directory-index.json", import.meta.url), "utf8"
+));
+const { batches } = await loadCatalogBatches();
+const expectedPublishedWorkCount = new Set([
+  ...coreWorkDetails.map((work) => work.slug),
+  ...uniqueImportedWorks(batches).keys()
+]).size;
+const expectedPublishedDetectiveCount = new Set([
+  ...coreDetectives.map((detective) => detective.slug),
+  ...archiveDirectory.entries.map((detective) => catalogSlugify(detective.names.en)),
+  ...batches.flatMap(({ input }) => input.detectives.map((detective) => detective.slug))
+]).size;
 const testDetectiveSlug = "database-api-check-detective";
 const testDetectiveUpdatedSlug = "database-api-check-detective-updated";
 let deactivatedTestUserId = null;
@@ -130,7 +147,7 @@ const app = await buildApp({
 try {
   const checks = [
     ["/ready", (body) => assert.equal(body.database, "connected")],
-    ["/api/v1/detectives?pageSize=50", (body) => assert.equal(body.pagination.total, 26)],
+    ["/api/v1/detectives?pageSize=50", (body) => assert.equal(body.pagination.total, expectedPublishedDetectiveCount)],
     ["/api/v1/detectives/sherlock-holmes", (body) => {
       assert.equal(body.data.works[0].slug, "a-study-in-scarlet");
     }],
@@ -142,8 +159,12 @@ try {
     ["/api/v1/picture-book?q=%E9%B2%81%E9%82%A6", (body) => {
       assert.equal(body.data[0].id, "PB-004-STD");
     }],
-    ["/api/v1/works?pageSize=20", (body) => assert.equal(body.pagination.total, expectedPublishedWorkCount)],
-    ["/api/v1/works/d-slope-murder-case", (body) => assert.equal(body.data.links.length, 2)]
+    ["/api/v1/works?pageSize=50", (body) => assert.equal(body.pagination.total, expectedPublishedWorkCount)],
+    ["/api/v1/works/d-slope-murder-case", (body) => assert.equal(body.data.links.length, 2)],
+    ["/api/v1/works/any-old-port-in-a-storm", (body) => {
+      assert.equal(body.data.links.length, 1);
+      assert.equal(body.data.links[0].providerName, "Prime Video");
+    }]
   ];
 
   for (const [url, verify] of checks) {
@@ -354,7 +375,7 @@ try {
     headers: adminAuthorization
   });
   assert.equal(dashboardResponse.statusCode, 200, dashboardResponse.body);
-  assert.ok(dashboardResponse.json().data.publishedDetectiveCount >= 26);
+  assert.ok(dashboardResponse.json().data.publishedDetectiveCount >= expectedPublishedDetectiveCount);
 
   const usersResponse = await app.inject({
     method: "GET",
