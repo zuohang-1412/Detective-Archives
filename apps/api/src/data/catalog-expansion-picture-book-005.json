@@ -1,0 +1,480 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-005",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "tv-asahi-aibou-sugishita",
+      "label": "朝日电视台：《相棒》杉下右京人物页",
+      "url": "https://www.tv-asahi.co.jp/aibou/cast/index.html",
+      "quality": "OFFICIAL_BROADCASTER"
+    },
+    {
+      "id": "asahi-aibou-green-intent",
+      "label": "朝日新闻出版：《相棒 season4-4 緑の殺意》",
+      "url": "https://publications.asahi.com/product/19764.html",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "worldcat-cop-hater",
+      "label": "WorldCat: Cop Hater",
+      "url": "https://search.worldcat.org/title/808418229",
+      "quality": "LIBRARY_CATALOG"
+    },
+    {
+      "id": "kodansha-46th-locked-room",
+      "label": "讲谈社：《46番目の密室》",
+      "url": "https://www.kodansha.co.jp/book/products/0000205138",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "apple-books-two-truths",
+      "label": "Apple Books：《二つの真実 女性弁護士 朝吹里矢子》",
+      "url": "https://books.apple.com/us/audiobook/%E4%BA%8C%E3%81%A4%E3%81%AE%E7%9C%9F%E5%AE%9F-%E5%A5%B3%E6%80%A7%E5%BC%81%E8%AD%B7%E5%A3%AB-%E6%9C%9D%E5%90%B9%E9%87%8C%E7%9F%A2%E5%AD%90-%E5%A5%B3%E6%80%A7%E5%BC%81%E8%AD%B7%E5%A3%AB-%E6%9C%9D%E5%90%B9%E9%87%8C%E7%9F%A2%E5%AD%90/id1084179199",
+      "quality": "OFFICIAL_BOOKSTORE"
+    },
+    {
+      "id": "apple-tv-ironside",
+      "label": "Apple TV: Ironside (1967)",
+      "url": "https://tv.apple.com/ca/show/ironside/umc.cmc.62ox86k54qtpw15gpsxrpohgm",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "kodansha-ubume-no-natsu",
+      "label": "讲谈社：《姑獲鳥の夏》",
+      "url": "https://www.kodansha.co.jp/book/products/0000158020",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-decagon-house",
+      "label": "讲谈社：《十角館の殺人》",
+      "url": "https://www.kodansha.co.jp/book/products/0000204571",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tsogen-red-harvest",
+      "label": "东京创元社：《血の収穫》",
+      "url": "https://www.tsogen.co.jp/np/isbn/9784488130060",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shunyodo-ningyo-sashichi",
+      "label": "春阳堂书店：《完本 人形佐七捕物帳》",
+      "url": "https://www.shunyodo.co.jp/blog/2021/09/info_ningyousashichi_torimonocho/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "sourcebooks-croydon-1230",
+      "label": "Sourcebooks: The 12.30 from Croydon",
+      "url": "https://www.sourcebooks.com/9781464206733-the-1230-from-croydon-tp.html",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "imidas-takagi-yoshifumi",
+      "label": "Imidas：高樹良文人物条目",
+      "url": "https://imidas.jp/rangai/detail/U-03-0-030-98.html",
+      "quality": "REFERENCE_DATABASE"
+    },
+    {
+      "id": "shueisha-nemurinaki-yoru",
+      "label": "集英社：《眠りなき夜》",
+      "url": "https://www.shueisha.co.jp/books/items/contents.html?isbn=978-4-08-749096-1&mode=1",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-048-STD",
+      "pictureBookEntryIds": ["PB-048-STD"],
+      "slug": "ukyo-sugishita",
+      "nameZh": "杉下右京",
+      "nameOriginal": "杉下右京",
+      "nameEn": "Ukyo Sugishita",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM", "NOVEL"],
+      "summary": "电视剧《相棒》中警视厅特命系的警部，以广博知识、细节观察和不受组织压力左右的追问，与历任搭档侦破案件。",
+      "creatorName": "舆水泰弘",
+      "aliases": ["杉下警部", "右京先生", "Ukyo Sugishita"],
+      "tags": ["刑警", "搭档", "电视剧"],
+      "featuredCases": ["《有杀意》（图鉴旧译）", "《绿之杀意》"],
+      "sourceIds": ["tv-asahi-aibou-sugishita", "asahi-aibou-green-intent"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "aibou-season-4-green-intent",
+          "titleZh": "相棒 season 4-4：绿之杀意",
+          "titleOriginal": "相棒 season4-4 緑の殺意",
+          "mediaType": "NOVEL",
+          "summary": "围绕新种蝴蝶、收藏交易和接连发生的命案，杉下右京与龟山薰从发现地点和相关人物的利益关系追查真相。",
+          "sourceId": "asahi-aibou-green-intent",
+          "linkType": "PUBLISHER",
+          "providerName": "朝日新闻出版",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-049-STD",
+      "pictureBookEntryIds": ["PB-049-STD"],
+      "slug": "steve-carella",
+      "nameZh": "史蒂夫·卡雷拉",
+      "nameOriginal": "Steve Carella",
+      "nameEn": "Steve Carella",
+      "country": "美国",
+      "era": "20世纪中后叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "埃德·麦克贝恩第87分局系列的核心刑警，在虚构都市伊索拉与同事以走访、物证和团队协作处理连环重案。",
+      "creatorName": "埃德·麦克贝恩",
+      "aliases": ["史提夫·卡瑞拉", "斯蒂夫·卡雷拉", "Steve Carella"],
+      "tags": ["警察程序", "第87分局", "团队侦查"],
+      "featuredCases": ["《恨警官的人》（Cop Hater）》"],
+      "sourceIds": ["worldcat-cop-hater"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "cop-hater",
+          "titleZh": "恨警官的人",
+          "titleOriginal": "Cop Hater",
+          "mediaType": "NOVEL",
+          "releaseYear": 1956,
+          "summary": "第87分局多名警员接连遭枪击，卡雷拉追查受害者关联和凶手动机，同时面对自己可能成为下一个目标的威胁。",
+          "sourceId": "worldcat-cop-hater",
+          "linkType": "LIBRARY",
+          "providerName": "WorldCat",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-050-STD",
+      "pictureBookEntryIds": ["PB-050-STD"],
+      "slug": "hideo-himura",
+      "nameZh": "火村英生",
+      "nameOriginal": "火村英生",
+      "nameEn": "Hideo Himura",
+      "country": "日本",
+      "era": "20世纪末至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "有栖川有栖笔下研究犯罪学的大学副教授，常与推理作家有栖川搭档，通过现场重建、行为逻辑和严谨推论破解案件。",
+      "creatorName": "有栖川有栖",
+      "aliases": ["临床犯罪学者火村英生", "Hideo Himura"],
+      "tags": ["新本格", "犯罪学", "搭档推理"],
+      "featuredCases": ["《第46间密室》"],
+      "sourceIds": ["kodansha-46th-locked-room"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-46th-locked-room",
+          "titleZh": "第46间密室",
+          "titleOriginal": "46番目の密室",
+          "mediaType": "NOVEL",
+          "releaseYear": 1992,
+          "summary": "以设计密室诡计闻名的作家在别墅遇害，火村与有栖川从封闭现场、住客行动和死者尚未公开的构想中寻找解释。",
+          "sourceId": "kodansha-46th-locked-room",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-051-STD",
+      "pictureBookEntryIds": ["PB-051-STD"],
+      "slug": "riyako-asabuki",
+      "nameZh": "朝吹里矢子",
+      "nameOriginal": "朝吹里矢子",
+      "nameEn": "Riyako Asabuki",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "NOVEL", "SERIES"],
+      "summary": "夏树静子笔下的女性律师，在辩护和事实调查中检视当事人口供、情感关系与法律证据，寻找法庭表象之外的真相。",
+      "creatorName": "夏树静子",
+      "aliases": ["女性律师朝吹里矢子", "Riyako Asabuki"],
+      "tags": ["律师", "法庭推理", "女性侦探"],
+      "featuredCases": ["《两个真相》"],
+      "sourceIds": ["apple-books-two-truths"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "futatsu-no-shinjitsu",
+          "titleZh": "两个真相",
+          "titleOriginal": "二つの真実",
+          "mediaType": "SHORT_STORY",
+          "summary": "一名被控杀害情人妻子的女性突然翻供并主张无罪，失踪的情人随后现身，朝吹里矢子面对不断变化的证词重查事实。",
+          "sourceId": "apple-books-two-truths",
+          "linkType": "BOOKSTORE",
+          "providerName": "Apple Books",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-052-STD",
+      "pictureBookEntryIds": ["PB-052-STD"],
+      "slug": "robert-ironside",
+      "nameZh": "罗伯特·艾恩赛德",
+      "nameOriginal": "Robert T. Ironside",
+      "nameEn": "Robert T. Ironside",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "电视剧《Ironside》中因枪伤使用轮椅的前旧金山警察局侦缉处长，转任特别顾问后带领小组继续侦办重案。",
+      "creatorName": "科利尔·扬",
+      "aliases": ["轮椅神探艾恩赛德", "艾恩塞德", "Chief Ironside", "Robert T. Ironside"],
+      "tags": ["警察顾问", "团队侦查", "电视剧"],
+      "featuredCases": ["《轮椅神探艾恩赛德》"],
+      "sourceIds": ["apple-tv-ironside"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "ironside-1967-series",
+          "titleZh": "轮椅神探艾恩赛德",
+          "titleOriginal": "Ironside",
+          "mediaType": "SERIES",
+          "releaseYear": 1967,
+          "summary": "艾恩赛德遇袭致残后成为警局特别顾问，依靠经验、推理和专属团队处理旧金山的谋杀、抢劫与有组织犯罪。",
+          "sourceId": "apple-tv-ironside",
+          "linkType": "STREAMING",
+          "providerName": "Apple TV",
+          "region": "CA"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-053-STD",
+      "pictureBookEntryIds": ["PB-053-STD"],
+      "slug": "akihiko-chuzenji",
+      "nameZh": "中禅寺秋彦",
+      "nameOriginal": "中禅寺秋彦",
+      "nameEn": "Akihiko Chuzenji",
+      "country": "日本",
+      "era": "昭和时代题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "FILM"],
+      "summary": "京极夏彦百鬼夜行系列中的旧书店主、神主和驱邪师“京极堂”，以民俗知识、语言分析和逻辑为怪异事件赋予现实解释。",
+      "creatorName": "京极夏彦",
+      "aliases": ["京极堂", "中禅寺先生", "Akihiko Chuzenji"],
+      "tags": ["民俗学", "妖怪推理", "新本格"],
+      "featuredCases": ["《姑获鸟之夏》"],
+      "sourceIds": ["kodansha-ubume-no-natsu"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "ubume-no-natsu",
+          "titleZh": "姑获鸟之夏",
+          "titleOriginal": "姑獲鳥の夏",
+          "mediaType": "NOVEL",
+          "releaseYear": 1994,
+          "summary": "一名男子从密室般的医院失踪，其妻却被传怀孕二十个月；中禅寺秋彦从怪谈、认知和人物关系中拆解奇异传闻。",
+          "sourceId": "kodansha-ubume-no-natsu",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-054-STD",
+      "pictureBookEntryIds": ["PB-054-STD"],
+      "slug": "kiyoshi-shimada",
+      "nameZh": "岛田洁",
+      "nameOriginal": "島田潔",
+      "nameEn": "Kiyoshi Shimada",
+      "country": "日本",
+      "era": "20世纪末",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "SERIES"],
+      "summary": "绫辻行人馆系列中的调查者，在本土一侧与江南孝明追查中村青司、青屋敷旧案和十角馆成员之间的联系。",
+      "creatorName": "绫辻行人",
+      "aliases": ["島田潔", "Kiyoshi Shimada"],
+      "tags": ["新本格", "馆系列", "孤岛谜案"],
+      "featuredCases": ["《十角馆杀人预告》（《十角馆事件》）》"],
+      "sourceIds": ["kodansha-decagon-house"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-decagon-house-murders",
+          "titleZh": "十角馆事件",
+          "titleOriginal": "十角館の殺人",
+          "mediaType": "NOVEL",
+          "releaseYear": 1987,
+          "summary": "大学推理研究会成员登上建有十角馆的孤岛后接连遇害，岛田洁与江南在本土追查半年前青屋敷四重命案的真相。",
+          "sourceId": "kodansha-decagon-house",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-055-STD",
+      "pictureBookEntryIds": ["PB-055-STD"],
+      "slug": "continental-op",
+      "nameZh": "大陆侦探社调查员",
+      "nameOriginal": "The Continental Op",
+      "nameEn": "The Continental Op",
+      "country": "美国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "达希尔·哈米特笔下没有公开姓名的大陆侦探社调查员，以职业经验、强硬谈判和操纵敌对势力处理腐败城市与暴力案件。",
+      "creatorName": "达希尔·哈米特",
+      "aliases": ["大陆调查员", "大陆侦探", "欧普", "Continental Op"],
+      "tags": ["硬汉派", "私人侦探", "犯罪小说"],
+      "featuredCases": ["《血之诱惑》（图鉴旧译）", "《血之收获》"],
+      "sourceIds": ["tsogen-red-harvest"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "red-harvest",
+          "titleZh": "血之收获",
+          "titleOriginal": "Red Harvest",
+          "mediaType": "NOVEL",
+          "releaseYear": 1929,
+          "summary": "大陆侦探社调查员受邀来到被称为毒镇的矿业城市，在委托人遇害后利用地方各派矛盾瓦解相互勾结的犯罪网络。",
+          "sourceId": "tsogen-red-harvest",
+          "linkType": "PUBLISHER",
+          "providerName": "东京创元社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-056-STD",
+      "pictureBookEntryIds": ["PB-056-STD"],
+      "slug": "ningyo-sashichi",
+      "nameZh": "人形佐七",
+      "nameOriginal": "人形佐七",
+      "nameEn": "Ningyo Sashichi",
+      "country": "日本",
+      "era": "江户时代题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "FILM", "SERIES"],
+      "summary": "横沟正史笔下因俊美容貌得名“人形佐七”的江户捕吏，借町内查访、伙伴协作和对怪奇表象的拆解侦破案件。",
+      "creatorName": "横沟正史",
+      "aliases": ["佐七", "人形佐七亲分", "Ningyo Sashichi"],
+      "tags": ["捕物帐", "江户", "怪奇推理"],
+      "featuredCases": ["《幽灵山伏》"],
+      "sourceIds": ["shunyodo-ningyo-sashichi"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "ningyo-sashichi-torimonocho",
+          "titleZh": "人形佐七捕物帐",
+          "titleOriginal": "人形佐七捕物帳",
+          "mediaType": "SHORT_STORY",
+          "summary": "完整系列按发表顺序收录佐七处理的江户捕物故事；图鉴推荐篇目《幽灵山伏》作为代表案件保留并关联权威全集入口。",
+          "sourceId": "shunyodo-ningyo-sashichi",
+          "linkType": "PUBLISHER",
+          "providerName": "春阳堂书店",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-057-STD",
+      "pictureBookEntryIds": ["PB-057-STD"],
+      "slug": "joseph-french",
+      "nameZh": "约瑟夫·弗伦奇警督",
+      "nameOriginal": "Inspector Joseph French",
+      "nameEn": "Inspector Joseph French",
+      "country": "英国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL"],
+      "summary": "弗里曼·威尔斯·克罗夫茨笔下以耐心和程序著称的苏格兰场警探，擅长核对时间表、交通路线和不在场证明。",
+      "creatorName": "弗里曼·威尔斯·克罗夫茨",
+      "aliases": ["约瑟夫·弗伦奇", "约瑟夫．弗伦奇", "Inspector French"],
+      "tags": ["黄金时代", "警察程序", "时间表推理"],
+      "featuredCases": ["《12:30从克罗伊登出发》"],
+      "sourceIds": ["sourcebooks-croydon-1230"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-1230-from-croydon",
+          "titleZh": "12:30从克罗伊登出发",
+          "titleOriginal": "The 12.30 from Croydon",
+          "mediaType": "NOVEL",
+          "releaseYear": 1934,
+          "summary": "一名商人在从克罗伊登飞往巴黎的航班上死亡，故事展示罪犯的计划与掩饰，再由弗伦奇警督沿证据链逐步逼近。",
+          "sourceId": "sourcebooks-croydon-1230",
+          "linkType": "PUBLISHER",
+          "providerName": "Sourcebooks",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-058-STD",
+      "pictureBookEntryIds": ["PB-058-STD"],
+      "slug": "yoshifumi-takagi",
+      "nameZh": "高树良文",
+      "nameOriginal": "高樹良文",
+      "nameEn": "Yoshifumi Takagi",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL"],
+      "summary": "北方谦三硬汉小说中的警部，以直觉、执着调查和现场行动追查权力与暴力交织的案件，外号“老狗”。",
+      "creatorName": "北方谦三",
+      "aliases": ["高樹良文", "高树警部", "老狗", "Yoshifumi Takagi"],
+      "tags": ["硬汉派", "警部", "政治犯罪"],
+      "featuredCases": ["《不眠之夜》（《无眠之夜》）》"],
+      "sourceIds": ["imidas-takagi-yoshifumi", "shueisha-nemurinaki-yoru"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "nemurinaki-yoru",
+          "titleZh": "无眠之夜",
+          "titleOriginal": "眠りなき夜",
+          "mediaType": "NOVEL",
+          "summary": "一名同僚被栽赃为杀人嫌疑人后死亡，调查逐渐指向大臣候选人的黑幕，高树良文等人卷入持续升级的对抗。",
+          "sourceId": "shueisha-nemurinaki-yoru",
+          "linkType": "PUBLISHER",
+          "providerName": "集英社",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-002",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace three confirmed unusable storefront URLs with verified legal publisher or streaming pages while retaining the historical links as inactive audit records.",
+  "sources": [
+    {
+      "id": "audible-two-truths",
+      "label": "Audible Japan：《二つの真実 女性弁護士 朝吹里矢子》",
+      "url": "https://www.audible.co.jp/pd/%E4%BA%8C%E3%81%A4%E3%81%AE%E7%9C%9F%E5%AE%9F-%E5%A5%B3%E6%80%A7%E5%BC%81%E8%AD%B7%E5%A3%AB-%E6%9C%9D%E5%90%B9%E9%87%8C%E7%9F%A2%E5%AD%90-%E3%82%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%82%AA%E3%83%96%E3%83%83%E3%82%AF/B018LCE1LM",
+      "quality": "OFFICIAL_AUDIOBOOK"
+    },
+    {
+      "id": "roku-ironside-message-beyond",
+      "label": "The Roku Channel: Ironside — Message from Beyond",
+      "url": "https://therokuchannel.roku.com/details/0150ab4fd04b5c4692008e89fc14b7dc/message-from-beyond",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "british-library-croydon-1230",
+      "label": "British Library Shop: The 12.30 from Croydon",
+      "url": "https://shop.bl.uk/products/the-12-30-from-croydon",
+      "quality": "NATIONAL_LIBRARY_PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-051-STD",
+      "pictureBookEntryIds": [],
+      "slug": "riyako-asabuki",
+      "nameZh": "朝吹里矢子",
+      "nameOriginal": "朝吹里矢子",
+      "nameEn": "Riyako Asabuki",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "NOVEL", "SERIES"],
+      "summary": "夏树静子笔下的女性律师，在辩护和事实调查中检视当事人口供、情感关系与法律证据，寻找法庭表象之外的真相。",
+      "creatorName": "夏树静子",
+      "aliases": ["女性律师朝吹里矢子", "Riyako Asabuki"],
+      "tags": ["律师", "法庭推理", "女性侦探"],
+      "featuredCases": ["《两个真相》"],
+      "sourceIds": ["audible-two-truths"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "futatsu-no-shinjitsu",
+          "titleZh": "两个真相",
+          "titleOriginal": "二つの真実",
+          "mediaType": "SHORT_STORY",
+          "summary": "一名被控杀害情人妻子的女性突然翻供并主张无罪，失踪的情人随后现身，朝吹里矢子面对不断变化的证词重查事实。",
+          "sourceId": "audible-two-truths",
+          "linkType": "BOOKSTORE",
+          "providerName": "Audible Japan",
+          "region": "JP",
+          "deactivateLinkUrls": [
+            "https://books.apple.com/us/audiobook/%E4%BA%8C%E3%81%A4%E3%81%AE%E7%9C%9F%E5%AE%9F-%E5%A5%B3%E6%80%A7%E5%BC%81%E8%AD%B7%E5%A3%AB-%E6%9C%9D%E5%90%B9%E9%87%8C%E7%9F%A2%E5%AD%90-%E5%A5%B3%E6%80%A7%E5%BC%81%E8%AD%B7%E5%A3%AB-%E6%9C%9D%E5%90%B9%E9%87%8C%E7%9F%A2%E5%AD%90/id1084179199"
+          ]
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-052-STD",
+      "pictureBookEntryIds": [],
+      "slug": "robert-ironside",
+      "nameZh": "罗伯特·艾恩赛德",
+      "nameOriginal": "Robert T. Ironside",
+      "nameEn": "Robert T. Ironside",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "电视剧《Ironside》中因枪伤使用轮椅的前旧金山警察局侦缉处长，转任特别顾问后带领小组继续侦办重案。",
+      "creatorName": "科利尔·扬",
+      "aliases": ["轮椅神探艾恩赛德", "艾恩塞德", "Chief Ironside", "Robert T. Ironside"],
+      "tags": ["警察顾问", "团队侦查", "电视剧"],
+      "featuredCases": ["《轮椅神探艾恩赛德》"],
+      "sourceIds": ["roku-ironside-message-beyond"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "ironside-1967-series",
+          "titleZh": "轮椅神探艾恩赛德",
+          "titleOriginal": "Ironside",
+          "mediaType": "SERIES",
+          "releaseYear": 1967,
+          "summary": "艾恩赛德遇袭致残后成为警局特别顾问，依靠经验、推理和专属团队处理旧金山的谋杀、抢劫与有组织犯罪。",
+          "sourceId": "roku-ironside-message-beyond",
+          "linkType": "STREAMING",
+          "providerName": "The Roku Channel",
+          "region": "US",
+          "deactivateLinkUrls": [
+            "https://tv.apple.com/ca/show/ironside/umc.cmc.62ox86k54qtpw15gpsxrpohgm"
+          ]
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-057-STD",
+      "pictureBookEntryIds": [],
+      "slug": "joseph-french",
+      "nameZh": "约瑟夫·弗伦奇警督",
+      "nameOriginal": "Inspector Joseph French",
+      "nameEn": "Inspector Joseph French",
+      "country": "英国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL"],
+      "summary": "弗里曼·威尔斯·克罗夫茨笔下以耐心和程序著称的苏格兰场警探，擅长核对时间表、交通路线和不在场证明。",
+      "creatorName": "弗里曼·威尔斯·克罗夫茨",
+      "aliases": ["约瑟夫·弗伦奇", "约瑟夫．弗伦奇", "Inspector French"],
+      "tags": ["黄金时代", "警察程序", "时间表推理"],
+      "featuredCases": ["《12:30从克罗伊登出发》"],
+      "sourceIds": ["british-library-croydon-1230"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-1230-from-croydon",
+          "titleZh": "12:30从克罗伊登出发",
+          "titleOriginal": "The 12.30 from Croydon",
+          "mediaType": "NOVEL",
+          "releaseYear": 1934,
+          "summary": "一名商人在从克罗伊登飞往巴黎的航班上死亡，故事展示罪犯的计划与掩饰，再由弗伦奇警督沿证据链逐步逼近。",
+          "sourceId": "british-library-croydon-1230",
+          "linkType": "BOOKSTORE",
+          "providerName": "British Library Shop",
+          "region": "GB",
+          "deactivateLinkUrls": [
+            "https://www.sourcebooks.com/9781464206733-the-1230-from-croydon-tp.html"
+          ]
+        }
+      ]
+    }
+  ]
+}

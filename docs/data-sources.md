@@ -99,6 +99,10 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-picture-book-004.json` 是第六个不可变批次，把第 37～47 卷的 11 位人物关联到正式档案和代表作品，包括亨利·杰克逊、传七、卢·亚彻、御手洗洁、角落老人、约瑟夫·鲁勒塔比耶、半七、栋居弘一良、今西荣太郎、基甸·菲尔博士和合田雄一郎。该批次使用出版社、图书馆联合目录与公共数字图书馆核验，并把图鉴旧称“刘·亚契”“约瑟夫·鲁尔达庇”“栋居宏一良”保留为可检索别名；《会心一笑》《夜叉牡丹》等推荐篇目保留为代表案件标签，正式作品入口关联其所属权威书目。
 
+`apps/api/src/data/catalog-expansion-picture-book-005.json` 是第七个不可变批次，把第 48～58 卷的 11 位人物关联到正式档案和代表作品，包括杉下右京、史蒂夫·卡雷拉、火村英生、朝吹里矢子、罗伯特·艾恩赛德、中禅寺秋彦、岛田洁、大陆侦探社调查员、人形佐七、约瑟夫·弗伦奇警督和高树良文。来源包括电视台、出版社、创作者官网、图书馆联合目录、正版音频和视频商店，并把“有杀意”“血之诱惑”等旧标签分别映射为《绿之杀意》《血之收获》，旧称继续保留用于检索。
+
+`apps/api/src/data/catalog-expansion-link-fix-002.json` 记录第二轮不可变链接纠错：巡检确认 Apple Books、Apple TV 地区页返回 404，Sourcebooks 页面拒绝标准访问后，分别替换为 Audible Japan、The Roku Channel 和 British Library Shop 的可用正版入口。三个旧地址仅停止公开，不删除其来源、巡检和批次审计记录。
+
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 正版链接通过 `npm run links:check` 定时巡检。巡检只记录健康状态和连续失败次数，不自动下架；超时或失败必须由运营人员人工确认，避免把反爬、区域限制或临时网络问题误判为失效链接。
