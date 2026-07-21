@@ -78,6 +78,13 @@ jobs:
           METRICS_AUTH_TOKEN: ci-only-metrics-token-123
           RUNTIME_BASE_URL: http://127.0.0.1:3000
         run: npm run check:runtime
+      - name: Measure production runtime
+        env:
+          PERF_CONCURRENCY: 8
+          PERF_P95_LIMIT_MS: 750
+          PERF_REQUESTS_PER_ROUTE: 40
+          RUNTIME_BASE_URL: http://127.0.0.1:3000
+        run: npm run check:performance
       - name: Verify runtime database
         env:
           DATABASE_URL: postgresql://detective_ci:detective_ci_password@127.0.0.1:5432/detective_archives_container

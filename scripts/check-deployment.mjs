@@ -34,5 +34,6 @@ assert.match(qualityWorkflow, /services:[\s\S]*postgres:/, "CI must provide Post
 assert.match(qualityWorkflow, /npm run check:db-api/, "CI must exercise the database API lifecycle");
 assert.match(qualityWorkflow, /docker run[\s\S]*detective-archives-api:test/, "CI must start the built image");
 assert.match(qualityWorkflow, /npm run check:runtime/, "CI must probe the running production image");
+assert.match(qualityWorkflow, /npm run check:performance/, "CI must measure the production image latency");
 
 console.log("Deployment structure and startup sequence: OK");
