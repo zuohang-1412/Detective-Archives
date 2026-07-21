@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-010",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "level5-layton-curious-village",
+      "label": "LEVEL-5：《雷顿教授与不可思议的小镇》",
+      "url": "https://www.level5.co.jp/products/layton/index.html",
+      "quality": "OFFICIAL_GAME_SITE"
+    },
+    {
+      "id": "toei-kasouken-movie",
+      "label": "东映视频：《科搜研之女 -剧场版-》",
+      "url": "https://www.toei-video.co.jp/special/kasouken-movie/",
+      "quality": "OFFICIAL_DISTRIBUTOR"
+    },
+    {
+      "id": "kodansha-undead-girl-1",
+      "label": "讲谈社：《不死少女的谋杀闹剧 1》",
+      "url": "https://www.kodansha.co.jp/book/products/0000212900",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shogakukan-conan-105-special",
+      "label": "小学馆：《名侦探柯南 105 初期设定笔记本附特装版》",
+      "url": "https://www.shogakukan.co.jp/books/09943154",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "capcom-ace-attorney-trilogy",
+      "label": "CAPCOM: Phoenix Wright: Ace Attorney Trilogy",
+      "url": "https://www.ace-attorney.com/trilogy/",
+      "quality": "OFFICIAL_GAME_SITE"
+    },
+    {
+      "id": "psycho-pass-story",
+      "label": "《PSYCHO-PASS 心灵判官》官方故事年表",
+      "url": "https://psycho-pass.com/archive/story/",
+      "quality": "OFFICIAL_ANIMATION_SITE"
+    },
+    {
+      "id": "jitsugyo-ameku-complete",
+      "label": "实业之日本社：《天久鹰央的推理病历表 完全版》",
+      "url": "https://www.j-n.co.jp/books/978-4-408-55835-6/",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-103-STD",
+      "pictureBookEntryIds": ["PB-103-STD"],
+      "slug": "professor-layton",
+      "nameZh": "雷顿教授",
+      "nameOriginal": "エルシャール・レイトン（レイトン教授）",
+      "nameEn": "Professor Hershel Layton",
+      "country": "英国",
+      "era": "近现代架空题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["GAME", "ANIMATION", "FILM"],
+      "summary": "LEVEL-5“雷顿教授”系列的英国考古学家与解谜专家，受委托前往各地调查奇异事件，以逻辑推理、机关谜题和绅士式观察揭开大型谜团。",
+      "creatorName": "日野晃博",
+      "aliases": ["赫歇尔·雷顿", "レイトン教授", "Professor Layton", "Hershel Layton"],
+      "tags": ["游戏侦探", "谜题解谜", "考古学家"],
+      "featuredCases": ["《雷顿教授与不可思议的小镇》"],
+      "sourceIds": ["level5-layton-curious-village"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "professor-layton-curious-village",
+          "titleZh": "雷顿教授与不可思议的小镇",
+          "titleOriginal": "レイトン教授と不思議な町",
+          "mediaType": "GAME",
+          "releaseYear": 2007,
+          "summary": "雷顿教授和助手路克受邀前往圣谜斯特镇寻找遗产线索“黄金果实”，在破解居民提出的谜题时，逐步发现小镇布局与委托背后的秘密。",
+          "sourceId": "level5-layton-curious-village",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "LEVEL-5",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-104-STD",
+      "pictureBookEntryIds": ["PB-104-STD"],
+      "slug": "mariko-sakaki",
+      "nameZh": "榊真理子",
+      "nameOriginal": "榊マリコ",
+      "nameEn": "Mariko Sakaki",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "《科搜研之女》中京都府警科学搜查研究所的法医研究员，组织法医、化学、物理和影像等专业人员，以可复核的科学证据追查案件。",
+      "creatorName": "日暮裕一、樱井武晴、户田山雅司等",
+      "aliases": ["榊マリコ", "科搜研之女", "Mariko Sakaki"],
+      "tags": ["科学搜查", "法医研究", "女性调查员"],
+      "featuredCases": ["《科搜研之女 -剧场版-》"],
+      "sourceIds": ["toei-kasouken-movie"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kasouken-no-onna-movie",
+          "titleZh": "科搜研之女 -剧场版-",
+          "titleOriginal": "科捜研の女 -劇場版-",
+          "mediaType": "FILM",
+          "releaseYear": 2021,
+          "summary": "多地科学家接连发生不明死亡，榊真理子与科搜研团队从遗体、物证和最新科学检验入手，追查世界同时发生的可疑死亡事件。",
+          "sourceId": "toei-kasouken-movie",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "东映视频",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-105-STD",
+      "pictureBookEntryIds": ["PB-105-STD"],
+      "slug": "aya-rindo",
+      "nameZh": "轮堂鸦夜",
+      "nameOriginal": "輪堂鴉夜",
+      "nameEn": "Aya Rindo",
+      "country": "日本",
+      "era": "19世纪末欧洲题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "ANIMATION"],
+      "summary": "青崎有吾《不死少女的谋杀闹剧》中的不老不死侦探，失去身体后以鸟笼中的头颅行动，专门从怪物特性与现场矛盾推理超自然案件。",
+      "creatorName": "青崎有吾",
+      "aliases": ["輪堂鴉夜", "鸟笼使者", "生首侦探", "Aya Rindo"],
+      "tags": ["怪物侦探", "本格推理", "超自然案件"],
+      "featuredCases": ["《吸血鬼》"],
+      "sourceIds": ["kodansha-undead-girl-1"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "undead-girl-vampire",
+          "titleZh": "不死少女的谋杀闹剧 1：吸血鬼",
+          "titleOriginal": "アンデッドガール・マーダーファルス 1 第一章 吸血鬼",
+          "mediaType": "NOVEL",
+          "releaseYear": 2015,
+          "summary": "法国东部一名与人类友好相处的吸血鬼遭银桩杀害，轮堂鸦夜受邀调查，并从家族证词、现场痕迹和吸血鬼特性之间的矛盾寻找凶手。",
+          "sourceId": "kodansha-undead-girl-1",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-105-SP",
+      "pictureBookEntryIds": ["PB-105-SP"],
+      "slug": "shinichi-kudo",
+      "nameZh": "工藤新一",
+      "nameOriginal": "工藤新一",
+      "nameEn": "Shinichi Kudo",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "ANIMATION", "FILM"],
+      "summary": "青山刚昌《名侦探柯南》中的高中生侦探，遭药物作用后以江户川柯南身份继续调查案件，擅长现场观察、逻辑演绎和还原犯罪手法。",
+      "creatorName": "青山刚昌",
+      "aliases": ["江户川柯南", "平成的福尔摩斯", "Shinichi Kudo"],
+      "tags": ["高中生侦探", "本格推理", "名侦探柯南"],
+      "featuredCases": ["《名侦探柯南 105 初期设定笔记本附特装版》"],
+      "sourceIds": ["shogakukan-conan-105-special"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "detective-conan-105-special",
+          "titleZh": "名侦探柯南 105 初期设定笔记本附特装版",
+          "titleOriginal": "名探偵コナン 105 初期設定ノート付き特装版",
+          "mediaType": "COMIC",
+          "releaseYear": 2024,
+          "summary": "《名侦探柯南》第 105 卷特装版附角色初期设定笔记，并在名侦探图鉴中专门收录工藤新一，是该卷特殊图鉴条目的官方载体。",
+          "sourceId": "shogakukan-conan-105-special",
+          "linkType": "PUBLISHER",
+          "providerName": "小学馆",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-106-STD",
+      "pictureBookEntryIds": ["PB-106-STD"],
+      "slug": "ryuichi-naruhodo",
+      "nameZh": "成步堂龙一",
+      "nameOriginal": "成歩堂龍一",
+      "nameEn": "Phoenix Wright",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["GAME", "ANIMATION", "FILM"],
+      "summary": "CAPCOM《逆转裁判》系列的辩护律师，通过调查现场、询问相关人员和法庭交叉询问，在证言与证物的矛盾中找出被掩盖的事实。",
+      "creatorName": "巧舟",
+      "aliases": ["成歩堂龍一", "Phoenix Wright", "不死鸟莱特"],
+      "tags": ["律师调查", "法庭推理", "游戏侦探"],
+      "featuredCases": ["《逆转裁判》"],
+      "sourceIds": ["capcom-ace-attorney-trilogy"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "phoenix-wright-ace-attorney",
+          "titleZh": "逆转裁判",
+          "titleOriginal": "逆転裁判",
+          "mediaType": "GAME",
+          "releaseYear": 2001,
+          "summary": "新人律师成步堂龙一为多名被告辩护，在法庭外搜集证据，并通过交叉询问指出证词矛盾，让案件从不利局面发生逆转。",
+          "sourceId": "capcom-ace-attorney-trilogy",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "CAPCOM",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-107-STD",
+      "pictureBookEntryIds": ["PB-107-STD"],
+      "slug": "shinya-kogami",
+      "nameZh": "狡噛慎也",
+      "nameOriginal": "狡噛慎也",
+      "nameEn": "Shinya Kogami",
+      "country": "日本",
+      "era": "近未来",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["ANIMATION", "FILM", "NOVEL"],
+      "summary": "《PSYCHO-PASS 心灵判官》中的公安局执行官，凭强烈的搜查执念、犯罪行为分析和现场判断追查系统难以识别的罪犯。",
+      "creatorName": "虚渊玄、深见真、高羽彩",
+      "aliases": ["狡啮慎也", "慎也", "Shinya Kogami"],
+      "tags": ["近未来刑警", "犯罪分析", "动画侦探"],
+      "featuredCases": ["《甘甜之毒》"],
+      "sourceIds": ["psycho-pass-story"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "psycho-pass-sweet-poison",
+          "titleZh": "PSYCHO-PASS 心灵判官：甘甜之毒",
+          "titleOriginal": "PSYCHO-PASS サイコパス Original Episode.14 甘い毒",
+          "mediaType": "ANIMATION",
+          "releaseYear": 2013,
+          "summary": "在安全系统全面监视的街道上发生公开杀人，行凶者的心理指数却始终正常；狡噛等人调查系统盲点，并追查幕后策划者提供的犯罪工具。",
+          "sourceId": "psycho-pass-story",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "PSYCHO-PASS 制作委员会",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-108-STD",
+      "pictureBookEntryIds": ["PB-108-STD"],
+      "slug": "takao-ameku",
+      "nameZh": "天久鹰央",
+      "nameOriginal": "天久鷹央",
+      "nameEn": "Takao Ameku",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "ANIMATION", "SERIES"],
+      "summary": "知念实希人“天久鹰央”系列的统括诊断部部长，以超常记忆、计算能力与临床医学知识诊断疑难病症，并解释看似怪异或犯罪性的事件。",
+      "creatorName": "知念实希人",
+      "aliases": ["天久鷹央", "天才女医", "Takao Ameku"],
+      "tags": ["医疗推理", "诊断医师", "女性侦探"],
+      "featuredCases": ["《量身定制的毒药》"],
+      "sourceIds": ["jitsugyo-ameku-complete"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "ameku-odameido-no-dokuyaku",
+          "titleZh": "天久鹰央的推理病历表 完全版：量身定制的毒药",
+          "titleOriginal": "天久鷹央の推理カルテ 完全版 Karte.04 オーダーメイドの毒薬",
+          "mediaType": "NOVEL",
+          "releaseYear": 2023,
+          "summary": "统括诊断部接到一宗与毒物表现有关的疑难事件，天久鹰央从症状差异、接触条件和医学可能性出发，判断所谓毒药为何只对特定对象生效。",
+          "sourceId": "jitsugyo-ameku-complete",
+          "linkType": "PUBLISHER",
+          "providerName": "实业之日本社",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}

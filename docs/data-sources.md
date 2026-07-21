@@ -115,6 +115,8 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-link-fix-005.json` 和 `catalog-expansion-link-fix-006.json` 保存第 92～102 卷的链接纠错链：Apple TV 两条地区深链确认返回 404 后停止公开，华冈信一郎改用 NHK 点播第 1 话；理查德·卡瑟尔先尝试 Disney+ 官方剧集页，但自动巡检仍返回 404，随后切换到明确介绍首集《Flowers for Your Grave》的 ABC 官方节目文章。全部历史链接仍作为停用审计记录保留，最终批次巡检 11 条均通过。
 
+`apps/api/src/data/catalog-expansion-picture-book-010.json` 完成第 103～108 卷及第 105 卷特装版的正式关联，收录雷顿教授、榊真理子、轮堂鸦夜、工藤新一、成步堂龙一、狡噛慎也和天久鹰央。该批次使用 LEVEL5、东映、小学馆、讲谈社、CAPCOM、动画系列官网和实业之日本社的一手资料，覆盖游戏、科学搜查、怪异推理、法庭推理、未来警察和医疗推理；第 105 卷特装版中的工藤新一条目另由小学馆商品页明确确认。至此 109 条图鉴记录已全部关联正式人物、代表作品与正版入口。
+
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 正版链接通过 `npm run links:check` 定时巡检。巡检只记录健康状态和连续失败次数，不自动下架；超时或失败必须由运营人员人工确认，避免把反爬、区域限制或临时网络问题误判为失效链接。
