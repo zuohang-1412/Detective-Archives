@@ -7,11 +7,17 @@ const { Client } = pg;
 const coreDetectives = JSON.parse(
   await readFile(path.resolve("apps/api/src/data/core-detectives.json"), "utf8")
 );
+const coreWorkDetails = JSON.parse(
+  await readFile(path.resolve("apps/api/src/data/core-work-details.json"), "utf8")
+);
 const archiveDirectory = JSON.parse(
   await readFile(path.resolve("apps/api/src/data/archive-directory-index.json"), "utf8")
 );
 const pictureBookCatalog = JSON.parse(
   await readFile(path.resolve("apps/api/src/data/picture-book-index.json"), "utf8")
+);
+const coreWorkDetailsBySlug = new Map(
+  coreWorkDetails.map((detail) => [detail.slug, detail])
 );
 
 function slugify(value) {
@@ -106,18 +112,26 @@ async function seedCoreDetectives(client, detectiveIdsBySlug) {
     for (let index = 0; index < detective.works.length; index += 1) {
       const work = detective.works[index];
       const workSlug = work.id.replace(/^work_/, "").replaceAll("_", "-");
+      const workDetail = coreWorkDetailsBySlug.get(workSlug);
+      if (!workDetail) {
+        throw new Error(`Missing core work detail: ${workSlug}`);
+      }
       const workResult = await client.query(
         `
           INSERT INTO works (
             slug, title_zh, title_original, media_type, release_year,
-            source_note, status, published_at
+            summary, source_note, status, published_at
           )
-          VALUES ($1, $2, $3, $4, $5, $6, 'PUBLISHED', NOW())
+          VALUES ($1, $2, $3, $4, $5, $6, $7, 'PUBLISHED', NOW())
           ON CONFLICT (slug) DO UPDATE SET
             title_zh = EXCLUDED.title_zh,
             title_original = EXCLUDED.title_original,
             media_type = EXCLUDED.media_type,
             release_year = EXCLUDED.release_year,
+            summary = EXCLUDED.summary,
+            source_note = EXCLUDED.source_note,
+            status = 'PUBLISHED',
+            published_at = COALESCE(works.published_at, NOW()),
             updated_at = NOW()
           RETURNING id
         `,
@@ -127,7 +141,8 @@ async function seedCoreDetectives(client, detectiveIdsBySlug) {
           work.titleOriginal,
           work.type,
           work.releaseYear,
-          "MVP core catalog; official link verification remains in progress"
+          workDetail.summary,
+          "Core catalog with official link verification"
         ]
       );
       const workId = workResult.rows[0].id;
@@ -153,6 +168,32 @@ async function seedCoreDetectives(client, detectiveIdsBySlug) {
         `,
         [workId, workCreatorId]
       );
+
+      for (const link of workDetail.links) {
+        await client.query(
+          `
+            INSERT INTO work_links (
+              work_id, link_type, provider_name, url, region,
+              is_active, last_checked_at
+            )
+            VALUES ($1, $2, $3, $4, $5, TRUE, $6)
+            ON CONFLICT (work_id, provider_name, url) DO UPDATE SET
+              link_type = EXCLUDED.link_type,
+              region = EXCLUDED.region,
+              is_active = TRUE,
+              last_checked_at = EXCLUDED.last_checked_at,
+              updated_at = NOW()
+          `,
+          [
+            workId,
+            link.linkType,
+            link.providerName,
+            link.url,
+            link.region,
+            link.lastCheckedAt
+          ]
+        );
+      }
     }
   }
 }
@@ -166,14 +207,15 @@ async function seedArchiveDirectory(client, detectiveIdsBySlug) {
     const detectiveResult = await client.query(
       `
         INSERT INTO detectives (
-          catalog_id, slug, name_zh, name_original, name_en, country,
+          catalog_id, catalog_category, slug, name_zh, name_original, name_en, country,
           subject_kind, catalog_collection, media_types, summary,
           source_note, verification, status, published_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
           'PUBLISHED', NOW())
         ON CONFLICT (slug) DO UPDATE SET
           catalog_id = EXCLUDED.catalog_id,
+          catalog_category = EXCLUDED.catalog_category,
           name_zh = EXCLUDED.name_zh,
           name_original = EXCLUDED.name_original,
           name_en = EXCLUDED.name_en,
@@ -191,6 +233,7 @@ async function seedArchiveDirectory(client, detectiveIdsBySlug) {
       `,
       [
         entry.id,
+        entry.category,
         slug,
         entry.names.zh,
         entry.names.original,
@@ -330,6 +373,14 @@ async function seedPictureBook(client, detectiveIdsBySlug) {
           VALUES ($1, $2, $3)
         `,
         [entry.id, sourceId, sourceUrl]
+      );
+    }
+
+    await client.query("DELETE FROM picture_book_entry_aliases WHERE entry_id = $1", [entry.id]);
+    for (const alias of entry.names.aliases) {
+      await client.query(
+        "INSERT INTO picture_book_entry_aliases (entry_id, alias) VALUES ($1, $2)",
+        [entry.id, alias]
       );
     }
 

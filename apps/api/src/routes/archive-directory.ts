@@ -1,6 +1,7 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { archiveDirectory } from "../data/archive-directory.js";
+import type { DatabaseClient } from "../db/types.js";
+import { getArchiveEntry, listArchiveEntries } from "../repositories/archive-directory.js";
 
 const listQuerySchema = z.object({
   q: z.string().trim().max(50).optional(),
@@ -22,7 +23,14 @@ const idParamsSchema = z.object({
   id: z.string().trim().regex(/^(EXT|HIS)-(WL|SC|JP|CN)-\d{3}$/i)
 });
 
-export const archiveDirectoryRoutes: FastifyPluginAsync = async (app) => {
+interface ArchiveDirectoryRouteOptions {
+  database?: DatabaseClient;
+}
+
+export const archiveDirectoryRoutes: FastifyPluginAsync<ArchiveDirectoryRouteOptions> = async (
+  app,
+  options
+) => {
   app.get("/archive-directory", async (request, reply) => {
     const parsed = listQuerySchema.safeParse(request.query);
     if (!parsed.success) {
@@ -33,39 +41,17 @@ export const archiveDirectoryRoutes: FastifyPluginAsync = async (app) => {
       });
     }
 
-    const { q, collection, category, page, pageSize } = parsed.data;
-    const normalizedQuery = q?.toLocaleLowerCase("zh-CN");
-    const filtered = archiveDirectory.entries.filter((entry) => {
-      const searchable = [
-        entry.id,
-        entry.names.zh,
-        entry.names.original,
-        entry.names.en,
-        ...entry.names.aliases,
-        entry.region,
-        entry.creatorName,
-        ...entry.featuredWorks,
-        ...entry.tags
-      ]
-        .filter((value): value is string => Boolean(value))
-        .join(" ")
-        .toLocaleLowerCase("zh-CN");
-
-      return (!collection || entry.collection === collection)
-        && (!category || entry.category === category)
-        && (!normalizedQuery || searchable.includes(normalizedQuery));
-    });
-
-    const start = (page - 1) * pageSize;
+    const { page, pageSize } = parsed.data;
+    const result = await listArchiveEntries(options.database, parsed.data);
     return {
-      data: filtered.slice(start, start + pageSize),
-      coverage: archiveDirectory.coverage,
-      snapshotDate: archiveDirectory.snapshotDate,
+      data: result.data,
+      coverage: result.coverage,
+      snapshotDate: result.snapshotDate,
       pagination: {
         page,
         pageSize,
-        total: filtered.length,
-        totalPages: Math.ceil(filtered.length / pageSize)
+        total: result.total,
+        totalPages: Math.ceil(result.total / pageSize)
       }
     };
   });
@@ -79,19 +65,14 @@ export const archiveDirectoryRoutes: FastifyPluginAsync = async (app) => {
       });
     }
 
-    const entry = archiveDirectory.entries.find(
-      (item) => item.id === parsed.data.id.toUpperCase()
-    );
-    if (!entry) {
+    const result = await getArchiveEntry(options.database, parsed.data.id.toUpperCase());
+    if (!result) {
       return reply.code(404).send({
         code: "DIRECTORY_ENTRY_NOT_FOUND",
         message: "未找到该扩展目录条目"
       });
     }
 
-    const sources = archiveDirectory.sources.filter((source) =>
-      entry.sourceIds.includes(source.id)
-    );
-    return { data: entry, sources };
+    return result;
   });
 };

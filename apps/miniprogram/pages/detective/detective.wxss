@@ -84,3 +84,8 @@
   color: #6b6257;
   font-size: 18rpx;
 }
+
+.work-arrow {
+  color: #9f3123;
+  font-size: 36rpx;
+}

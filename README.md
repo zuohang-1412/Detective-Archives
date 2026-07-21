@@ -6,12 +6,12 @@
 
 `v0.1.0` 是 MVP 基础版本，已经包含：
 
-- 原生微信小程序：首页、档案搜索、侦探详情。
-- TypeScript API：健康检查、侦探列表、关键词筛选、分页、详情查询。
+- 原生微信小程序：首页、档案搜索、侦探详情、作品详情与正版渠道。
+- TypeScript API：健康检查、数据库仓储、侦探/图鉴/扩展目录/作品查询。
 - 三位演示侦探及代表作品数据。
 - 第 1～108 卷名侦探图鉴索引，共 109 条记录（含第 105 卷特装版）。
 - 20 位图鉴之外的知名虚构侦探，以及 3 位独立展示的历史断案人物。
-- PostgreSQL 运行时连接、初始迁移、目录初始化和完整性检查。
+- PostgreSQL 运行时连接、增量迁移、目录初始化、作品与正版链接仓储和完整性检查。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
@@ -24,7 +24,8 @@ apps/
   api/             TypeScript + Fastify API
   miniprogram/     原生微信小程序
 database/
-  schema.sql       PostgreSQL 初始结构迁移
+  schema.sql       PostgreSQL 不可变初始结构迁移
+  migrations/      后续增量迁移
 docs/
   PRD-v0.1.md      完整 MVP 产品需求文档
   architecture.md  技术架构与安全边界
@@ -68,6 +69,9 @@ npm run dev:api
 - `GET /api/v1/archive-directory?collection=ARCHIVE_EXTENSION&pageSize=50`
 - `GET /api/v1/archive-directory?collection=HISTORICAL_CASES&pageSize=50`
 - `GET /api/v1/archive-directory/EXT-CN-001`
+- `GET /api/v1/works?pageSize=20`
+- `GET /api/v1/works?q=东方快车`
+- `GET /api/v1/works/murder-on-the-orient-express`
 
 ### 4. 打开小程序
 
@@ -87,7 +91,10 @@ npm run check
 
 ```bash
 npm run check:db
+npm run check:db-api
 ```
+
+第二条命令会通过真实 PostgreSQL 仓储检查六条公开 API 主链路，执行前需要先完成生产构建。
 
 图鉴与扩展目录数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：
 

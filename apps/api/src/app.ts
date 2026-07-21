@@ -1,16 +1,15 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
+import type { DatabaseClient } from "./db/types.js";
 import { archiveDirectoryRoutes } from "./routes/archive-directory.js";
 import { detectiveRoutes } from "./routes/detectives.js";
 import { pictureBookRoutes } from "./routes/picture-book.js";
+import { workRoutes } from "./routes/works.js";
 
 export interface BuildAppOptions {
   logger?: boolean;
   corsOrigin?: string;
-  database?: {
-    query(sql: string): Promise<unknown>;
-    end(): Promise<void>;
-  };
+  database?: DatabaseClient;
 }
 
 export async function buildApp(options: BuildAppOptions = {}) {
@@ -62,9 +61,14 @@ export async function buildApp(options: BuildAppOptions = {}) {
     });
   }
 
-  await app.register(detectiveRoutes, { prefix: "/api/v1" });
-  await app.register(pictureBookRoutes, { prefix: "/api/v1" });
-  await app.register(archiveDirectoryRoutes, { prefix: "/api/v1" });
+  const routeOptions = {
+    prefix: "/api/v1",
+    ...(options.database ? { database: options.database } : {})
+  };
+  await app.register(detectiveRoutes, routeOptions);
+  await app.register(pictureBookRoutes, routeOptions);
+  await app.register(archiveDirectoryRoutes, routeOptions);
+  await app.register(workRoutes, routeOptions);
 
   app.setNotFoundHandler(async (_request, reply) => {
     return reply.code(404).send({ code: "ROUTE_NOT_FOUND", message: "接口不存在" });

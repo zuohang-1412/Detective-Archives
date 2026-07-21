@@ -1,0 +1,60 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="state-message">正在调取作品资料…</view>
+  <view wx:elif="{{error}}" class="state-message" bindtap="loadWork">
+    <view>{{error}}</view>
+    <view class="retry">轻触重试</view>
+  </view>
+  <view wx:elif="{{work}}">
+    <view class="work-head">
+      <text class="eyebrow">CASE LIBRARY</text>
+      <view class="work-title">{{work.titleZh}}</view>
+      <view class="work-original">{{work.titleOriginal}}</view>
+      <view class="work-meta">{{work.releaseYear}} · {{work.typeLabel}}</view>
+      <view class="creator-line" wx:if="{{work.creators.length}}">
+        {{work.creators[0].nameZh}}
+      </view>
+    </view>
+
+    <view class="content-section">
+      <text class="eyebrow">OVERVIEW</text>
+      <view class="section-title">无剧透简介</view>
+      <view class="summary">{{work.summary || '作品简介正在核验。'}}</view>
+    </view>
+
+    <view class="content-section" wx:if="{{work.detectives.length}}">
+      <text class="eyebrow">DETECTIVES</text>
+      <view class="section-title">相关侦探</view>
+      <view
+        wx:for="{{work.detectives}}"
+        wx:key="slug"
+        class="card detective-link"
+        data-slug="{{item.slug}}"
+        bindtap="openDetective"
+      >
+        <text>{{item.nameZh}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+
+    <view class="content-section">
+      <text class="eyebrow">OFFICIAL LINKS</text>
+      <view class="section-title">正版渠道</view>
+      <view class="link-note">仅收录出版社、作者官方站或合法公共数字图书馆。轻触后复制地址。</view>
+      <view wx:if="{{!work.links.length}}" class="empty-links">正版渠道正在核验</view>
+      <view
+        wx:for="{{work.links}}"
+        wx:key="url"
+        class="official-link"
+        data-url="{{item.url}}"
+        data-provider="{{item.providerName}}"
+        bindtap="copyOfficialLink"
+      >
+        <view>
+          <view class="provider-name">{{item.providerName}}</view>
+          <view class="provider-meta">{{item.region}} · {{item.linkType}}</view>
+        </view>
+        <view class="copy-action">复制链接</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,6 +1,7 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { detectives } from "../data/detectives.js";
+import type { DatabaseClient } from "../db/types.js";
+import { getDetectiveBySlug, listDetectives } from "../repositories/detectives.js";
 
 const listQuerySchema = z.object({
   q: z.string().trim().max(50).optional(),
@@ -13,7 +14,11 @@ const slugParamsSchema = z.object({
   slug: z.string().trim().min(1).max(80)
 });
 
-export const detectiveRoutes: FastifyPluginAsync = async (app) => {
+interface DetectiveRouteOptions {
+  database?: DatabaseClient;
+}
+
+export const detectiveRoutes: FastifyPluginAsync<DetectiveRouteOptions> = async (app, options) => {
   app.get("/detectives", async (request, reply) => {
     const parsed = listQuerySchema.safeParse(request.query);
     if (!parsed.success) {
@@ -25,29 +30,14 @@ export const detectiveRoutes: FastifyPluginAsync = async (app) => {
     }
 
     const { q, country, page, pageSize } = parsed.data;
-    const normalizedQuery = q?.toLocaleLowerCase("zh-CN");
-    const filtered = detectives.filter((detective) => {
-      const matchesCountry = !country || detective.country === country;
-      const searchable = [
-        detective.nameZh,
-        detective.nameOriginal,
-        detective.creatorName,
-        ...detective.tags
-      ]
-        .join(" ")
-        .toLocaleLowerCase("zh-CN");
-      const matchesQuery = !normalizedQuery || searchable.includes(normalizedQuery);
-      return matchesCountry && matchesQuery;
-    });
-
-    const start = (page - 1) * pageSize;
+    const result = await listDetectives(options.database, parsed.data);
     return {
-      data: filtered.slice(start, start + pageSize),
+      data: result.data,
       pagination: {
         page,
         pageSize,
-        total: filtered.length,
-        totalPages: Math.ceil(filtered.length / pageSize)
+        total: result.total,
+        totalPages: Math.ceil(result.total / pageSize)
       }
     };
   });
@@ -58,7 +48,7 @@ export const detectiveRoutes: FastifyPluginAsync = async (app) => {
       return reply.code(400).send({ code: "INVALID_SLUG", message: "侦探标识不合法" });
     }
 
-    const detective = detectives.find((item) => item.slug === parsed.data.slug);
+    const detective = await getDetectiveBySlug(options.database, parsed.data.slug);
     if (!detective) {
       return reply.code(404).send({ code: "DETECTIVE_NOT_FOUND", message: "未找到该侦探档案" });
     }

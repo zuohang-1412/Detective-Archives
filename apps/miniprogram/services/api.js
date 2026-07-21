@@ -32,6 +32,14 @@ function getDetective(slug) {
   return request(`/api/v1/detectives/${encodeURIComponent(slug)}`);
 }
 
+function listWorks(params = {}) {
+  return request("/api/v1/works", params);
+}
+
+function getWork(slug) {
+  return request(`/api/v1/works/${encodeURIComponent(slug)}`);
+}
+
 function listPictureBookEntries(params = {}) {
   return request("/api/v1/picture-book", params);
 }
@@ -42,7 +50,9 @@ function listArchiveDirectory(params = {}) {
 
 module.exports = {
   getDetective,
+  getWork,
   listArchiveDirectory,
   listDetectives,
-  listPictureBookEntries
+  listPictureBookEntries,
+  listWorks
 };

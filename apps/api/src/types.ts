@@ -1,7 +1,16 @@
-export type MediaType = "NOVEL" | "SHORT_STORY" | "FILM" | "SERIES";
+export type MediaType =
+  | "NOVEL"
+  | "SHORT_STORY"
+  | "COMIC"
+  | "FILM"
+  | "SERIES"
+  | "ANIMATION"
+  | "GAME"
+  | "OTHER";
 
 export interface WorkSummary {
   id: string;
+  slug: string;
   titleZh: string;
   titleOriginal: string;
   type: MediaType;

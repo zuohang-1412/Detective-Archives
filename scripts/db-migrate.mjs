@@ -1,14 +1,28 @@
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import pg from "pg";
 import { postgresConfig, targetDatabaseName } from "./lib/postgres-config.mjs";
 
 const { Client } = pg;
-const migrationVersion = "001_initial_schema";
 const schemaPath = path.resolve("database/schema.sql");
-const schemaSql = await readFile(schemaPath, "utf8");
-const checksum = createHash("sha256").update(schemaSql).digest("hex");
+const migrationDirectory = path.resolve("database/migrations");
+
+const incrementalFiles = (await readdir(migrationDirectory))
+  .filter((file) => /^\d{3}_[a-z0-9_]+\.sql$/.test(file))
+  .sort();
+const migrations = [
+  { version: "001_initial_schema", filePath: schemaPath },
+  ...incrementalFiles.map((file) => ({
+    version: path.basename(file, ".sql"),
+    filePath: path.join(migrationDirectory, file)
+  }))
+];
+
+if (new Set(migrations.map((migration) => migration.version)).size !== migrations.length) {
+  throw new Error("Duplicate database migration version");
+}
+
 const client = new Client(postgresConfig(targetDatabaseName()));
 let migrationLockHeld = false;
 
@@ -24,25 +38,30 @@ try {
     )
   `);
 
-  const applied = await client.query(
-    "SELECT checksum FROM schema_migrations WHERE version = $1",
-    [migrationVersion]
-  );
-  if (applied.rowCount === 1) {
-    if (applied.rows[0].checksum !== checksum) {
-      throw new Error(`${migrationVersion} was modified after it was applied`);
+  for (const migration of migrations) {
+    const sql = await readFile(migration.filePath, "utf8");
+    const checksum = createHash("sha256").update(sql).digest("hex");
+    const applied = await client.query(
+      "SELECT checksum FROM schema_migrations WHERE version = $1",
+      [migration.version]
+    );
+    if (applied.rowCount === 1) {
+      if (applied.rows[0].checksum !== checksum) {
+        throw new Error(`${migration.version} was modified after it was applied`);
+      }
+      console.log(`Migration ${migration.version}: already applied`);
+      continue;
     }
-    console.log(`Migration ${migrationVersion}: already applied`);
-  } else {
+
     await client.query("BEGIN");
     try {
-      await client.query(schemaSql);
+      await client.query(sql);
       await client.query(
         "INSERT INTO schema_migrations (version, checksum) VALUES ($1, $2)",
-        [migrationVersion, checksum]
+        [migration.version, checksum]
       );
       await client.query("COMMIT");
-      console.log(`Migration ${migrationVersion}: applied`);
+      console.log(`Migration ${migration.version}: applied`);
     } catch (error) {
       await client.query("ROLLBACK");
       throw error;

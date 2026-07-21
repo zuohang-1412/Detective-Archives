@@ -26,5 +26,14 @@ Page({
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  openWork(event) {
+    const { slug } = event.currentTarget.dataset;
+    if (!slug) {
+      wx.showToast({ title: "作品资料待补充", icon: "none" });
+      return;
+    }
+    wx.navigateTo({ url: `/pages/work/work?slug=${encodeURIComponent(slug)}` });
   }
 });

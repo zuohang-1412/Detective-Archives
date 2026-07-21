@@ -114,6 +114,44 @@ describe("detective archives API", () => {
     assert.equal(response.json().code, "INVALID_QUERY");
   });
 
+  it("lists and filters published works", async () => {
+    const listResponse = await app.inject({ method: "GET", url: "/api/v1/works?pageSize=10" });
+    const listBody = listResponse.json();
+    assert.equal(listResponse.statusCode, 200);
+    assert.equal(listBody.data.length, 5);
+    assert.equal(listBody.pagination.total, 5);
+
+    const filterResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/works?q=%E6%B1%9F%E6%88%B7%E5%B7%9D%E4%B9%B1%E6%AD%A5"
+    });
+    assert.equal(filterResponse.statusCode, 200);
+    assert.equal(filterResponse.json().data[0].slug, "d-slope-murder-case");
+  });
+
+  it("returns a work with its official links and related detective", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/works/murder-on-the-orient-express"
+    });
+    const body = response.json();
+    assert.equal(response.statusCode, 200);
+    assert.equal(body.data.titleZh, "东方快车谋杀案");
+    assert.equal(body.data.detectives[0].slug, "hercule-poirot");
+    assert.equal(body.data.links[0].providerName, "Agatha Christie Official");
+    assert.match(body.data.links[0].url, /^https:\/\//);
+  });
+
+  it("returns stable errors for invalid or missing works", async () => {
+    const invalidResponse = await app.inject({ method: "GET", url: "/api/v1/works/INVALID" });
+    assert.equal(invalidResponse.statusCode, 400);
+    assert.equal(invalidResponse.json().code, "INVALID_SLUG");
+
+    const missingResponse = await app.inject({ method: "GET", url: "/api/v1/works/not-exist" });
+    assert.equal(missingResponse.statusCode, 404);
+    assert.equal(missingResponse.json().code, "WORK_NOT_FOUND");
+  });
+
   it("lists the complete picture-book volume index", async () => {
     const response = await app.inject({
       method: "GET",

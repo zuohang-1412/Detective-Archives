@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "a-study-in-scarlet",
+    "summary": "华生医生在伦敦与福尔摩斯合租贝克街寓所后，第一次见识到这位咨询侦探如何从现场细节中重建一桩离奇命案。作品也是福尔摩斯与华生搭档关系的起点。",
+    "links": [
+      {
+        "linkType": "PUBLISHER",
+        "providerName": "Penguin Books",
+        "url": "https://www.penguin.co.uk/books/268089/a-study-in-scarlet-by-doyle-arthur-conan/9780141395524",
+        "region": "GLOBAL",
+        "lastCheckedAt": "2026-07-21"
+      }
+    ]
+  },
+  {
+    "slug": "the-adventures-of-sherlock-holmes",
+    "summary": "十二篇短篇案件组成的经典合集，集中呈现福尔摩斯与华生在伦敦及英国乡间处理委托、辨认伪装并追索真相的过程。",
+    "links": [
+      {
+        "linkType": "PUBLISHER",
+        "providerName": "Penguin Books",
+        "url": "https://www.penguin.co.uk/books/7327/the-adventures-of-sherlock-holmes-by-doyle-arthur-conan/9780241952900",
+        "region": "GLOBAL",
+        "lastCheckedAt": "2026-07-21"
+      }
+    ]
+  },
+  {
+    "slug": "mysterious-affair-at-styles",
+    "summary": "一座英国庄园发生毒杀案，正在当地生活的波洛受邀调查。作品是阿加莎·克里斯蒂的首部长篇小说，也是波洛首次登场。",
+    "links": [
+      {
+        "linkType": "OFFICIAL_SITE",
+        "providerName": "Agatha Christie Official",
+        "url": "https://www.agathachristie.com/en/stories/the-mysterious-affair-at-styles",
+        "region": "GLOBAL",
+        "lastCheckedAt": "2026-07-21"
+      }
+    ]
+  },
+  {
+    "slug": "murder-on-the-orient-express",
+    "summary": "东方快车因暴雪停驶后，一名乘客被发现死于包厢。波洛必须在封闭列车与有限时间内梳理每位乘客的证词、身份和动机。",
+    "links": [
+      {
+        "linkType": "OFFICIAL_SITE",
+        "providerName": "Agatha Christie Official",
+        "url": "https://www.agathachristie.com/en/stories/murder-on-the-orient-express",
+        "region": "GLOBAL",
+        "lastCheckedAt": "2026-07-21"
+      }
+    ]
+  },
+  {
+    "slug": "d-slope-murder-case",
+    "summary": "D坂旧书店发生命案，明智小五郎从目击证言、现场条件与人际关系之间的矛盾入手展开推理。这是明智小五郎首次登场的代表短篇。",
+    "links": [
+      {
+        "linkType": "PUBLISHER",
+        "providerName": "KADOKAWA",
+        "url": "https://www.kadokawa.co.jp/product/321508000081/",
+        "region": "JP",
+        "lastCheckedAt": "2026-07-21"
+      },
+      {
+        "linkType": "LIBRARY",
+        "providerName": "青空文库",
+        "url": "https://www.aozora.gr.jp/cards/001779/files/56650_58209.html",
+        "region": "GLOBAL",
+        "lastCheckedAt": "2026-07-21"
+      }
+    ]
+  }
+]

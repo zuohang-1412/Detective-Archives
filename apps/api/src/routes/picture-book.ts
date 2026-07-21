@@ -1,6 +1,10 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
-import { pictureBookCatalog } from "../data/picture-book.js";
+import type { DatabaseClient } from "../db/types.js";
+import {
+  getPictureBookEntry,
+  listPictureBookEntries
+} from "../repositories/picture-book.js";
 
 const listQuerySchema = z
   .object({
@@ -21,7 +25,14 @@ const idParamsSchema = z.object({
   id: z.string().trim().regex(/^PB-\d{3}-(STD|SP)$/i)
 });
 
-export const pictureBookRoutes: FastifyPluginAsync = async (app) => {
+interface PictureBookRouteOptions {
+  database?: DatabaseClient;
+}
+
+export const pictureBookRoutes: FastifyPluginAsync<PictureBookRouteOptions> = async (
+  app,
+  options
+) => {
   app.get("/picture-book", async (request, reply) => {
     const parsed = listQuerySchema.safeParse(request.query);
     if (!parsed.success) {
@@ -32,46 +43,17 @@ export const pictureBookRoutes: FastifyPluginAsync = async (app) => {
       });
     }
 
-    const {
-      q,
-      fromVolume,
-      toVolume,
-      edition,
-      identityStatus,
-      page,
-      pageSize
-    } = parsed.data;
-    const normalizedQuery = q?.toLocaleLowerCase("zh-CN");
-    const filtered = pictureBookCatalog.entries.filter((entry) => {
-      const searchable = [
-        entry.id,
-        entry.names.zh,
-        entry.names.original,
-        entry.names.en,
-        ...entry.names.aliases,
-        ...entry.recommendedWorks
-      ]
-        .filter((value): value is string => Boolean(value))
-        .join(" ")
-        .toLocaleLowerCase("zh-CN");
-
-      return entry.volumeNo >= fromVolume
-        && entry.volumeNo <= toVolume
-        && (!edition || entry.edition === edition)
-        && (!identityStatus || entry.verification.identity === identityStatus)
-        && (!normalizedQuery || searchable.includes(normalizedQuery));
-    });
-
-    const start = (page - 1) * pageSize;
+    const { page, pageSize } = parsed.data;
+    const result = await listPictureBookEntries(options.database, parsed.data);
     return {
-      data: filtered.slice(start, start + pageSize),
-      coverage: pictureBookCatalog.coverage,
-      snapshotDate: pictureBookCatalog.snapshotDate,
+      data: result.data,
+      coverage: result.coverage,
+      snapshotDate: result.snapshotDate,
       pagination: {
         page,
         pageSize,
-        total: filtered.length,
-        totalPages: Math.ceil(filtered.length / pageSize)
+        total: result.total,
+        totalPages: Math.ceil(result.total / pageSize)
       }
     };
   });
@@ -82,9 +64,7 @@ export const pictureBookRoutes: FastifyPluginAsync = async (app) => {
       return reply.code(400).send({ code: "INVALID_ENTRY_ID", message: "图鉴编号不合法" });
     }
 
-    const entry = pictureBookCatalog.entries.find(
-      (item) => item.id === parsed.data.id.toUpperCase()
-    );
+    const entry = await getPictureBookEntry(options.database, parsed.data.id.toUpperCase());
     if (!entry) {
       return reply.code(404).send({ code: "PICTURE_BOOK_ENTRY_NOT_FOUND", message: "未找到该图鉴条目" });
     }

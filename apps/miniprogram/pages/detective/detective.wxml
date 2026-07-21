@@ -16,7 +16,13 @@
     <view class="work-section">
       <text class="eyebrow">REPRESENTATIVE WORKS</text>
       <view class="section-title">代表作品</view>
-      <view wx:for="{{detective.works}}" wx:key="id" class="card work-card">
+      <view
+        wx:for="{{detective.works}}"
+        wx:key="id"
+        class="card work-card"
+        data-slug="{{item.slug}}"
+        bindtap="openWork"
+      >
         <view class="work-year">{{item.releaseYear}}</view>
         <view class="work-info">
           <view class="work-title">{{item.titleZh}}</view>
@@ -24,6 +30,7 @@
           <view class="work-creator">{{item.creatorName}}</view>
         </view>
         <view class="work-type">{{item.type}}</view>
+        <view class="work-arrow">›</view>
       </view>
     </view>
   </view>

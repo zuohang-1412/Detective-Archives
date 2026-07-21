@@ -2,7 +2,8 @@
   "pages": [
     "pages/home/home",
     "pages/archive/archive",
-    "pages/detective/detective"
+    "pages/detective/detective",
+    "pages/work/work"
   ],
   "window": {
     "navigationBarBackgroundColor": "#101820",

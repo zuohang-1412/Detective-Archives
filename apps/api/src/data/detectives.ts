@@ -23,4 +23,12 @@ const detectiveSchema = z.object({
   works: z.array(workSummarySchema).min(1)
 });
 
-export const detectives: Detective[] = z.array(detectiveSchema).parse(rawDetectives);
+const parsedDetectives = z.array(detectiveSchema).parse(rawDetectives);
+
+export const detectives: Detective[] = parsedDetectives.map((detective) => ({
+  ...detective,
+  works: detective.works.map((work) => ({
+    ...work,
+    slug: work.id.replace(/^work_/, "").replaceAll("_", "-")
+  }))
+}));
