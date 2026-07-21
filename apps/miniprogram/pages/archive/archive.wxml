@@ -1,0 +1,37 @@
+<view class="page-shell">
+  <text class="eyebrow">ARCHIVE SEARCH</text>
+  <view class="section-title">查找一位名侦探</view>
+
+  <view class="search-box">
+    <input
+      class="search-input"
+      placeholder="姓名、作者或流派"
+      value="{{query}}"
+      confirm-type="search"
+      bindinput="onQueryInput"
+      bindconfirm="onSearch"
+    />
+    <text wx:if="{{query}}" class="clear" bindtap="onClear">清除</text>
+    <text class="search-action" bindtap="onSearch">搜索</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="state-message">正在检索档案…</view>
+  <view wx:elif="{{error}}" class="state-message">{{error}}</view>
+  <view wx:elif="{{!detectives.length}}" class="state-message">没有找到匹配档案</view>
+  <view wx:else class="result-list">
+    <view
+      wx:for="{{detectives}}"
+      wx:key="id"
+      class="card result-card"
+      data-slug="{{item.slug}}"
+      bindtap="openDetective"
+    >
+      <view class="result-main">
+        <view class="result-name">{{item.nameZh}}</view>
+        <view class="muted result-meta">{{item.country}} · {{item.creatorName}}</view>
+        <view class="result-summary">{{item.summary}}</view>
+      </view>
+      <view class="work-count">{{item.works.length}} 部<text>作品</text></view>
+    </view>
+  </view>
+</view>

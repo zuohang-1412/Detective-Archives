@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/archive/archive",
+    "pages/detective/detective"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#101820",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "侦探档案馆",
+    "backgroundColor": "#f2eadb",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#777269",
+    "selectedColor": "#9f3123",
+    "backgroundColor": "#fffaf0",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/archive/archive",
+        "text": "档案"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2"
+}

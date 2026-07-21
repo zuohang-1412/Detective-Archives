@@ -1,0 +1,42 @@
+<view class="page-shell">
+  <view class="hero">
+    <text class="hero-kicker">DETECTIVE ARCHIVES</text>
+    <text class="hero-title">循着名侦探的足迹，打开下一部作品</text>
+    <text class="hero-copy">发现经典侦探、代表书目与影视作品。记录阅读，也记录推理带来的惊喜。</text>
+    <button class="primary-button" bindtap="openArchive">进入档案室</button>
+  </view>
+
+  <view class="section-head">
+    <view>
+      <text class="eyebrow">本期精选</text>
+      <view class="section-title">名侦探档案</view>
+    </view>
+    <text class="text-link" bindtap="openArchive">查看全部</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="state-message">正在调取档案…</view>
+  <view wx:elif="{{error}}" class="state-message" bindtap="loadFeatured">
+    <view>{{error}}</view>
+    <view class="retry-text">轻触重试</view>
+  </view>
+  <view wx:else>
+    <view
+      wx:for="{{detectives}}"
+      wx:key="id"
+      class="card detective-card"
+      data-slug="{{item.slug}}"
+      bindtap="openDetective"
+    >
+      <view class="card-index">0{{index + 1}}</view>
+      <view class="card-body">
+        <view class="detective-name">{{item.nameZh}}</view>
+        <view class="original-name">{{item.nameOriginal}}</view>
+        <view class="summary">{{item.summary}}</view>
+        <view class="tag-row">
+          <text wx:for="{{item.tags}}" wx:key="*this" class="tag">{{item}}</text>
+        </view>
+      </view>
+      <view class="arrow">›</view>
+    </view>
+  </view>
+</view>

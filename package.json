@@ -1,0 +1,21 @@
+{
+  "name": "detective-archives",
+  "version": "0.1.0",
+  "private": true,
+  "description": "侦探档案馆：侦探作品图鉴、阅读记录与同好交流社区",
+  "workspaces": [
+    "apps/api"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @detective-archives/api",
+    "check": "npm run check:miniprogram && npm run typecheck && npm test && npm run build",
+    "check:miniprogram": "node scripts/check-miniprogram.mjs",
+    "dev:api": "npm run dev --workspace @detective-archives/api",
+    "start:api": "npm run start --workspace @detective-archives/api",
+    "test": "npm test --workspace @detective-archives/api",
+    "typecheck": "npm run typecheck --workspace @detective-archives/api"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

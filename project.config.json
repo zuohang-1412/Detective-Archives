@@ -1,0 +1,14 @@
+{
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "libVersion": "trial",
+  "miniprogramRoot": "apps/miniprogram/",
+  "projectname": "detective-archives",
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false
+  }
+}

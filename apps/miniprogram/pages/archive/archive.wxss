@@ -1,0 +1,72 @@
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin: 28rpx 0 36rpx;
+  padding: 6rpx 22rpx 6rpx 28rpx;
+  border: 1rpx solid #cfc1ac;
+  border-radius: 12rpx;
+  background: #fffaf0;
+}
+
+.search-input {
+  flex: 1;
+  height: 80rpx;
+  font-size: 27rpx;
+}
+
+.clear {
+  color: #8d857a;
+  font-size: 23rpx;
+}
+
+.search-action {
+  color: #9f3123;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.result-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.result-main {
+  flex: 1;
+}
+
+.result-name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.result-meta {
+  margin-top: 7rpx;
+  font-size: 23rpx;
+}
+
+.result-summary {
+  margin-top: 16rpx;
+  color: #5f5a52;
+  font-size: 25rpx;
+  line-height: 1.55;
+}
+
+.work-count {
+  min-width: 92rpx;
+  color: #9f3123;
+  font-family: Georgia, serif;
+  font-size: 30rpx;
+  text-align: center;
+}
+
+.work-count text {
+  display: block;
+  margin-top: 4rpx;
+  color: #8d857a;
+  font-family: sans-serif;
+  font-size: 19rpx;
+}

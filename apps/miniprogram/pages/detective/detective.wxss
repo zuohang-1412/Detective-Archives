@@ -1,0 +1,86 @@
+.profile-head {
+  margin: -32rpx -28rpx 48rpx;
+  padding: 64rpx 40rpx 54rpx;
+  background: #101820;
+  color: #fffaf0;
+}
+
+.profile-name {
+  margin-top: 20rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 58rpx;
+  font-weight: 700;
+}
+
+.original-name {
+  margin-top: 6rpx;
+  color: #d7a84b;
+  font-size: 25rpx;
+}
+
+.profile-meta {
+  margin-top: 30rpx;
+  color: rgba(255, 250, 240, 0.62);
+  font-size: 24rpx;
+}
+
+.profile-summary {
+  margin-top: 22rpx;
+  font-size: 28rpx;
+  line-height: 1.7;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 26rpx;
+}
+
+.tag {
+  padding: 8rpx 15rpx;
+  border: 1rpx solid rgba(255, 250, 240, 0.24);
+  border-radius: 999rpx;
+  color: rgba(255, 250, 240, 0.78);
+  font-size: 21rpx;
+}
+
+.work-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.work-year {
+  color: #9f3123;
+  font-family: Georgia, serif;
+  font-size: 27rpx;
+}
+
+.work-info {
+  flex: 1;
+}
+
+.work-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.work-original,
+.work-creator {
+  margin-top: 5rpx;
+  font-size: 21rpx;
+}
+
+.work-creator {
+  color: #61594e;
+}
+
+.work-type {
+  padding: 7rpx 12rpx;
+  border-radius: 6rpx;
+  background: #eee2cf;
+  color: #6b6257;
+  font-size: 18rpx;
+}

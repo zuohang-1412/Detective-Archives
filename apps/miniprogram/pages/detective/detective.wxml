@@ -1,0 +1,30 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="state-message">正在展开档案…</view>
+  <view wx:elif="{{error}}" class="state-message">{{error}}</view>
+  <view wx:elif="{{detective}}">
+    <view class="profile-head">
+      <text class="eyebrow">DETECTIVE FILE</text>
+      <view class="profile-name">{{detective.nameZh}}</view>
+      <view class="original-name">{{detective.nameOriginal}}</view>
+      <view class="profile-meta">{{detective.country}} · 创作者 {{detective.creatorName}}</view>
+      <view class="profile-summary">{{detective.summary}}</view>
+      <view class="tag-row">
+        <text wx:for="{{detective.tags}}" wx:key="*this" class="tag">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="work-section">
+      <text class="eyebrow">REPRESENTATIVE WORKS</text>
+      <view class="section-title">代表作品</view>
+      <view wx:for="{{detective.works}}" wx:key="id" class="card work-card">
+        <view class="work-year">{{item.releaseYear}}</view>
+        <view class="work-info">
+          <view class="work-title">{{item.titleZh}}</view>
+          <view class="muted work-original">{{item.titleOriginal}}</view>
+          <view class="work-creator">{{item.creatorName}}</view>
+        </view>
+        <view class="work-type">{{item.type}}</view>
+      </view>
+    </view>
+  </view>
+</view>
