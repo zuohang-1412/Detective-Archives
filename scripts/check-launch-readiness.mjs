@@ -39,6 +39,19 @@ const manifest = {
     userAgreementApproved: true,
     requestDomainConfigured: true,
     candidateUploaded: true,
+    candidateUploadReceipt: {
+      schemaVersion: 1,
+      action: "upload",
+      status: "SUCCEEDED",
+      appid: environment.MINIPROGRAM_APP_ID,
+      version: "0.1.0-rc.1",
+      sourceCommit: "a".repeat(40),
+      robot: 1,
+      completedAt: new Date().toISOString(),
+      ciPackage: "miniprogram-ci@2.1.31",
+      projectConfigSha256: "b".repeat(64),
+      miniProgramConfigSha256: "c".repeat(64)
+    },
     reviewSubmitted: true,
     reviewApproved: true,
     released: true
@@ -98,6 +111,27 @@ const mismatch = auditLaunchReadiness({
   manifest
 });
 assert.equal(mismatch.find((entry) => entry.id === "wechat_app_identity").status, "MISSING_OR_INVALID");
+
+const candidateAppMismatch = auditLaunchReadiness({
+  environment: {
+    ...environment,
+    WECHAT_APP_ID: "wxotherproduction123",
+    MINIPROGRAM_APP_ID: "wxotherproduction123"
+  },
+  manifest
+});
+assert.equal(
+  candidateAppMismatch.find((entry) => entry.id === "candidate_uploaded").status,
+  "MISSING_OR_INVALID"
+);
+
+const missingUploadEvidence = structuredClone(manifest);
+delete missingUploadEvidence.wechat.candidateUploadReceipt;
+assert.equal(
+  auditLaunchReadiness({ environment, manifest: missingUploadEvidence })
+    .find((entry) => entry.id === "candidate_uploaded").status,
+  "MISSING_OR_INVALID"
+);
 
 const placeholders = auditLaunchReadiness({
   environment: {

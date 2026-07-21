@@ -1,3 +1,5 @@
+import { validCandidateUploadReceipt } from "./miniprogram-release.mjs";
+
 const PHASES = ["PRE_DEPLOY", "POST_DEPLOY", "SUBMISSION", "RELEASE"];
 const placeholderPattern = /(?:replace|example|your[-_. ]|strong-password|managed-postgres|change-?me|dummy|test-only|ci-only|上线前|待填写|todo)/i;
 
@@ -146,8 +148,9 @@ export function auditLaunchReadiness({ environment = {}, manifest = {} } = {}) {
       nested(manifest, "validation", "androidDevicePassed") === true,
       "The complete production flow passed on a real Android WeChat device."),
     item("candidate_uploaded", "SUBMISSION", "WECHAT_OWNER",
-      nested(manifest, "wechat", "candidateUploaded") === true,
-      "The verified candidate was uploaded to the WeChat platform."),
+      nested(manifest, "wechat", "candidateUploaded") === true
+        && validCandidateUploadReceipt(nested(manifest, "wechat", "candidateUploadReceipt"), appId),
+      "The verified candidate has a valid successful upload receipt for this AppID."),
     item("review_submitted", "SUBMISSION", "WECHAT_OWNER",
       nested(manifest, "wechat", "reviewSubmitted") === true,
       "The candidate and required declarations were submitted for review."),

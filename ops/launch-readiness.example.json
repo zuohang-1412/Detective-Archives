@@ -12,6 +12,7 @@
     "userAgreementApproved": false,
     "requestDomainConfigured": false,
     "candidateUploaded": false,
+    "candidateUploadReceipt": null,
     "reviewSubmitted": false,
     "reviewApproved": false,
     "released": false

@@ -17,7 +17,7 @@
 - 内置运营后台：独立管理员登录、产品指标、侦探/来源/代表案件/作品维护、评价审核、举报与申诉处理、角色管理、审计日志和链接质量反馈；所有列表按每页最多 50 条读取并完整加载。
 - 登录前协议/隐私确认、微信平台隐私状态查询与授权同步、同意时间留存，以及撤销身份、会话和个人内容的账号注销流程；开发工具固定使用明确的稳定基础库版本。
 - 隐私最小化的档案/作品访问转化、正版点击、首加书架、完成后评价、7/30 日留存、评论举报、审核时长和申诉恢复率，以及安全响应头、限流、生产配置硬校验、运维指标和优雅停机。
-- Docker/Caddy 部署基线、CI 质量门禁、数据库备份脚本与上线运行手册。
+- Docker/Caddy 部署基线、CI 质量门禁、数据库备份脚本、小程序候选预览/上传入口与上线运行手册。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
@@ -126,6 +126,15 @@ OPERATOR_NAME=运营主体全称 \
 PRIVACY_CONTACT=privacy@example.com \
 npm run config:miniprogram
 ```
+
+正式候选使用微信官方 `miniprogram-ci` 的固定版本执行。代码上传私钥必须保存在仓库外并开启公众平台 IP 白名单；预览二维码同样写到仓库外。配置示例见 `ops/miniprogram-ci.env.example`：
+
+```bash
+npm run miniprogram:preview
+npm run miniprogram:upload
+```
+
+两个命令都会先执行完整 `release:check`，拒绝游客 AppID、HTTP 域名、占位主体、仓库内私钥、非预期工作区改动和重复覆盖二维码。上传成功后才生成 `.release-state/miniprogram/` 回执，并把实际 `ops/launch-readiness.json` 的候选上传门禁更新为带提交号的成功证据；示例清单不会被改写。
 
 ## 质量检查
 

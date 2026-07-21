@@ -8,5 +8,8 @@ coverage/
 Thumbs.db
 *.log
 project.private.config.json
+private.*.key
+private.*.pem
+*.miniprogram-ci.key
 .release-state/
 ops/launch-readiness.json

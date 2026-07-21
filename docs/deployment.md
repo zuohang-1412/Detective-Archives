@@ -81,13 +81,27 @@ npm run config:miniprogram
 npm run release:check
 ```
 
-随后在微信开发者工具中完成：真机预览、体验版验证、代码上传、版本说明、隐私接口声明和平台审核。审核通过后选择全量发布；首次发布后保留体验版用于生产回归。
+在公众平台“开发管理 → 开发设置 → 小程序代码上传”生成上传密钥并开启 IP 白名单。私钥存放在仓库外的专用发布终端或隔离 Runner，Linux 权限必须为 `600`；不要与生产数据库、AppSecret、后台密码或监控令牌放在同一份发布工具环境中。复制 `ops/miniprogram-ci.env.example` 的字段到受控环境后，先生成仓库外预览二维码：
+
+```bash
+npm run miniprogram:preview
+```
+
+用 iOS、Android 真机完成体验版主链路后，再上传同一提交的正式候选：
+
+```bash
+npm run miniprogram:upload
+```
+
+工具固定临时使用微信官方 `miniprogram-ci@2.1.31`，不把其旧构建依赖加入项目长期依赖；官方子进程仅继承网络、临时目录等最小环境，不继承数据库密码、AppSecret、后台密码、监控令牌或 `NODE_OPTIONS`。执行前会强制通过完整 `release:check`，仅允许生产配置生成器造成的两个预期文件改动。上传成功后，工具在被 Git 忽略的 `.release-state/miniprogram/` 写入 AppID、版本、源码提交、机器人编号、完成时间与配置 SHA-256 回执，并原子更新实际 `ops/launch-readiness.json`；失败不会写入成功证据。
+
+随后在公众平台完成版本说明复核、隐私接口声明和审核提交。审核通过后选择全量发布；首次发布后保留体验版用于生产回归。`miniprogram-ci` 只完成预览和代码上传，不能替代真机、平台声明、人工提审和发布确认。参考[微信官方 miniprogram-ci 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html)。
 
 客户端已接入 `wx.getPrivacySetting`、`wx.openPrivacyContract` 和 `agreePrivacyAuthorization`，会在微信侧存在待同步授权时先展示平台隐私指引，再进入业务登录。提审时仍需在公众平台“服务内容声明 → 用户隐私保护指引”填写与实际功能一致的处理目的；平台配置为空或声明与调用不一致时，微信会禁用相关接口或拦截提审。参考[微信官方小程序隐私协议开发指南](https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)。
 
 发布候选固定使用稳定基础库版本，不使用开发者工具的 `trial` 模式。升级 `project.config.json` 中的 `libVersion` 前，需先在开发者工具和真机完成主链路回归；当前版本依据[微信官方基础库更新日志](https://developers.weixin.qq.com/miniprogram/dev/framework/release/)固定为 `3.17.0`。
 
-每取得一项真实证据后更新 `ops/launch-readiness.json`，并按阶段复核：
+每取得一项真实证据后更新 `ops/launch-readiness.json`，并按阶段复核。候选上传项除布尔值外还必须包含工具生成且 AppID 一致的成功回执，手工只改为 `true` 不能通过：
 
 ```bash
 npm run launch:audit -- --env-file=.env.production --phase=post_deploy
