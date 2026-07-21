@@ -12,10 +12,11 @@
 - 第 1～108 卷名侦探图鉴索引，共 109 条记录（含第 105 卷特装版）。
 - 20 位图鉴之外的知名虚构侦探，以及 3 位独立展示的历史断案人物。
 - PostgreSQL 运行时连接、增量迁移、目录初始化、作品与正版链接仓储和完整性检查。
+- 微信 `code2Session` 服务端身份、不可逆会话令牌、退出登录和个人书架进度。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
-登录、书架、评论、运营后台、内容审核和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
+评论、运营后台、内容审核和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
 
 ## 项目结构
 
@@ -50,6 +51,8 @@ npm run db:setup
 
 默认创建 `detective_archives`；可通过 `DETECTIVE_DB_NAME` 修改。初始化完成后，API 的 `DATABASE_URL` 或 `PGDATABASE` 需要指向该数据库。
 
+真实微信登录需同时配置 `WECHAT_APP_ID` 和 `WECHAT_APP_SECRET`。本地联调可设置 `WECHAT_DEV_LOGIN=true`，但服务会拒绝在 `NODE_ENV=production` 时启用开发身份。
+
 ### 3. 启动 API
 
 ```bash
@@ -72,6 +75,12 @@ npm run dev:api
 - `GET /api/v1/works?pageSize=20`
 - `GET /api/v1/works?q=东方快车`
 - `GET /api/v1/works/murder-on-the-orient-express`
+- `POST /api/v1/auth/wechat`
+- `GET /api/v1/auth/me`
+- `POST /api/v1/auth/logout`
+- `GET /api/v1/me/shelf`
+- `PUT /api/v1/me/shelf/:workId`
+- `DELETE /api/v1/me/shelf/:workId`
 
 ### 4. 打开小程序
 

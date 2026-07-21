@@ -3,19 +3,40 @@ function getBaseUrl() {
   return app.globalData.apiBaseUrl;
 }
 
-function request(path, data) {
+const TOKEN_KEY = "detectiveArchivesToken";
+
+function getToken() {
+  return wx.getStorageSync(TOKEN_KEY) || "";
+}
+
+function hasAuthToken() {
+  return Boolean(getToken());
+}
+
+function request(path, options = {}) {
   return new Promise((resolve, reject) => {
+    const token = getToken();
     wx.request({
       url: `${getBaseUrl()}${path}`,
-      method: "GET",
-      data,
+      method: options.method || "GET",
+      data: options.data,
+      header: {
+        "content-type": "application/json",
+        ...(token ? { authorization: `Bearer ${token}` } : {})
+      },
       timeout: 8000,
       success(response) {
         if (response.statusCode >= 200 && response.statusCode < 300) {
           resolve(response.data);
           return;
         }
-        reject(new Error(response.data?.message || "档案读取失败"));
+        if (response.statusCode === 401) {
+          wx.removeStorageSync(TOKEN_KEY);
+        }
+        const error = new Error(response.data?.message || "档案读取失败");
+        error.code = response.data?.code;
+        error.statusCode = response.statusCode;
+        reject(error);
       },
       fail(error) {
         reject(new Error(error.errMsg || "网络连接失败"));
@@ -25,7 +46,7 @@ function request(path, data) {
 }
 
 function listDetectives(params = {}) {
-  return request("/api/v1/detectives", params);
+  return request("/api/v1/detectives", { data: params });
 }
 
 function getDetective(slug) {
@@ -33,7 +54,7 @@ function getDetective(slug) {
 }
 
 function listWorks(params = {}) {
-  return request("/api/v1/works", params);
+  return request("/api/v1/works", { data: params });
 }
 
 function getWork(slug) {
@@ -41,18 +62,84 @@ function getWork(slug) {
 }
 
 function listPictureBookEntries(params = {}) {
-  return request("/api/v1/picture-book", params);
+  return request("/api/v1/picture-book", { data: params });
 }
 
 function listArchiveDirectory(params = {}) {
-  return request("/api/v1/archive-directory", params);
+  return request("/api/v1/archive-directory", { data: params });
+}
+
+function loginWechat() {
+  return new Promise((resolve, reject) => {
+    wx.login({
+      timeout: 8000,
+      success: async (result) => {
+        if (!result.code) {
+          reject(new Error("微信未返回登录凭证"));
+          return;
+        }
+        try {
+          const response = await request("/api/v1/auth/wechat", {
+            method: "POST",
+            data: { code: result.code, profile: { displayName: "推理读者" } }
+          });
+          wx.setStorageSync(TOKEN_KEY, response.data.token);
+          resolve(response);
+        } catch (error) {
+          reject(error);
+        }
+      },
+      fail: (error) => reject(new Error(error.errMsg || "微信登录失败"))
+    });
+  });
+}
+
+function getCurrentUser() {
+  return request("/api/v1/auth/me");
+}
+
+async function logout() {
+  try {
+    await request("/api/v1/auth/logout", { method: "POST" });
+  } finally {
+    wx.removeStorageSync(TOKEN_KEY);
+  }
+}
+
+function listShelf(status) {
+  return request("/api/v1/me/shelf", { data: status ? { status } : {} });
+}
+
+function getShelfItem(workId) {
+  return request(`/api/v1/me/shelf/${encodeURIComponent(workId)}`);
+}
+
+function updateShelfItem(workId, data) {
+  return request(`/api/v1/me/shelf/${encodeURIComponent(workId)}`, {
+    method: "PUT",
+    data
+  });
+}
+
+function removeShelfItem(workId) {
+  return request(`/api/v1/me/shelf/${encodeURIComponent(workId)}`, {
+    method: "DELETE"
+  });
 }
 
 module.exports = {
+  getCurrentUser,
   getDetective,
+  getShelfItem,
+  hasAuthToken,
   getWork,
   listArchiveDirectory,
   listDetectives,
   listPictureBookEntries,
-  listWorks
+  listShelf,
+  listWorks,
+  loginWechat,
+  logout,
+  removeShelfItem,
+  updateShelfItem
 };

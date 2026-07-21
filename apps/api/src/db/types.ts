@@ -1,6 +1,12 @@
 export interface DatabaseClient {
   query(sql: string, values?: unknown[]): Promise<unknown>;
+  connect?(): Promise<DatabaseConnection>;
   end(): Promise<void>;
+}
+
+export interface DatabaseConnection {
+  query(sql: string, values?: unknown[]): Promise<unknown>;
+  release(): void;
 }
 
 export interface DatabaseQueryResult<Row> {
@@ -9,7 +15,7 @@ export interface DatabaseQueryResult<Row> {
 }
 
 export async function queryRows<Row>(
-  database: DatabaseClient,
+  database: Pick<DatabaseClient, "query"> | DatabaseConnection,
   sql: string,
   values: unknown[] = []
 ) {

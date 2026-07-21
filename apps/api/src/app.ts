@@ -1,15 +1,20 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
+import type { WechatCodeExchange } from "./auth/wechat.js";
 import type { DatabaseClient } from "./db/types.js";
 import { archiveDirectoryRoutes } from "./routes/archive-directory.js";
+import { authRoutes } from "./routes/auth.js";
 import { detectiveRoutes } from "./routes/detectives.js";
 import { pictureBookRoutes } from "./routes/picture-book.js";
+import { shelfRoutes } from "./routes/shelf.js";
 import { workRoutes } from "./routes/works.js";
 
 export interface BuildAppOptions {
   logger?: boolean;
   corsOrigin?: string;
   database?: DatabaseClient;
+  wechatCodeExchange?: WechatCodeExchange;
+  sessionTtlSeconds?: number;
 }
 
 export async function buildApp(options: BuildAppOptions = {}) {
@@ -63,12 +68,16 @@ export async function buildApp(options: BuildAppOptions = {}) {
 
   const routeOptions = {
     prefix: "/api/v1",
-    ...(options.database ? { database: options.database } : {})
+    ...(options.database ? { database: options.database } : {}),
+    ...(options.wechatCodeExchange ? { wechatCodeExchange: options.wechatCodeExchange } : {}),
+    ...(options.sessionTtlSeconds ? { sessionTtlSeconds: options.sessionTtlSeconds } : {})
   };
+  await app.register(authRoutes, routeOptions);
   await app.register(detectiveRoutes, routeOptions);
   await app.register(pictureBookRoutes, routeOptions);
   await app.register(archiveDirectoryRoutes, routeOptions);
   await app.register(workRoutes, routeOptions);
+  await app.register(shelfRoutes, routeOptions);
 
   app.setNotFoundHandler(async (_request, reply) => {
     return reply.code(404).send({ code: "ROUTE_NOT_FOUND", message: "接口不存在" });

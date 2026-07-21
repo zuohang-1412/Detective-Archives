@@ -41,6 +41,42 @@
   line-height: 1.85;
 }
 
+.shelf-actions {
+  display: flex;
+  gap: 14rpx;
+}
+
+.shelf-button {
+  flex: 1;
+  margin: 0;
+  border: 1rpx solid #bbae99;
+  border-radius: 10rpx;
+  background: #fffaf0;
+  color: #625b52;
+  font-size: 25rpx;
+}
+
+.shelf-button::after {
+  border: 0;
+}
+
+.shelf-button.active {
+  border-color: #9f3123;
+  background: #9f3123;
+  color: #fffaf0;
+}
+
+.shelf-current {
+  margin-top: 18rpx;
+  color: #777269;
+  font-size: 23rpx;
+}
+
+.remove-shelf {
+  margin-left: 24rpx;
+  color: #9f3123;
+}
+
 .detective-link,
 .official-link {
   display: flex;

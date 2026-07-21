@@ -1,4 +1,10 @@
-const { getWork } = require("../../services/api");
+const {
+  getShelfItem,
+  getWork,
+  hasAuthToken,
+  removeShelfItem,
+  updateShelfItem
+} = require("../../services/api");
 
 const typeLabels = {
   NOVEL: "长篇小说",
@@ -15,6 +21,8 @@ Page({
   data: {
     slug: "",
     work: null,
+    shelfItem: null,
+    shelfUpdating: false,
     loading: true,
     error: ""
   },
@@ -42,10 +50,64 @@ Page({
       };
       this.setData({ work });
       wx.setNavigationBarTitle({ title: work.titleZh });
+      if (hasAuthToken()) {
+        await this.loadShelfItem(work.id);
+      }
     } catch (error) {
       this.setData({ error: error.message || "作品资料读取失败" });
     } finally {
       this.setData({ loading: false });
+    }
+  },
+
+  async loadShelfItem(workId) {
+    try {
+      const response = await getShelfItem(workId);
+      this.setData({ shelfItem: response.data });
+    } catch (error) {
+      if (error.statusCode !== 401) {
+        wx.showToast({ title: "阅读状态读取失败", icon: "none" });
+      }
+    }
+  },
+
+  async setShelfStatus(event) {
+    if (this.data.shelfUpdating || !this.data.work) return;
+    if (!hasAuthToken()) {
+      wx.showModal({
+        title: "登录后记录",
+        content: "前往“我的档案馆”完成微信登录，即可保存阅读或观看进度。",
+        confirmText: "去登录",
+        success: (result) => {
+          if (result.confirm) wx.switchTab({ url: "/pages/me/me" });
+        }
+      });
+      return;
+    }
+    const { status } = event.currentTarget.dataset;
+    this.setData({ shelfUpdating: true });
+    try {
+      const response = await updateShelfItem(this.data.work.id, { status });
+      this.setData({ shelfItem: response.data });
+      wx.showToast({ title: "已保存", icon: "success" });
+    } catch (error) {
+      wx.showToast({ title: error.message || "保存失败", icon: "none" });
+    } finally {
+      this.setData({ shelfUpdating: false });
+    }
+  },
+
+  async removeFromShelf() {
+    if (this.data.shelfUpdating || !this.data.work) return;
+    this.setData({ shelfUpdating: true });
+    try {
+      await removeShelfItem(this.data.work.id);
+      this.setData({ shelfItem: null });
+      wx.showToast({ title: "已移出档案馆", icon: "none" });
+    } catch (error) {
+      wx.showToast({ title: error.message || "操作失败", icon: "none" });
+    } finally {
+      this.setData({ shelfUpdating: false });
     }
   },
 

@@ -3,7 +3,8 @@
     "pages/home/home",
     "pages/archive/archive",
     "pages/detective/detective",
-    "pages/work/work"
+    "pages/work/work",
+    "pages/me/me"
   ],
   "window": {
     "navigationBarBackgroundColor": "#101820",
@@ -25,6 +26,10 @@
       {
         "pagePath": "pages/archive/archive",
         "text": "档案"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的"
       }
     ]
   },

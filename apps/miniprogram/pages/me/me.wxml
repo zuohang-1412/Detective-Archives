@@ -1,0 +1,54 @@
+<view class="page-shell">
+  <view class="profile-panel">
+    <text class="eyebrow">MY DETECTIVE ARCHIVES</text>
+    <view class="profile-title">我的档案馆</view>
+    <block wx:if="{{loggedIn}}">
+      <view class="profile-name">{{user.displayName}}</view>
+      <view class="profile-copy">把想读、在读和已经完成的推理作品收进同一份私人档案。</view>
+      <text class="logout" bindtap="confirmLogout">退出登录</text>
+    </block>
+    <block wx:else>
+      <view class="profile-copy">登录后记录阅读或观看进度，之后还能在作品下留下短评与长评。</view>
+      <button class="login-button" loading="{{loggingIn}}" bindtap="login">微信快捷登录</button>
+    </block>
+  </view>
+
+  <view wx:if="{{error}}" class="error-note">{{error}}</view>
+
+  <block wx:if="{{loggedIn}}">
+    <view class="shelf-tabs">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="status"
+        class="shelf-tab {{activeStatus === item.status ? 'active' : ''}}"
+        data-status="{{item.status}}"
+        bindtap="changeTab"
+      >{{item.label}}</view>
+    </view>
+
+    <view wx:if="{{loading}}" class="state-message">正在整理私人档案…</view>
+    <view wx:elif="{{!items.length}}" class="empty-state">
+      <view class="empty-title">这里还没有作品</view>
+      <view class="empty-copy">从侦探详情进入作品页，就可以加入想读、在读或已读。</view>
+      <button class="archive-button" bindtap="goArchive">去档案室发现作品</button>
+    </view>
+    <view wx:else>
+      <view wx:for="{{items}}" wx:key="id" class="card shelf-card">
+        <view
+          class="shelf-main"
+          data-slug="{{item.work.slug}}"
+          bindtap="openWork"
+        >
+          <view class="shelf-title">{{item.work.titleZh}}</view>
+          <view class="shelf-original">{{item.work.titleOriginal}}</view>
+          <view class="shelf-meta">{{item.work.releaseYear}} · 进度 {{item.progressPercent}}%</view>
+        </view>
+        <view
+          class="status-badge"
+          data-work-id="{{item.workId}}"
+          bindtap="changeStatus"
+        >{{item.statusLabel}}</view>
+      </view>
+    </view>
+  </block>
+</view>

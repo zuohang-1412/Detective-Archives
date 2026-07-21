@@ -1,0 +1,140 @@
+.profile-panel {
+  margin: -32rpx -28rpx 36rpx;
+  padding: 64rpx 40rpx 54rpx;
+  background: #101820;
+  color: #fffaf0;
+}
+
+.profile-title {
+  margin-top: 18rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 54rpx;
+  font-weight: 700;
+}
+
+.profile-name {
+  margin-top: 32rpx;
+  color: #d7a84b;
+  font-size: 29rpx;
+  font-weight: 700;
+}
+
+.profile-copy {
+  max-width: 620rpx;
+  margin-top: 22rpx;
+  color: rgba(255, 250, 240, 0.68);
+  font-size: 26rpx;
+  line-height: 1.7;
+}
+
+.login-button,
+.archive-button {
+  margin: 34rpx 0 0;
+  border-radius: 9rpx;
+  background: #9f3123;
+  color: #fffaf0;
+  font-size: 26rpx;
+}
+
+.login-button {
+  width: 280rpx;
+}
+
+.login-button::after,
+.archive-button::after {
+  border: 0;
+}
+
+.logout {
+  display: block;
+  margin-top: 24rpx;
+  color: rgba(255, 250, 240, 0.52);
+  font-size: 22rpx;
+}
+
+.error-note {
+  margin-bottom: 24rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 10rpx;
+  background: #f1d9d3;
+  color: #87372b;
+  font-size: 23rpx;
+}
+
+.shelf-tabs {
+  display: flex;
+  gap: 8rpx;
+  margin-bottom: 28rpx;
+  padding: 8rpx;
+  border-radius: 13rpx;
+  background: #e8ddcb;
+}
+
+.shelf-tab {
+  flex: 1;
+  padding: 17rpx 4rpx;
+  border-radius: 9rpx;
+  color: #6d655b;
+  font-size: 23rpx;
+  text-align: center;
+}
+
+.shelf-tab.active {
+  background: #fffaf0;
+  color: #9f3123;
+  font-weight: 700;
+}
+
+.empty-state {
+  padding: 72rpx 28rpx;
+  text-align: center;
+}
+
+.empty-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 35rpx;
+  font-weight: 700;
+}
+
+.empty-copy {
+  margin-top: 14rpx;
+  color: #777269;
+  font-size: 24rpx;
+  line-height: 1.65;
+}
+
+.archive-button {
+  width: 300rpx;
+  margin: 30rpx auto 0;
+}
+
+.shelf-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.shelf-main {
+  flex: 1;
+}
+
+.shelf-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.shelf-original,
+.shelf-meta {
+  margin-top: 7rpx;
+  color: #777269;
+  font-size: 21rpx;
+}
+
+.status-badge {
+  padding: 9rpx 14rpx;
+  border: 1rpx solid #9f3123;
+  border-radius: 999rpx;
+  color: #9f3123;
+  font-size: 21rpx;
+}

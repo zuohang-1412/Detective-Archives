@@ -79,6 +79,23 @@ describe("detective archives API", () => {
     await unavailableApp.close();
   });
 
+  it("keeps login and shelf writes unavailable without server configuration", async () => {
+    const loginResponse = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/wechat",
+      payload: { code: "temporary-code" }
+    });
+    assert.equal(loginResponse.statusCode, 503);
+    assert.equal(loginResponse.json().code, "AUTH_NOT_CONFIGURED");
+
+    const shelfResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/me/shelf"
+    });
+    assert.equal(shelfResponse.statusCode, 503);
+    assert.equal(shelfResponse.json().code, "DATABASE_REQUIRED");
+  });
+
   it("lists detectives with pagination", async () => {
     const response = await app.inject({ method: "GET", url: "/api/v1/detectives?pageSize=2" });
     const body = response.json();

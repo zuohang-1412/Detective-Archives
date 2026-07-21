@@ -37,6 +37,35 @@
     </view>
 
     <view class="content-section">
+      <text class="eyebrow">MY ARCHIVE</text>
+      <view class="section-title">阅读记录</view>
+      <view class="shelf-actions">
+        <button
+          class="shelf-button {{shelfItem && shelfItem.status === 'WISHLIST' ? 'active' : ''}}"
+          data-status="WISHLIST"
+          loading="{{shelfUpdating}}"
+          bindtap="setShelfStatus"
+        >想读</button>
+        <button
+          class="shelf-button {{shelfItem && shelfItem.status === 'IN_PROGRESS' ? 'active' : ''}}"
+          data-status="IN_PROGRESS"
+          disabled="{{shelfUpdating}}"
+          bindtap="setShelfStatus"
+        >在读</button>
+        <button
+          class="shelf-button {{shelfItem && shelfItem.status === 'COMPLETED' ? 'active' : ''}}"
+          data-status="COMPLETED"
+          disabled="{{shelfUpdating}}"
+          bindtap="setShelfStatus"
+        >已读</button>
+      </view>
+      <view wx:if="{{shelfItem}}" class="shelf-current">
+        当前进度 {{shelfItem.progressPercent}}%
+        <text class="remove-shelf" bindtap="removeFromShelf">移出档案馆</text>
+      </view>
+    </view>
+
+    <view class="content-section">
       <text class="eyebrow">OFFICIAL LINKS</text>
       <view class="section-title">正版渠道</view>
       <view class="link-note">仅收录出版社、作者官方站或合法公共数字图书馆。轻触后复制地址。</view>

@@ -4,7 +4,26 @@ import { createDatabasePoolFromEnv } from "../apps/api/dist/db/pool.js";
 
 const database = createDatabasePoolFromEnv();
 assert.ok(database, "PostgreSQL configuration is required for the database API check");
-const app = await buildApp({ database });
+const testProviderSubjects = [
+  "detective-archives-db-api-check-primary",
+  "detective-archives-db-api-check-secondary"
+];
+await database.query(`
+  DELETE FROM users
+  WHERE id IN (
+    SELECT user_id FROM user_identities
+    WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
+  )
+`, [testProviderSubjects]);
+const app = await buildApp({
+  database,
+  wechatCodeExchange: async (code) => ({
+    providerSubject: code === "secondary-user"
+      ? testProviderSubjects[1]
+      : testProviderSubjects[0]
+  }),
+  sessionTtlSeconds: 3600
+});
 
 try {
   const checks = [
@@ -30,7 +49,114 @@ try {
     assert.equal(response.statusCode, 200, `${url}: ${response.body}`);
     verify(response.json());
   }
-  console.log(`PostgreSQL API integration: OK (${checks.length} endpoint checks)`);
+
+  const workResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/works/a-study-in-scarlet"
+  });
+  const workId = workResponse.json().data.id;
+  const loginResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: { code: "database-api-check", profile: { displayName: "集成测试用户" } }
+  });
+  assert.equal(loginResponse.statusCode, 201, loginResponse.body);
+  const token = loginResponse.json().data.token;
+  const userId = loginResponse.json().data.user.id;
+  const authorization = { authorization: `Bearer ${token}` };
+
+  const repeatLoginResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: { code: "database-api-check", profile: { displayName: "不会重复创建" } }
+  });
+  assert.equal(repeatLoginResponse.statusCode, 201, repeatLoginResponse.body);
+  assert.equal(repeatLoginResponse.json().data.user.id, userId);
+
+  const meResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: authorization
+  });
+  assert.equal(meResponse.statusCode, 200, meResponse.body);
+  assert.equal(meResponse.json().data.displayName, "集成测试用户");
+
+  const wishlistResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: authorization,
+    payload: { status: "WISHLIST" }
+  });
+  assert.equal(wishlistResponse.statusCode, 200, wishlistResponse.body);
+  assert.equal(wishlistResponse.json().data.status, "WISHLIST");
+  const shelfItemId = wishlistResponse.json().data.id;
+
+  const repeatedWishlistResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: authorization,
+    payload: { status: "WISHLIST" }
+  });
+  assert.equal(repeatedWishlistResponse.statusCode, 200, repeatedWishlistResponse.body);
+  assert.equal(repeatedWishlistResponse.json().data.id, shelfItemId);
+
+  const completedResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: authorization,
+    payload: { status: "COMPLETED" }
+  });
+  assert.equal(completedResponse.statusCode, 200, completedResponse.body);
+  assert.equal(completedResponse.json().data.progressPercent, 100);
+
+  const shelfResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/shelf?status=COMPLETED",
+    headers: authorization
+  });
+  assert.equal(shelfResponse.statusCode, 200, shelfResponse.body);
+  assert.equal(shelfResponse.json().data.length, 1);
+
+  const secondaryLoginResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: { code: "secondary-user" }
+  });
+  assert.equal(secondaryLoginResponse.statusCode, 201, secondaryLoginResponse.body);
+  const secondaryAuthorization = {
+    authorization: `Bearer ${secondaryLoginResponse.json().data.token}`
+  };
+  const isolatedShelfResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: secondaryAuthorization
+  });
+  assert.equal(isolatedShelfResponse.statusCode, 200, isolatedShelfResponse.body);
+  assert.equal(isolatedShelfResponse.json().data, null);
+
+  const logoutResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/logout",
+    headers: authorization
+  });
+  assert.equal(logoutResponse.statusCode, 204, logoutResponse.body);
+  const expiredResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: authorization
+  });
+  assert.equal(expiredResponse.statusCode, 401, expiredResponse.body);
+
+  console.log(
+    `PostgreSQL API integration: OK (${checks.length} public checks, auth and shelf lifecycle)`
+  );
 } finally {
+  await database.query(`
+    DELETE FROM users
+    WHERE id IN (
+    SELECT user_id FROM user_identities
+      WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
+    )
+  `, [testProviderSubjects]);
   await app.close();
 }
