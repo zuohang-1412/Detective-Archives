@@ -162,3 +162,113 @@
 .reply-button::after {
   border: 0;
 }
+
+.report-mask {
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(16, 24, 32, 0.58);
+}
+
+.report-sheet {
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 88vh;
+  padding: 36rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  border-radius: 24rpx 24rpx 0 0;
+  background: #f6efe3;
+}
+
+.report-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.report-title {
+  margin-top: 8rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 38rpx;
+  font-weight: 700;
+}
+
+.report-close {
+  padding: 10rpx 0 10rpx 20rpx;
+  color: #777269;
+  font-size: 23rpx;
+}
+
+.report-hint {
+  margin-top: 22rpx;
+  color: #6d655b;
+  font-size: 23rpx;
+  line-height: 1.65;
+}
+
+.report-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 24rpx;
+}
+
+.report-reason {
+  box-sizing: border-box;
+  width: calc(50% - 7rpx);
+  padding: 20rpx 14rpx;
+  border: 1rpx solid #cfc1ac;
+  border-radius: 10rpx;
+  background: #fffaf0;
+  color: #524c44;
+  font-size: 23rpx;
+  text-align: center;
+}
+
+.report-reason.selected {
+  border-color: #9f3123;
+  background: #9f3123;
+  color: #fffaf0;
+}
+
+.report-description {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 180rpx;
+  margin-top: 24rpx;
+  padding: 20rpx;
+  border: 1rpx solid #cfc1ac;
+  border-radius: 10rpx;
+  background: #fffaf0;
+  font-size: 24rpx;
+  line-height: 1.65;
+}
+
+.report-length {
+  margin-top: 8rpx;
+  color: #8a8176;
+  font-size: 20rpx;
+  text-align: right;
+}
+
+.report-submit {
+  margin-top: 22rpx;
+  border-radius: 10rpx;
+  background: #9f3123;
+  color: #fffaf0;
+  font-size: 25rpx;
+}
+
+.report-submit[disabled] {
+  background: #c8bdb0;
+  color: #f6efe3;
+}
+
+.report-submit::after {
+  border: 0;
+}

@@ -78,4 +78,40 @@
       </view>
     </view>
   </block>
+
+  <view wx:if="{{reportOpen}}" class="report-mask" catchtap="closeReport">
+    <view class="report-sheet" catchtap="keepReportOpen">
+      <view class="report-heading">
+        <view>
+          <text class="eyebrow">REPORT</text>
+          <view class="report-title">提交举报线索</view>
+        </view>
+        <text class="report-close" catchtap="closeReport">关闭</text>
+      </view>
+      <view class="report-hint">请选择最符合的原因。补充说明仅供审核人员处理，不会公开展示。</view>
+      <view class="report-reasons">
+        <view
+          wx:for="{{reportReasons}}"
+          wx:key="code"
+          class="report-reason {{reportReasonCode === item.code ? 'selected' : ''}}"
+          data-code="{{item.code}}"
+          bindtap="selectReportReason"
+        >{{item.label}}</view>
+      </view>
+      <textarea
+        class="report-description"
+        maxlength="500"
+        placeholder="补充时间、位置或具体问题（选填）"
+        value="{{reportDescription}}"
+        bindinput="inputReportDescription"
+      />
+      <view class="report-length">{{reportDescription.length}} / 500</view>
+      <button
+        class="report-submit"
+        disabled="{{!reportReasonCode || reportSubmitting}}"
+        loading="{{reportSubmitting}}"
+        bindtap="submitReport"
+      >提交举报</button>
+    </view>
+  </view>
 </view>

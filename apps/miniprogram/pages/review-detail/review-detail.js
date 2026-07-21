@@ -13,6 +13,7 @@ const {
 const reportReasons = [
   { label: "广告或垃圾信息", code: "SPAM" },
   { label: "辱骂或骚扰", code: "ABUSE" },
+  { label: "仇恨或歧视", code: "HATE" },
   { label: "未标记的剧透", code: "SPOILER" },
   { label: "违法违规内容", code: "ILLEGAL" },
   { label: "版权问题", code: "COPYRIGHT" },
@@ -31,6 +32,13 @@ Page({
     replyTo: null,
     viewerId: "",
     actionId: "",
+    reportOpen: false,
+    reportTargetType: "",
+    reportTargetId: "",
+    reportReasonCode: "",
+    reportDescription: "",
+    reportReasons,
+    reportSubmitting: false,
     commentPage: 1,
     commentsHasMore: false,
     commentsLoading: false,
@@ -282,18 +290,59 @@ Page({
 
   openReport(targetType, targetId) {
     if (!this.requireLogin()) return;
-    wx.showActionSheet({
-      itemList: reportReasons.map((reason) => reason.label),
-      success: async (result) => {
-        const reason = reportReasons[result.tapIndex];
-        if (!reason) return;
-        try {
-          await createReport({ targetType, targetId, reasonCode: reason.code });
-          wx.showToast({ title: "举报已提交", icon: "success" });
-        } catch (error) {
-          wx.showToast({ title: error.message || "举报失败", icon: "none" });
-        }
-      }
+    this.setData({
+      reportOpen: true,
+      reportTargetType: targetType,
+      reportTargetId: targetId,
+      reportReasonCode: "",
+      reportDescription: ""
     });
+  },
+
+  keepReportOpen() {},
+
+  closeReport() {
+    if (this.data.reportSubmitting) return;
+    this.setData({
+      reportOpen: false,
+      reportTargetType: "",
+      reportTargetId: "",
+      reportReasonCode: "",
+      reportDescription: ""
+    });
+  },
+
+  selectReportReason(event) {
+    this.setData({ reportReasonCode: event.currentTarget.dataset.code || "" });
+  },
+
+  inputReportDescription(event) {
+    this.setData({ reportDescription: event.detail.value });
+  },
+
+  async submitReport() {
+    if (this.data.reportSubmitting || !this.data.reportReasonCode) return;
+    this.setData({ reportSubmitting: true });
+    try {
+      const description = this.data.reportDescription.trim();
+      await createReport({
+        targetType: this.data.reportTargetType,
+        targetId: this.data.reportTargetId,
+        reasonCode: this.data.reportReasonCode,
+        ...(description ? { description } : {})
+      });
+      this.setData({
+        reportOpen: false,
+        reportTargetType: "",
+        reportTargetId: "",
+        reportReasonCode: "",
+        reportDescription: ""
+      });
+      wx.showToast({ title: "举报已提交", icon: "success" });
+    } catch (error) {
+      wx.showToast({ title: error.message || "举报失败", icon: "none" });
+    } finally {
+      this.setData({ reportSubmitting: false });
+    }
   }
 });

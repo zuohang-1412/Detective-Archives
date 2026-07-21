@@ -103,5 +103,13 @@ if (!workScript.includes("loadMoreReviews(") || !workTemplate.includes('bindtap=
 if (!reviewDetailScript.includes("loadMoreComments(") || !reviewDetailTemplate.includes('bindtap="loadMoreComments"')) {
   throw new Error("Review detail must expose public comment pagination");
 }
+for (const reportCapability of ["reportDescription", "selectReportReason", "submitReport"]) {
+  if (!reviewDetailScript.includes(reportCapability) && !reviewDetailTemplate.includes(reportCapability)) {
+    throw new Error(`Review detail must expose complete report input: ${reportCapability}`);
+  }
+}
+if (!/class="report-description"[\s\S]{0,80}maxlength="500"/.test(reviewDetailTemplate)) {
+  throw new Error("Report description must match the API 500-character limit");
+}
 
 console.log(`Mini program structure and syntax: OK (${appConfig.pages.length} pages)`);
