@@ -86,6 +86,11 @@ for (const behavior of ["editMyReview", "deleteMyReview"]) {
     throw new Error(`My Archives must expose ${behavior}`);
   }
 }
+for (const shelfRetentionCapability of ["work.isAvailable", "removeUnavailableShelf"]) {
+  if (!meScript.includes(shelfRetentionCapability) && !meTemplate.includes(shelfRetentionCapability)) {
+    throw new Error(`My Archives must retain unavailable shelf entries: ${shelfRetentionCapability}`);
+  }
+}
 if (!reviewEditorScript.includes("getMyReview") || !reviewEditorScript.includes("updateReview")) {
   throw new Error("Review editor must load and update an existing review");
 }

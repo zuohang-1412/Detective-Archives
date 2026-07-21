@@ -25,6 +25,7 @@ interface ShelfRow {
     releaseYear: number | null;
     coverUrl: string | null;
     creatorNames: string[];
+    isAvailable: boolean;
   };
 }
 
@@ -45,6 +46,7 @@ const shelfSelect = `
       'type', work.media_type::text,
       'releaseYear', work.release_year,
       'coverUrl', work.cover_url,
+      'isAvailable', work.status = 'PUBLISHED',
       'creatorNames', COALESCE((
         SELECT jsonb_agg(creator.name_zh ORDER BY creator.name_zh)
         FROM work_creators credit
@@ -64,7 +66,7 @@ export async function listShelfItems(
   pageSize: number
 ) {
   const values: unknown[] = [userId];
-  const clauses = ["shelf.user_id = $1", "work.status = 'PUBLISHED'"];
+  const clauses = ["shelf.user_id = $1"];
   if (status) {
     values.push(status);
     clauses.push(`shelf.status::text = $${values.length}`);
@@ -95,7 +97,7 @@ export async function getShelfItem(
 ) {
   const result = await queryRows<ShelfRow>(database, `
     ${shelfSelect}
-    WHERE shelf.user_id = $1 AND shelf.work_id = $2 AND work.status = 'PUBLISHED'
+    WHERE shelf.user_id = $1 AND shelf.work_id = $2
   `, [userId, workId]);
   return result.rows[0] ?? null;
 }

@@ -7,6 +7,7 @@ const {
   listShelf,
   loginWechat,
   logout,
+  removeShelfItem,
   updateShelfItem
 } = require("../../services/api");
 
@@ -34,6 +35,7 @@ Page({
     loading: false,
     loggingIn: false,
     agreementsAccepted: false,
+    shelfActionId: "",
     reviewActionId: "",
     error: ""
   },
@@ -156,7 +158,17 @@ Page({
   },
 
   openWork(event) {
-    const { slug } = event.currentTarget.dataset;
+    const { workId, slug } = event.currentTarget.dataset;
+    const item = this.data.items.find((entry) => entry.workId === workId);
+    if (item && !item.work.isAvailable) {
+      wx.showModal({
+        title: "作品资料暂不可用",
+        content: "这条阅读记录会继续保留，你仍可以在此查看进度或将它移出档案馆。",
+        showCancel: false,
+        confirmText: "知道了"
+      });
+      return;
+    }
     wx.navigateTo({ url: `/pages/work/work?slug=${encodeURIComponent(slug)}` });
   },
 
@@ -217,6 +229,11 @@ Page({
 
   changeStatus(event) {
     const { workId } = event.currentTarget.dataset;
+    const item = this.data.items.find((entry) => entry.workId === workId);
+    if (item && !item.work.isAvailable) {
+      wx.showToast({ title: "作品资料暂不可用", icon: "none" });
+      return;
+    }
     const labels = ["想读", "在读", "已读", "暂停", "搁置"];
     const statuses = ["WISHLIST", "IN_PROGRESS", "COMPLETED", "PAUSED", "DROPPED"];
     wx.showActionSheet({
@@ -229,6 +246,31 @@ Page({
           await this.refresh();
         } catch (error) {
           wx.showToast({ title: error.message || "更新失败", icon: "none" });
+        }
+      }
+    });
+  },
+
+  removeUnavailableShelf(event) {
+    const { workId } = event.currentTarget.dataset;
+    const item = this.data.items.find((entry) => entry.workId === workId);
+    if (!item || item.work.isAvailable || this.data.shelfActionId) return;
+    wx.showModal({
+      title: "移出档案馆",
+      content: `确定移除《${item.work.titleZh}》的阅读记录吗？`,
+      confirmText: "确认移除",
+      confirmColor: "#9f3123",
+      success: async (result) => {
+        if (!result.confirm) return;
+        this.setData({ shelfActionId: workId });
+        try {
+          await removeShelfItem(workId);
+          await this.refresh();
+          wx.showToast({ title: "已移出档案馆", icon: "none" });
+        } catch (error) {
+          wx.showToast({ title: error.message || "移除失败", icon: "none" });
+        } finally {
+          this.setData({ shelfActionId: "" });
         }
       }
     });

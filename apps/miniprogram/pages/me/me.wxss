@@ -154,10 +154,33 @@
   font-size: 21rpx;
 }
 
+.shelf-unavailable {
+  margin-top: 10rpx;
+  color: #9f3123;
+  font-size: 21rpx;
+}
+
 .status-badge {
   padding: 9rpx 14rpx;
   border: 1rpx solid #9f3123;
   border-radius: 999rpx;
+  color: #9f3123;
+  font-size: 21rpx;
+}
+
+.status-badge.muted {
+  border-color: #9f968a;
+  color: #777269;
+}
+
+.unavailable-actions {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.remove-unavailable {
   color: #9f3123;
   font-size: 21rpx;
 }

@@ -639,6 +639,59 @@ try {
   });
   assert.equal(publicManagedWork.statusCode, 200, publicManagedWork.body);
   assert.equal(publicManagedWork.json().data.links.length, 1);
+  const managedShelfResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${managedWorkId}`,
+    headers: authorization,
+    payload: { status: "WISHLIST" }
+  });
+  assert.equal(managedShelfResponse.statusCode, 200, managedShelfResponse.body);
+  assert.equal(managedShelfResponse.json().data.work.isAvailable, true);
+  const hideManagedWorkResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/works/${managedWorkId}/status`,
+    headers: adminAuthorization,
+    payload: { status: "HIDDEN" }
+  });
+  assert.equal(hideManagedWorkResponse.statusCode, 200, hideManagedWorkResponse.body);
+  const hiddenPublicWorkResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${testWorkSlug}`
+  });
+  assert.equal(hiddenPublicWorkResponse.statusCode, 404, hiddenPublicWorkResponse.body);
+  const retainedShelfItemResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/me/shelf/${managedWorkId}`,
+    headers: authorization
+  });
+  assert.equal(retainedShelfItemResponse.statusCode, 200, retainedShelfItemResponse.body);
+  assert.equal(retainedShelfItemResponse.json().data.work.isAvailable, false);
+  const retainedShelfListResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/shelf?status=WISHLIST",
+    headers: authorization
+  });
+  assert.ok(retainedShelfListResponse.json().data.some((item) => item.workId === managedWorkId));
+  const updateHiddenShelfResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${managedWorkId}`,
+    headers: authorization,
+    payload: { status: "IN_PROGRESS" }
+  });
+  assert.equal(updateHiddenShelfResponse.statusCode, 404, updateHiddenShelfResponse.body);
+  const removeHiddenShelfResponse = await app.inject({
+    method: "DELETE",
+    url: `/api/v1/me/shelf/${managedWorkId}`,
+    headers: authorization
+  });
+  assert.equal(removeHiddenShelfResponse.statusCode, 204, removeHiddenShelfResponse.body);
+  const restoreManagedWorkResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/works/${managedWorkId}/status`,
+    headers: adminAuthorization,
+    payload: { status: "PUBLISHED" }
+  });
+  assert.equal(restoreManagedWorkResponse.statusCode, 200, restoreManagedWorkResponse.body);
   const linkClickResponse = await app.inject({
     method: "POST",
     url: `/api/v1/work-links/${managedLinkId}/click`,

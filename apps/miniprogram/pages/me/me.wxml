@@ -45,18 +45,29 @@
       <view wx:for="{{items}}" wx:key="id" class="card shelf-card">
         <view
           class="shelf-main"
+          data-work-id="{{item.workId}}"
           data-slug="{{item.work.slug}}"
           bindtap="openWork"
         >
           <view class="shelf-title">{{item.work.titleZh}}</view>
           <view class="shelf-original">{{item.work.titleOriginal}}</view>
           <view class="shelf-meta">{{item.work.releaseYear}} · 进度 {{item.progressPercent}}%</view>
+          <view wx:if="{{!item.work.isAvailable}}" class="shelf-unavailable">作品资料暂不可用，阅读记录已保留</view>
         </view>
         <view
+          wx:if="{{item.work.isAvailable}}"
           class="status-badge"
           data-work-id="{{item.workId}}"
           bindtap="changeStatus"
         >{{item.statusLabel}}</view>
+        <view wx:else class="unavailable-actions">
+          <view class="status-badge muted">{{item.statusLabel}}</view>
+          <text
+            class="remove-unavailable"
+            data-work-id="{{item.workId}}"
+            catchtap="removeUnavailableShelf"
+          >{{shelfActionId === item.workId ? '移除中…' : '移除'}}</text>
+        </view>
       </view>
     </view>
 
