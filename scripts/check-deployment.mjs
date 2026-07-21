@@ -3,12 +3,26 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = path.resolve();
-const [dockerfile, compose, caddyfile, qualityWorkflow, linkHealthWorkflow] = await Promise.all([
+const [
+  dockerfile,
+  compose,
+  caddyfile,
+  qualityWorkflow,
+  linkHealthWorkflow,
+  backupWorkflow,
+  backupScript,
+  deployScript,
+  rollbackScript
+] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
   readFile(path.join(root, "ops/Caddyfile.example"), "utf8"),
   readFile(path.join(root, ".github/workflows/quality.yml"), "utf8"),
-  readFile(path.join(root, ".github/workflows/link-health.yml"), "utf8")
+  readFile(path.join(root, ".github/workflows/link-health.yml"), "utf8"),
+  readFile(path.join(root, ".github/workflows/database-backup.yml"), "utf8"),
+  readFile(path.join(root, "ops/backup-postgres.sh"), "utf8"),
+  readFile(path.join(root, "ops/deploy-release.sh"), "utf8"),
+  readFile(path.join(root, "ops/rollback-release.sh"), "utf8")
 ]);
 
 const startupSteps = [
@@ -40,5 +54,20 @@ assert.match(linkHealthWorkflow, /schedule:[\s\S]*cron:/, "Link checks must supp
 assert.match(linkHealthWorkflow, /LINK_HEALTH_ENABLED/, "Scheduled link checks must require explicit enablement");
 assert.match(linkHealthWorkflow, /runs-on:\s*\[self-hosted, detective-archives\]/, "Link checks must run inside the private deployment network");
 assert.match(linkHealthWorkflow, /--fail-on-broken/, "Scheduled link checks must alert on confirmed failures");
+assert.match(backupWorkflow, /schedule:[\s\S]*cron:/, "Database backups must support a daily schedule");
+assert.match(backupWorkflow, /DATABASE_BACKUP_ENABLED/, "Scheduled backups must require explicit enablement");
+assert.match(backupWorkflow, /runs-on:\s*\[self-hosted, detective-archives\]/, "Backups must run inside the private deployment network");
+assert.match(backupWorkflow, /backup-postgres\.sh/, "Scheduled backups must use the verified backup script");
+assert.match(backupWorkflow, /verify-backup\.sh/, "Scheduled backups must verify the new archive");
+assert.match(backupScript, /BACKUP_DIRECTORY must be an absolute dedicated directory/, "Backup cleanup must require a dedicated absolute directory");
+assert.match(backupScript, /client\/server major version mismatch/, "Backups must reject a PostgreSQL client/server major version mismatch");
+assert.match(backupScript, /sha256sum/, "Backups must record an integrity checksum");
+assert.match(deployScript, /npm run release:check/, "Deployments must run the production release gate");
+assert.match(deployScript, /backup-postgres\.sh/, "Deployments must create a pre-release database backup");
+assert.match(deployScript, /npm run check:db/, "Deployments must verify the migrated production database");
+assert.match(deployScript, /npm run check:runtime/, "Deployments must run HTTP and metrics smoke checks");
+assert.match(deployScript, /Restoring previous application image/, "Failed deployments must automatically restore the previous image");
+assert.match(rollbackScript, /docker image inspect/, "Rollback must require an existing local image");
+assert.match(rollbackScript, /npm run check:runtime/, "Rollback must verify the restored runtime");
 
 console.log("Deployment structure and startup sequence: OK");

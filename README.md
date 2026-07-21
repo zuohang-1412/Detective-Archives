@@ -150,7 +150,7 @@ npm run check:db-api
 npm run release:check
 ```
 
-部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。
+部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。
 
 图鉴与扩展目录数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：
 

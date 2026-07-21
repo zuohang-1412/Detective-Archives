@@ -79,11 +79,20 @@ sh ops/verify-backup.sh /var/backups/detective-archives/detective-archives-TIMES
 
 真实恢复必须在隔离数据库执行：先创建空库，再运行 `pg_restore --clean --if-exists --no-owner --dbname="$RESTORE_DATABASE_URL" backup.dump`，最后执行 `npm run check:db` 和 `npm run check:db-api`。禁止直接覆盖生产库进行演练。
 
+仓库提供 `.github/workflows/database-backup.yml` 每日备份模板。它固定在生产私网的 `detective-archives` 自托管 Runner 上执行，默认关闭。启用前需要：
+
+1. 配置 Secret `DETECTIVE_ARCHIVES_DATABASE_URL`。
+2. 把变量 `DETECTIVE_ARCHIVES_BACKUP_DIRECTORY` 指向已经加密并同步到独立存储的专用绝对目录。
+3. 设置 `DETECTIVE_ARCHIVES_PGSSLMODE=verify-full`（或记录过风险接受的实际模式），按需设置 `DETECTIVE_ARCHIVES_BACKUP_RETENTION_DAYS`，默认 14 天。
+4. 确认 Runner 已安装与数据库主版本完全一致的 `psql`、`pg_dump`、`pg_restore` 及 `sha256sum`，再设置变量 `DATABASE_BACKUP_ENABLED=true`。脚本会拒绝客户端与服务端主版本不一致的备份，避免生成无法无错误恢复的归档。
+
+任务会校验新归档并在日志记录 SHA-256，但日志摘要不能替代异地复制和每周恢复演练。数据库不得为了定时任务开放到公网。
+
 ## 故障处置
 
 1. 记录开始时间、影响范围、当前提交号和请求 ID。
 2. 若数据库不可用，API `/ready` 会退出负载，但 `/health` 仍可用于确认进程状态。
-3. 若新版本导致错误，使用上一提交号镜像执行 `IMAGE_TAG=<previous> docker compose up -d --no-build`。
+3. 若新版本导致错误，执行 `sh ops/rollback-release.sh`；也可显式传入上一稳定镜像标签。
 4. 数据库迁移采用前向兼容新增策略；不得对生产库执行未经演练的降级 SQL。
 5. 恢复后验证登录、作品详情、社区写入和后台审核，并记录根因与预防项。
 

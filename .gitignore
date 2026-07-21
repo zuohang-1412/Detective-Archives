@@ -8,3 +8,4 @@ coverage/
 Thumbs.db
 *.log
 project.private.config.json
+.release-state/

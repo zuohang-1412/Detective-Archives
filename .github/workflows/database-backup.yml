@@ -1,0 +1,36 @@
+name: Database Backup
+
+on:
+  schedule:
+    - cron: "47 18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: detective-archives-database-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    if: ${{ vars.DATABASE_BACKUP_ENABLED == 'true' }}
+    runs-on: [self-hosted, detective-archives]
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: ${{ secrets.DETECTIVE_ARCHIVES_DATABASE_URL }}
+      PGSSLMODE: ${{ vars.DETECTIVE_ARCHIVES_PGSSLMODE || 'verify-full' }}
+      BACKUP_DIRECTORY: ${{ vars.DETECTIVE_ARCHIVES_BACKUP_DIRECTORY }}
+      BACKUP_RETENTION_DAYS: ${{ vars.DETECTIVE_ARCHIVES_BACKUP_RETENTION_DAYS || '14' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate backup configuration
+        run: test -n "$DATABASE_URL" && test -n "$BACKUP_DIRECTORY"
+      - name: Create and verify database backup
+        run: sh ops/backup-postgres.sh
+      - name: Record latest backup checksum
+        run: |
+          latest_backup="$(find "$BACKUP_DIRECTORY" -maxdepth 1 -type f -name 'detective-archives-*.dump' -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)"
+          test -n "$latest_backup"
+          sh ops/verify-backup.sh "$latest_backup"
+          sha256sum --check "$latest_backup.sha256"

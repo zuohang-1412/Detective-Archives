@@ -24,25 +24,28 @@
 
 ## 3. API 发布
 
-1. 在服务器安装 Docker、Compose 插件和 Caddy。
+1. 在服务器安装 Docker、Compose 插件、Caddy，以及与生产数据库主版本一致的 PostgreSQL 客户端。
 2. 将仓库检出到仅部署用户可访问的目录。
 3. 复制 `ops/production.env.example` 为根目录 `.env.production`，填写真实配置并将文件权限设为 `600`。
 4. 将 `ops/Caddyfile.example` 复制到 Caddy 配置目录，替换真实域名并校验配置。
-5. 先执行质量检查和生产预检，再构建带提交号的镜像：
+5. 使用提交号执行受控发布：
 
 ```bash
 npm ci
-npm run check
-set -a
-. ./.env.production
-set +a
-npm run release:check
 export IMAGE_TAG="$(git rev-parse --short HEAD)"
-docker compose build
-docker compose up -d
+sh ops/deploy-release.sh "$IMAGE_TAG" .env.production
 ```
 
-容器启动时按顺序执行未应用的数据库迁移和幂等目录初始化，之后才启动 API。`/health` 表示进程存活，`/ready` 只有在数据库可用时才返回成功。
+发布脚本会依次执行完整质量与生产配置门禁、生成并校验数据库备份、构建带提交号的镜像、启动服务、等待 `/ready`，再核对数据库完整性并运行公开接口与监控探测。验证失败时，只要旧镜像仍在本机，就会自动恢复旧应用镜像；数据库迁移仍采用前向兼容策略，不执行破坏性降级。
+
+发布成功后，当前和上一镜像标签保存在被 Git 忽略的 `.release-state/`。需要人工回滚时执行：
+
+```bash
+# 默认恢复上一个成功镜像，也可把镜像标签作为第一个参数显式传入。
+API_ENV_FILE=.env.production sh ops/rollback-release.sh
+```
+
+回滚脚本会确认目标镜像存在，切换后重新执行就绪与运行时探测；目标镜像验证失败时会尽力恢复回滚前的应用镜像。容器自身启动时按顺序执行未应用的数据库迁移和幂等目录初始化，之后才启动 API。`/health` 表示进程存活，`/ready` 只有在数据库可用时才返回成功。
 
 ## 4. HTTPS 与网络
 
@@ -76,5 +79,6 @@ npm run release:check
 - 后台登录、内容审核、举报结案、用户限制、作品及链接维护。
 - 注销账号后身份不可复用、会话失效且个人内容不再公开。
 - `/metrics` 无凭证返回 401，正确凭证返回 Prometheus 文本。
+- `.release-state/current-image-tag` 与实际运行镜像一致，上一镜像仍可在本机读取。
 
 完整逐项门禁见 `docs/release-checklist.md`。

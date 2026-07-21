@@ -42,6 +42,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Validate operations scripts
+        run: sh -n ops/backup-postgres.sh ops/verify-backup.sh ops/deploy-release.sh ops/rollback-release.sh
       - run: npm run check
       - run: npm run db:migrate
       - run: npm run db:seed
