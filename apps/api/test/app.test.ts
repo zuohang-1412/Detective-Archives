@@ -197,6 +197,14 @@ describe("detective archives API", () => {
     });
     assert.equal(adminLoginResponse.statusCode, 503);
     assert.equal(adminLoginResponse.json().code, "AUTH_NOT_CONFIGURED");
+
+    const refreshResponse = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/refresh",
+      headers: { authorization: "Bearer da_token-long-enough-for-validation" }
+    });
+    assert.equal(refreshResponse.statusCode, 503);
+    assert.equal(refreshResponse.json().code, "DATABASE_REQUIRED");
   });
 
   it("validates community content before database writes", async () => {

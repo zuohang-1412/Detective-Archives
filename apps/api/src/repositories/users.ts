@@ -5,10 +5,66 @@ import type { AuthUser } from "../auth/session.js";
 import type { DatabaseClient } from "../db/types.js";
 import { queryRows } from "../db/types.js";
 
-interface LoginResult {
+export interface LoginResult {
   token: string;
   expiresAt: string;
   user: AuthUser;
+}
+
+interface RefreshableSession extends AuthUser {
+  sessionId: string;
+  sessionTtlSeconds: number;
+}
+
+export async function refreshUserSession(
+  database: DatabaseClient,
+  token: string
+): Promise<LoginResult | null> {
+  return withTransaction(database, async (connection) => {
+    const current = await queryRows<RefreshableSession>(connection, `
+      SELECT
+        session.id AS "sessionId",
+        GREATEST(
+          60,
+          CEIL(EXTRACT(EPOCH FROM (session.expires_at - session.created_at)))::integer
+        ) AS "sessionTtlSeconds",
+        account.id,
+        account.display_name AS "displayName",
+        account.avatar_url AS "avatarUrl",
+        account.bio,
+        account.role::text AS role
+      FROM user_sessions session
+      JOIN users account ON account.id = session.user_id
+      WHERE session.token_hash = $1
+        AND session.revoked_at IS NULL
+        AND session.expires_at > NOW()
+        AND account.is_active = TRUE
+        AND (account.suspended_until IS NULL OR account.suspended_until <= NOW())
+      FOR UPDATE OF session
+    `, [sessionTokenHash(token)]);
+    const session = current.rows[0];
+    if (!session) return null;
+
+    await connection.query(`
+      UPDATE user_sessions
+      SET revoked_at = NOW(), last_seen_at = NOW()
+      WHERE id = $1 AND revoked_at IS NULL
+    `, [session.sessionId]);
+
+    const refreshedToken = createSessionToken();
+    const expiresAt = new Date(Date.now() + session.sessionTtlSeconds * 1000);
+    await connection.query(`
+      INSERT INTO user_sessions (user_id, token_hash, expires_at)
+      VALUES ($1, $2, $3)
+    `, [session.id, sessionTokenHash(refreshedToken), expiresAt]);
+
+    const {
+      sessionId: _sessionId,
+      sessionTtlSeconds: _sessionTtlSeconds,
+      ...user
+    } = session;
+    return { token: refreshedToken, expiresAt: expiresAt.toISOString(), user };
+  });
 }
 
 export async function loginWechatUser(

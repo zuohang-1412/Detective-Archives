@@ -4,6 +4,17 @@ function getBaseUrl() {
 }
 
 const TOKEN_KEY = "detectiveArchivesToken";
+const SESSION_EXPIRY_KEY = "detectiveArchivesSessionExpiry";
+
+function clearSession() {
+  wx.removeStorageSync(TOKEN_KEY);
+  wx.removeStorageSync(SESSION_EXPIRY_KEY);
+}
+
+function saveSession(session) {
+  wx.setStorageSync(TOKEN_KEY, session.token);
+  wx.setStorageSync(SESSION_EXPIRY_KEY, session.expiresAt);
+}
 
 function getToken() {
   return wx.getStorageSync(TOKEN_KEY) || "";
@@ -31,7 +42,7 @@ function request(path, options = {}) {
           return;
         }
         if (response.statusCode === 401) {
-          wx.removeStorageSync(TOKEN_KEY);
+          clearSession();
         }
         const error = new Error(response.data?.message || "档案读取失败");
         error.code = response.data?.code;
@@ -87,7 +98,7 @@ function loginWechat(agreements) {
               profile: { displayName: "推理读者" }
             }
           });
-          wx.setStorageSync(TOKEN_KEY, response.data.token);
+          saveSession(response.data);
           resolve(response);
         } catch (error) {
           reject(error);
@@ -102,11 +113,18 @@ function getCurrentUser() {
   return request("/api/v1/auth/me");
 }
 
+async function refreshSession() {
+  if (!hasAuthToken()) return null;
+  const response = await request("/api/v1/auth/refresh", { method: "POST" });
+  saveSession(response.data);
+  return response;
+}
+
 async function logout() {
   try {
     await request("/api/v1/auth/logout", { method: "POST" });
   } finally {
-    wx.removeStorageSync(TOKEN_KEY);
+    clearSession();
   }
 }
 
@@ -191,7 +209,7 @@ async function deactivateAccount() {
       data: { confirmation: "DELETE" }
     });
   } finally {
-    wx.removeStorageSync(TOKEN_KEY);
+    clearSession();
   }
 }
 
@@ -216,6 +234,7 @@ module.exports = {
   listWorks,
   loginWechat,
   logout,
+  refreshSession,
   removeShelfItem,
   setCommentLike,
   setReviewLike,

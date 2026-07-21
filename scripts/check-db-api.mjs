@@ -161,7 +161,7 @@ try {
   assert.equal(loginResponse.statusCode, 201, loginResponse.body);
   const token = loginResponse.json().data.token;
   const userId = loginResponse.json().data.user.id;
-  const authorization = { authorization: `Bearer ${token}` };
+  let authorization = { authorization: `Bearer ${token}` };
 
   const repeatLoginResponse = await app.inject({
     method: "POST",
@@ -174,6 +174,34 @@ try {
   });
   assert.equal(repeatLoginResponse.statusCode, 201, repeatLoginResponse.body);
   assert.equal(repeatLoginResponse.json().data.user.id, userId);
+
+  const concurrentRefreshResponses = await Promise.all(Array.from({ length: 2 }, () => app.inject({
+    method: "POST",
+    url: "/api/v1/auth/refresh",
+    headers: { authorization: `Bearer ${repeatLoginResponse.json().data.token}` }
+  })));
+  assert.deepEqual(
+    concurrentRefreshResponses.map((response) => response.statusCode).sort(),
+    [200, 401]
+  );
+
+  const refreshResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/refresh",
+    headers: authorization
+  });
+  assert.equal(refreshResponse.statusCode, 200, refreshResponse.body);
+  assert.notEqual(refreshResponse.json().data.token, token);
+  assert.equal(refreshResponse.json().data.user.id, userId);
+  const revokedTokenResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: { authorization: `Bearer ${token}` }
+  });
+  assert.equal(revokedTokenResponse.statusCode, 401, revokedTokenResponse.body);
+  authorization = {
+    authorization: `Bearer ${refreshResponse.json().data.token}`
+  };
 
   const meResponse = await app.inject({
     method: "GET",
@@ -682,7 +710,7 @@ try {
   assert.equal(expiredResponse.statusCode, 401, expiredResponse.body);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, roles, concurrency, account, community and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, session rotation, roles, concurrency, account, community and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();

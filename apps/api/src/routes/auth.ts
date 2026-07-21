@@ -8,7 +8,8 @@ import type { DatabaseClient } from "../db/types.js";
 import {
   deactivateUserAccount,
   loginAdminUser,
-  loginWechatUser
+  loginWechatUser,
+  refreshUserSession
 } from "../repositories/users.js";
 
 const loginSchema = z.object({
@@ -107,6 +108,20 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
     }
     const { sessionId: _sessionId, ...user } = session;
     return { data: user };
+  });
+
+  app.post("/auth/refresh", {
+    config: { rateLimit: { max: 20, timeWindow: "1 minute" } }
+  }, async (request, reply) => {
+    if (!options.database) {
+      return reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
+    }
+    const token = bearerToken(request);
+    const result = token ? await refreshUserSession(options.database, token) : null;
+    if (!result) {
+      return reply.code(401).send({ code: "SESSION_REFRESH_FAILED", message: "登录已过期，请重新登录" });
+    }
+    return { data: result };
   });
 
   app.post("/auth/logout", async (request, reply) => {
