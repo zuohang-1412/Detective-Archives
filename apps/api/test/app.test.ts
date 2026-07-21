@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
+import { Writable } from "node:stream";
 import { after, before, describe, it } from "node:test";
 import type { FastifyInstance } from "fastify";
+import pino from "pino";
 import { buildApp } from "../src/app.js";
+import { createLoggerOptions } from "../src/logging.js";
 
 describe("detective archives API", () => {
   let app: FastifyInstance;
@@ -41,6 +44,59 @@ describe("detective archives API", () => {
     assert.match(response.headers["content-type"] ?? "", /text\/plain/);
     assert.match(response.body, /detective_archives_http_requests_total/);
     await metricsApp.close();
+  });
+
+  it("redacts authentication and database credentials from production logs", async () => {
+    let output = "";
+    const destination = new Writable({
+      write(chunk, _encoding, callback) {
+        output += chunk.toString();
+        callback();
+      }
+    });
+    const logger = pino(createLoggerOptions("info"), destination);
+    const loggingApp = await buildApp({ loggerInstance: logger });
+    const secrets = {
+      authorization: "Bearer secret-session-token",
+      cookie: "session=secret-cookie",
+      code: "secret-wechat-code",
+      password: "secret-admin-password",
+      token: "secret-response-token",
+      appSecret: "secret-wechat-app-secret",
+      databasePassword: "secret-database-password"
+    };
+    loggingApp.log.info({
+      req: {
+        headers: {
+          authorization: secrets.authorization,
+          cookie: secrets.cookie
+        },
+        body: { code: secrets.code, password: secrets.password }
+      },
+      body: {
+        code: secrets.code,
+        password: secrets.password,
+        token: secrets.token
+      },
+      credentials: {
+        appSecret: secrets.appSecret,
+        password: secrets.password
+      },
+      session: {
+        token: secrets.token,
+        refreshToken: secrets.token
+      },
+      err: {
+        config: { password: secrets.databasePassword }
+      },
+      token: secrets.token,
+      password: secrets.password,
+      appSecret: secrets.appSecret
+    }, "redaction verification");
+    await loggingApp.close();
+    assert.match(output, /redaction verification/);
+    assert.match(output, /\[REDACTED\]/);
+    Object.values(secrets).forEach((secret) => assert.equal(output.includes(secret), false));
   });
 
   it("allows configured origins to issue PUT requests", async () => {

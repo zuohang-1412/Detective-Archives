@@ -2,7 +2,11 @@ import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
-import Fastify, { type FastifyError, type FastifyServerOptions } from "fastify";
+import Fastify, {
+  type FastifyBaseLogger,
+  type FastifyError,
+  type FastifyServerOptions
+} from "fastify";
 import { timingSafeEqual } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import {
@@ -26,6 +30,7 @@ import { workRoutes } from "./routes/works.js";
 
 export interface BuildAppOptions {
   logger?: FastifyServerOptions["logger"];
+  loggerInstance?: FastifyBaseLogger;
   corsOrigin?: string | string[];
   trustProxy?: boolean;
   rateLimitMax?: number;
@@ -40,7 +45,9 @@ export interface BuildAppOptions {
 
 export async function buildApp(options: BuildAppOptions = {}) {
   const app = Fastify({
-    logger: options.logger ?? false,
+    ...(options.loggerInstance
+      ? { loggerInstance: options.loggerInstance }
+      : { logger: options.logger ?? false }),
     bodyLimit: 1024 * 1024,
     requestIdHeader: "x-request-id",
     trustProxy: options.trustProxy ?? false

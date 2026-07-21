@@ -3,6 +3,7 @@ import { createAdminCredentialValidatorFromEnv } from "./auth/admin.js";
 import { createWechatCodeExchangeFromEnv } from "./auth/wechat.js";
 import { createWechatContentSafetyCheckFromEnv } from "./auth/wechat-content-safety.js";
 import { createDatabasePoolFromEnv } from "./db/pool.js";
+import { createLoggerOptions } from "./logging.js";
 import { loadRuntimeConfig } from "./runtime-config.js";
 
 const config = loadRuntimeConfig();
@@ -11,22 +12,7 @@ const wechatCodeExchange = createWechatCodeExchangeFromEnv();
 const contentSafetyCheck = createWechatContentSafetyCheckFromEnv();
 const adminCredentialValidator = createAdminCredentialValidatorFromEnv();
 const app = await buildApp({
-  logger: {
-    level: config.logLevel,
-    redact: {
-      paths: [
-        "req.headers.authorization",
-        "req.headers.cookie",
-        "request.headers.authorization",
-        "request.headers.cookie",
-        "body.code",
-        "body.password",
-        "password",
-        "token"
-      ],
-      censor: "[REDACTED]"
-    }
-  },
+  logger: createLoggerOptions(config.logLevel),
   corsOrigin: config.corsOrigin,
   trustProxy: config.trustProxy,
   rateLimitMax: config.rateLimitMax,
