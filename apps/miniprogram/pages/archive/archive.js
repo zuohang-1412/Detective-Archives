@@ -1,9 +1,10 @@
-const { listDetectives } = require("../../services/api");
+const { listPictureBookEntries } = require("../../services/api");
 
 Page({
   data: {
     query: "",
-    detectives: [],
+    entries: [],
+    coverage: null,
     loading: true,
     error: ""
   },
@@ -28,8 +29,8 @@ Page({
   async search() {
     this.setData({ loading: true, error: "" });
     try {
-      const response = await listDetectives({ q: this.data.query, pageSize: 50 });
-      this.setData({ detectives: response.data });
+      const response = await listPictureBookEntries({ q: this.data.query, pageSize: 150 });
+      this.setData({ entries: response.data, coverage: response.coverage });
     } catch (error) {
       this.setData({ error: error.message || "搜索失败" });
     } finally {
@@ -37,8 +38,18 @@ Page({
     }
   },
 
-  openDetective(event) {
-    const { slug } = event.currentTarget.dataset;
-    wx.navigateTo({ url: `/pages/detective/detective?slug=${slug}` });
+  openEntry(event) {
+    const { slug, id, name } = event.currentTarget.dataset;
+    if (slug) {
+      wx.navigateTo({ url: `/pages/detective/detective?slug=${slug}` });
+      return;
+    }
+
+    wx.showModal({
+      title: `${id} · ${name}`,
+      content: "卷号索引已经收录，人物生平、代表案件与作品信息正在逐条核验。",
+      showCancel: false,
+      confirmText: "知道了"
+    });
   }
 });

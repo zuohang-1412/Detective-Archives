@@ -32,7 +32,12 @@ function getDetective(slug) {
   return request(`/api/v1/detectives/${encodeURIComponent(slug)}`);
 }
 
+function listPictureBookEntries(params = {}) {
+  return request("/api/v1/picture-book", params);
+}
+
 module.exports = {
   getDetective,
-  listDetectives
+  listDetectives,
+  listPictureBookEntries
 };

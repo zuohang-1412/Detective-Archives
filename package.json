@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "build": "npm run build --workspace @detective-archives/api",
-    "check": "npm run check:miniprogram && npm run typecheck && npm test && npm run build",
+    "catalog:sync": "node scripts/sync-picture-book-index.mjs",
+    "check": "npm run check:catalog && npm run check:miniprogram && npm run typecheck && npm test && npm run build",
+    "check:catalog": "node scripts/check-catalog.mjs",
     "check:miniprogram": "node scripts/check-miniprogram.mjs",
     "dev:api": "npm run dev --workspace @detective-archives/api",
     "start:api": "npm run start --workspace @detective-archives/api",

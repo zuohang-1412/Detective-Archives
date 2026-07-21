@@ -1,0 +1,2926 @@
+{
+  "schemaVersion": 1,
+  "snapshotDate": "2026-07-21",
+  "contentPolicy": "Only factual index fields are stored; source descriptions and images are not copied.",
+  "coverage": {
+    "firstVolume": 1,
+    "latestPublishedVolume": 108,
+    "standardVolumeCount": 108,
+    "entryCount": 109,
+    "entriesWithRecommendedWorks": 73
+  },
+  "sources": [
+    {
+      "id": "bilibili-opus-636222280260648982",
+      "label": "Bilibili 名侦探图鉴整理",
+      "url": "https://www.bilibili.com/opus/636222280260648982",
+      "role": "Volumes 1-100 index and recommended-work extraction",
+      "quality": "COMMUNITY_INDEX"
+    },
+    {
+      "id": "baidu-tieba-1501858385",
+      "label": "百度贴吧名侦探图鉴整理",
+      "url": "https://tieba.baidu.com/p/1501858385",
+      "role": "User-provided cross-check candidate; not used by the automated extractor",
+      "quality": "COMMUNITY_INDEX"
+    },
+    {
+      "id": "detective-conan-world-volume-pages",
+      "label": "Detective Conan Wiki volume pages",
+      "url": "https://www.detectiveconanworld.com/wiki/Volume_101",
+      "role": "Volumes 101-108 detective and release-date index",
+      "quality": "COMMUNITY_WIKI"
+    },
+    {
+      "id": "shogakukan-volume-105-special",
+      "label": "小学馆《名侦探柯南》105 卷特装版",
+      "url": "https://shogakukan-comic.jp/book?isbn=9784099431549",
+      "role": "Volume 105 special-edition detective confirmation",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shogakukan-series",
+      "label": "小学馆《名侦探柯南》既刊一覧",
+      "url": "https://shogakukan-comic.jp/book-series?cd=13900",
+      "role": "Latest published volume boundary",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "entries": [
+    {
+      "id": "PB-001-STD",
+      "volumeNo": 1,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "夏洛克·福尔摩斯",
+        "original": null,
+        "en": null,
+        "sourceLabel": "夏洛克·福尔摩斯",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "恐怖谷"
+      ],
+      "detectiveSlug": "sherlock-holmes",
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-002-STD",
+      "volumeNo": 2,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "明智小五郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "明智小五郎",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "黄金甲面人"
+      ],
+      "detectiveSlug": "kogoro-akechi",
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-003-STD",
+      "volumeNo": 3,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "赫尔克里·波洛",
+        "original": null,
+        "en": null,
+        "sourceLabel": "赫尔克里·波洛",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "尼罗河上的惨案"
+      ],
+      "detectiveSlug": "hercule-poirot",
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-004-STD",
+      "volumeNo": 4,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "亚森·罗宾",
+        "original": null,
+        "en": null,
+        "sourceLabel": "亚森·罗宾（也翻译为“鲁邦”）",
+        "aliases": [
+          "鲁邦"
+        ]
+      },
+      "recommendedWorks": [
+        "怪盗绅士"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-005-STD",
+      "volumeNo": 5,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "梅古雷",
+        "original": null,
+        "en": null,
+        "sourceLabel": "梅古雷",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "布下梅古雷陷阱"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-006-STD",
+      "volumeNo": 6,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "金田一耕助",
+        "original": null,
+        "en": null,
+        "sourceLabel": "金田一耕助",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "狱门岛"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-007-STD",
+      "volumeNo": 7,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "科伦坡",
+        "original": null,
+        "en": null,
+        "sourceLabel": "科伦坡",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "离别酒"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-008-STD",
+      "volumeNo": 8,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "钱形平次",
+        "original": null,
+        "en": null,
+        "sourceLabel": "钱形平次",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "钱形平次追捕纪录"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-009-STD",
+      "volumeNo": 9,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "菲利普·马洛",
+        "original": null,
+        "en": null,
+        "sourceLabel": "菲利普·马洛",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "漫长的告别"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-010-STD",
+      "volumeNo": 10,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "奥古斯都·杜宾",
+        "original": null,
+        "en": null,
+        "sourceLabel": "奥古斯都·杜宾",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "莫格街凶杀案"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-011-STD",
+      "volumeNo": 11,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "埃勒里.奎恩",
+        "original": null,
+        "en": null,
+        "sourceLabel": "埃勒里.奎恩",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "埃及十字架之谜"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-012-STD",
+      "volumeNo": 12,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "V·I·渥许斯基",
+        "original": null,
+        "en": null,
+        "sourceLabel": "V·I·渥许斯基",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "夺命码头"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-013-STD",
+      "volumeNo": 13,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "布朗神父",
+        "original": null,
+        "en": null,
+        "sourceLabel": "布朗神父",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "奇妙的脚步声"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-014-STD",
+      "volumeNo": 14,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "蔻蒂莉亚·葛蕾",
+        "original": null,
+        "en": null,
+        "sourceLabel": "蔻蒂莉亚·葛蕾",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "不适合女性的职业"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-015-STD",
+      "volumeNo": 15,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "长谷川平藏",
+        "original": null,
+        "en": null,
+        "sourceLabel": "长谷川平藏",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "狐火"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-016-STD",
+      "volumeNo": 16,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "浅见光彦",
+        "original": null,
+        "en": null,
+        "sourceLabel": "浅见光彦",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "平家传说杀人事件"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-017-STD",
+      "volumeNo": 17,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "尼禄·伍尔夫",
+        "original": null,
+        "en": null,
+        "sourceLabel": "尼禄·伍尔夫",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "厨师太多了"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-018-STD",
+      "volumeNo": 18,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "工藤俊作",
+        "original": null,
+        "en": null,
+        "sourceLabel": "工藤俊作",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "横滨蓝调"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-019-STD",
+      "volumeNo": 19,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "汉尼拔·莱克特",
+        "original": null,
+        "en": null,
+        "sourceLabel": "汉尼拔·莱克特",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "沉默的羔羊"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-020-STD",
+      "volumeNo": 20,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "简·马普尔",
+        "original": null,
+        "en": null,
+        "sourceLabel": "简·马普尔",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "谋杀启事"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-021-STD",
+      "volumeNo": 21,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "山姆·史培德",
+        "original": null,
+        "en": null,
+        "sourceLabel": "山姆·史培德",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "马耳他黑鹰"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-022-STD",
+      "volumeNo": 22,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "十津川省三",
+        "original": null,
+        "en": null,
+        "sourceLabel": "十津川省三",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "终点站杀人事件"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-023-STD",
+      "volumeNo": 23,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "古畑任三郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "古畑任三郎",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "玷污的将帅"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-024-STD",
+      "volumeNo": 24,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "培利·梅森",
+        "original": null,
+        "en": null,
+        "sourceLabel": "培利·梅森",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "古怪的新娘"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-025-STD",
+      "volumeNo": 25,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "三毛猫福尔摩斯",
+        "original": null,
+        "en": null,
+        "sourceLabel": "三毛猫福尔摩斯",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "三毛猫福尔摩斯探案"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-026-STD",
+      "volumeNo": 26,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "鲛岛警部",
+        "original": null,
+        "en": null,
+        "sourceLabel": "鲛岛警部",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "毒猿"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-027-STD",
+      "volumeNo": 27,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "詹姆士·邦德",
+        "original": null,
+        "en": null,
+        "sourceLabel": "詹姆士·邦德",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "金手指"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-028-STD",
+      "volumeNo": 28,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "神津恭介",
+        "original": null,
+        "en": null,
+        "sourceLabel": "神津恭介",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "人偶为何被杀"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-029-STD",
+      "volumeNo": 29,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "陈查理",
+        "original": null,
+        "en": null,
+        "sourceLabel": "陈查理",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "陈查理大展手"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-030-STD",
+      "volumeNo": 30,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "约翰·桑代克",
+        "original": null,
+        "en": null,
+        "sourceLabel": "约翰·桑代克",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "唱歌的白骨"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-031-STD",
+      "volumeNo": 31,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "远山左卫门尉景元",
+        "original": null,
+        "en": null,
+        "sourceLabel": "远山左卫门尉景元",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "远山阿金的捕物帖"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-032-STD",
+      "volumeNo": 32,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "迈克·汉默",
+        "original": null,
+        "en": null,
+        "sourceLabel": "迈克·汉默",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "我来审判"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-033-STD",
+      "volumeNo": 33,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "菲洛·万斯",
+        "original": null,
+        "en": null,
+        "sourceLabel": "菲洛·万斯",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "主教杀人事件"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-034-STD",
+      "volumeNo": 34,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "栋茂",
+        "original": null,
+        "en": null,
+        "sourceLabel": "栋茂",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "怀疑遭受惩罚"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-035-STD",
+      "volumeNo": 35,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "哲瑞·雷恩",
+        "original": null,
+        "en": null,
+        "sourceLabel": "哲瑞·雷恩",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "Y的悲剧"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-036-STD",
+      "volumeNo": 36,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "凯瑟琳·透纳",
+        "original": null,
+        "en": null,
+        "sourceLabel": "凯瑟琳·透纳",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "魂断花道"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-037-STD",
+      "volumeNo": 37,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "亨利·杰克逊",
+        "original": null,
+        "en": null,
+        "sourceLabel": "亨利·杰克逊",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "会心一笑"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-038-STD",
+      "volumeNo": 38,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "传七",
+        "original": null,
+        "en": null,
+        "sourceLabel": "传七",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "夜叉牡丹"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-039-STD",
+      "volumeNo": 39,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "刘.亚契",
+        "original": null,
+        "en": null,
+        "sourceLabel": "刘.亚契",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "移动的标耙"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-040-STD",
+      "volumeNo": 40,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "御手洗洁",
+        "original": null,
+        "en": null,
+        "sourceLabel": "御手洗洁",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "占星术杀人魔法"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-041-STD",
+      "volumeNo": 41,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "角落老人",
+        "original": null,
+        "en": null,
+        "sourceLabel": "角落老人",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "角落里的老人"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-042-STD",
+      "volumeNo": 42,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "约瑟夫·鲁尔达庇",
+        "original": null,
+        "en": null,
+        "sourceLabel": "约瑟夫·鲁尔达庇",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "黄色房间的秘密"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-043-STD",
+      "volumeNo": 43,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "半七",
+        "original": null,
+        "en": null,
+        "sourceLabel": "半七",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "石灯笼"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-044-STD",
+      "volumeNo": 44,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "栋居宏一良",
+        "original": null,
+        "en": null,
+        "sourceLabel": "栋居宏一良",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "人性的证明"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-045-STD",
+      "volumeNo": 45,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "今西荣太郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "今西荣太郎",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "砂器"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-046-STD",
+      "volumeNo": 46,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "基甸·菲尔",
+        "original": null,
+        "en": null,
+        "sourceLabel": "基甸·菲尔",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "三口棺材"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-047-STD",
+      "volumeNo": 47,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "合田雄一郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "合田雄一郎",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "马克斯之山"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-048-STD",
+      "volumeNo": 48,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "杉下右京",
+        "original": null,
+        "en": null,
+        "sourceLabel": "杉下右京",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "有杀意"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-049-STD",
+      "volumeNo": 49,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "史提夫.卡瑞拉",
+        "original": null,
+        "en": null,
+        "sourceLabel": "史提夫.卡瑞拉",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "恨警官的人"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-050-STD",
+      "volumeNo": 50,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "火村英生",
+        "original": null,
+        "en": null,
+        "sourceLabel": "火村英生",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "第46间密室"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-051-STD",
+      "volumeNo": 51,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "朝吹里矢子",
+        "original": null,
+        "en": null,
+        "sourceLabel": "朝吹里矢子",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "两个真相"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-052-STD",
+      "volumeNo": 52,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "罗伯特.艾恩赛德",
+        "original": null,
+        "en": null,
+        "sourceLabel": "罗伯特.艾恩赛德",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "轮椅神探艾恩赛德"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-053-STD",
+      "volumeNo": 53,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "中禅寺秋彦",
+        "original": null,
+        "en": null,
+        "sourceLabel": "中禅寺秋彦（京极堂）",
+        "aliases": [
+          "京极堂"
+        ]
+      },
+      "recommendedWorks": [
+        "姑获鸟之夏"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-054-STD",
+      "volumeNo": 54,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "岛田洁",
+        "original": null,
+        "en": null,
+        "sourceLabel": "岛田洁",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "十角馆杀人预告"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-055-STD",
+      "volumeNo": 55,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "大陆调查员",
+        "original": null,
+        "en": null,
+        "sourceLabel": "大陆调查员",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "血之诱惑"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-056-STD",
+      "volumeNo": 56,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "佐七",
+        "original": null,
+        "en": null,
+        "sourceLabel": "佐七",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "幽灵山僧"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-057-STD",
+      "volumeNo": 57,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "约瑟夫．弗伦奇",
+        "original": null,
+        "en": null,
+        "sourceLabel": "约瑟夫．弗伦奇",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "１２：３０从克罗伊登出发"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-058-STD",
+      "volumeNo": 58,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "高树良文",
+        "original": null,
+        "en": null,
+        "sourceLabel": "高树良文",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "不眠之夜"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-059-STD",
+      "volumeNo": 59,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "布朗克斯区的妈妈",
+        "original": null,
+        "en": null,
+        "sourceLabel": "布朗克斯区的妈妈",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-060-STD",
+      "volumeNo": 60,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "法月纶太郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "法月纶太郎",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "都市传说拼图"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-061-STD",
+      "volumeNo": 61,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "酷酷",
+        "original": null,
+        "en": null,
+        "sourceLabel": "酷酷",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "猫能看懂线索"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-062-STD",
+      "volumeNo": 62,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "汤川学",
+        "original": null,
+        "en": null,
+        "sourceLabel": "汤川学",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "燃烧"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-063-STD",
+      "volumeNo": 63,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "神户大助",
+        "original": null,
+        "en": null,
+        "sourceLabel": "神户大助",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-064-STD",
+      "volumeNo": 64,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "钱形警官",
+        "original": null,
+        "en": null,
+        "sourceLabel": "钱形警官",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "欲速则不盗之一"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-065-STD",
+      "volumeNo": 65,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "罗伯特·兰登教授",
+        "original": null,
+        "en": null,
+        "sourceLabel": "罗伯特·兰登教授",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "达芬奇密码"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-066-STD",
+      "volumeNo": 66,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "仙波阿古十郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "仙波阿古十郎",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "远岛船"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-067-STD",
+      "volumeNo": 67,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "茨木欢喜",
+        "original": null,
+        "en": null,
+        "sourceLabel": "茨木欢喜",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "十三角关系"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-068-STD",
+      "volumeNo": 68,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "多罗尾伴内",
+        "original": null,
+        "en": null,
+        "sourceLabel": "多罗尾伴内",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "七张脸"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-069-STD",
+      "volumeNo": 69,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "理查德.克夫",
+        "original": null,
+        "en": null,
+        "sourceLabel": "理查德.克夫",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "月亮宝石"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-070-STD",
+      "volumeNo": 70,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "菲利普·特伦特",
+        "original": null,
+        "en": null,
+        "sourceLabel": "菲利普·特伦特",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "特伦特最后一案"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-071-STD",
+      "volumeNo": 71,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "豪斯医生",
+        "original": null,
+        "en": null,
+        "sourceLabel": "豪斯医生",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "frozen"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-072-STD",
+      "volumeNo": 72,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "仓石义男",
+        "original": null,
+        "en": null,
+        "sourceLabel": "仓石义男",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "红色名片"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-073-STD",
+      "volumeNo": 73,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "神探阿蒙",
+        "original": null,
+        "en": null,
+        "sourceLabel": "神探阿蒙",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "我对裁决有异议"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-074-STD",
+      "volumeNo": 74,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "鬼贯警部",
+        "original": null,
+        "en": null,
+        "sourceLabel": "鬼贯警部",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "黑色皮箱"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-075-STD",
+      "volumeNo": 75,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "春樱亭圆紫",
+        "original": null,
+        "en": null,
+        "sourceLabel": "春樱亭圆紫",
+        "aliases": []
+      },
+      "recommendedWorks": [
+        "空中飞马"
+      ],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "SOURCE_CAPTURED"
+      }
+    },
+    {
+      "id": "PB-076-STD",
+      "volumeNo": 76,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "林肯.莱姆",
+        "original": null,
+        "en": null,
+        "sourceLabel": "林肯.莱姆",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-077-STD",
+      "volumeNo": 77,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "榎本径",
+        "original": null,
+        "en": null,
+        "sourceLabel": "榎本径",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-078-STD",
+      "volumeNo": 78,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "白鸟圭辅",
+        "original": null,
+        "en": null,
+        "sourceLabel": "白鸟圭辅",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-079-STD",
+      "volumeNo": 79,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "刀城言耶",
+        "original": null,
+        "en": null,
+        "sourceLabel": "刀城言耶",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-080-STD",
+      "volumeNo": 80,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "篠川栞子",
+        "original": null,
+        "en": null,
+        "sourceLabel": "篠川栞子",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-081-STD",
+      "volumeNo": 81,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "薄野的便利屋",
+        "original": null,
+        "en": null,
+        "sourceLabel": "薄野的便利屋",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-082-STD",
+      "volumeNo": 82,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "影山",
+        "original": null,
+        "en": null,
+        "sourceLabel": "影山",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-083-STD",
+      "volumeNo": 83,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "折木奉太郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "折木奉太郎",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-084-STD",
+      "volumeNo": 84,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "莉丝·莎兰德",
+        "original": null,
+        "en": null,
+        "sourceLabel": "莉丝·莎兰德",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-085-STD",
+      "volumeNo": 85,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "福家警部补",
+        "original": null,
+        "en": null,
+        "sourceLabel": "福家警部补",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-086-STD",
+      "volumeNo": 86,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "吉敷竹史",
+        "original": null,
+        "en": null,
+        "sourceLabel": "吉敷竹史",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-087-STD",
+      "volumeNo": 87,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "江神二郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "江神二郎",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-088-STD",
+      "volumeNo": 88,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "掟上今日子",
+        "original": null,
+        "en": null,
+        "sourceLabel": "掟上今日子",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-089-STD",
+      "volumeNo": 89,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "九条樱子",
+        "original": null,
+        "en": null,
+        "sourceLabel": "九条樱子",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-090-STD",
+      "volumeNo": 90,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "怪盗山猫",
+        "original": null,
+        "en": null,
+        "sourceLabel": "怪盗山猫",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-091-STD",
+      "volumeNo": 91,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "凛田莉子",
+        "original": null,
+        "en": null,
+        "sourceLabel": "凛田莉子",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-092-STD",
+      "volumeNo": 92,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "华冈信一郎",
+        "original": null,
+        "en": null,
+        "sourceLabel": "华冈信一郎",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-093-STD",
+      "volumeNo": 93,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "理查德·卡瑟尔",
+        "original": null,
+        "en": null,
+        "sourceLabel": "理查德·卡瑟尔",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-094-STD",
+      "volumeNo": 94,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "深山大翔",
+        "original": null,
+        "en": null,
+        "sourceLabel": "深山大翔",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-095-STD",
+      "volumeNo": 95,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "弓神适当",
+        "original": null,
+        "en": null,
+        "sourceLabel": "弓神适当",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-096-STD",
+      "volumeNo": 96,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "三澄美琴",
+        "original": null,
+        "en": null,
+        "sourceLabel": "三澄美琴",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-097-STD",
+      "volumeNo": 97,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "黒河内圭太",
+        "original": null,
+        "en": null,
+        "sourceLabel": "黒河内圭太",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-098-STD",
+      "volumeNo": 98,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "久能整",
+        "original": null,
+        "en": null,
+        "sourceLabel": "久能整",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-099-STD",
+      "volumeNo": 99,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "猫猫",
+        "original": null,
+        "en": null,
+        "sourceLabel": "猫猫",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-100-STD",
+      "volumeNo": 100,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "夏洛克",
+        "original": null,
+        "en": null,
+        "sourceLabel": "夏洛克",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": null,
+      "sourceIds": [
+        "bilibili-opus-636222280260648982"
+      ],
+      "sourceUrls": [
+        "https://www.bilibili.com/opus/636222280260648982"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-101-STD",
+      "volumeNo": 101,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "岸边露伴",
+        "original": "岸辺露伴",
+        "en": "Rohan Kishibe",
+        "sourceLabel": "Rohan Kishibe",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2022-04-13",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_101"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-102-STD",
+      "volumeNo": 102,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "藤圣子",
+        "original": "藤 聖子",
+        "en": "Seiko Fuji",
+        "sourceLabel": "Seiko Fuji",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2022-09-15",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_102"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-103-STD",
+      "volumeNo": 103,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "雷顿教授",
+        "original": "レイトン教授",
+        "en": "Professor Layton",
+        "sourceLabel": "Professor Layton",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2023-04-12",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_103"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-104-STD",
+      "volumeNo": 104,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "榊真理子",
+        "original": "榊マリコ",
+        "en": "Mariko Sakaki",
+        "sourceLabel": "Mariko Sakaki",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2023-10-18",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_104"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-105-STD",
+      "volumeNo": 105,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "轮堂鸦夜",
+        "original": "輪堂鴉夜",
+        "en": "Aya Rindo",
+        "sourceLabel": "Aya Rindo",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2024-04-10",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_105"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-105-SP",
+      "volumeNo": 105,
+      "edition": "SPECIAL",
+      "names": {
+        "zh": "工藤新一",
+        "original": "工藤新一",
+        "en": "Shinichi Kudo",
+        "sourceLabel": "Shinichi Kudo",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2024-04-10",
+      "sourceIds": [
+        "shogakukan-volume-105-special"
+      ],
+      "sourceUrls": [
+        "https://shogakukan-comic.jp/book?isbn=9784099431549"
+      ],
+      "verification": {
+        "identity": "PRIMARY_SOURCE_CONFIRMED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-106-STD",
+      "volumeNo": 106,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "成步堂龙一",
+        "original": "成歩堂龍一",
+        "en": "Phoenix Wright",
+        "sourceLabel": "Phoenix Wright",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2024-10-18",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_106"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-107-STD",
+      "volumeNo": 107,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "狡噛慎也",
+        "original": "狡噛慎也",
+        "en": "Shinya Kogami",
+        "sourceLabel": "Shinya Kogami",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2025-04-18",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_107"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    },
+    {
+      "id": "PB-108-STD",
+      "volumeNo": 108,
+      "edition": "STANDARD",
+      "names": {
+        "zh": "天久鹰央",
+        "original": "天久鷹央",
+        "en": "Takao Ameku",
+        "sourceLabel": "Takao Ameku",
+        "aliases": []
+      },
+      "recommendedWorks": [],
+      "detectiveSlug": null,
+      "releaseDate": "2026-04-08",
+      "sourceIds": [
+        "detective-conan-world-volume-pages"
+      ],
+      "sourceUrls": [
+        "https://www.detectiveconanworld.com/wiki/Volume_108"
+      ],
+      "verification": {
+        "identity": "SOURCE_CAPTURED",
+        "recommendedWorks": "MISSING"
+      }
+    }
+  ]
+}

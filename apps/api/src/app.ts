@@ -1,6 +1,7 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { detectiveRoutes } from "./routes/detectives.js";
+import { pictureBookRoutes } from "./routes/picture-book.js";
 
 export interface BuildAppOptions {
   logger?: boolean;
@@ -25,6 +26,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
   }));
 
   await app.register(detectiveRoutes, { prefix: "/api/v1" });
+  await app.register(pictureBookRoutes, { prefix: "/api/v1" });
 
   app.setNotFoundHandler(async (_request, reply) => {
     return reply.code(404).send({ code: "ROUTE_NOT_FOUND", message: "接口不存在" });

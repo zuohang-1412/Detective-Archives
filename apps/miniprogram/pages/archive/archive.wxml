@@ -1,11 +1,14 @@
 <view class="page-shell">
   <text class="eyebrow">ARCHIVE SEARCH</text>
-  <view class="section-title">查找一位名侦探</view>
+  <view class="section-title">名侦探图鉴索引</view>
+  <view wx:if="{{coverage}}" class="coverage-note">
+    已收录第 1～{{coverage.latestPublishedVolume}} 卷，共 {{coverage.entryCount}} 条图鉴记录
+  </view>
 
   <view class="search-box">
     <input
       class="search-input"
-      placeholder="姓名、作者或流派"
+      placeholder="侦探名称、别名或推荐作品"
       value="{{query}}"
       confirm-type="search"
       bindinput="onQueryInput"
@@ -17,21 +20,34 @@
 
   <view wx:if="{{loading}}" class="state-message">正在检索档案…</view>
   <view wx:elif="{{error}}" class="state-message">{{error}}</view>
-  <view wx:elif="{{!detectives.length}}" class="state-message">没有找到匹配档案</view>
+  <view wx:elif="{{!entries.length}}" class="state-message">没有找到匹配档案</view>
   <view wx:else class="result-list">
     <view
-      wx:for="{{detectives}}"
+      wx:for="{{entries}}"
       wx:key="id"
       class="card result-card"
-      data-slug="{{item.slug}}"
-      bindtap="openDetective"
+      data-id="{{item.id}}"
+      data-name="{{item.names.zh}}"
+      data-slug="{{item.detectiveSlug}}"
+      bindtap="openEntry"
     >
-      <view class="result-main">
-        <view class="result-name">{{item.nameZh}}</view>
-        <view class="muted result-meta">{{item.country}} · {{item.creatorName}}</view>
-        <view class="result-summary">{{item.summary}}</view>
+      <view class="volume-badge">
+        <text class="volume-number">{{item.volumeNo}}</text>
+        <text class="volume-label">卷</text>
       </view>
-      <view class="work-count">{{item.works.length}} 部<text>作品</text></view>
+      <view class="result-main">
+        <view class="result-title-row">
+          <view class="result-name">{{item.names.zh}}</view>
+          <text wx:if="{{item.edition === 'SPECIAL'}}" class="edition-tag">特装版</text>
+        </view>
+        <view class="muted result-meta">编号 {{item.id}}</view>
+        <view wx:if="{{item.recommendedWorks.length}}" class="result-summary">
+          推荐作品：{{item.recommendedWorks[0]}}
+        </view>
+        <view wx:else class="result-summary pending">推荐作品待核验</view>
+      </view>
+      <view wx:if="{{item.detectiveSlug}}" class="detail-state ready">查看档案</view>
+      <view wx:else class="detail-state">待补全</view>
     </view>
   </view>
 </view>

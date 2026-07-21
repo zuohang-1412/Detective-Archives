@@ -9,6 +9,8 @@ CREATE TYPE link_type AS ENUM ('PUBLISHER', 'BOOKSTORE', 'LIBRARY', 'STREAMING',
 CREATE TYPE report_status AS ENUM ('OPEN', 'PROCESSING', 'RESOLVED', 'REJECTED');
 CREATE TYPE moderation_action AS ENUM ('PUBLISH', 'HIDE', 'RESTORE', 'REJECT', 'WARN', 'SUSPEND_USER');
 CREATE TYPE ai_task_status AS ENUM ('DRAFT', 'QUEUED', 'GENERATING', 'SUCCEEDED', 'FAILED', 'PENDING_REVIEW', 'PUBLISHED', 'REJECTED');
+CREATE TYPE picture_book_edition AS ENUM ('STANDARD', 'SPECIAL');
+CREATE TYPE verification_status AS ENUM ('MISSING', 'SOURCE_CAPTURED', 'PRIMARY_SOURCE_CONFIRMED');
 
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -70,6 +72,37 @@ CREATE TABLE detective_tags (
   PRIMARY KEY (detective_id, tag)
 );
 
+CREATE TABLE picture_book_sources (
+  id VARCHAR(100) PRIMARY KEY,
+  label VARCHAR(160) NOT NULL,
+  url TEXT NOT NULL,
+  source_quality VARCHAR(30) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE picture_book_entries (
+  id VARCHAR(20) PRIMARY KEY,
+  volume_no SMALLINT NOT NULL CHECK (volume_no > 0),
+  edition picture_book_edition NOT NULL DEFAULT 'STANDARD',
+  detective_id UUID REFERENCES detectives(id) ON DELETE SET NULL,
+  name_zh VARCHAR(160) NOT NULL,
+  name_original VARCHAR(200),
+  name_en VARCHAR(200),
+  release_date DATE,
+  identity_verification verification_status NOT NULL DEFAULT 'SOURCE_CAPTURED',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (volume_no, edition)
+);
+
+CREATE TABLE picture_book_entry_sources (
+  entry_id VARCHAR(20) NOT NULL REFERENCES picture_book_entries(id) ON DELETE CASCADE,
+  source_id VARCHAR(100) NOT NULL REFERENCES picture_book_sources(id) ON DELETE RESTRICT,
+  source_url TEXT NOT NULL,
+  PRIMARY KEY (entry_id, source_id, source_url)
+);
+
 CREATE TABLE works (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug VARCHAR(120) NOT NULL UNIQUE,
@@ -84,6 +117,16 @@ CREATE TABLE works (
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE picture_book_recommendations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  entry_id VARCHAR(20) NOT NULL REFERENCES picture_book_entries(id) ON DELETE CASCADE,
+  work_id UUID REFERENCES works(id) ON DELETE SET NULL,
+  source_label VARCHAR(240) NOT NULL,
+  display_order SMALLINT NOT NULL DEFAULT 0,
+  verification verification_status NOT NULL DEFAULT 'SOURCE_CAPTURED',
+  UNIQUE (entry_id, source_label)
 );
 
 CREATE TABLE work_creators (
@@ -226,6 +269,7 @@ CREATE TABLE audit_logs (
 
 CREATE INDEX idx_detectives_status_published ON detectives (status, published_at DESC);
 CREATE INDEX idx_works_status_type ON works (status, media_type, published_at DESC);
+CREATE INDEX idx_picture_book_volume ON picture_book_entries (volume_no, edition);
 CREATE INDEX idx_work_links_active ON work_links (work_id, is_active);
 CREATE INDEX idx_shelf_user_status ON shelf_items (user_id, status, updated_at DESC);
 CREATE INDEX idx_reviews_work_public ON reviews (work_id, status, published_at DESC);
