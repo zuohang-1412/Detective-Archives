@@ -1,0 +1,466 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-004",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "worldcat-tales-black-widowers",
+      "label": "WorldCat: Tales of the Black Widowers",
+      "url": "https://search.worldcat.org/title/Tales-of-the-Black-Widowers/oclc/810273",
+      "quality": "LIBRARY_CATALOG"
+    },
+    {
+      "id": "kobunsha-denshichi-torimonocho",
+      "label": "光文社：《伝七捕物帳》",
+      "url": "https://www3.kobunsha.com/kappa/list.html",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "prh-moving-target",
+      "label": "Penguin Random House: The Moving Target",
+      "url": "https://www.penguinrandomhouse.com/books/105259/the-moving-target-by-ross-macdonald/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-astrology-murder-case",
+      "label": "讲谈社：《占星術殺人事件》",
+      "url": "https://www.kodansha.co.jp/book/products/0000159559",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "gutenberg-old-man-corner",
+      "label": "Project Gutenberg: The Old Man in the Corner",
+      "url": "https://www.gutenberg.org/ebooks/10556",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "gutenberg-yellow-room",
+      "label": "Project Gutenberg: The Mystery of the Yellow Room",
+      "url": "https://www.gutenberg.org/ebooks/1685",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "aozora-hanshichi-ishidoro",
+      "label": "青空文库：《半七捕物帳 02 石灯籠》",
+      "url": "https://www.aozora.gr.jp/cards/000082/card4641.html",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "kadokawa-proof-of-the-man",
+      "label": "KADOKAWA：《人間の証明》",
+      "url": "https://www.kadokawa.co.jp/product/199999136519/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shinchosha-suna-no-utsuwa",
+      "label": "新潮社：《砂の器》",
+      "url": "https://www.shinchosha.co.jp/book/110924/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "simon-schuster-three-coffins",
+      "label": "Simon & Schuster: The Three Coffins",
+      "url": "https://www.simonandschuster.com/books/The-Three-Coffins/John-Dickson-Carr/Dr-Gideon-Fell/9781613165874",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-marks-no-yama",
+      "label": "讲谈社：《マークスの山》",
+      "url": "https://www.kodansha.co.jp/book/products/0000202551",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-037-STD",
+      "pictureBookEntryIds": ["PB-037-STD"],
+      "slug": "henry-jackson-black-widowers",
+      "nameZh": "亨利·杰克逊",
+      "nameOriginal": "Henry Jackson",
+      "nameEn": "Henry Jackson",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["SHORT_STORY"],
+      "summary": "艾萨克·阿西莫夫笔下黑寡妇会聚餐的侍者，常在会员讨论陷入僵局时凭借倾听、常识和关键追问指出答案。",
+      "creatorName": "艾萨克·阿西莫夫",
+      "aliases": ["黑寡妇会的亨利", "Henry Jackson"],
+      "tags": ["安乐椅侦探", "短篇集", "聚餐推理"],
+      "featuredCases": ["《会心一笑》（The Acquisitive Chuckle）》"],
+      "sourceIds": ["worldcat-tales-black-widowers"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "tales-of-the-black-widowers",
+          "titleZh": "黑寡妇会故事集",
+          "titleOriginal": "Tales of the Black Widowers",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1974,
+          "summary": "黑寡妇会成员在每月聚餐中提出离奇疑问，侍者亨利通过旁听讨论和简洁追问，为一系列日常谜团补上关键线索。",
+          "sourceId": "worldcat-tales-black-widowers",
+          "linkType": "LIBRARY",
+          "providerName": "WorldCat",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-038-STD",
+      "pictureBookEntryIds": ["PB-038-STD"],
+      "slug": "denshichi",
+      "nameZh": "传七",
+      "nameOriginal": "伝七",
+      "nameEn": "Denshichi",
+      "country": "日本",
+      "era": "江户时代题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "FILM", "SERIES"],
+      "summary": "《传七捕物帐》中获准佩带紫色十手穗的黑门町捕吏，以走访町民、追查物证和人情判断侦破江户案件。",
+      "creatorName": "阵出达朗",
+      "aliases": ["黑门町的传七", "伝七親分", "Denshichi"],
+      "tags": ["捕物帐", "江户", "时代推理"],
+      "featuredCases": ["《夜叉牡丹》"],
+      "sourceIds": ["kobunsha-denshichi-torimonocho"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "denshichi-torimonocho",
+          "titleZh": "传七捕物帐",
+          "titleOriginal": "伝七捕物帳",
+          "mediaType": "SHORT_STORY",
+          "summary": "以黑门町传七为中心的江户捕物故事集；图鉴推荐篇目《夜叉牡丹》保留为代表案件标签，正式入口关联出版社书目。",
+          "sourceId": "kobunsha-denshichi-torimonocho",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-039-STD",
+      "pictureBookEntryIds": ["PB-039-STD"],
+      "slug": "lew-archer",
+      "nameZh": "卢·亚彻",
+      "nameOriginal": "Lew Archer",
+      "nameEn": "Lew Archer",
+      "country": "美国",
+      "era": "20世纪中后叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "罗斯·麦克唐纳笔下的南加州私人侦探，擅长从失踪、勒索与家庭秘密中追溯人物关系和长期累积的心理创伤。",
+      "creatorName": "罗斯·麦克唐纳",
+      "aliases": ["刘·亚契", "刘·亚彻", "Lew Archer"],
+      "tags": ["硬汉派", "私人侦探", "心理悬疑"],
+      "featuredCases": ["《移动的标靶》（The Moving Target）》"],
+      "sourceIds": ["prh-moving-target"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-moving-target",
+          "titleZh": "移动目标",
+          "titleOriginal": "The Moving Target",
+          "mediaType": "NOVEL",
+          "summary": "亚彻受托寻找失踪富豪，沿着绑架线索进入南加州富裕阶层的复杂关系，并逐步揭开贪欲、怨恨和家庭秘密。",
+          "sourceId": "prh-moving-target",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-040-STD",
+      "pictureBookEntryIds": ["PB-040-STD"],
+      "slug": "kiyoshi-mitarai",
+      "nameZh": "御手洗洁",
+      "nameOriginal": "御手洗潔",
+      "nameEn": "Kiyoshi Mitarai",
+      "country": "日本",
+      "era": "20世纪末至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL"],
+      "summary": "岛田庄司笔下知识广博、个性鲜明的占星师兼侦探，善于把看似超自然的奇案拆解为可验证的物理结构与犯罪计划。",
+      "creatorName": "岛田庄司",
+      "aliases": ["御手洗潔", "Kiyoshi Mitarai"],
+      "tags": ["新本格", "占星术", "诡计推理"],
+      "featuredCases": ["《占星术杀人魔法》"],
+      "sourceIds": ["kodansha-astrology-murder-case"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-tokyo-zodiac-murders",
+          "titleZh": "占星术杀人魔法",
+          "titleOriginal": "占星術殺人事件",
+          "mediaType": "NOVEL",
+          "releaseYear": 1981,
+          "summary": "一份遗留手记描述以多名女性身体组成理想人体的计划，御手洗洁和石冈和己从数十年前的命案记录中重建诡计。",
+          "sourceId": "kodansha-astrology-murder-case",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-041-STD",
+      "pictureBookEntryIds": ["PB-041-STD"],
+      "slug": "old-man-in-the-corner",
+      "nameZh": "角落老人",
+      "nameOriginal": "The Old Man in the Corner",
+      "nameEn": "The Old Man in the Corner",
+      "country": "英国",
+      "era": "20世纪初",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["SHORT_STORY"],
+      "summary": "奥希兹女男爵笔下没有姓名的安乐椅侦探，在伦敦茶室一边打绳结，一边根据报纸报道向记者波莉解释轰动案件。",
+      "creatorName": "奥希兹女男爵",
+      "aliases": ["隅の老人", "角落里的老人", "Old Man in the Corner"],
+      "tags": ["安乐椅侦探", "短篇集", "伦敦"],
+      "featuredCases": ["《角落里的老人》"],
+      "sourceIds": ["gutenberg-old-man-corner"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-old-man-in-the-corner",
+          "titleZh": "角落里的老人",
+          "titleOriginal": "The Old Man in the Corner",
+          "mediaType": "SHORT_STORY",
+          "summary": "一位无名老人仅凭公开报道和与记者的交谈分析多起罪案，以逻辑推断指出被警方遗漏的动机、身份和作案过程。",
+          "sourceId": "gutenberg-old-man-corner",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-042-STD",
+      "pictureBookEntryIds": ["PB-042-STD"],
+      "slug": "joseph-rouletabille",
+      "nameZh": "约瑟夫·鲁勒塔比耶",
+      "nameOriginal": "Joseph Rouletabille",
+      "nameEn": "Joseph Rouletabille",
+      "country": "法国",
+      "era": "20世纪初",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "加斯东·勒鲁笔下的年轻记者侦探，强调理性的正确端点，擅长在封闭空间、矛盾证词和隐藏身份之间建立完整解释。",
+      "creatorName": "加斯东·勒鲁",
+      "aliases": ["约瑟夫·鲁尔达庇", "约瑟夫·鲁勒塔比尔", "Joseph Rouletabille"],
+      "tags": ["记者侦探", "密室", "法国"],
+      "featuredCases": ["《黄色房间的秘密》"],
+      "sourceIds": ["gutenberg-yellow-room"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-mystery-of-the-yellow-room",
+          "titleZh": "黄色房间的秘密",
+          "titleOriginal": "Le mystère de la chambre jaune",
+          "mediaType": "NOVEL",
+          "releaseYear": 1907,
+          "summary": "一名女子在从内部封闭的黄色房间遭到袭击，鲁勒塔比耶从现场结构、证人行动和人物身份中解释袭击者如何消失。",
+          "sourceId": "gutenberg-yellow-room",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-043-STD",
+      "pictureBookEntryIds": ["PB-043-STD"],
+      "slug": "hanshichi",
+      "nameZh": "半七",
+      "nameOriginal": "半七",
+      "nameEn": "Hanshichi",
+      "country": "日本",
+      "era": "江户时代题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "SERIES"],
+      "summary": "冈本绮堂笔下的江户捕吏，以第一手经验向明治时代的叙述者回忆旧案，并借风俗观察、人情与查访识破真相。",
+      "creatorName": "冈本绮堂",
+      "aliases": ["半七老人", "Hanshichi"],
+      "tags": ["捕物帐", "江户", "短篇集"],
+      "featuredCases": ["《石灯笼》"],
+      "sourceIds": ["aozora-hanshichi-ishidoro"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "hanshichi-torimonocho-ishidoro",
+          "titleZh": "半七捕物帐：石灯笼",
+          "titleOriginal": "半七捕物帳 02 石灯籠",
+          "mediaType": "SHORT_STORY",
+          "summary": "半七从一桩带有怪谈色彩的江户事件入手，结合现场查访和时代风俗，逐步排除迷信解释并还原人为真相。",
+          "sourceId": "aozora-hanshichi-ishidoro",
+          "linkType": "LIBRARY",
+          "providerName": "青空文库",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-044-STD",
+      "pictureBookEntryIds": ["PB-044-STD"],
+      "slug": "koichiro-munesue",
+      "nameZh": "栋居弘一良",
+      "nameOriginal": "棟居弘一良",
+      "nameEn": "Koichiro Munesue",
+      "country": "日本",
+      "era": "20世纪后半叶至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "森村诚一笔下的刑警，在跨越社会阶层和历史记忆的案件中坚持追查证据，并从受害者身份与时代创伤寻找动机。",
+      "creatorName": "森村诚一",
+      "aliases": ["栋居宏一良", "棟居刑事", "Koichiro Munesue"],
+      "tags": ["刑警", "社会派", "历史记忆"],
+      "featuredCases": ["《人性的证明》"],
+      "sourceIds": ["kadokawa-proof-of-the-man"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "proof-of-the-man",
+          "titleZh": "人性的证明",
+          "titleOriginal": "人間の証明",
+          "mediaType": "NOVEL",
+          "summary": "一名年轻黑人在东京死亡，栋居刑警围绕遗留物、身份和跨国经历展开调查，案件逐渐连接战后记忆与被隐藏的亲缘关系。",
+          "sourceId": "kadokawa-proof-of-the-man",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-045-STD",
+      "pictureBookEntryIds": ["PB-045-STD"],
+      "slug": "eitaro-imanishi",
+      "nameZh": "今西荣太郎",
+      "nameOriginal": "今西栄太郎",
+      "nameEn": "Eitaro Imanishi",
+      "country": "日本",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "松本清张笔下经验丰富的刑警，以长期走访、方言线索、铁路行程和社会背景调查，逐段拼合无名死者与嫌疑人的过去。",
+      "creatorName": "松本清张",
+      "aliases": ["今西刑警", "今西栄太郎", "Eitaro Imanishi"],
+      "tags": ["社会派", "刑警", "走访调查"],
+      "featuredCases": ["《砂器》"],
+      "sourceIds": ["shinchosha-suna-no-utsuwa"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "suna-no-utsuwa",
+          "titleZh": "砂器",
+          "titleOriginal": "砂の器",
+          "mediaType": "NOVEL",
+          "summary": "蒲田发生身份不明的命案，今西刑警从口音、铁路记录和受害者经历出发跨地追查，揭开与社会偏见相连的往事。",
+          "sourceId": "shinchosha-suna-no-utsuwa",
+          "linkType": "PUBLISHER",
+          "providerName": "新潮社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-046-STD",
+      "pictureBookEntryIds": ["PB-046-STD"],
+      "slug": "gideon-fell",
+      "nameZh": "基甸·菲尔博士",
+      "nameOriginal": "Dr. Gideon Fell",
+      "nameEn": "Dr. Gideon Fell",
+      "country": "英国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "约翰·狄克森·卡尔笔下体格庞大而幽默的学者型侦探，专门为密室、无足迹现场与其他不可能犯罪寻找理性机制。",
+      "creatorName": "约翰·狄克森·卡尔",
+      "aliases": ["吉迪恩·菲尔", "菲尔博士", "Dr. Gideon Fell"],
+      "tags": ["密室", "不可能犯罪", "黄金时代"],
+      "featuredCases": ["《三口棺材》"],
+      "sourceIds": ["simon-schuster-three-coffins"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-three-coffins",
+          "titleZh": "三口棺材",
+          "titleOriginal": "The Three Coffins",
+          "mediaType": "NOVEL",
+          "releaseYear": 1935,
+          "summary": "两起命案分别发生在封闭书房和无他人足迹的雪地，菲尔博士重建现场条件，并系统解释不可能犯罪的制造方式。",
+          "sourceId": "simon-schuster-three-coffins",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-047-STD",
+      "pictureBookEntryIds": ["PB-047-STD"],
+      "slug": "yuichiro-goda",
+      "nameZh": "合田雄一郎",
+      "nameOriginal": "合田雄一郎",
+      "nameEn": "Yuichiro Goda",
+      "country": "日本",
+      "era": "20世纪末至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "高村薰笔下的警视厅刑警，在组织压力与个人执念之间追查重大案件，调查重点兼及犯罪结构、社会环境和人物心理。",
+      "creatorName": "高村薰",
+      "aliases": ["合田刑警", "Yuichiro Goda"],
+      "tags": ["警察小说", "社会派", "心理悬疑"],
+      "featuredCases": ["《马克斯之山》"],
+      "sourceIds": ["kodansha-marks-no-yama"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "marks-no-yama",
+          "titleZh": "马克斯之山",
+          "titleOriginal": "マークスの山",
+          "mediaType": "NOVEL",
+          "releaseYear": 1993,
+          "summary": "东京连续命案指向一段被掩盖的山岳往事，合田雄一郎在警队协作、权力阻力和嫌疑人心理之间追索共同根源。",
+          "sourceId": "kodansha-marks-no-yama",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}
