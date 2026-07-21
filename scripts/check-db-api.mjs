@@ -8,13 +8,58 @@ const testProviderSubjects = [
   "detective-archives-db-api-check-primary",
   "detective-archives-db-api-check-secondary"
 ];
-await database.query(`
-  DELETE FROM users
-  WHERE id IN (
-    SELECT user_id FROM user_identities
-    WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
-  )
-`, [testProviderSubjects]);
+async function cleanupTestUsers() {
+  await database.query(`
+    DELETE FROM audit_logs
+    WHERE actor_id IN (
+      SELECT user_id FROM user_identities
+      WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
+    )
+  `, [testProviderSubjects]);
+  await database.query(`
+    DELETE FROM reports
+    WHERE reporter_id IN (
+      SELECT user_id FROM user_identities
+      WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
+    )
+    OR target_id IN (
+      SELECT review.id FROM reviews review
+      JOIN user_identities identity ON identity.user_id = review.user_id
+      WHERE identity.provider = 'WECHAT' AND identity.provider_subject = ANY($1)
+      UNION
+      SELECT comment.id FROM comments comment
+      JOIN user_identities identity ON identity.user_id = comment.user_id
+      WHERE identity.provider = 'WECHAT' AND identity.provider_subject = ANY($1)
+    )
+  `, [testProviderSubjects]);
+  await database.query(`
+    DELETE FROM comments
+    WHERE user_id IN (
+      SELECT user_id FROM user_identities
+      WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
+    )
+    OR review_id IN (
+      SELECT review.id FROM reviews review
+      JOIN user_identities identity ON identity.user_id = review.user_id
+      WHERE identity.provider = 'WECHAT' AND identity.provider_subject = ANY($1)
+    )
+  `, [testProviderSubjects]);
+  await database.query(`
+    DELETE FROM reviews
+    WHERE user_id IN (
+      SELECT user_id FROM user_identities
+      WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
+    )
+  `, [testProviderSubjects]);
+  await database.query(`
+    DELETE FROM users
+    WHERE id IN (
+      SELECT user_id FROM user_identities
+      WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
+    )
+  `, [testProviderSubjects]);
+}
+await cleanupTestUsers();
 const app = await buildApp({
   database,
   wechatCodeExchange: async (code) => ({
@@ -134,6 +179,152 @@ try {
   assert.equal(isolatedShelfResponse.statusCode, 200, isolatedShelfResponse.body);
   assert.equal(isolatedShelfResponse.json().data, null);
 
+  const reviewResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/works/${workId}/reviews`,
+    headers: authorization,
+    payload: {
+      reviewType: "SHORT",
+      body: "线索铺陈很公平，结尾值得回看。",
+      rating: 5,
+      containsSpoiler: true
+    }
+  });
+  assert.equal(reviewResponse.statusCode, 201, reviewResponse.body);
+  assert.equal(reviewResponse.json().data.status, "PENDING_REVIEW");
+  const reviewId = reviewResponse.json().data.id;
+
+  const duplicateReviewResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/works/${workId}/reviews`,
+    headers: authorization,
+    payload: {
+      reviewType: "SHORT",
+      body: "重复评价不应被创建。",
+      containsSpoiler: false
+    }
+  });
+  assert.equal(duplicateReviewResponse.statusCode, 409, duplicateReviewResponse.body);
+
+  const hiddenPendingResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${workId}/reviews`
+  });
+  assert.equal(hiddenPendingResponse.statusCode, 200, hiddenPendingResponse.body);
+  assert.equal(hiddenPendingResponse.json().pagination.total, 0);
+
+  await database.query(`
+    UPDATE reviews SET status = 'PUBLISHED', published_at = NOW()
+    WHERE id = $1
+  `, [reviewId]);
+  const publicReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${workId}/reviews`
+  });
+  assert.equal(publicReviewResponse.statusCode, 200, publicReviewResponse.body);
+  assert.equal(publicReviewResponse.json().data[0].containsSpoiler, true);
+
+  const likeResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/reviews/${reviewId}/like`,
+    headers: secondaryAuthorization
+  });
+  assert.equal(likeResponse.statusCode, 200, likeResponse.body);
+  assert.equal(likeResponse.json().data.likeCount, 1);
+  const repeatedLikeResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/reviews/${reviewId}/like`,
+    headers: secondaryAuthorization
+  });
+  assert.equal(repeatedLikeResponse.statusCode, 200, repeatedLikeResponse.body);
+  assert.equal(repeatedLikeResponse.json().data.likeCount, 1);
+
+  const commentResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/reviews/${reviewId}/comments`,
+    headers: secondaryAuthorization,
+    payload: { body: "我也注意到了前半段的伏笔。", containsSpoiler: false }
+  });
+  assert.equal(commentResponse.statusCode, 201, commentResponse.body);
+  assert.equal(commentResponse.json().data.status, "PENDING_REVIEW");
+  const commentId = commentResponse.json().data.id;
+  await database.query(`
+    UPDATE comments SET status = 'PUBLISHED', published_at = NOW()
+    WHERE id = $1
+  `, [commentId]);
+
+  const reviewDetailResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/reviews/${reviewId}`,
+    headers: authorization
+  });
+  assert.equal(reviewDetailResponse.statusCode, 200, reviewDetailResponse.body);
+  assert.equal(reviewDetailResponse.json().data.comments.length, 1);
+  assert.equal(reviewDetailResponse.json().data.likedByMe, false);
+
+  const reportResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/reports",
+    headers: authorization,
+    payload: { targetType: "COMMENT", targetId: commentId, reasonCode: "SPOILER" }
+  });
+  assert.equal(reportResponse.statusCode, 201, reportResponse.body);
+  const duplicateReportResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/reports",
+    headers: authorization,
+    payload: { targetType: "COMMENT", targetId: commentId, reasonCode: "SPOILER" }
+  });
+  assert.equal(duplicateReportResponse.statusCode, 409, duplicateReportResponse.body);
+
+  const wrongOwnerDeleteResponse = await app.inject({
+    method: "DELETE",
+    url: `/api/v1/comments/${commentId}`,
+    headers: authorization
+  });
+  assert.equal(wrongOwnerDeleteResponse.statusCode, 404, wrongOwnerDeleteResponse.body);
+  const commentDeleteResponse = await app.inject({
+    method: "DELETE",
+    url: `/api/v1/comments/${commentId}`,
+    headers: secondaryAuthorization
+  });
+  assert.equal(commentDeleteResponse.statusCode, 204, commentDeleteResponse.body);
+
+  const editReviewResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/reviews/${reviewId}`,
+    headers: authorization,
+    payload: {
+      reviewType: "SHORT",
+      body: "修改后需要重新审核。",
+      rating: 4,
+      containsSpoiler: false
+    }
+  });
+  assert.equal(editReviewResponse.statusCode, 200, editReviewResponse.body);
+  assert.equal(editReviewResponse.json().data.status, "PENDING_REVIEW");
+  const unpublishedAfterEdit = await app.inject({
+    method: "GET",
+    url: `/api/v1/reviews/${reviewId}`
+  });
+  assert.equal(unpublishedAfterEdit.statusCode, 404, unpublishedAfterEdit.body);
+
+  const reviewDeleteResponse = await app.inject({
+    method: "DELETE",
+    url: `/api/v1/reviews/${reviewId}`,
+    headers: authorization
+  });
+  assert.equal(reviewDeleteResponse.statusCode, 204, reviewDeleteResponse.body);
+
+  const auditResponse = await database.query(`
+    SELECT COUNT(*)::int AS count FROM audit_logs
+    WHERE actor_id = ANY($1) AND action IN (
+      'REVIEW_CREATE', 'REVIEW_UPDATE', 'REVIEW_DELETE',
+      'COMMENT_CREATE', 'COMMENT_DELETE', 'REPORT_CREATE'
+    )
+  `, [[userId, secondaryLoginResponse.json().data.user.id]]);
+  assert.ok(auditResponse.rows[0].count >= 6);
+
   const logoutResponse = await app.inject({
     method: "POST",
     url: "/api/v1/auth/logout",
@@ -148,15 +339,9 @@ try {
   assert.equal(expiredResponse.statusCode, 401, expiredResponse.body);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, auth and shelf lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, auth, shelf and community lifecycle)`
   );
 } finally {
-  await database.query(`
-    DELETE FROM users
-    WHERE id IN (
-    SELECT user_id FROM user_identities
-      WHERE provider = 'WECHAT' AND provider_subject = ANY($1)
-    )
-  `, [testProviderSubjects]);
+  await cleanupTestUsers();
   await app.close();
 }

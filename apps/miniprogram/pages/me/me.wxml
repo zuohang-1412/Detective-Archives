@@ -50,5 +50,26 @@
         >{{item.statusLabel}}</view>
       </view>
     </view>
+
+    <view class="my-reviews">
+      <text class="eyebrow">MY REVIEWS</text>
+      <view class="section-title">我的评价</view>
+      <view wx:if="{{!reviews.length}}" class="review-empty">还没有写过评价。</view>
+      <view
+        wx:for="{{reviews}}"
+        wx:key="id"
+        class="card my-review-card"
+        data-review-id="{{item.id}}"
+        data-status="{{item.status}}"
+        bindtap="openMyReview"
+      >
+        <view class="review-main">
+          <view class="review-work">{{item.work.titleZh}}</view>
+          <view wx:if="{{item.title}}" class="review-title">{{item.title}}</view>
+          <view class="review-excerpt">{{item.body}}</view>
+        </view>
+        <view class="review-status {{item.status === 'PUBLISHED' ? 'published' : ''}}">{{item.statusLabel}}</view>
+      </view>
+    </view>
   </block>
 </view>

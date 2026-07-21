@@ -4,6 +4,7 @@ import type { WechatCodeExchange } from "./auth/wechat.js";
 import type { DatabaseClient } from "./db/types.js";
 import { archiveDirectoryRoutes } from "./routes/archive-directory.js";
 import { authRoutes } from "./routes/auth.js";
+import { communityRoutes } from "./routes/community.js";
 import { detectiveRoutes } from "./routes/detectives.js";
 import { pictureBookRoutes } from "./routes/picture-book.js";
 import { shelfRoutes } from "./routes/shelf.js";
@@ -73,6 +74,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
     ...(options.sessionTtlSeconds ? { sessionTtlSeconds: options.sessionTtlSeconds } : {})
   };
   await app.register(authRoutes, routeOptions);
+  await app.register(communityRoutes, routeOptions);
   await app.register(detectiveRoutes, routeOptions);
   await app.register(pictureBookRoutes, routeOptions);
   await app.register(archiveDirectoryRoutes, routeOptions);

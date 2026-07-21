@@ -1,0 +1,72 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="state-message">正在展开读者笔记…</view>
+  <view wx:elif="{{error}}" class="state-message" bindtap="loadReview">{{error}}</view>
+  <block wx:elif="{{review}}">
+    <view class="review-head">
+      <text class="eyebrow">READER NOTE</text>
+      <view wx:if="{{review.title}}" class="review-title">{{review.title}}</view>
+      <view class="author-line">{{review.author.displayName}}<text wx:if="{{review.rating}}"> · {{review.rating}} / 5</text></view>
+    </view>
+
+    <view
+      wx:if="{{review.containsSpoiler && !spoilerRevealed}}"
+      class="spoiler-panel"
+      bindtap="revealReview"
+    >
+      <view class="spoiler-title">这篇评价包含剧透</view>
+      <view class="spoiler-copy">轻触后展开正文</view>
+    </view>
+    <view wx:else class="review-body">{{review.body}}</view>
+
+    <view class="review-actions">
+      <text class="action {{review.likedByMe ? 'active' : ''}}" bindtap="toggleReviewLike">赞 {{review.likeCount}}</text>
+      <text class="action" bindtap="reportReview">举报</text>
+    </view>
+
+    <view class="discussion">
+      <text class="eyebrow">DISCUSSION</text>
+      <view class="section-title">回复 {{review.comments.length}}</view>
+      <view wx:if="{{!review.comments.length}}" class="empty-comments">还没有公开回复。</view>
+      <view wx:for="{{review.comments}}" wx:key="id" class="comment-card">
+        <view class="comment-author">{{item.author.displayName}}</view>
+        <view
+          wx:if="{{item.containsSpoiler && !item.spoilerRevealed}}"
+          class="comment-spoiler"
+          data-index="{{index}}"
+          bindtap="revealComment"
+        >含剧透，轻触展开</view>
+        <view wx:else class="comment-body">{{item.body}}</view>
+        <view class="comment-actions">
+          <text
+            class="{{item.likedByMe ? 'active' : ''}}"
+            data-index="{{index}}"
+            bindtap="toggleCommentLike"
+          >赞 {{item.likeCount}}</text>
+          <text data-comment-id="{{item.id}}" data-author="{{item.author.displayName}}" bindtap="chooseReply">回复</text>
+          <text data-comment-id="{{item.id}}" bindtap="reportComment">举报</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="reply-editor">
+      <view wx:if="{{replyTo}}" class="reply-target">
+        回复 {{replyTo.author}} <text bindtap="cancelReply">取消</text>
+      </view>
+      <textarea
+        class="comment-input"
+        maxlength="1000"
+        auto-height
+        placeholder="友善地加入讨论…"
+        value="{{commentBody}}"
+        bindinput="inputComment"
+      />
+      <view class="reply-controls">
+        <label class="spoiler-switch">
+          <switch color="#9f3123" checked="{{commentSpoiler}}" bindchange="changeCommentSpoiler" />
+          <text>含剧透</text>
+        </label>
+        <button class="reply-button" loading="{{submitting}}" bindtap="submitComment">提交回复</button>
+      </view>
+    </view>
+  </block>
+</view>

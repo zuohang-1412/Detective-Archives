@@ -1,0 +1,186 @@
+const {
+  createComment,
+  createReport,
+  getReview,
+  hasAuthToken,
+  setCommentLike,
+  setReviewLike
+} = require("../../services/api");
+
+const reportReasons = [
+  { label: "广告或垃圾信息", code: "SPAM" },
+  { label: "辱骂或骚扰", code: "ABUSE" },
+  { label: "未标记的剧透", code: "SPOILER" },
+  { label: "违法违规内容", code: "ILLEGAL" },
+  { label: "版权问题", code: "COPYRIGHT" },
+  { label: "其他问题", code: "OTHER" }
+];
+
+Page({
+  data: {
+    reviewId: "",
+    review: null,
+    loading: true,
+    error: "",
+    spoilerRevealed: false,
+    commentBody: "",
+    commentSpoiler: false,
+    replyTo: null,
+    submitting: false
+  },
+
+  onLoad(options) {
+    if (!options.reviewId) {
+      this.setData({ loading: false, error: "缺少评价编号" });
+      return;
+    }
+    this.setData({ reviewId: options.reviewId });
+    this.loadReview();
+  },
+
+  onPullDownRefresh() {
+    this.loadReview().finally(() => wx.stopPullDownRefresh());
+  },
+
+  async loadReview() {
+    this.setData({ loading: true, error: "" });
+    try {
+      const response = await getReview(this.data.reviewId);
+      const review = {
+        ...response.data,
+        comments: response.data.comments.map((comment) => ({
+          ...comment,
+          spoilerRevealed: !comment.containsSpoiler
+        }))
+      };
+      this.setData({
+        review,
+        spoilerRevealed: !review.containsSpoiler
+      });
+    } catch (error) {
+      this.setData({ error: error.message || "评价读取失败" });
+    } finally {
+      this.setData({ loading: false });
+    }
+  },
+
+  requireLogin() {
+    if (hasAuthToken()) return true;
+    wx.showModal({
+      title: "登录后参与讨论",
+      content: "前往“我的档案馆”完成微信登录。",
+      confirmText: "去登录",
+      success: (result) => {
+        if (result.confirm) wx.switchTab({ url: "/pages/me/me" });
+      }
+    });
+    return false;
+  },
+
+  revealReview() {
+    this.setData({ spoilerRevealed: true });
+  },
+
+  revealComment(event) {
+    const { index } = event.currentTarget.dataset;
+    this.setData({ [`review.comments[${index}].spoilerRevealed`]: true });
+  },
+
+  async toggleReviewLike() {
+    if (!this.requireLogin() || !this.data.review) return;
+    try {
+      const response = await setReviewLike(this.data.review.id, !this.data.review.likedByMe);
+      this.setData({
+        "review.likedByMe": response.data.liked,
+        "review.likeCount": response.data.likeCount
+      });
+    } catch (error) {
+      wx.showToast({ title: error.message || "操作失败", icon: "none" });
+    }
+  },
+
+  async toggleCommentLike(event) {
+    if (!this.requireLogin()) return;
+    const { index } = event.currentTarget.dataset;
+    const comment = this.data.review.comments[index];
+    if (!comment) return;
+    try {
+      const response = await setCommentLike(comment.id, !comment.likedByMe);
+      this.setData({
+        [`review.comments[${index}].likedByMe`]: response.data.liked,
+        [`review.comments[${index}].likeCount`]: response.data.likeCount
+      });
+    } catch (error) {
+      wx.showToast({ title: error.message || "操作失败", icon: "none" });
+    }
+  },
+
+  inputComment(event) {
+    this.setData({ commentBody: event.detail.value });
+  },
+
+  changeCommentSpoiler(event) {
+    this.setData({ commentSpoiler: event.detail.value });
+  },
+
+  chooseReply(event) {
+    const { commentId, author } = event.currentTarget.dataset;
+    this.setData({ replyTo: { id: commentId, author } });
+  },
+
+  cancelReply() {
+    this.setData({ replyTo: null });
+  },
+
+  async submitComment() {
+    if (!this.requireLogin() || this.data.submitting) return;
+    const body = this.data.commentBody.trim();
+    if (!body) {
+      wx.showToast({ title: "请先写下回复", icon: "none" });
+      return;
+    }
+    this.setData({ submitting: true });
+    try {
+      await createComment(this.data.reviewId, {
+        ...(this.data.replyTo ? { parentId: this.data.replyTo.id } : {}),
+        body,
+        containsSpoiler: this.data.commentSpoiler
+      });
+      this.setData({ commentBody: "", commentSpoiler: false, replyTo: null });
+      wx.showModal({
+        title: "回复已提交",
+        content: "审核通过后会显示在讨论中。",
+        showCancel: false
+      });
+    } catch (error) {
+      wx.showToast({ title: error.message || "回复失败", icon: "none" });
+    } finally {
+      this.setData({ submitting: false });
+    }
+  },
+
+  reportReview() {
+    if (this.data.review) this.openReport("REVIEW", this.data.review.id);
+  },
+
+  reportComment(event) {
+    this.openReport("COMMENT", event.currentTarget.dataset.commentId);
+  },
+
+  openReport(targetType, targetId) {
+    if (!this.requireLogin()) return;
+    wx.showActionSheet({
+      itemList: reportReasons.map((reason) => reason.label),
+      success: async (result) => {
+        const reason = reportReasons[result.tapIndex];
+        if (!reason) return;
+        try {
+          await createReport({ targetType, targetId, reasonCode: reason.code });
+          wx.showToast({ title: "举报已提交", icon: "success" });
+        } catch (error) {
+          wx.showToast({ title: error.message || "举报失败", icon: "none" });
+        }
+      }
+    });
+  }
+});

@@ -35,6 +35,62 @@
   margin-bottom: 48rpx;
 }
 
+.review-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.write-review {
+  margin-bottom: 30rpx;
+  color: #9f3123;
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.review-empty {
+  padding: 34rpx 0;
+  color: #777269;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.review-meta,
+.review-stats {
+  display: flex;
+  justify-content: space-between;
+  color: #777269;
+  font-size: 21rpx;
+}
+
+.review-title {
+  margin-top: 17rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.review-body,
+.spoiler-cover {
+  margin-top: 17rpx;
+  font-size: 25rpx;
+  line-height: 1.7;
+}
+
+.spoiler-cover {
+  padding: 26rpx;
+  border-radius: 9rpx;
+  background: #e7dccb;
+  color: #786f64;
+  text-align: center;
+}
+
+.review-stats {
+  margin-top: 20rpx;
+  justify-content: flex-start;
+  color: #9f3123;
+}
+
 .summary {
   color: #4e4a44;
   font-size: 28rpx;

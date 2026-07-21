@@ -2,6 +2,7 @@ const {
   getShelfItem,
   getWork,
   hasAuthToken,
+  listReviews,
   removeShelfItem,
   updateShelfItem
 } = require("../../services/api");
@@ -23,6 +24,8 @@ Page({
     work: null,
     shelfItem: null,
     shelfUpdating: false,
+    reviews: [],
+    reviewsLoading: false,
     loading: true,
     error: ""
   },
@@ -53,11 +56,56 @@ Page({
       if (hasAuthToken()) {
         await this.loadShelfItem(work.id);
       }
+      await this.loadReviews(work.id);
     } catch (error) {
       this.setData({ error: error.message || "作品资料读取失败" });
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  async loadReviews(workId) {
+    this.setData({ reviewsLoading: true });
+    try {
+      const response = await listReviews(workId, { pageSize: 10 });
+      const reviews = response.data.map((review) => ({
+        ...review,
+        spoilerRevealed: !review.containsSpoiler
+      }));
+      this.setData({ reviews });
+    } catch (error) {
+      this.setData({ reviews: [] });
+    } finally {
+      this.setData({ reviewsLoading: false });
+    }
+  },
+
+  writeReview() {
+    if (!this.data.work) return;
+    if (!hasAuthToken()) {
+      wx.showModal({
+        title: "登录后写评价",
+        content: "前往“我的档案馆”完成微信登录。",
+        confirmText: "去登录",
+        success: (result) => {
+          if (result.confirm) wx.switchTab({ url: "/pages/me/me" });
+        }
+      });
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/review-editor/review-editor?workId=${encodeURIComponent(this.data.work.id)}&title=${encodeURIComponent(this.data.work.titleZh)}`
+    });
+  },
+
+  openReview(event) {
+    const { reviewId } = event.currentTarget.dataset;
+    wx.navigateTo({ url: `/pages/review-detail/review-detail?reviewId=${encodeURIComponent(reviewId)}` });
+  },
+
+  revealReview(event) {
+    const { index } = event.currentTarget.dataset;
+    this.setData({ [`reviews[${index}].spoilerRevealed`]: true });
   },
 
   async loadShelfItem(workId) {

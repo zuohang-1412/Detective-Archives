@@ -127,19 +127,82 @@ function removeShelfItem(workId) {
   });
 }
 
+function listReviews(workId, params = {}) {
+  return request(`/api/v1/works/${encodeURIComponent(workId)}/reviews`, { data: params });
+}
+
+function getReview(reviewId) {
+  return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}`);
+}
+
+function listMyReviews() {
+  return request("/api/v1/me/reviews");
+}
+
+function createReview(workId, data) {
+  return request(`/api/v1/works/${encodeURIComponent(workId)}/reviews`, {
+    method: "POST",
+    data
+  });
+}
+
+function updateReview(reviewId, data) {
+  return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}`, {
+    method: "PATCH",
+    data
+  });
+}
+
+function deleteReview(reviewId) {
+  return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}`, { method: "DELETE" });
+}
+
+function createComment(reviewId, data) {
+  return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}/comments`, {
+    method: "POST",
+    data
+  });
+}
+
+function setReviewLike(reviewId, liked) {
+  return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}/like`, {
+    method: liked ? "PUT" : "DELETE"
+  });
+}
+
+function setCommentLike(commentId, liked) {
+  return request(`/api/v1/comments/${encodeURIComponent(commentId)}/like`, {
+    method: liked ? "PUT" : "DELETE"
+  });
+}
+
+function createReport(data) {
+  return request("/api/v1/reports", { method: "POST", data });
+}
+
 module.exports = {
+  createComment,
+  createReport,
+  createReview,
+  deleteReview,
   getCurrentUser,
   getDetective,
   getShelfItem,
   hasAuthToken,
   getWork,
+  getReview,
   listArchiveDirectory,
   listDetectives,
   listPictureBookEntries,
+  listMyReviews,
+  listReviews,
   listShelf,
   listWorks,
   loginWechat,
   logout,
   removeShelfItem,
+  setCommentLike,
+  setReviewLike,
+  updateReview,
   updateShelfItem
 };

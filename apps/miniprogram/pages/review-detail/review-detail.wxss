@@ -1,0 +1,151 @@
+.review-head {
+  margin: -32rpx -28rpx 38rpx;
+  padding: 60rpx 40rpx 45rpx;
+  background: #101820;
+  color: #fffaf0;
+}
+
+.review-title {
+  margin-top: 18rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.author-line {
+  margin-top: 22rpx;
+  color: rgba(255, 250, 240, 0.65);
+  font-size: 24rpx;
+}
+
+.review-body {
+  font-size: 29rpx;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+
+.spoiler-panel {
+  padding: 70rpx 30rpx;
+  border-radius: 14rpx;
+  background: #e6dac8;
+  text-align: center;
+}
+
+.spoiler-title {
+  font-size: 29rpx;
+  font-weight: 700;
+}
+
+.spoiler-copy {
+  margin-top: 10rpx;
+  color: #777269;
+  font-size: 22rpx;
+}
+
+.review-actions,
+.comment-actions {
+  display: flex;
+  gap: 30rpx;
+  margin-top: 26rpx;
+  color: #777269;
+  font-size: 23rpx;
+}
+
+.action.active,
+.comment-actions .active {
+  color: #9f3123;
+  font-weight: 700;
+}
+
+.discussion {
+  margin-top: 60rpx;
+}
+
+.empty-comments {
+  padding: 30rpx 0;
+  color: #777269;
+  font-size: 24rpx;
+}
+
+.comment-card {
+  padding: 28rpx 0;
+  border-top: 1rpx solid #d8cbb8;
+}
+
+.comment-author {
+  color: #9f3123;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.comment-body,
+.comment-spoiler {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  line-height: 1.7;
+}
+
+.comment-spoiler {
+  padding: 20rpx;
+  border-radius: 8rpx;
+  background: #e6dac8;
+  color: #756d62;
+  text-align: center;
+}
+
+.reply-editor {
+  margin-top: 34rpx;
+  padding-top: 30rpx;
+  border-top: 2rpx solid #bdae99;
+}
+
+.reply-target {
+  margin-bottom: 12rpx;
+  color: #777269;
+  font-size: 22rpx;
+}
+
+.reply-target text {
+  margin-left: 18rpx;
+  color: #9f3123;
+}
+
+.comment-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 150rpx;
+  padding: 22rpx;
+  border: 1rpx solid #cfc1ac;
+  border-radius: 11rpx;
+  background: #fffaf0;
+  font-size: 25rpx;
+  line-height: 1.65;
+}
+
+.reply-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18rpx;
+}
+
+.spoiler-switch {
+  display: flex;
+  align-items: center;
+  color: #777269;
+  font-size: 22rpx;
+}
+
+.reply-button {
+  width: 210rpx;
+  margin: 0;
+  border-radius: 8rpx;
+  background: #9f3123;
+  color: #fffaf0;
+  font-size: 24rpx;
+}
+
+.reply-button::after {
+  border: 0;
+}

@@ -13,10 +13,11 @@
 - 20 位图鉴之外的知名虚构侦探，以及 3 位独立展示的历史断案人物。
 - PostgreSQL 运行时连接、增量迁移、目录初始化、作品与正版链接仓储和完整性检查。
 - 微信 `code2Session` 服务端身份、不可逆会话令牌、退出登录和个人书架进度。
+- 短评/长评、剧透折叠、回复、点赞、举报、作者软删除和默认待审核流程。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
-评论、运营后台、内容审核和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
+运营后台、人工审核工作台和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
 
 ## 项目结构
 
@@ -81,6 +82,12 @@ npm run dev:api
 - `GET /api/v1/me/shelf`
 - `PUT /api/v1/me/shelf/:workId`
 - `DELETE /api/v1/me/shelf/:workId`
+- `GET|POST /api/v1/works/:workId/reviews`
+- `GET|PATCH|DELETE /api/v1/reviews/:reviewId`
+- `POST /api/v1/reviews/:reviewId/comments`
+- `PUT|DELETE /api/v1/reviews/:reviewId/like`
+- `PUT|DELETE /api/v1/comments/:commentId/like`
+- `POST /api/v1/reports`
 
 ### 4. 打开小程序
 

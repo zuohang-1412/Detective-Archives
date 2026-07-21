@@ -1,0 +1,108 @@
+.review-policy {
+  margin-top: -8rpx;
+  color: #777269;
+  font-size: 24rpx;
+  line-height: 1.65;
+}
+
+.type-switch {
+  display: flex;
+  gap: 10rpx;
+  margin: 34rpx 0;
+  padding: 8rpx;
+  border-radius: 13rpx;
+  background: #e7dccb;
+}
+
+.type-option {
+  flex: 1;
+  padding: 18rpx 10rpx;
+  border-radius: 9rpx;
+  color: #6c6459;
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.type-option.active {
+  background: #fffaf0;
+  color: #9f3123;
+  font-weight: 700;
+}
+
+.field {
+  margin-bottom: 30rpx;
+}
+
+.field-label {
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.text-input,
+.body-input {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 13rpx;
+  border: 1rpx solid #cfc1ac;
+  border-radius: 12rpx;
+  background: #fffaf0;
+  font-size: 26rpx;
+}
+
+.text-input {
+  height: 86rpx;
+  padding: 0 24rpx;
+}
+
+.body-input {
+  min-height: 300rpx;
+  padding: 24rpx;
+  line-height: 1.7;
+}
+
+.character-count {
+  margin-top: 8rpx;
+  color: #91887d;
+  font-size: 20rpx;
+  text-align: right;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25rpx 0;
+  border-top: 1rpx solid #d8cbb8;
+}
+
+.setting-copy {
+  margin-top: 6rpx;
+  color: #777269;
+  font-size: 21rpx;
+}
+
+.picker-value {
+  color: #9f3123;
+  font-size: 24rpx;
+}
+
+.error-note {
+  margin-top: 24rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 10rpx;
+  background: #f1d9d3;
+  color: #87372b;
+  font-size: 23rpx;
+}
+
+.submit-button {
+  margin-top: 32rpx;
+  border-radius: 9rpx;
+  background: #9f3123;
+  color: #fffaf0;
+  font-size: 27rpx;
+}
+
+.submit-button::after {
+  border: 0;
+}

@@ -66,6 +66,44 @@
     </view>
 
     <view class="content-section">
+      <view class="review-heading">
+        <view>
+          <text class="eyebrow">READER NOTES</text>
+          <view class="section-title">读者评价</view>
+        </view>
+        <text class="write-review" bindtap="writeReview">写评价</text>
+      </view>
+      <view wx:if="{{reviewsLoading}}" class="review-empty">正在读取评价…</view>
+      <view wx:elif="{{!reviews.length}}" class="review-empty">还没有公开评价，来写下第一份阅读感受。</view>
+      <view wx:else>
+        <view wx:for="{{reviews}}" wx:key="id" class="card review-card">
+          <view class="review-meta">
+            <text>{{item.author.displayName}}</text>
+            <text wx:if="{{item.rating}}">{{item.rating}} / 5</text>
+          </view>
+          <view wx:if="{{item.title}}" class="review-title">{{item.title}}</view>
+          <view
+            wx:if="{{item.containsSpoiler && !item.spoilerRevealed}}"
+            class="spoiler-cover"
+            data-index="{{index}}"
+            catchtap="revealReview"
+          >含剧透，轻触展开</view>
+          <view
+            wx:else
+            class="review-body"
+            data-review-id="{{item.id}}"
+            bindtap="openReview"
+          >{{item.body}}</view>
+          <view
+            class="review-stats"
+            data-review-id="{{item.id}}"
+            bindtap="openReview"
+          >赞 {{item.likeCount}} · 回复 {{item.commentCount}} · 查看讨论</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="content-section">
       <text class="eyebrow">OFFICIAL LINKS</text>
       <view class="section-title">正版渠道</view>
       <view class="link-note">仅收录出版社、作者官方站或合法公共数字图书馆。轻触后复制地址。</view>

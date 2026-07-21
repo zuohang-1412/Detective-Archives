@@ -1,6 +1,7 @@
 const {
   getCurrentUser,
   hasAuthToken,
+  listMyReviews,
   listShelf,
   loginWechat,
   logout,
@@ -20,6 +21,7 @@ Page({
     loggedIn: false,
     user: null,
     items: [],
+    reviews: [],
     activeStatus: "",
     tabs: [
       { status: "", label: "全部" },
@@ -42,20 +44,31 @@ Page({
 
   async refresh() {
     if (!hasAuthToken()) {
-      this.setData({ loggedIn: false, user: null, items: [], loading: false });
+      this.setData({ loggedIn: false, user: null, items: [], reviews: [], loading: false });
       return;
     }
     this.setData({ loading: true, error: "" });
     try {
-      const [userResponse, shelfResponse] = await Promise.all([
+      const [userResponse, shelfResponse, reviewResponse] = await Promise.all([
         getCurrentUser(),
-        listShelf(this.data.activeStatus)
+        listShelf(this.data.activeStatus),
+        listMyReviews()
       ]);
       const items = shelfResponse.data.map((item) => ({
         ...item,
         statusLabel: statusLabels[item.status] || item.status
       }));
-      this.setData({ loggedIn: true, user: userResponse.data, items });
+      const reviewStatusLabels = {
+        PENDING_REVIEW: "待审核",
+        PUBLISHED: "已发布",
+        REJECTED: "未通过",
+        HIDDEN: "已隐藏"
+      };
+      const reviews = reviewResponse.data.map((review) => ({
+        ...review,
+        statusLabel: reviewStatusLabels[review.status] || review.status
+      }));
+      this.setData({ loggedIn: true, user: userResponse.data, items, reviews });
     } catch (error) {
       this.setData({
         loggedIn: hasAuthToken(),
@@ -87,7 +100,7 @@ Page({
       success: async (result) => {
         if (!result.confirm) return;
         await logout();
-        this.setData({ loggedIn: false, user: null, items: [] });
+        this.setData({ loggedIn: false, user: null, items: [], reviews: [] });
       }
     });
   },
@@ -104,6 +117,24 @@ Page({
 
   goArchive() {
     wx.switchTab({ url: "/pages/archive/archive" });
+  },
+
+  openMyReview(event) {
+    const { reviewId, status } = event.currentTarget.dataset;
+    const review = this.data.reviews.find((item) => item.id === reviewId);
+    if (!review) return;
+    if (status === "PUBLISHED") {
+      wx.navigateTo({
+        url: `/pages/review-detail/review-detail?reviewId=${encodeURIComponent(reviewId)}`
+      });
+      return;
+    }
+    wx.showModal({
+      title: review.statusLabel,
+      content: review.body,
+      showCancel: false,
+      confirmText: "知道了"
+    });
   },
 
   changeStatus(event) {

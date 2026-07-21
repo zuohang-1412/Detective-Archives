@@ -96,6 +96,27 @@ describe("detective archives API", () => {
     assert.equal(shelfResponse.json().code, "DATABASE_REQUIRED");
   });
 
+  it("validates community content before database writes", async () => {
+    const reviewsResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/works/00000000-0000-4000-8000-000000000001/reviews"
+    });
+    assert.equal(reviewsResponse.statusCode, 503);
+    assert.equal(reviewsResponse.json().code, "DATABASE_REQUIRED");
+
+    const invalidLongReview = await app.inject({
+      method: "POST",
+      url: "/api/v1/works/00000000-0000-4000-8000-000000000001/reviews",
+      payload: {
+        reviewType: "LONG",
+        body: "长评缺少标题",
+        containsSpoiler: false
+      }
+    });
+    assert.equal(invalidLongReview.statusCode, 400);
+    assert.equal(invalidLongReview.json().code, "INVALID_REVIEW");
+  });
+
   it("lists detectives with pagination", async () => {
     const response = await app.inject({ method: "GET", url: "/api/v1/detectives?pageSize=2" });
     const body = response.json();

@@ -138,3 +138,60 @@
   color: #9f3123;
   font-size: 21rpx;
 }
+
+.my-reviews {
+  margin-top: 54rpx;
+}
+
+.review-empty {
+  padding: 24rpx 0 44rpx;
+  color: #777269;
+  font-size: 24rpx;
+}
+
+.my-review-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+}
+
+.review-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.review-work {
+  color: #9f3123;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.review-title {
+  margin-top: 9rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 29rpx;
+  font-weight: 700;
+}
+
+.review-excerpt {
+  overflow: hidden;
+  margin-top: 10rpx;
+  color: #625d55;
+  font-size: 23rpx;
+  line-height: 1.55;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.review-status {
+  padding: 7rpx 12rpx;
+  border-radius: 999rpx;
+  background: #e5dac8;
+  color: #776e63;
+  font-size: 19rpx;
+}
+
+.review-status.published {
+  background: #dce7db;
+  color: #536a53;
+}
