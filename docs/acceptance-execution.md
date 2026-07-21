@@ -28,7 +28,7 @@
 | PASS | AT-P0-14 | 账号注销 | 用户 | P0 | 缺确认、确认注销、复用令牌 | API/DB/审计 | 去标识化、撤销、隐藏 | 身份计数 0、用户停用、旧令牌 401 | 是 |
 | PASS | AT-P0-15 | 生产安全配置 | 系统 | P0 | 正/反向配置、超大请求、限流、指标 | 配置/API/日志 | 不安全配置拒绝 | 生产模拟、40 项 API 测试与部署结构检查通过 | 是 |
 | BLOCKED | AT-P0-16 | 正式小程序真机 | 真实用户 | P0 | 真机完成主业务链 | 微信/UI/API | iOS/Android 全链路通过 | 缺真实 AppID、AppSecret、主体、域名 | 否 |
-| BLOCKED | AT-P0-17 | HTTPS 容器发布回滚 | 运维 | P0 | 构建、部署、TLS、回滚 | 容器/网络/监控 | 生产 URL 可用且可回滚 | GitHub Quality 已完成全检查和镜像构建；仍缺正式服务器、域名、TLS 与回滚实演 | 否 |
+| BLOCKED | AT-P0-17 | HTTPS 容器发布回滚 | 运维 | P0 | 构建、部署、TLS、回滚 | 容器/网络/监控 | 生产 URL 可用且可回滚 | GitHub Quality 已在空库上启动生产镜像并通过 HTTP/DB 验收；仍缺正式服务器、域名、TLS 与回滚实演 | 否 |
 | PASS | AT-P0-18 | 备份真实恢复 | 运维 | P0 | pg_dump、隔离库 pg_restore、回归 | DB/灾备 | 恢复后全检查通过 | PostgreSQL 17 工具生成 custom 备份，隔离恢复后 132/119/109 完整性及全 API 生命周期通过 | 是 |
 | PASS | AT-P1-01 | 多角色权限矩阵 | 全角色 | P1 | 逐角色调用后台接口 | API/DB | 最小权限 | USER/EDITOR/MODERATOR/ADMIN 回归通过 | 是 |
 | PASS | AT-P1-02 | 输入与错误边界 | 全角色 | P1 | 非法分页/UUID/长度/重复/超限 | API | 稳定 4xx/429 | 单测与集成检查通过 | 是 |
