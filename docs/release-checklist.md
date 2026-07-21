@@ -14,6 +14,7 @@
 - [ ] 生产日志不包含 AppSecret、密码、微信 code 或完整 Bearer token。
 - [ ] `ops/deploy-release.sh` 已生成上线前数据库备份，且备份在隔离环境完成恢复验证。
 - [ ] `.release-state/previous-image-tag` 对应的镜像仍在本机，`ops/rollback-release.sh` 已完成一次真实回滚演练。
+- [ ] 运营人员已在隔离库演练最新内容批次的补偿回滚，确认只归档目标内容、停用对应链接并保留用户关系。
 
 ## P1：首发前完成
 

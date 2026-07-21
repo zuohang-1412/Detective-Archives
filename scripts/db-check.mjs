@@ -29,7 +29,16 @@ const pictureBookCatalog = JSON.parse(await readFile(
 ));
 const { batches } = await loadCatalogBatches();
 const importedWorks = uniqueImportedWorks(batches);
+const allImportedWorks = new Map(
+  batches.flatMap(({ input }) => input.detectives)
+    .flatMap((detective) => detective.works)
+    .map((work) => [work.slug, work])
+);
 const expectedWorkCount = new Set([
+  ...coreWorkDetails.map((work) => work.slug),
+  ...allImportedWorks.keys()
+]).size;
+const expectedPublishedWorkCount = new Set([
   ...coreWorkDetails.map((work) => work.slug),
   ...importedWorks.keys()
 ]).size;
@@ -58,13 +67,27 @@ for (const collection of detectiveCollections.values()) {
 const expectedDetectiveCount = detectiveCollections.size;
 const expectedSourceCount = [...detectiveSourceCounts.values()].reduce((sum, count) => sum + count, 0);
 const expectedDirectoryCount = archiveDirectory.entries.length;
-const expectedPictureBookLinkCount = new Set([
-  ...pictureBookCatalog.entries
+const pictureBookAssignments = new Map(
+  pictureBookCatalog.entries
     .filter((entry) => entry.detectiveSlug)
-    .map((entry) => entry.id),
-  ...batches.flatMap(({ input }) => input.detectives)
-    .flatMap((detective) => detective.pictureBookEntryIds ?? [])
-]).size;
+    .map((entry) => [entry.id, entry.detectiveSlug])
+);
+for (const { input } of batches) {
+  for (const detective of input.detectives) {
+    for (const entryId of detective.pictureBookEntryIds ?? []) {
+      pictureBookAssignments.set(entryId, detective.slug);
+    }
+  }
+  const archived = new Set(input.archiveDetectiveSlugs ?? []);
+  for (const [entryId, detectiveSlug] of pictureBookAssignments) {
+    if (archived.has(detectiveSlug)) pictureBookAssignments.delete(entryId);
+  }
+}
+const expectedPictureBookLinkCount = pictureBookAssignments.size;
+const expectedBatchStatuses = new Map(batches.map(({ input }) => [input.batchKey, "APPLIED"]));
+for (const { input } of batches) {
+  if (input.rollbackOf) expectedBatchStatuses.set(input.rollbackOf, "ROLLED_BACK");
+}
 
 function expect(actual, expected, label) {
   if (actual !== expected) {
@@ -111,9 +134,11 @@ try {
     LEFT JOIN detectives detective ON detective.id = source.detective_id
     WHERE detective.id IS NULL
   `);
-  const appliedImportBatchCount = await client.query(
-    "SELECT COUNT(*)::int AS count FROM catalog_import_batches WHERE status = 'APPLIED'"
-  );
+  const importBatchStatuses = await client.query(`
+    SELECT batch_key AS "batchKey", status
+    FROM catalog_import_batches
+    WHERE batch_key = ANY($1)
+  `, [[...expectedBatchStatuses.keys()]]);
 
   const counts = new Map(
     detectiveCounts.rows.map((row) => [row.collection, row.count])
@@ -128,10 +153,16 @@ try {
   expect(sourceCount.rows[0].count, expectedSourceCount, "directory source relation count");
   expect(workCount.rows[0].count, expectedWorkCount, "published work count");
   expect(workLinkCount.rows[0].count, expectedActiveLinkCount, "active official work link count");
-  expect(detailedWorkCount.rows[0].count, expectedWorkCount, "detailed published work count");
+  expect(detailedWorkCount.rows[0].count, expectedPublishedWorkCount, "detailed published work count");
   expect(categorizedDirectoryCount.rows[0].count, expectedDirectoryCount, "categorized directory count");
   expect(orphanCount.rows[0].count, 0, "orphan source count");
-  expect(appliedImportBatchCount.rows[0].count, batches.length, "applied catalog import batch count");
+  const actualBatchStatuses = new Map(
+    importBatchStatuses.rows.map((row) => [row.batchKey, row.status])
+  );
+  expect(actualBatchStatuses.size, expectedBatchStatuses.size, "catalog import batch count");
+  for (const [batchKey, status] of expectedBatchStatuses) {
+    expect(actualBatchStatuses.get(batchKey), status, `catalog import batch ${batchKey} status`);
+  }
 
   if (failures.length > 0) {
     throw new Error(failures.join("; "));

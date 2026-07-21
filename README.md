@@ -165,6 +165,13 @@ npm run catalog:preflight
 npm run catalog:apply
 ```
 
+若最新批次发现内容错误，必须新建不可变补偿批次，在根级填写 `rollbackOf`、`rollbackReason`，并通过 `archiveDetectiveSlugs` / `archiveWorkSlugs` 归档新增内容，或在 `detectives` 中恢复旧状态。补偿批次必须放在清单末尾，并使用显式命令；工具拒绝回滚非最新批次，归档作品会同步停用链接但保留书架、评价和审计引用：
+
+```bash
+npm run catalog:rollback:preflight -- --file=apps/api/src/data/catalog-expansion-rollback-001.json
+npm run catalog:rollback:apply -- --file=apps/api/src/data/catalog-expansion-rollback-001.json
+```
+
 定时巡检启用中的正版链接，并仅重试上轮失败项：
 
 ```bash

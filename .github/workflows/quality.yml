@@ -50,6 +50,10 @@ jobs:
       - run: npm run catalog:apply
       - run: npm run check:db
       - run: npm run check:db-api
+      - name: Verify catalog rollback compensation
+        env:
+          CATALOG_ROLLBACK_TEST: "true"
+        run: npm run check:catalog-rollback
       - run: docker build --tag detective-archives-api:test .
       - name: Create empty runtime database
         run: DETECTIVE_DB_NAME=detective_archives_container npm run db:create

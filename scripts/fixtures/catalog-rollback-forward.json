@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-rollback-test-forward",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Integration-only fixture that verifies a catalog batch can be compensated without deleting referenced records.",
+  "sources": [
+    {
+      "id": "catalog-rollback-test-source",
+      "label": "Rollback integration fixture",
+      "url": "https://example.com/detective-archives-catalog-rollback-test",
+      "quality": "TEST_FIXTURE"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "TEST-RB-001",
+      "pictureBookEntryIds": [],
+      "slug": "catalog-rollback-test-detective",
+      "nameZh": "批次回滚测试侦探",
+      "nameEn": "Catalog Rollback Test Detective",
+      "country": "测试地区",
+      "era": "测试时期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL"],
+      "summary": "仅用于隔离数据库或 CI 验证批次前向补偿、归档与审计状态，不属于正式目录内容。",
+      "aliases": [],
+      "tags": ["集成测试"],
+      "featuredCases": ["批次回滚测试案件"],
+      "sourceIds": ["catalog-rollback-test-source"],
+      "verification": "SOURCE_CAPTURED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "catalog-rollback-test-work",
+          "titleZh": "批次回滚测试作品",
+          "mediaType": "NOVEL",
+          "releaseYear": 2026,
+          "summary": "仅用于验证错误内容批次能够以前向补偿方式安全归档，并停用其全部公开链接。",
+          "sourceId": "catalog-rollback-test-source",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Rollback Fixture",
+          "region": "TEST"
+        }
+      ]
+    }
+  ]
+}

@@ -65,10 +65,38 @@ const detectiveSchema = z.object({
 const importSchema = z.object({
   schemaVersion: z.literal(1),
   batchKey: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100),
+  rollbackOf: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100).optional(),
+  rollbackReason: z.string().min(10).max(1000).optional(),
+  archiveDetectiveSlugs: z.array(slugSchema.max(100)).max(500).default([]),
+  archiveWorkSlugs: z.array(slugSchema.max(120)).max(500).default([]),
   snapshotDate: z.iso.date(),
   contentPolicy: z.string().min(10).max(1000),
-  sources: z.array(sourceSchema).min(1).max(500),
-  detectives: z.array(detectiveSchema).min(1).max(500)
+  sources: z.array(sourceSchema).max(500).default([]),
+  detectives: z.array(detectiveSchema).max(500).default([])
+}).superRefine((input, context) => {
+  if (input.rollbackOf) {
+    if (!input.rollbackReason) {
+      context.addIssue({ code: "custom", path: ["rollbackReason"], message: "rollback reason is required" });
+    }
+    if (input.rollbackOf === input.batchKey) {
+      context.addIssue({ code: "custom", path: ["rollbackOf"], message: "a batch cannot roll back itself" });
+    }
+    if (!input.detectives.length
+      && !input.archiveDetectiveSlugs.length
+      && !input.archiveWorkSlugs.length) {
+      context.addIssue({ code: "custom", path: [], message: "rollback batch must contain compensation" });
+    }
+  } else {
+    if (input.rollbackReason) {
+      context.addIssue({ code: "custom", path: ["rollbackReason"], message: "rollbackOf is required" });
+    }
+    if (input.archiveDetectiveSlugs.length || input.archiveWorkSlugs.length) {
+      context.addIssue({ code: "custom", path: [], message: "archive operations require rollbackOf" });
+    }
+    if (!input.sources.length || !input.detectives.length) {
+      context.addIssue({ code: "custom", path: [], message: "catalog batch requires sources and detectives" });
+    }
+  }
 });
 
 function duplicates(values) {
@@ -82,12 +110,21 @@ function duplicates(values) {
 }
 
 const fileArgument = process.argv.find((argument) => argument.startsWith("--file="));
+const rollback = process.argv.includes("--rollback");
+if (rollback && !fileArgument) {
+  throw new Error("Rollback requires an explicit --file path");
+}
 const sourceFile = path.resolve(fileArgument
   ? fileArgument.slice("--file=".length)
   : "apps/api/src/data/catalog-expansion.json");
 const apply = process.argv.includes("--apply");
 const raw = await readFile(sourceFile, "utf8");
 const input = importSchema.parse(JSON.parse(raw));
+if (rollback !== Boolean(input.rollbackOf)) {
+  throw new Error(input.rollbackOf
+    ? "Rollback batches must use the explicit --rollback command"
+    : "The --rollback command requires a batch with rollbackOf");
+}
 const checksum = createHash("sha256").update(raw).digest("hex");
 const sourcesById = new Map(input.sources.map((source) => [source.id, source]));
 
@@ -101,6 +138,22 @@ for (const value of duplicates(input.detectives.map((detective) => detective.slu
 }
 for (const value of duplicates(input.detectives.map((detective) => detective.catalogId))) {
   errors.push(`duplicate detective catalog id: ${value}`);
+}
+for (const value of duplicates(input.archiveDetectiveSlugs)) {
+  errors.push(`duplicate archived detective slug: ${value}`);
+}
+for (const value of duplicates(input.archiveWorkSlugs)) {
+  errors.push(`duplicate archived work slug: ${value}`);
+}
+for (const detective of input.detectives) {
+  if (input.archiveDetectiveSlugs.includes(detective.slug)) {
+    errors.push(`${detective.slug}: cannot restore and archive the same detective`);
+  }
+  for (const work of detective.works) {
+    if (input.archiveWorkSlugs.includes(work.slug)) {
+      errors.push(`${work.slug}: cannot restore and archive the same work`);
+    }
+  }
 }
 const allWorks = input.detectives.flatMap((detective) => detective.works);
 for (const value of duplicates(allWorks.map((work) => work.slug))) {
@@ -161,6 +214,59 @@ try {
     }
   }
 
+  if (input.archiveDetectiveSlugs.length) {
+    const archivedDetectives = await client.query(`
+      SELECT slug FROM detectives WHERE slug = ANY($1)
+    `, [input.archiveDetectiveSlugs]);
+    const found = new Set(archivedDetectives.rows.map((row) => row.slug));
+    for (const slug of input.archiveDetectiveSlugs) {
+      if (!found.has(slug)) errors.push(`cannot archive missing detective: ${slug}`);
+    }
+  }
+  if (input.archiveWorkSlugs.length) {
+    const archivedWorks = await client.query(`
+      SELECT slug FROM works WHERE slug = ANY($1)
+    `, [input.archiveWorkSlugs]);
+    const found = new Set(archivedWorks.rows.map((row) => row.slug));
+    for (const slug of input.archiveWorkSlugs) {
+      if (!found.has(slug)) errors.push(`cannot archive missing work: ${slug}`);
+    }
+  }
+
+  if (input.rollbackOf) {
+    const recorded = await client.query(`
+      SELECT input_checksum AS checksum, status
+      FROM catalog_import_batches WHERE batch_key = $1
+    `, [input.batchKey]);
+    if (recorded.rows[0]?.checksum && recorded.rows[0].checksum !== checksum) {
+      errors.push(`rollback batch ${input.batchKey} was recorded with a different checksum`);
+    } else if (recorded.rows[0]?.status === "APPLIED") {
+      warnings.push(`rollback batch ${input.batchKey} is already applied`);
+    } else {
+      const target = await client.query(`
+        SELECT batch_key AS "batchKey", status
+        FROM catalog_import_batches WHERE batch_key = $1
+      `, [input.rollbackOf]);
+      const batch = target.rows[0];
+      if (!batch) {
+        errors.push(`rollback target does not exist: ${input.rollbackOf}`);
+      } else if (batch.status !== "APPLIED") {
+        errors.push(`rollback target is not applied: ${input.rollbackOf} (${batch.status})`);
+      } else {
+        const latest = await client.query(`
+          SELECT batch_key AS "batchKey"
+          FROM catalog_import_batches
+          WHERE status = 'APPLIED'
+          ORDER BY applied_at DESC NULLS LAST, created_at DESC, batch_key DESC
+          LIMIT 1
+        `);
+        if (latest.rows[0]?.batchKey !== input.rollbackOf) {
+          errors.push(`rollback target is not the latest applied batch; latest is ${latest.rows[0]?.batchKey ?? "none"}`);
+        }
+      }
+    }
+  }
+
   const linkDeactivationRequests = allWorks.flatMap((work) =>
     work.deactivateLinkUrls.map((url) => ({ workSlug: work.slug, url }))
   );
@@ -203,6 +309,7 @@ try {
     checksum,
     sourceFile,
     apply,
+    rollbackOf: input.rollbackOf ?? null,
     changes: {
       detectiveCreates: input.detectives.filter((detective) => !bySlug.has(detective.slug)).length,
       detectiveUpdates: input.detectives.filter((detective) => bySlug.has(detective.slug)).length,
@@ -210,7 +317,9 @@ try {
       workUpdates: [...uniqueWorks.values()].filter((work) => existingWorksBySlug.has(work.slug)).length,
       pictureBookLinks: pictureBookIds.length,
       officialLinks: [...uniqueWorks.values()].length,
-      linkDeactivations: linkDeactivationRequests.length
+      linkDeactivations: linkDeactivationRequests.length,
+      detectiveArchives: input.archiveDetectiveSlugs.length,
+      workArchives: input.archiveWorkSlugs.length
     },
     warnings,
     errors
@@ -231,10 +340,34 @@ try {
         if (prior.rows[0].checksum !== checksum) {
           throw new Error(`Batch ${input.batchKey} was already recorded with a different checksum`);
         }
-        if (prior.rows[0].status === "APPLIED") {
-          throw Object.assign(new Error(`Catalog import ${input.batchKey}: already applied`), {
-            code: "CATALOG_BATCH_ALREADY_APPLIED"
+        if (["APPLIED", "ROLLED_BACK"].includes(prior.rows[0].status)) {
+          const state = prior.rows[0].status === "APPLIED" ? "already applied" : "rolled back; skipped";
+          throw Object.assign(new Error(`Catalog import ${input.batchKey}: ${state}`), {
+            code: "CATALOG_BATCH_NOOP"
           });
+        }
+      }
+
+      if (input.rollbackOf) {
+        const target = await client.query(`
+          SELECT batch_key AS "batchKey", status
+          FROM catalog_import_batches
+          WHERE batch_key = $1
+          FOR UPDATE
+        `, [input.rollbackOf]);
+        const batch = target.rows[0];
+        if (!batch || batch.status !== "APPLIED") {
+          throw new Error(`Rollback target must still be applied: ${input.rollbackOf}`);
+        }
+        const latest = await client.query(`
+          SELECT batch_key AS "batchKey"
+          FROM catalog_import_batches
+          WHERE status = 'APPLIED'
+          ORDER BY applied_at DESC NULLS LAST, created_at DESC, batch_key DESC
+          LIMIT 1
+        `);
+        if (latest.rows[0]?.batchKey !== input.rollbackOf) {
+          throw new Error(`Rollback target is no longer latest; latest is ${latest.rows[0]?.batchKey ?? "none"}`);
         }
       }
 
@@ -404,6 +537,52 @@ try {
         }
       }
 
+      if (input.archiveWorkSlugs.length) {
+        await client.query(`
+          UPDATE work_links
+          SET is_active = FALSE, updated_at = NOW()
+          WHERE work_id IN (SELECT id FROM works WHERE slug = ANY($1))
+        `, [input.archiveWorkSlugs]);
+        await client.query(`
+          UPDATE works
+          SET status = 'ARCHIVED', updated_at = NOW()
+          WHERE slug = ANY($1)
+        `, [input.archiveWorkSlugs]);
+      }
+      if (input.archiveDetectiveSlugs.length) {
+        await client.query(`
+          UPDATE picture_book_entries
+          SET detective_id = NULL, updated_at = NOW()
+          WHERE detective_id IN (SELECT id FROM detectives WHERE slug = ANY($1))
+        `, [input.archiveDetectiveSlugs]);
+        await client.query(`
+          UPDATE detectives
+          SET status = 'ARCHIVED', updated_at = NOW()
+          WHERE slug = ANY($1)
+        `, [input.archiveDetectiveSlugs]);
+      }
+
+      if (input.rollbackOf) {
+        const rolledBack = await client.query(`
+          UPDATE catalog_import_batches
+          SET status = 'ROLLED_BACK',
+            change_summary = change_summary || jsonb_build_object(
+              'rolledBackBy', $2::text,
+              'rolledBackAt', NOW(),
+              'rollbackReason', $3::text
+            )
+          WHERE batch_key = $1 AND status = 'APPLIED'
+          RETURNING id
+        `, [input.rollbackOf, input.batchKey, input.rollbackReason]);
+        if (!rolledBack.rows[0]) {
+          throw new Error(`Rollback target changed before compensation completed: ${input.rollbackOf}`);
+        }
+      }
+
+      const changeSummary = input.rollbackOf
+        ? { ...preview.changes, rollbackOf: input.rollbackOf, rollbackReason: input.rollbackReason }
+        : preview.changes;
+
       await client.query(`
         INSERT INTO catalog_import_batches (
           batch_key, input_checksum, schema_version, source_file,
@@ -422,7 +601,7 @@ try {
         checksum,
         input.schemaVersion,
         path.relative(process.cwd(), sourceFile),
-        preview.changes
+        changeSummary
       ]);
       await client.query("COMMIT");
       console.log(`Catalog import ${input.batchKey}: applied`);
@@ -431,7 +610,7 @@ try {
       if (typeof error === "object"
         && error !== null
         && "code" in error
-        && error.code === "CATALOG_BATCH_ALREADY_APPLIED") {
+        && error.code === "CATALOG_BATCH_NOOP") {
         console.log(error.message);
         process.exitCode = 0;
       } else {

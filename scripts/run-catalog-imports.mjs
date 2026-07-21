@@ -8,6 +8,7 @@ const importer = path.resolve("scripts/catalog-import.mjs");
 
 for (const batch of batches) {
   const argumentsList = [importer, `--file=${batch.filePath}`];
+  if (batch.input.rollbackOf) argumentsList.push("--rollback");
   if (apply) argumentsList.push("--apply");
   const result = spawnSync(process.execPath, argumentsList, {
     cwd: process.cwd(),

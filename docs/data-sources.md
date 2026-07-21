@@ -119,4 +119,6 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
+错误批次采用前向补偿，不删除可能已有书架、评价或审计引用的记录。补偿文件必须位于清单末尾，以 `rollbackOf` 指向紧邻的最新批次、填写不少于 10 字的 `rollbackReason`，并恢复旧档案或通过 `archiveDetectiveSlugs` / `archiveWorkSlugs` 归档新内容。先执行 `npm run catalog:rollback:preflight -- --file=...`，确认差异后再执行 `npm run catalog:rollback:apply -- --file=...`。成功后原批次标记为 `ROLLED_BACK`，补偿批次标记为 `APPLIED`，重复执行保持幂等；归档作品的公开链接会同步停用。
+
 正版链接通过 `npm run links:check` 定时巡检。巡检区分健康、确认失效和暂无法确认三种结果：只有 GET 明确返回 400、404 或 410 才累计确认失败；超时、反爬、429、451、5xx 或抓取失败保存为待人工复核。任何结果都不会自动下架，运营人员须在后台复核并记录处理动作。

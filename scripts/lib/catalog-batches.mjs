@@ -43,9 +43,12 @@ export async function loadCatalogBatches() {
 }
 
 export function uniqueImportedWorks(batches) {
-  return new Map(
-    batches.flatMap(({ input }) => input.detectives)
-      .flatMap((detective) => detective.works)
-      .map((work) => [work.slug, work])
-  );
+  const works = new Map();
+  for (const { input } of batches) {
+    for (const detective of input.detectives) {
+      for (const work of detective.works) works.set(work.slug, work);
+    }
+    for (const slug of input.archiveWorkSlugs ?? []) works.delete(slug);
+  }
+  return works;
 }

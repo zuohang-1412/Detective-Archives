@@ -79,6 +79,19 @@ sh ops/verify-backup.sh /var/backups/detective-archives/detective-archives-TIMES
 
 真实恢复必须在隔离数据库执行：先创建空库，再运行 `pg_restore --clean --if-exists --no-owner --dbname="$RESTORE_DATABASE_URL" backup.dump`，最后执行 `npm run check:db` 和 `npm run check:db-api`。禁止直接覆盖生产库进行演练。
 
+## 内容批次回滚
+
+内容批次导入在单一事务内执行；事务失败不会留下部分数据。若已应用的最新批次需要撤销，禁止改写原 JSON 或直接删除数据库记录：
+
+1. 先确认上线前整库备份可读，并暂停新的目录导入。
+2. 新建补偿批次，`rollbackOf` 必须指向当前最新 `APPLIED` 批次，填写 `rollbackReason`。
+3. 用 `detectives` 恢复被覆盖的旧值；用 `archiveDetectiveSlugs`、`archiveWorkSlugs` 归档新增内容。归档不会删除用户关系，作品链接会自动停用。
+4. 执行 `npm run catalog:rollback:preflight -- --file=补偿文件`，复核差异、来源和归档范围。
+5. 将补偿文件加入清单末尾，再执行 `npm run catalog:rollback:apply -- --file=补偿文件`。
+6. 运行 `npm run check:db`、`npm run check:db-api`，确认原批次为 `ROLLED_BACK`、补偿批次为 `APPLIED` 并记录处置结果。
+
+工具会拒绝非最新批次、缺少原因、同批次同时恢复和归档同一人物、未知归档对象及校验和变化。若后续批次已经应用，应新建新的前向纠错批次，不得跨批次逆序回滚。
+
 仓库提供 `.github/workflows/database-backup.yml` 每日备份模板。它固定在生产私网的 `detective-archives` 自托管 Runner 上执行，默认关闭。启用前需要：
 
 1. 配置 Secret `DETECTIVE_ARCHIVES_DATABASE_URL`。
