@@ -5,6 +5,7 @@
 ## P0：不通过不得上线
 
 - [x] `npm ci` 和 `npm run check` 全部通过。
+- [x] 分阶段上线审计器已覆盖 30 个非敏感门禁，部署脚本会在构建前强制通过 14 个预部署输入与一致性检查。
 - [ ] 真实生产环境执行 `npm run release:check` 通过。
 - [x] 所有数据库迁移成功，`npm run check:db` 与 `npm run check:db-api` 通过。
 - [ ] 微信小程序 AppID、合法域名、服务类目、隐私保护指引和用户协议已配置。

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "operator": {
+    "legalName": "上线前填写真实运营主体",
+    "privacyContact": "上线前填写隐私联系人",
+    "contentModerator": "上线前指定内容审核负责人",
+    "alertResponder": "上线前指定生产告警负责人"
+  },
+  "wechat": {
+    "serviceCategoryConfigured": false,
+    "privacyGuideConfigured": false,
+    "userAgreementApproved": false,
+    "requestDomainConfigured": false,
+    "candidateUploaded": false,
+    "reviewSubmitted": false,
+    "reviewApproved": false,
+    "released": false
+  },
+  "infrastructure": {
+    "serverProvisioned": false,
+    "domainFiled": false,
+    "databasePrivate": false,
+    "monitoringReady": false,
+    "offsiteBackupReady": false
+  },
+  "validation": {
+    "tlsVerified": false,
+    "productionReleaseCheckPassed": false,
+    "rollbackPassed": false,
+    "contentSafetyPassed": false,
+    "iosDevicePassed": false,
+    "androidDevicePassed": false
+  }
+}

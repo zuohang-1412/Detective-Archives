@@ -66,6 +66,14 @@ assert.match(backupScript, /client\/server major version mismatch/, "Backups mus
 assert.match(backupScript, /sha256sum/, "Backups must record an integrity checksum");
 assert.match(apiServer, /createWechatContentSafetyCheckFromEnv/, "Production API must initialize WeChat content safety");
 assert.match(deployScript, /npm run release:check/, "Deployments must run the production release gate");
+const launchAuditIndex = deployScript.indexOf("audit-launch-readiness.mjs");
+const miniProgramConfigIndex = deployScript.indexOf("npm run config:miniprogram");
+const releaseCheckIndex = deployScript.indexOf("npm run release:check");
+assert.ok(launchAuditIndex >= 0, "Deployments must audit verified pre-deployment inputs");
+assert.ok(
+  launchAuditIndex < miniProgramConfigIndex && miniProgramConfigIndex < releaseCheckIndex,
+  "Deployments must audit inputs and generate Mini Program configuration before release checks"
+);
 assert.match(deployScript, /backup-postgres\.sh/, "Deployments must create a pre-release database backup");
 assert.match(deployScript, /npm run check:db/, "Deployments must verify the migrated production database");
 assert.match(deployScript, /npm run check:runtime/, "Deployments must run HTTP and metrics smoke checks");

@@ -9,3 +9,4 @@ Thumbs.db
 *.log
 project.private.config.json
 .release-state/
+ops/launch-readiness.json

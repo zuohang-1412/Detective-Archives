@@ -3,10 +3,11 @@ set -eu
 
 release_tag="${1:-}"
 env_file="${2:-${API_ENV_FILE:-.env.production}}"
+readiness_file="${3:-}"
 state_directory="${RELEASE_STATE_DIRECTORY:-.release-state}"
 
 usage() {
-  echo "Usage: $0 <image-tag> [production-env-file]" >&2
+  echo "Usage: $0 <image-tag> [production-env-file] [launch-readiness-file]" >&2
   exit 1
 }
 
@@ -66,6 +67,20 @@ set -a
 # The production file is a trusted, deployment-owned shell environment file.
 . "$env_file"
 set +a
+
+if [ -z "$readiness_file" ]; then
+  readiness_file="${LAUNCH_READINESS_FILE:-ops/launch-readiness.json}"
+fi
+if [ ! -f "$readiness_file" ]; then
+  echo "Launch readiness manifest does not exist: $readiness_file" >&2
+  exit 1
+fi
+
+echo "Checking verified pre-deployment inputs for $release_tag"
+node scripts/audit-launch-readiness.mjs --phase=pre_deploy --manifest="$readiness_file"
+
+echo "Generating the production Mini Program configuration"
+npm run config:miniprogram
 
 echo "Running release checks for $release_tag"
 npm run release:check

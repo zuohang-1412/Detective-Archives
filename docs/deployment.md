@@ -27,17 +27,27 @@
 
 1. 在服务器安装 Docker、Compose 插件、Caddy，以及与生产数据库主版本一致的 PostgreSQL 客户端。
 2. 将仓库检出到仅部署用户可访问的目录。
-3. 复制 `ops/production.env.example` 为根目录 `.env.production`，填写真实配置并将文件权限设为 `600`。
-4. 将 `ops/Caddyfile.example` 复制到 Caddy 配置目录，替换真实域名并校验配置。
-5. 使用提交号执行受控发布：
+3. 复制 `ops/production.env.example` 为根目录 `.env.production`，填写真实配置并将文件权限设为 `600`。其中 `MINIPROGRAM_APP_ID` 必须与 `WECHAT_APP_ID` 一致。
+4. 复制 `ops/launch-readiness.example.json` 为 `ops/launch-readiness.json`。这个文件不保存密钥，只记录真实主体、责任人和已经取得证据的外部布尔门禁；没有证据的字段保持 `false`，实际文件已被 Git 忽略。
+5. 将 `ops/Caddyfile.example` 复制到 Caddy 配置目录，替换真实域名并校验配置。
+6. 先执行预部署审计。输出只包含缺失项、阶段和责任域，不包含任何环境变量值：
+
+```bash
+npm run launch:audit -- \
+  --env-file=.env.production \
+  --manifest=ops/launch-readiness.json \
+  --phase=pre_deploy
+```
+
+7. 使用提交号执行受控发布：
 
 ```bash
 npm ci
 export IMAGE_TAG="$(git rev-parse --short HEAD)"
-sh ops/deploy-release.sh "$IMAGE_TAG" .env.production
+sh ops/deploy-release.sh "$IMAGE_TAG" .env.production ops/launch-readiness.json
 ```
 
-发布脚本会依次执行完整质量与生产配置门禁、生成并校验数据库备份、构建带提交号的镜像、启动服务、等待 `/ready`，再核对数据库完整性并运行公开接口与监控探测。验证失败时，只要旧镜像仍在本机，就会自动恢复旧应用镜像；数据库迁移仍采用前向兼容策略，不执行破坏性降级。
+发布脚本会依次执行预部署审计、生成生产小程序配置、完整质量与生产配置门禁、生成并校验数据库备份、构建带提交号的镜像、启动服务、等待 `/ready`，再核对数据库完整性并运行公开接口与监控探测。验证失败时，只要旧镜像仍在本机，就会自动恢复旧应用镜像；数据库迁移仍采用前向兼容策略，不执行破坏性降级。
 
 发布成功后，当前和上一镜像标签保存在被 Git 忽略的 `.release-state/`。需要人工回滚时执行：
 
@@ -70,6 +80,16 @@ npm run release:check
 ```
 
 随后在微信开发者工具中完成：真机预览、体验版验证、代码上传、版本说明、隐私接口声明和平台审核。审核通过后选择全量发布；首次发布后保留体验版用于生产回归。
+
+每取得一项真实证据后更新 `ops/launch-readiness.json`，并按阶段复核：
+
+```bash
+npm run launch:audit -- --env-file=.env.production --phase=post_deploy
+npm run launch:audit -- --env-file=.env.production --phase=submission
+npm run launch:audit -- --env-file=.env.production --phase=release
+```
+
+只有 `RELEASE` 阶段显示 `READY`，才表示生产 API、真实微信真机、平台审核和全量发布均有证据。不得为了通过门禁预先把未执行的布尔项改为 `true`。
 
 ## 6. 发布验证
 
