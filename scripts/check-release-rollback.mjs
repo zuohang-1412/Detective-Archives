@@ -23,10 +23,21 @@ const root = path.resolve();
 const sourceDatabaseUrl = process.env.DATABASE_URL;
 if (!sourceDatabaseUrl) throw new Error("DATABASE_URL is required");
 
-const databaseUrl = new URL(sourceDatabaseUrl);
-databaseUrl.hostname = process.env.RELEASE_ROLLBACK_DATABASE_HOST ?? "host.docker.internal";
-
 const runId = (process.env.GITHUB_SHA?.slice(0, 8) ?? String(process.pid)).toLowerCase();
+const drillDatabaseName = `detective_archives_release_${runId}`;
+if (!/^[a-z][a-z0-9_]{0,62}$/.test(drillDatabaseName)) {
+  throw new Error("The generated release drill database name is invalid");
+}
+const sourceDatabase = new URL(sourceDatabaseUrl);
+const sourceDatabaseName = decodeURIComponent(sourceDatabase.pathname.slice(1));
+if (!/^[a-z][a-z0-9_]{0,62}$/.test(sourceDatabaseName)) {
+  throw new Error("DATABASE_URL must select a valid maintenance database");
+}
+const hostDatabaseUrl = new URL(sourceDatabase);
+hostDatabaseUrl.pathname = `/${drillDatabaseName}`;
+const containerDatabaseUrl = new URL(hostDatabaseUrl);
+containerDatabaseUrl.hostname = process.env.RELEASE_ROLLBACK_DATABASE_HOST ?? "host.docker.internal";
+
 const baselineTag = `drill-baseline-${runId}`;
 const candidateTag = `drill-candidate-${runId}`;
 const baselineImage = `detective-archives-api:${baselineTag}`;
@@ -55,6 +66,9 @@ const commonEnvironment = {
   API_ENV_FILE: envFile,
   COMPOSE_FILE: composeFiles,
   COMPOSE_PROJECT_NAME: `detective-archives-release-drill-${runId}`,
+  DATABASE_URL: hostDatabaseUrl.toString(),
+  DETECTIVE_DB_NAME: drillDatabaseName,
+  PGDATABASE: drillDatabaseName,
   RELEASE_STATE_DIRECTORY: stateDirectory
 };
 
@@ -103,7 +117,9 @@ await writeFile(envFile, [
   "CORS_ORIGIN=https://api.detective.invalid",
   "TRUST_PROXY=true",
   "LOG_LEVEL=warn",
-  `DATABASE_URL=${databaseUrl.toString()}`,
+  `DATABASE_URL=${containerDatabaseUrl.toString()}`,
+  `DETECTIVE_DB_NAME=${drillDatabaseName}`,
+  `PGDATABASE=${drillDatabaseName}`,
   "PGSSLMODE=disable",
   "DB_POOL_MAX=10",
   "DB_CONNECTION_TIMEOUT_MS=5000",
@@ -163,6 +179,12 @@ let baselineImageId;
 let candidateImageId;
 let rollbackDurationMs;
 try {
+  run("npm", ["run", "db:create"], {
+    ...commonEnvironment,
+    DATABASE_URL: sourceDatabaseUrl,
+    DETECTIVE_DB_NAME: drillDatabaseName,
+    PGDATABASE: sourceDatabaseName
+  });
   const baselineEnvironment = composeEnvironment(baselineTag);
   run("docker", ["compose", "build", "api"], baselineEnvironment);
   baselineImageId = output("docker", ["image", "inspect", "--format", "{{.Id}}", baselineImage]);
@@ -203,13 +225,14 @@ try {
   });
   assert.equal(await state("current-image-tag"), baselineTag);
   assert.equal(await state("previous-image-tag"), candidateTag);
-  run("npm", ["run", "check:db"], { ...commonEnvironment, DATABASE_URL: sourceDatabaseUrl });
+  run("npm", ["run", "check:db"]);
 
   console.log(JSON.stringify({
     status: "release_rollback_drill_ok",
     baselineTag,
     candidateTag,
     distinctImageIds: true,
+    isolatedDatabase: true,
     backupVerified: true,
     rollbackDurationMs,
     restoredImageTag: baselineTag
@@ -227,8 +250,21 @@ try {
       stdio: "ignore"
     });
   }
+  const databaseDrop = spawnSync("psql", [
+    "--dbname", sourceDatabaseUrl,
+    "--set", "ON_ERROR_STOP=1",
+    "--command", `DROP DATABASE IF EXISTS "${drillDatabaseName}" WITH (FORCE)`
+  ], {
+    cwd: root,
+    env: process.env,
+    stdio: "inherit"
+  });
   await rm(markerFile, { force: true });
   await writeFile(miniProgramConfigPath, originalMiniProgramConfig, "utf8");
   await writeFile(projectConfigPath, originalProjectConfig, "utf8");
   await rm(temporaryRoot, { recursive: true, force: true });
+  if (databaseDrop.error) throw databaseDrop.error;
+  if (databaseDrop.status !== 0) {
+    throw new Error(`Could not remove the isolated release drill database (exit ${databaseDrop.status})`);
+  }
 }

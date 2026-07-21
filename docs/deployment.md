@@ -58,7 +58,7 @@ API_ENV_FILE=.env.production sh ops/rollback-release.sh
 
 回滚脚本会确认目标镜像存在，切换后重新执行就绪与运行时探测；目标镜像验证失败时会尽力恢复回滚前的应用镜像。容器自身启动时按顺序执行未应用的数据库迁移和幂等目录初始化，之后才启动 API。`/health` 表示进程存活，`/ready` 只有在数据库可用时才返回成功。
 
-GitHub Quality 会在隔离的 Compose 项目中构建两个不同镜像，启动基线镜像后实际调用 `deploy-release.sh`，核对强制备份、镜像 ID、`.release-state`，再调用 `rollback-release.sh` 并复核数据库与 HTTP。该演练保证脚本每次提交都可执行，但不能替代正式服务器上的域名、TLS、监控、生产数据库网络和真实上一镜像演练。
+GitHub Quality 会为演练创建独立空库，并在隔离的 Compose 项目中构建两个不同镜像；启动基线镜像后实际调用 `deploy-release.sh`，核对强制备份、镜像 ID、`.release-state`，再调用 `rollback-release.sh` 并复核数据库与 HTTP，最后删除专用数据库和镜像。该演练保证脚本每次提交都可执行且不受其他集成测试数据影响，但不能替代正式服务器上的域名、TLS、监控、生产数据库网络和真实上一镜像演练。
 
 ## 4. HTTPS 与网络
 

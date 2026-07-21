@@ -92,6 +92,8 @@ assert.match(qualityWorkflow, /postgres:16/, "CI PostgreSQL must match the expli
 assert.match(qualityWorkflow, /postgresql-client-16/, "CI must install a matching PostgreSQL backup client");
 assert.match(releaseDrillCompose, /host\.docker\.internal:host-gateway/, "The isolated Compose drill must reach the host-only CI database");
 assert.match(releaseRollbackDrill, /RELEASE_ROLLBACK_TEST/, "The destructive release drill must require an explicit opt-in");
+assert.match(releaseRollbackDrill, /npm.*db:create/, "The release drill must create an isolated empty database");
+assert.match(releaseRollbackDrill, /DROP DATABASE IF EXISTS/, "The release drill must remove only its isolated database");
 assert.match(releaseRollbackDrill, /ops\/deploy-release\.sh/, "The drill must execute the production deployment script");
 assert.match(releaseRollbackDrill, /ops\/rollback-release\.sh/, "The drill must execute the production rollback script");
 assert.match(releaseRollbackDrill, /Candidate and baseline images must have different IDs/, "The drill must prove that two distinct images are switched");
