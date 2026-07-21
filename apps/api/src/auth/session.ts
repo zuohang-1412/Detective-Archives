@@ -11,7 +11,7 @@ export interface AuthUser {
   role: "USER" | "EDITOR" | "MODERATOR" | "ADMIN";
 }
 
-interface SessionRow extends AuthUser {
+export interface SessionRow extends AuthUser {
   sessionId: string;
 }
 

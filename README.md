@@ -14,10 +14,11 @@
 - PostgreSQL 运行时连接、增量迁移、目录初始化、作品与正版链接仓储和完整性检查。
 - 微信 `code2Session` 服务端身份、不可逆会话令牌、退出登录和个人书架进度。
 - 短评/长评、剧透折叠、回复、点赞、举报、作者软删除和默认待审核流程。
+- 内置运营后台：独立管理员登录、数据概览、评价/回复审核、举报处理、用户处置、作品与正版链接维护。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
-运营后台、人工审核工作台和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
+侦探资料维护深化、上线基础设施和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
 
 ## 项目结构
 
@@ -54,6 +55,8 @@ npm run db:setup
 
 真实微信登录需同时配置 `WECHAT_APP_ID` 和 `WECHAT_APP_SECRET`。本地联调可设置 `WECHAT_DEV_LOGIN=true`，但服务会拒绝在 `NODE_ENV=production` 时启用开发身份。
 
+运营后台需同时配置 `ADMIN_LOGIN_ID` 和 `ADMIN_LOGIN_PASSWORD`；生产密码至少 16 位。启动 API 后访问 `/admin/`，后台令牌仅保存在当前浏览器会话中。
+
 ### 3. 启动 API
 
 ```bash
@@ -88,6 +91,13 @@ npm run dev:api
 - `PUT|DELETE /api/v1/reviews/:reviewId/like`
 - `PUT|DELETE /api/v1/comments/:commentId/like`
 - `POST /api/v1/reports`
+- `POST /api/v1/auth/admin`
+- `GET /api/v1/admin/dashboard`
+- `GET /api/v1/admin/moderation`
+- `POST /api/v1/admin/moderation/:targetType/:targetId`
+- `PATCH /api/v1/admin/reports/:reportId`
+- `GET|POST /api/v1/admin/works`
+- `POST /api/v1/admin/works/:workId/links`
 
 ### 4. 打开小程序
 

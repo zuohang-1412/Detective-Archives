@@ -23,6 +23,13 @@ describe("detective archives API", () => {
     });
   });
 
+  it("serves the built-in operations console", async () => {
+    const response = await app.inject({ method: "GET", url: "/admin/" });
+    assert.equal(response.statusCode, 200);
+    assert.match(response.headers["content-type"] ?? "", /text\/html/);
+    assert.equal(response.body.includes("运营后台"), true);
+  });
+
   it("reports not ready when the database is not configured", async () => {
     const response = await app.inject({ method: "GET", url: "/ready" });
     assert.equal(response.statusCode, 503);
@@ -94,6 +101,14 @@ describe("detective archives API", () => {
     });
     assert.equal(shelfResponse.statusCode, 503);
     assert.equal(shelfResponse.json().code, "DATABASE_REQUIRED");
+
+    const adminLoginResponse = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/admin",
+      payload: { loginId: "admin", password: "not-configured" }
+    });
+    assert.equal(adminLoginResponse.statusCode, 503);
+    assert.equal(adminLoginResponse.json().code, "AUTH_NOT_CONFIGURED");
   });
 
   it("validates community content before database writes", async () => {

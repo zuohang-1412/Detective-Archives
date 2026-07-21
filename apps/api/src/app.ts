@@ -1,8 +1,12 @@
 import cors from "@fastify/cors";
+import fastifyStatic from "@fastify/static";
 import Fastify from "fastify";
+import { fileURLToPath } from "node:url";
+import type { AdminCredentialValidator } from "./auth/admin.js";
 import type { WechatCodeExchange } from "./auth/wechat.js";
 import type { DatabaseClient } from "./db/types.js";
 import { archiveDirectoryRoutes } from "./routes/archive-directory.js";
+import { adminRoutes } from "./routes/admin.js";
 import { authRoutes } from "./routes/auth.js";
 import { communityRoutes } from "./routes/community.js";
 import { detectiveRoutes } from "./routes/detectives.js";
@@ -16,6 +20,7 @@ export interface BuildAppOptions {
   database?: DatabaseClient;
   wechatCodeExchange?: WechatCodeExchange;
   sessionTtlSeconds?: number;
+  adminCredentialValidator?: AdminCredentialValidator;
 }
 
 export async function buildApp(options: BuildAppOptions = {}) {
@@ -29,6 +34,13 @@ export async function buildApp(options: BuildAppOptions = {}) {
     origin: options.corsOrigin === "*" ? true : options.corsOrigin ?? false,
     methods: ["GET", "POST", "PATCH", "DELETE"]
   });
+
+  await app.register(fastifyStatic, {
+    root: fileURLToPath(new URL("../../admin", import.meta.url)),
+    prefix: "/admin/",
+    index: ["index.html"]
+  });
+  app.get("/admin", async (_request, reply) => reply.redirect("/admin/"));
 
   app.get("/health", async () => ({
     status: "ok",
@@ -71,9 +83,13 @@ export async function buildApp(options: BuildAppOptions = {}) {
     prefix: "/api/v1",
     ...(options.database ? { database: options.database } : {}),
     ...(options.wechatCodeExchange ? { wechatCodeExchange: options.wechatCodeExchange } : {}),
-    ...(options.sessionTtlSeconds ? { sessionTtlSeconds: options.sessionTtlSeconds } : {})
+    ...(options.sessionTtlSeconds ? { sessionTtlSeconds: options.sessionTtlSeconds } : {}),
+    ...(options.adminCredentialValidator
+      ? { adminCredentialValidator: options.adminCredentialValidator }
+      : {})
   };
   await app.register(authRoutes, routeOptions);
+  await app.register(adminRoutes, routeOptions);
   await app.register(communityRoutes, routeOptions);
   await app.register(detectiveRoutes, routeOptions);
   await app.register(pictureBookRoutes, routeOptions);

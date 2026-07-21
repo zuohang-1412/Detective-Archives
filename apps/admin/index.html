@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>侦探档案馆 · 运营后台</title>
+    <link rel="stylesheet" href="/admin/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">DETECTIVE ARCHIVES</span>
+          <h1>运营后台</h1>
+        </div>
+        <button id="logoutButton" class="text-button hidden" type="button">退出</button>
+      </header>
+
+      <section id="loginPanel" class="panel login-panel">
+        <h2>管理员登录</h2>
+        <p>使用部署环境中单独配置的后台账号。普通小程序账号无法进入。</p>
+        <form id="loginForm">
+          <label>账号<input id="loginId" autocomplete="username" required maxlength="120"></label>
+          <label>密码<input id="password" type="password" autocomplete="current-password" required maxlength="500"></label>
+          <button class="primary-button" type="submit">安全登录</button>
+        </form>
+        <p id="loginError" class="error" role="alert"></p>
+      </section>
+
+      <section id="workspace" class="hidden">
+        <div id="metrics" class="metrics" aria-label="运营概览"></div>
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">MODERATION QUEUE</span>
+            <h2>审核与举报</h2>
+          </div>
+          <button id="refreshButton" class="secondary-button" type="button">刷新</button>
+        </div>
+        <p id="workspaceError" class="error" role="alert"></p>
+        <div class="queue-grid">
+          <section class="queue-column">
+            <h3>待审评价 <span id="reviewCount">0</span></h3>
+            <div id="reviewQueue"></div>
+          </section>
+          <section class="queue-column">
+            <h3>待审回复 <span id="commentCount">0</span></h3>
+            <div id="commentQueue"></div>
+          </section>
+          <section class="queue-column">
+            <h3>待处理举报 <span id="reportCount">0</span></h3>
+            <div id="reportQueue"></div>
+          </section>
+        </div>
+
+        <div class="content-section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">CATALOG OPERATIONS</span>
+              <h2>作品与正版链接</h2>
+            </div>
+          </div>
+          <div class="content-grid">
+            <form id="workForm" class="panel work-form">
+              <h3>新建作品草稿</h3>
+              <label>中文标题<input id="workTitle" required maxlength="200"></label>
+              <label>英文标识<input id="workSlug" required maxlength="120" pattern="[a-z0-9]+(?:-[a-z0-9]+)*"></label>
+              <label>创作者<input id="workCreator" maxlength="120"></label>
+              <div class="inline-fields">
+                <label>类型
+                  <select id="workType">
+                    <option value="NOVEL">长篇小说</option>
+                    <option value="SHORT_STORY">短篇小说</option>
+                    <option value="COMIC">漫画</option>
+                    <option value="FILM">电影</option>
+                    <option value="SERIES">剧集</option>
+                    <option value="ANIMATION">动画</option>
+                    <option value="GAME">游戏</option>
+                    <option value="OTHER">其他</option>
+                  </select>
+                </label>
+                <label>首发年份<input id="workYear" type="number" min="1000" max="2200"></label>
+              </div>
+              <label>无剧透简介<textarea id="workSummary" maxlength="5000"></textarea></label>
+              <button class="primary-button" type="submit">保存草稿</button>
+              <p id="workFormError" class="error" role="alert"></p>
+            </form>
+            <section>
+              <h3>最近维护</h3>
+              <div id="workList"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="/admin/app.js" defer></script>
+  </body>
+</html>
