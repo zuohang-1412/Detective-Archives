@@ -105,6 +105,9 @@ if (!apiScript.includes("async function listAllPages(")) {
 if (!workScript.includes("loadMoreReviews(") || !workTemplate.includes('bindtap="loadMoreReviews"')) {
   throw new Error("Work detail must expose public review pagination");
 }
+if (!workScript.includes("链接已失效或暂不可用") || !workScript.includes("无法继续打开这条正版渠道")) {
+  throw new Error("Work detail must stop when server-side link validation fails");
+}
 if (!reviewDetailScript.includes("loadMoreComments(") || !reviewDetailTemplate.includes('bindtap="loadMoreComments"')) {
   throw new Error("Review detail must expose public comment pagination");
 }

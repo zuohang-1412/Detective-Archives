@@ -752,6 +752,13 @@ try {
     payload: { isActive: false }
   });
   assert.equal(disableLinkResponse.statusCode, 200, disableLinkResponse.body);
+  const disabledLinkClickResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/work-links/${managedLinkId}/click`,
+    headers: authorization
+  });
+  assert.equal(disabledLinkClickResponse.statusCode, 404, disabledLinkClickResponse.body);
+  assert.equal(disabledLinkClickResponse.json().code, "WORK_LINK_NOT_FOUND");
   const publicWorkWithoutLink = await app.inject({
     method: "GET",
     url: `/api/v1/works/${testWorkSlug}`

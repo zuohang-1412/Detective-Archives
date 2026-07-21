@@ -193,9 +193,16 @@ Page({
     if (linkId) {
       try {
         const response = await trackWorkLinkClick(linkId);
-        targetUrl = response.data.url || url;
+        if (!response.data.url) throw new Error("链接已失效或暂不可用");
+        targetUrl = response.data.url;
       } catch (error) {
-        targetUrl = url;
+        wx.showModal({
+          title: "链接已失效或暂不可用",
+          content: "无法继续打开这条正版渠道。你可以在当前页面提交链接反馈，我们会人工复核。",
+          showCancel: false,
+          confirmText: "知道了"
+        });
+        return;
       }
     }
     wx.setClipboardData({
