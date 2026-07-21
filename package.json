@@ -24,6 +24,7 @@
     "check:deployment": "node --check scripts/check-runtime-smoke.mjs && node --check scripts/check-runtime-performance.mjs && node scripts/check-deployment.mjs",
     "check:expansion": "node scripts/check-catalog-expansion.mjs",
     "check:production-api": "npm run build && node scripts/check-api-production-config.mjs",
+    "check:release-rollback": "node scripts/check-release-rollback.mjs",
     "check:performance": "node scripts/check-runtime-performance.mjs",
     "check:runtime": "node scripts/check-runtime-smoke.mjs",
     "check:miniprogram": "node scripts/check-miniprogram.mjs && node scripts/check-miniprogram-resilience.mjs",

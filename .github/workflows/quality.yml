@@ -10,8 +10,8 @@ permissions:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
     env:
       DATABASE_URL: postgresql://detective_ci:detective_ci_password@127.0.0.1:5432/detective_archives
       DETECTIVE_DB_NAME: detective_archives
@@ -23,7 +23,7 @@ jobs:
       PGUSER: detective_ci
     services:
       postgres:
-        image: postgres:17
+        image: postgres:16
         env:
           POSTGRES_DB: detective_archives
           POSTGRES_PASSWORD: detective_ci_password
@@ -42,6 +42,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Install matching PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client-16
       - name: Validate operations scripts
         run: sh -n ops/backup-postgres.sh ops/verify-backup.sh ops/deploy-release.sh ops/rollback-release.sh
       - run: npm run check
@@ -103,3 +107,9 @@ jobs:
       - name: Stop production image
         if: always()
         run: docker rm --force detective-archives-api-ci || true
+      - name: Map the host database for the Compose release drill
+        run: printf '127.0.0.1 host.docker.internal\n' | sudo tee -a /etc/hosts >/dev/null
+      - name: Exercise deployment backup and previous-image rollback
+        env:
+          RELEASE_ROLLBACK_TEST: "true"
+        run: npm run check:release-rollback

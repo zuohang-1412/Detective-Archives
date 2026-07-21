@@ -151,7 +151,7 @@ npm run launch:audit -- --env-file=.env.production --manifest=ops/launch-readine
 npm run release:check
 ```
 
-`launch:audit` 只报告门禁状态和责任域，不输出数据库密码、AppSecret、后台密码或监控令牌。它按 `PRE_DEPLOY`、`POST_DEPLOY`、`SUBMISSION`、`RELEASE` 四阶段核验，实际清单从 `ops/launch-readiness.example.json` 复制后填写，且已被 Git 忽略。部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成预部署审计、小程序配置生成、发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。
+`launch:audit` 只报告门禁状态和责任域，不输出数据库密码、AppSecret、后台密码或监控令牌。它按 `PRE_DEPLOY`、`POST_DEPLOY`、`SUBMISSION`、`RELEASE` 四阶段核验，实际清单从 `ops/launch-readiness.example.json` 复制后填写，且已被 Git 忽略。部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成预部署审计、小程序配置生成、发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。GitHub Quality 还会使用两个不同镜像 ID 实际执行这两个脚本，核对备份、当前/上一镜像状态与回滚后的数据库和 HTTP 探测；正式服务器仍需按同一流程留下生产演练证据。
 
 图鉴与扩展目录数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：
 

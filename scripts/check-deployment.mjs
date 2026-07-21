@@ -13,7 +13,10 @@ const [
   backupScript,
   apiServer,
   deployScript,
-  rollbackScript
+  rollbackScript,
+  releaseRollbackDrill,
+  releaseDrillCompose,
+  rootPackage
 ] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
@@ -24,7 +27,10 @@ const [
   readFile(path.join(root, "ops/backup-postgres.sh"), "utf8"),
   readFile(path.join(root, "apps/api/src/server.ts"), "utf8"),
   readFile(path.join(root, "ops/deploy-release.sh"), "utf8"),
-  readFile(path.join(root, "ops/rollback-release.sh"), "utf8")
+  readFile(path.join(root, "ops/rollback-release.sh"), "utf8"),
+  readFile(path.join(root, "scripts/check-release-rollback.mjs"), "utf8"),
+  readFile(path.join(root, "ops/compose.release-drill.yaml"), "utf8"),
+  readFile(path.join(root, "package.json"), "utf8")
 ]);
 
 const startupSteps = [
@@ -80,5 +86,16 @@ assert.match(deployScript, /npm run check:runtime/, "Deployments must run HTTP a
 assert.match(deployScript, /Restoring previous application image/, "Failed deployments must automatically restore the previous image");
 assert.match(rollbackScript, /docker image inspect/, "Rollback must require an existing local image");
 assert.match(rollbackScript, /npm run check:runtime/, "Rollback must verify the restored runtime");
+assert.match(rootPackage, /"check:release-rollback"/, "The release rollback drill must have an npm entrypoint");
+assert.match(qualityWorkflow, /npm run check:release-rollback/, "CI must execute the real release rollback drill");
+assert.match(qualityWorkflow, /postgres:16/, "CI PostgreSQL must match the explicitly installed backup client major version");
+assert.match(qualityWorkflow, /postgresql-client-16/, "CI must install a matching PostgreSQL backup client");
+assert.match(releaseDrillCompose, /host\.docker\.internal:host-gateway/, "The isolated Compose drill must reach the host-only CI database");
+assert.match(releaseRollbackDrill, /RELEASE_ROLLBACK_TEST/, "The destructive release drill must require an explicit opt-in");
+assert.match(releaseRollbackDrill, /ops\/deploy-release\.sh/, "The drill must execute the production deployment script");
+assert.match(releaseRollbackDrill, /ops\/rollback-release\.sh/, "The drill must execute the production rollback script");
+assert.match(releaseRollbackDrill, /Candidate and baseline images must have different IDs/, "The drill must prove that two distinct images are switched");
+assert.match(releaseRollbackDrill, /previous-image-tag/, "The drill must verify persisted rollback state");
+assert.match(releaseRollbackDrill, /ops\/verify-backup\.sh/, "The drill must verify the mandatory deployment backup");
 
 console.log("Deployment structure and startup sequence: OK");
