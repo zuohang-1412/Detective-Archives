@@ -307,7 +307,8 @@ export async function updateAdminWork(
   actorId: string,
   workId: string,
   input: AdminWorkInput,
-  requestId: string
+  requestId: string,
+  draftOnly: boolean
 ) {
   return withTransaction(database, async (connection) => {
     const result = await queryRows<{ id: string }>(connection, `
@@ -319,8 +320,13 @@ export async function updateAdminWork(
         release_year = $6,
         summary = $7,
         cover_url = $8,
+        status = CASE
+          WHEN $9::boolean AND status = 'PENDING_REVIEW' THEN 'DRAFT'::content_status
+          ELSE status
+        END,
         updated_at = NOW()
       WHERE id = $1
+        AND (NOT $9::boolean OR status IN ('DRAFT', 'PENDING_REVIEW'))
       RETURNING id
     `, [
       workId,
@@ -330,7 +336,8 @@ export async function updateAdminWork(
       input.mediaType,
       input.releaseYear ?? null,
       input.summary ?? null,
-      input.coverUrl ?? null
+      input.coverUrl ?? null,
+      draftOnly
     ]);
     if (!result.rows[0]) return null;
     await replaceWorkCreator(connection, workId, input.creatorName);
@@ -346,7 +353,7 @@ export async function setAdminWorkStatus(
   database: DatabaseClient,
   actorId: string,
   workId: string,
-  status: "DRAFT" | "PUBLISHED" | "HIDDEN" | "ARCHIVED",
+  status: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "HIDDEN" | "ARCHIVED",
   requestId: string
 ) {
   const result = await queryRows<{ id: string; status: string }>(database, `
@@ -356,6 +363,14 @@ export async function setAdminWorkStatus(
         published_at = CASE WHEN $3::text = 'PUBLISHED' THEN COALESCE(published_at, NOW()) ELSE published_at END,
         updated_at = NOW()
       WHERE id = $2
+        AND CASE $3::text
+          WHEN 'DRAFT' THEN status = 'PENDING_REVIEW'
+          WHEN 'PENDING_REVIEW' THEN status = 'DRAFT'
+          WHEN 'PUBLISHED' THEN status IN ('PENDING_REVIEW', 'HIDDEN')
+          WHEN 'HIDDEN' THEN status = 'PUBLISHED'
+          WHEN 'ARCHIVED' THEN status IN ('PUBLISHED', 'HIDDEN')
+          ELSE FALSE
+        END
       RETURNING id, status::text
     ), audit AS (
       INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
@@ -376,22 +391,32 @@ export async function createAdminWorkLink(
     url: string;
     region: string;
   },
-  requestId: string
+  requestId: string,
+  isActive: boolean
 ) {
-  const result = await queryRows<{ id: string }>(database, `
+  const result = await queryRows<{ id: string; isActive: boolean }>(database, `
     WITH created AS (
       INSERT INTO work_links (
         work_id, link_type, provider_name, url, region, is_active, last_checked_at
       )
-      SELECT id, $3, $4, $5, $6, TRUE, NOW()
+      SELECT id, $3, $4, $5, $6, $7, NOW()
       FROM works WHERE id = $2
-      RETURNING id
+      RETURNING id, is_active AS "isActive"
     ), audit AS (
       INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
-      SELECT $1, 'WORK_LINK_CREATE', 'WORK_LINK', id, $7 FROM created
+      SELECT $1, 'WORK_LINK_CREATE', 'WORK_LINK', id, $8 FROM created
     )
-    SELECT id FROM created
-  `, [actorId, workId, input.linkType, input.providerName, input.url, input.region, requestId]);
+    SELECT id, "isActive" FROM created
+  `, [
+    actorId,
+    workId,
+    input.linkType,
+    input.providerName,
+    input.url,
+    input.region,
+    isActive,
+    requestId
+  ]);
   return result.rows[0] ?? null;
 }
 

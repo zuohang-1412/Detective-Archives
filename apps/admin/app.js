@@ -205,10 +205,14 @@ function renderWorks(items) {
     if (item.summary) card.append(textElement("p", "queue-body", item.summary));
     const actions = document.createElement("div");
     actions.className = "card-actions";
-    if (item.status !== "PUBLISHED") {
+    if (item.status === "DRAFT") {
+      actions.append(actionButton("提交审核", "approve-button", () => changeWorkStatus(item.id, "PENDING_REVIEW")));
+    } else if (item.status === "PENDING_REVIEW") {
       actions.append(actionButton("发布", "approve-button", () => changeWorkStatus(item.id, "PUBLISHED")));
-    } else {
+    } else if (item.status === "PUBLISHED") {
       actions.append(actionButton("隐藏", "reject-button", () => changeWorkStatus(item.id, "HIDDEN")));
+    } else if (item.status === "HIDDEN") {
+      actions.append(actionButton("恢复发布", "approve-button", () => changeWorkStatus(item.id, "PUBLISHED")));
     }
     actions.append(actionButton("新增正版链接", "secondary-small", () => addWorkLink(item.id)));
     card.append(actions);

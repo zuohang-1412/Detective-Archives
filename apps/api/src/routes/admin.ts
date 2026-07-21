@@ -48,7 +48,7 @@ const workInputSchema = z.object({
   creatorName: z.string().trim().max(120).optional()
 });
 const workStatusSchema = z.object({
-  status: z.enum(["DRAFT", "PUBLISHED", "HIDDEN", "ARCHIVED"])
+  status: z.enum(["DRAFT", "PENDING_REVIEW", "PUBLISHED", "HIDDEN", "ARCHIVED"])
 });
 const workLinkSchema = z.object({
   linkType: z.enum(["PUBLISHER", "BOOKSTORE", "LIBRARY", "STREAMING", "OFFICIAL_SITE", "OTHER"]),
@@ -195,10 +195,13 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
       user.id,
       params.data.workId,
       body.data,
-      request.id
+      request.id,
+      user.role === "EDITOR"
     );
     if (!work) {
-      return reply.code(404).send({ code: "WORK_NOT_FOUND", message: "未找到该作品" });
+      return user.role === "EDITOR"
+        ? reply.code(409).send({ code: "WORK_NOT_EDITABLE", message: "已发布作品需由管理员维护" })
+        : reply.code(404).send({ code: "WORK_NOT_FOUND", message: "未找到该作品" });
     }
     return { data: work };
   });
@@ -209,7 +212,11 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
     if (!params.success || !body.success) {
       return reply.code(400).send({ code: "INVALID_WORK_STATUS", message: "作品状态不合法" });
     }
-    const user = await authorizeRoles(options.database, request, reply, ["EDITOR", "ADMIN"]);
+    const allowedRoles: Array<"EDITOR" | "ADMIN"> =
+      body.success && body.data.status === "PENDING_REVIEW"
+        ? ["EDITOR", "ADMIN"]
+        : ["ADMIN"];
+    const user = await authorizeRoles(options.database, request, reply, allowedRoles);
     if (!user || !options.database) return;
     const work = await setAdminWorkStatus(
       options.database,
@@ -237,7 +244,8 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
       user.id,
       params.data.workId,
       body.data,
-      request.id
+      request.id,
+      user.role === "ADMIN"
     );
     if (!link) {
       return reply.code(404).send({ code: "WORK_NOT_FOUND", message: "未找到该作品" });
@@ -251,7 +259,7 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
     if (!params.success || !body.success) {
       return reply.code(400).send({ code: "INVALID_WORK_LINK", message: "链接状态不合法" });
     }
-    const user = await authorizeRoles(options.database, request, reply, ["EDITOR", "ADMIN"]);
+    const user = await authorizeRoles(options.database, request, reply, ["ADMIN"]);
     if (!user || !options.database) return;
     const link = await setAdminWorkLinkActive(
       options.database,

@@ -13,6 +13,8 @@ const testIdentitySubjects = [
   "detective-archives-db-api-check-primary",
   "detective-archives-db-api-check-secondary",
   "detective-archives-db-api-check-deactivation",
+  "detective-archives-db-api-check-editor",
+  "detective-archives-db-api-check-concurrent",
   createHash("sha256").update(testAdminLoginId).digest("hex")
 ];
 async function cleanupTestUsers() {
@@ -99,7 +101,11 @@ const app = await buildApp({
       ? testIdentitySubjects[1]
       : code === "deactivation-user"
         ? testIdentitySubjects[2]
-        : testIdentitySubjects[0]
+        : code === "editor-user"
+          ? testIdentitySubjects[3]
+          : code === "concurrent-user"
+            ? testIdentitySubjects[4]
+          : testIdentitySubjects[0]
   }),
   adminCredentialValidator: (loginId, password) => (
     loginId === testAdminLoginId && password === testAdminPassword
@@ -232,6 +238,63 @@ try {
   });
   assert.equal(forbiddenAdminResponse.statusCode, 403, forbiddenAdminResponse.body);
 
+  const editorLoginResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: {
+      code: "editor-user",
+      agreements: { termsAccepted: true, privacyAccepted: true }
+    }
+  });
+  assert.equal(editorLoginResponse.statusCode, 201, editorLoginResponse.body);
+  const editorUserId = editorLoginResponse.json().data.user.id;
+  await database.query("UPDATE users SET role = 'EDITOR' WHERE id = $1", [editorUserId]);
+  const editorAuthorization = {
+    authorization: `Bearer ${editorLoginResponse.json().data.token}`
+  };
+  const forbiddenEditorModeration = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/moderation",
+    headers: editorAuthorization
+  });
+  assert.equal(forbiddenEditorModeration.statusCode, 403, forbiddenEditorModeration.body);
+
+  const concurrentLoginResponses = await Promise.all(Array.from({ length: 3 }, () => app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: {
+      code: "concurrent-user",
+      agreements: { termsAccepted: true, privacyAccepted: true }
+    }
+  })));
+  concurrentLoginResponses.forEach((response) => {
+    assert.equal(response.statusCode, 201, response.body);
+  });
+  const concurrentUserIds = new Set(
+    concurrentLoginResponses.map((response) => response.json().data.user.id)
+  );
+  assert.equal(concurrentUserIds.size, 1);
+  const concurrentIdentityCount = await database.query(`
+    SELECT COUNT(*)::int AS count FROM user_identities
+    WHERE provider = 'WECHAT' AND provider_subject = $1
+  `, [testIdentitySubjects[4]]);
+  assert.equal(concurrentIdentityCount.rows[0].count, 1);
+  const concurrentAuthorization = {
+    authorization: `Bearer ${concurrentLoginResponses[0].json().data.token}`
+  };
+  const concurrentShelfResponses = await Promise.all(Array.from({ length: 5 }, () => app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: concurrentAuthorization,
+    payload: { status: "WISHLIST" }
+  })));
+  concurrentShelfResponses.forEach((response) => {
+    assert.equal(response.statusCode, 200, response.body);
+  });
+  assert.equal(new Set(
+    concurrentShelfResponses.map((response) => response.json().data.id)
+  ).size, 1);
+
   const adminLoginResponse = await app.inject({
     method: "POST",
     url: "/api/v1/auth/admin",
@@ -254,7 +317,7 @@ try {
   const createWorkResponse = await app.inject({
     method: "POST",
     url: "/api/v1/admin/works",
-    headers: adminAuthorization,
+    headers: editorAuthorization,
     payload: {
       slug: testWorkSlug,
       titleZh: "数据库接口检查作品",
@@ -265,6 +328,13 @@ try {
   });
   assert.equal(createWorkResponse.statusCode, 201, createWorkResponse.body);
   const managedWorkId = createWorkResponse.json().data.id;
+  const forbiddenEditorPublish = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/works/${managedWorkId}/status`,
+    headers: editorAuthorization,
+    payload: { status: "PUBLISHED" }
+  });
+  assert.equal(forbiddenEditorPublish.statusCode, 403, forbiddenEditorPublish.body);
   const duplicateWorkResponse = await app.inject({
     method: "POST",
     url: "/api/v1/admin/works",
@@ -279,7 +349,7 @@ try {
   const createLinkResponse = await app.inject({
     method: "POST",
     url: `/api/v1/admin/works/${managedWorkId}/links`,
-    headers: adminAuthorization,
+    headers: editorAuthorization,
     payload: {
       linkType: "PUBLISHER",
       providerName: "集成检查出版社",
@@ -288,7 +358,23 @@ try {
     }
   });
   assert.equal(createLinkResponse.statusCode, 201, createLinkResponse.body);
+  assert.equal(createLinkResponse.json().data.isActive, false);
   const managedLinkId = createLinkResponse.json().data.id;
+  const forbiddenEditorLinkActivation = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}`,
+    headers: editorAuthorization,
+    payload: { isActive: true }
+  });
+  assert.equal(forbiddenEditorLinkActivation.statusCode, 403, forbiddenEditorLinkActivation.body);
+  const submitWorkResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/works/${managedWorkId}/status`,
+    headers: editorAuthorization,
+    payload: { status: "PENDING_REVIEW" }
+  });
+  assert.equal(submitWorkResponse.statusCode, 200, submitWorkResponse.body);
+  assert.equal(submitWorkResponse.json().data.status, "PENDING_REVIEW");
   const publishWorkResponse = await app.inject({
     method: "POST",
     url: `/api/v1/admin/works/${managedWorkId}/status`,
@@ -296,6 +382,27 @@ try {
     payload: { status: "PUBLISHED" }
   });
   assert.equal(publishWorkResponse.statusCode, 200, publishWorkResponse.body);
+  const forbiddenPublishedWorkEdit = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/works/${managedWorkId}`,
+    headers: editorAuthorization,
+    payload: {
+      slug: testWorkSlug,
+      titleZh: "编辑不应直接改已发布作品",
+      mediaType: "NOVEL",
+      releaseYear: 2026,
+      summary: "该修改应被拒绝。"
+    }
+  });
+  assert.equal(forbiddenPublishedWorkEdit.statusCode, 409, forbiddenPublishedWorkEdit.body);
+  assert.equal(forbiddenPublishedWorkEdit.json().code, "WORK_NOT_EDITABLE");
+  const enableLinkResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}`,
+    headers: adminAuthorization,
+    payload: { isActive: true }
+  });
+  assert.equal(enableLinkResponse.statusCode, 200, enableLinkResponse.body);
   const publicManagedWork = await app.inject({
     method: "GET",
     url: `/api/v1/works/${testWorkSlug}`
@@ -378,20 +485,15 @@ try {
   assert.equal(publicReviewResponse.statusCode, 200, publicReviewResponse.body);
   assert.equal(publicReviewResponse.json().data[0].containsSpoiler, true);
 
-  const likeResponse = await app.inject({
+  const concurrentLikeResponses = await Promise.all(Array.from({ length: 5 }, () => app.inject({
     method: "PUT",
     url: `/api/v1/reviews/${reviewId}/like`,
     headers: secondaryAuthorization
+  })));
+  concurrentLikeResponses.forEach((response) => {
+    assert.equal(response.statusCode, 200, response.body);
+    assert.equal(response.json().data.likeCount, 1);
   });
-  assert.equal(likeResponse.statusCode, 200, likeResponse.body);
-  assert.equal(likeResponse.json().data.likeCount, 1);
-  const repeatedLikeResponse = await app.inject({
-    method: "PUT",
-    url: `/api/v1/reviews/${reviewId}/like`,
-    headers: secondaryAuthorization
-  });
-  assert.equal(repeatedLikeResponse.statusCode, 200, repeatedLikeResponse.body);
-  assert.equal(repeatedLikeResponse.json().data.likeCount, 1);
 
   const commentResponse = await app.inject({
     method: "POST",
@@ -420,20 +522,16 @@ try {
   assert.equal(reviewDetailResponse.json().data.comments.length, 1);
   assert.equal(reviewDetailResponse.json().data.likedByMe, false);
 
-  const reportResponse = await app.inject({
+  const concurrentReportResponses = await Promise.all(Array.from({ length: 2 }, () => app.inject({
     method: "POST",
     url: "/api/v1/reports",
     headers: authorization,
     payload: { targetType: "COMMENT", targetId: commentId, reasonCode: "SPOILER" }
-  });
-  assert.equal(reportResponse.statusCode, 201, reportResponse.body);
-  const duplicateReportResponse = await app.inject({
-    method: "POST",
-    url: "/api/v1/reports",
-    headers: authorization,
-    payload: { targetType: "COMMENT", targetId: commentId, reasonCode: "SPOILER" }
-  });
-  assert.equal(duplicateReportResponse.statusCode, 409, duplicateReportResponse.body);
+  })));
+  assert.deepEqual(
+    concurrentReportResponses.map((response) => response.statusCode).sort(),
+    [201, 409]
+  );
   const reportQueueResponse = await app.inject({
     method: "GET",
     url: "/api/v1/admin/moderation",
@@ -443,14 +541,23 @@ try {
     (item) => item.targetId === commentId
   );
   assert.ok(queuedReport);
-  const resolveReportResponse = await app.inject({
+  const concurrentResolveResponses = await Promise.all(Array.from({ length: 2 }, () => app.inject({
     method: "PATCH",
     url: `/api/v1/admin/reports/${queuedReport.id}`,
     headers: adminAuthorization,
     payload: { status: "RESOLVED", resolutionNote: "集成检查已处理" }
-  });
-  assert.equal(resolveReportResponse.statusCode, 200, resolveReportResponse.body);
-  assert.equal(resolveReportResponse.json().data.status, "RESOLVED");
+  })));
+  assert.deepEqual(
+    concurrentResolveResponses.map((response) => response.statusCode).sort(),
+    [200, 404]
+  );
+  const successfulResolution = concurrentResolveResponses.find((response) => response.statusCode === 200);
+  assert.equal(successfulResolution.json().data.status, "RESOLVED");
+  const resolutionAuditCount = await database.query(`
+    SELECT COUNT(*)::int AS count FROM audit_logs
+    WHERE resource_type = 'REPORT' AND resource_id = $1 AND action = 'REPORT_RESOLVED'
+  `, [queuedReport.id]);
+  assert.equal(resolutionAuditCount.rows[0].count, 1);
 
   const wrongOwnerDeleteResponse = await app.inject({
     method: "DELETE",
@@ -575,7 +682,7 @@ try {
   assert.equal(expiredResponse.statusCode, 401, expiredResponse.body);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, account, community and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, roles, concurrency, account, community and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();
