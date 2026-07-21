@@ -26,4 +26,4 @@ COPY scripts scripts
 USER node
 EXPOSE 3000
 
-CMD ["sh", "-c", "node scripts/check-api-production-config.mjs && node scripts/db-migrate.mjs && node scripts/db-seed-catalog.mjs && node apps/api/dist/server.js"]
+CMD ["sh", "-c", "node scripts/check-api-production-config.mjs && node scripts/db-migrate.mjs && node scripts/db-seed-catalog.mjs && node scripts/run-catalog-imports.mjs --apply && node apps/api/dist/server.js"]
