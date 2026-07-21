@@ -122,8 +122,17 @@ for (const category of [
 
 const corrected = audit.samples.filter((sample) => sample.result === "CORRECTED");
 const followUps = audit.samples.filter((sample) => sample.result === "FOLLOW_UP");
-assert.equal(corrected.length, 5, "the recorded content-fix batch must cover five audit corrections");
-assert.ok(followUps.length <= 2, "too many unresolved audit samples");
+assert.equal(corrected.length, 7, "the recorded content-fix batches must cover seven audit corrections");
+assert.equal(followUps.length, 0, "all sampled follow-up records must be resolved");
+
+const unconfirmedCatalogRecords = [...effectiveDetectives.values()]
+  .filter((detective) => detective.verification !== "PRIMARY_SOURCE_CONFIRMED")
+  .map((detective) => detective.catalogId);
+assert.deepEqual(
+  unconfirmedCatalogRecords,
+  [],
+  `formal catalog still contains source-captured records: ${unconfirmedCatalogRecords.join(", ")}`
+);
 
 for (const [catalogId, detective] of effectiveDetectives) {
   for (const featuredCase of detective.featuredCases) {

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "auditDate": "2026-07-22",
   "method": "Stratified sample across picture-book volumes 1-25, 26-58, 59-80, 81-102, 103-108, the volume 105 special edition, and every archive-directory category. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official platform, public institution or library records.",
-  "sampleCount": 29,
+  "sampleCount": 30,
   "samples": [
     {
       "recordId": "PB-004-STD",
@@ -40,12 +40,12 @@
       "expected": {
         "nameZh": "工藤俊作",
         "creatorName": "小鹰信光",
-        "featuredCase": "《横滨蓝调》（图鉴推荐，作品与工藤俊作的对应关系待复核）"
+        "featuredCase": "第2话《サーフ・シティ・ブルース》（图鉴旧译《横滨蓝调》）"
       },
-      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "toei-tantei-monogatari"],
-      "result": "FOLLOW_UP",
-      "note": "The community index records 工藤俊作 and 横滨蓝调, while the official Toei page confirms 探偵物語 but not that recommendation mapping.",
-      "nextAction": "Locate a publisher, broadcaster or original volume image that explicitly links 横滨蓝调 to 工藤俊作 before upgrading verification."
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "toei-tantei-monogatari-episodes"],
+      "result": "CORRECTED",
+      "correctionBatchKey": "catalog-expansion-content-fix-002",
+      "note": "The community translation 横滨蓝调 corresponds to episode 2 サーフ・シティ・ブルース in Toei's official 27-episode list; the unsupported Yokohama setting was removed."
     },
     {
       "recordId": "PB-025-STD",
@@ -177,6 +177,21 @@
       "evidenceSourceIds": ["bilibili-opus-636222280260648982", "openlibrary-my-mother-detective"],
       "result": "PASS",
       "note": "The exact community label remains an alias; the library record confirms James Yaffe and the collected work title."
+    },
+    {
+      "recordId": "PB-064-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "koichi-zenigata",
+      "workSlug": "lupin-the-third-6",
+      "expected": {
+        "nameZh": "钱形幸一警部",
+        "creatorName": "加藤一彦（Monkey Punch）",
+        "featuredCase": "《せいては盗をしそんじる（その1）》（图鉴旧译《欲速则不盗之一》）"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "lupin-part6-character", "chuko-lupin-third-6"],
+      "result": "CORRECTED",
+      "correctionBatchKey": "catalog-expansion-content-fix-002",
+      "note": "The publisher catalog confirms the original chapter in 鲁邦三世⑥, while the official character page confirms Inspector Zenigata; the old translated label remains searchable."
     },
     {
       "recordId": "PB-069-STD",

@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-content-fix-002",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Resolve the final two source-captured catalog records with official episode, character and publisher evidence; retain the picture-book translations as searchable historical labels without presenting them as canonical titles.",
+  "sources": [
+    {
+      "id": "toei-tantei-monogatari",
+      "label": "东映视频：《探偵物語》Blu-ray BOX",
+      "url": "https://shop.toei-video.co.jp/products/bstd03798",
+      "quality": "OFFICIAL_VIDEO"
+    },
+    {
+      "id": "toei-tantei-monogatari-episodes",
+      "label": "东映视频：《探偵物語》全 27 话目录",
+      "url": "https://www.toei-video.co.jp/special/tantei/",
+      "quality": "OFFICIAL_VIDEO"
+    },
+    {
+      "id": "lupin-part6-character",
+      "label": "《鲁邦三世 PART6》官方网站：钱形警部",
+      "url": "https://www.lupin-3rd.net/part6/character/",
+      "quality": "OFFICIAL_SITE"
+    },
+    {
+      "id": "chuko-lupin-third-6",
+      "label": "中央公论新社：《ルパン三世⑥》",
+      "url": "https://www.chuko.co.jp/bunko/1998/03/203105.html",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-018-STD",
+      "pictureBookEntryIds": [],
+      "slug": "shunsaku-kudo",
+      "nameZh": "工藤俊作",
+      "nameOriginal": "工藤俊作",
+      "nameEn": "Shunsaku Kudo",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "电视剧《侦探物语》中的都市私人侦探，以机动灵活的调查、街头人脉和带有喜剧感的行动方式处理委托。",
+      "creatorName": "小鹰信光",
+      "aliases": ["Kudo Shunsaku", "工藤侦探"],
+      "tags": ["私人侦探", "都市派", "电视剧"],
+      "featuredCases": ["第2话《サーフ・シティ・ブルース》（图鉴旧译《横滨蓝调》）"],
+      "sourceIds": ["toei-tantei-monogatari", "toei-tantei-monogatari-episodes"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "tantei-monogatari-tv",
+          "titleZh": "侦探物语",
+          "titleOriginal": "探偵物語",
+          "mediaType": "SERIES",
+          "releaseYear": 1979,
+          "summary": "以工藤俊作为主角的二十七集电视系列，通过各类委托展现都市街头的犯罪、人情与侦探行动。",
+          "sourceId": "toei-tantei-monogatari",
+          "linkType": "BOOKSTORE",
+          "providerName": "东映视频",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-064-STD",
+      "pictureBookEntryIds": [],
+      "slug": "koichi-zenigata",
+      "nameZh": "钱形幸一警部",
+      "nameOriginal": "銭形警部",
+      "nameEn": "Inspector Koichi Zenigata",
+      "country": "日本",
+      "era": "20世纪后期至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["COMIC", "ANIMATION", "FILM", "SERIES"],
+      "summary": "加藤一彦《鲁邦三世》系列中长期追捕鲁邦的国际刑警，虽然经常被盗贼脱身，却最熟悉鲁邦的行动方式，并在更大危机中展现判断力与正义感。",
+      "creatorName": "加藤一彦（Monkey Punch）",
+      "aliases": ["钱形警官", "钱形警部", "銭形幸一", "Inspector Zenigata"],
+      "tags": ["国际刑警", "宿敌", "漫画动画"],
+      "featuredCases": ["《せいては盗をしそんじる（その1）》（图鉴旧译《欲速则不盗之一》）", "《鲁邦三世 PART6》"],
+      "sourceIds": ["lupin-part6-character", "chuko-lupin-third-6"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "lupin-the-third-6",
+          "titleZh": "鲁邦三世⑥",
+          "titleOriginal": "ルパン三世⑥",
+          "mediaType": "COMIC",
+          "releaseYear": 1998,
+          "summary": "中央公论新社文库版第六册，收录图鉴推荐的原作章节《せいては盗をしそんじる》，可从原作漫画了解钱形警部与鲁邦一行的追逐关系。",
+          "sourceId": "chuko-lupin-third-6",
+          "linkType": "PUBLISHER",
+          "providerName": "中央公论新社",
+          "region": "JP"
+        },
+        {
+          "slug": "lupin-the-third-part-6",
+          "titleZh": "鲁邦三世 PART6",
+          "titleOriginal": "ルパン三世 PART6",
+          "mediaType": "ANIMATION",
+          "releaseYear": 2021,
+          "summary": "鲁邦一行面对新的盗窃与阴谋，钱形警部持续追踪其行动，并凭借对鲁邦习惯和伪装方式的了解介入多起复杂事件。",
+          "sourceId": "lupin-part6-character",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "LUPIN THE THIRD NETWORK",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}

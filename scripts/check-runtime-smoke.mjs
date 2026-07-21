@@ -59,7 +59,7 @@ assert.ok(detectives.facets.countries.includes("日本"));
 assert.ok(detectives.facets.tags.length > 10);
 
 const works = await json("/api/v1/works?pageSize=1");
-assert.equal(works.pagination.total, 119);
+assert.equal(works.pagination.total, 120);
 assert.equal(works.data.length, 1);
 
 const pictureBook = await json("/api/v1/picture-book?pageSize=1");
