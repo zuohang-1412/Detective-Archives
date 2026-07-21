@@ -83,6 +83,10 @@ npm run release:check
 
 随后在微信开发者工具中完成：真机预览、体验版验证、代码上传、版本说明、隐私接口声明和平台审核。审核通过后选择全量发布；首次发布后保留体验版用于生产回归。
 
+客户端已接入 `wx.getPrivacySetting`、`wx.openPrivacyContract` 和 `agreePrivacyAuthorization`，会在微信侧存在待同步授权时先展示平台隐私指引，再进入业务登录。提审时仍需在公众平台“服务内容声明 → 用户隐私保护指引”填写与实际功能一致的处理目的；平台配置为空或声明与调用不一致时，微信会禁用相关接口或拦截提审。参考[微信官方小程序隐私协议开发指南](https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)。
+
+发布候选固定使用稳定基础库版本，不使用开发者工具的 `trial` 模式。升级 `project.config.json` 中的 `libVersion` 前，需先在开发者工具和真机完成主链路回归；当前版本依据[微信官方基础库更新日志](https://developers.weixin.qq.com/miniprogram/dev/framework/release/)固定为 `3.17.0`。
+
 每取得一项真实证据后更新 `ops/launch-readiness.json`，并按阶段复核：
 
 ```bash

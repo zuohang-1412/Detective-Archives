@@ -9,7 +9,6 @@
     </block>
     <block wx:else>
       <view class="profile-copy">登录后记录阅读或观看进度，之后还能在作品下留下短评与长评。</view>
-      <button class="login-button" loading="{{loggingIn}}" bindtap="login">微信快捷登录</button>
       <checkbox-group class="agreement-row" bindchange="toggleAgreements">
         <label>
           <checkbox value="accepted" color="#9f3123" checked="{{agreementsAccepted}}" />
@@ -19,6 +18,19 @@
         <text>和</text>
         <text class="legal-link" data-type="privacy" catchtap="openLegal">《隐私政策》</text>
       </checkbox-group>
+      <view wx:if="{{platformPrivacyRequired}}" class="platform-privacy-note">
+        微信还需要同步你的平台隐私授权状态，请先阅读
+        <text class="legal-link" bindtap="openPlatformPrivacy">{{platformPrivacyContractName}}</text>
+      </view>
+      <button
+        wx:if="{{platformPrivacyRequired}}"
+        id="agree-privacy-button"
+        class="login-button privacy-login-button"
+        loading="{{loggingIn}}"
+        open-type="agreePrivacyAuthorization"
+        bindagreeprivacyauthorization="handleAgreePrivacyAuthorization"
+      >同意并微信快捷登录</button>
+      <button wx:else class="login-button" loading="{{loggingIn}}" bindtap="login">微信快捷登录</button>
     </block>
   </view>
 
@@ -120,6 +132,7 @@
     <view class="account-settings">
       <text class="legal-link" data-type="terms" bindtap="openLegal">用户协议</text>
       <text class="legal-link" data-type="privacy" bindtap="openLegal">隐私政策</text>
+      <text class="legal-link" bindtap="openPlatformPrivacy">微信隐私指引</text>
       <text class="deactivate-link" bindtap="confirmDeactivate">注销账号</text>
     </view>
   </block>

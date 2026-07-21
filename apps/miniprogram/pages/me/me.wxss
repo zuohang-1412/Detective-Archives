@@ -71,6 +71,17 @@
   transform: scale(.72);
 }
 
+.platform-privacy-note {
+  margin-top: 18rpx;
+  color: rgba(255, 250, 240, 0.7);
+  font-size: 21rpx;
+  line-height: 1.6;
+}
+
+.privacy-login-button {
+  width: 340rpx;
+}
+
 .legal-link {
   color: #c58c43;
 }
@@ -268,6 +279,8 @@
 
 .account-settings {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 28rpx;
   margin-top: 56rpx;

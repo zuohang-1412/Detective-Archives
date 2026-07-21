@@ -1,7 +1,7 @@
 {
   "appid": "touristappid",
   "compileType": "miniprogram",
-  "libVersion": "trial",
+  "libVersion": "3.17.0",
   "miniprogramRoot": "apps/miniprogram/",
   "projectname": "detective-archives",
   "setting": {

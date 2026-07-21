@@ -36,6 +36,8 @@ Page({
     loading: false,
     loggingIn: false,
     agreementsAccepted: false,
+    platformPrivacyRequired: false,
+    platformPrivacyContractName: "《小程序用户隐私保护指引》",
     shelfActionId: "",
     reviewActionId: "",
     appealActionId: "",
@@ -44,6 +46,7 @@ Page({
   },
 
   onShow() {
+    if (!hasAuthToken()) this.checkPlatformPrivacy();
     this.refresh();
   },
 
@@ -102,12 +105,71 @@ Page({
     }
   },
 
+  async checkPlatformPrivacy() {
+    if (typeof wx.getPrivacySetting !== "function") {
+      this.setData({ platformPrivacyRequired: false });
+      return false;
+    }
+    return new Promise((resolve) => {
+      wx.getPrivacySetting({
+        success: (result) => {
+          const required = result.needAuthorization === true;
+          const updates = {
+            platformPrivacyRequired: required,
+            platformPrivacyContractName: result.privacyContractName || "《小程序用户隐私保护指引》"
+          };
+          if (this.data.error === "暂时无法读取微信隐私授权状态，请稍后重试") {
+            updates.error = "";
+          }
+          this.setData(updates);
+          resolve(required);
+        },
+        fail: () => {
+          this.setData({
+            platformPrivacyRequired: true,
+            error: "暂时无法读取微信隐私授权状态，请稍后重试"
+          });
+          resolve(true);
+        }
+      });
+    });
+  },
+
+  openPlatformPrivacy() {
+    if (typeof wx.openPrivacyContract !== "function") {
+      wx.showToast({ title: "当前微信版本暂不支持打开隐私指引", icon: "none" });
+      return;
+    }
+    wx.openPrivacyContract({
+      fail: () => wx.showToast({ title: "隐私指引打开失败，请稍后重试", icon: "none" })
+    });
+  },
+
   async login() {
     if (this.data.loggingIn) return;
     if (!this.data.agreementsAccepted) {
       this.setData({ error: "请先阅读并同意用户协议和隐私政策" });
       return;
     }
+    const platformPrivacyRequired = await this.checkPlatformPrivacy();
+    if (platformPrivacyRequired) {
+      this.setData({ error: "请先阅读并同意微信平台的隐私保护指引" });
+      return;
+    }
+    await this.performLogin();
+  },
+
+  async handleAgreePrivacyAuthorization() {
+    this.setData({ platformPrivacyRequired: false, error: "" });
+    if (!this.data.agreementsAccepted) {
+      this.setData({ error: "请继续阅读并同意用户协议和隐私政策" });
+      return;
+    }
+    await this.performLogin();
+  },
+
+  async performLogin() {
+    if (this.data.loggingIn) return;
     this.setData({ loggingIn: true, error: "" });
     try {
       await loginWechat({ termsAccepted: true, privacyAccepted: true });

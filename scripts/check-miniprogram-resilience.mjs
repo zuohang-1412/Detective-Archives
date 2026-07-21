@@ -25,7 +25,7 @@ function setDataValue(target, key, value) {
   });
 }
 
-function wxStub() {
+function wxStub(overrides = {}) {
   return {
     navigateBack(options = {}) {
       options.success?.();
@@ -36,11 +36,12 @@ function wxStub() {
     showModal() {},
     showToast() {},
     stopPullDownRefresh() {},
-    switchTab() {}
+    switchTab() {},
+    ...overrides
   };
 }
 
-async function loadPage(pageName, api) {
+async function loadPage(pageName, api, wxOverrides = {}) {
   const source = await readFile(path.join(root, `pages/${pageName}/${pageName}.js`), "utf8");
   let definition;
   vm.runInNewContext(source, {
@@ -51,7 +52,7 @@ async function loadPage(pageName, api) {
       if (request === "../../services/api") return api;
       throw new Error(`Unexpected require from ${pageName}: ${request}`);
     },
-    wx: wxStub()
+    wx: wxStub(wxOverrides)
   }, { filename: `${pageName}.js` });
   assert.ok(definition, `${pageName} must register a Page`);
   const instance = {
@@ -254,6 +255,57 @@ meFails = false;
 await me.refresh();
 assert.equal(me.data.loadError, "");
 assert.equal(me.data.loggedIn, true);
+
+let privacyLoginCount = 0;
+const privacyMe = await loadPage("me", {
+  async deactivateAccount() {},
+  async deleteReview() {},
+  async getCurrentUser() {},
+  hasAuthToken: () => false,
+  async listMyReviews() { return { data: [] }; },
+  async listShelf() { return { data: [] }; },
+  async loginWechat() { privacyLoginCount += 1; },
+  async logout() {},
+  async removeShelfItem() {},
+  async updateShelfItem() {}
+}, {
+  getPrivacySetting(options) {
+    options.success({
+      needAuthorization: true,
+      privacyContractName: "《侦探档案馆小程序隐私保护指引》"
+    });
+  },
+  openPrivacyContract(options) {
+    options.success?.();
+  }
+});
+assert.equal(await privacyMe.checkPlatformPrivacy(), true);
+assert.equal(privacyMe.data.platformPrivacyRequired, true);
+assert.equal(privacyMe.data.platformPrivacyContractName, "《侦探档案馆小程序隐私保护指引》");
+await privacyMe.handleAgreePrivacyAuthorization();
+assert.equal(privacyLoginCount, 0);
+assert.equal(privacyMe.data.error, "请继续阅读并同意用户协议和隐私政策");
+privacyMe.setData({ agreementsAccepted: true });
+await privacyMe.handleAgreePrivacyAuthorization();
+assert.equal(privacyLoginCount, 1);
+assert.equal(privacyMe.data.loggingIn, false);
+
+let privacyCheckFails = true;
+const privacyFailureMe = await loadPage("me", {
+  hasAuthToken: () => false
+}, {
+  getPrivacySetting(options) {
+    if (privacyCheckFails) options.fail();
+    else options.success({ needAuthorization: false });
+  }
+});
+assert.equal(await privacyFailureMe.checkPlatformPrivacy(), true);
+assert.equal(privacyFailureMe.data.platformPrivacyRequired, true);
+assert.equal(privacyFailureMe.data.error, "暂时无法读取微信隐私授权状态，请稍后重试");
+privacyCheckFails = false;
+assert.equal(await privacyFailureMe.checkPlatformPrivacy(), false);
+assert.equal(privacyFailureMe.data.platformPrivacyRequired, false);
+assert.equal(privacyFailureMe.data.error, "");
 
 let detailFails = true;
 const reviewDetail = await loadPage("review-detail", {

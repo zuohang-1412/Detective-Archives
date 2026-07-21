@@ -4,6 +4,7 @@ import vm from "node:vm";
 
 const root = path.resolve("apps/miniprogram");
 const appConfigPath = path.join(root, "app.json");
+const projectConfigPath = path.resolve("project.config.json");
 
 async function assertFile(filePath) {
   const fileStat = await stat(filePath);
@@ -53,8 +54,15 @@ async function checkTemplate(filePath) {
 }
 
 const appConfig = await parseJson(appConfigPath);
+const projectConfig = await parseJson(projectConfigPath);
 if (!Array.isArray(appConfig.pages) || appConfig.pages.length === 0) {
   throw new Error("app.json must declare at least one page");
+}
+if (appConfig.__usePrivacyCheck__ !== true) {
+  throw new Error("app.json must explicitly enable the WeChat privacy authorization flow");
+}
+if (!/^\d+\.\d+\.\d+$/.test(projectConfig.libVersion || "")) {
+  throw new Error("project.config.json must pin an explicit stable WeChat base-library version");
 }
 
 await checkScript(path.join(root, "app.js"));
@@ -111,6 +119,16 @@ for (const apiBehavior of ["getMyReview", "updateReview", "deleteReview", "delet
 }
 if (!meScript.includes("appealMyReview(") || !meTemplate.includes('catchtap="appealMyReview"')) {
   throw new Error("My Archives must expose review appeals");
+}
+for (const privacyCapability of ["getPrivacySetting", "openPrivacyContract", "handleAgreePrivacyAuthorization"]) {
+  if (!meScript.includes(privacyCapability)) {
+    throw new Error(`My Archives must integrate WeChat privacy capability: ${privacyCapability}`);
+  }
+}
+if (!meTemplate.includes('open-type="agreePrivacyAuthorization"')
+  || !meTemplate.includes('bindagreeprivacyauthorization="handleAgreePrivacyAuthorization"')
+  || !meTemplate.includes('bindtap="openPlatformPrivacy"')) {
+  throw new Error("My Archives must expose the WeChat privacy contract and authorization control");
 }
 for (const analyticsCapability of ["VISITOR_ID_KEY", "getVisitorId", '"x-visitor-id"']) {
   if (!apiScript.includes(analyticsCapability)) {

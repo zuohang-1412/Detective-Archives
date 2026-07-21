@@ -21,6 +21,9 @@ if (!/^wx[a-zA-Z0-9]{6,}$/.test(project.appid) || project.appid === "touristappi
 if (project.setting?.urlCheck !== true) {
   throw new Error("Mini Program production builds must enable URL domain checks");
 }
+if (!/^\d+\.\d+\.\d+$/.test(project.libVersion || "")) {
+  throw new Error("Mini Program production builds must pin a stable base-library version");
+}
 const publicApi = new URL(miniConfig.apiBaseUrl);
 if (publicApi.protocol !== "https:" || publicApi.origin !== miniConfig.apiBaseUrl) {
   throw new Error("Mini Program apiBaseUrl must be an exact HTTPS origin");
