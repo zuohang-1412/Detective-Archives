@@ -16,7 +16,8 @@ const [
   rollbackScript,
   releaseRollbackDrill,
   releaseDrillCompose,
-  rootPackage
+  rootPackage,
+  catalogSeedScript
 ] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
@@ -30,7 +31,8 @@ const [
   readFile(path.join(root, "ops/rollback-release.sh"), "utf8"),
   readFile(path.join(root, "scripts/check-release-rollback.mjs"), "utf8"),
   readFile(path.join(root, "ops/compose.release-drill.yaml"), "utf8"),
-  readFile(path.join(root, "package.json"), "utf8")
+  readFile(path.join(root, "package.json"), "utf8"),
+  readFile(path.join(root, "scripts/db-seed-catalog.mjs"), "utf8")
 ]);
 
 const startupSteps = [
@@ -99,5 +101,7 @@ assert.match(releaseRollbackDrill, /ops\/rollback-release\.sh/, "The drill must 
 assert.match(releaseRollbackDrill, /Candidate and baseline images must have different IDs/, "The drill must prove that two distinct images are switched");
 assert.match(releaseRollbackDrill, /previous-image-tag/, "The drill must verify persisted rollback state");
 assert.match(releaseRollbackDrill, /ops\/verify-backup\.sh/, "The drill must verify the mandatory deployment backup");
+assert.match(catalogSeedScript, /FROM catalog_import_batches/, "Base seeding must detect immutable content history");
+assert.match(catalogSeedScript, /preserved existing catalog/, "Redeployment must preserve batch-owned catalog fields and relations");
 
 console.log("Deployment structure and startup sequence: OK");

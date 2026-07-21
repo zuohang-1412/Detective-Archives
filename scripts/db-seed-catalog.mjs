@@ -406,19 +406,28 @@ try {
   await client.connect();
   await client.query("SELECT pg_advisory_lock(hashtext($1))", ["detective_archives_catalog_seed"]);
   seedLockHeld = true;
-  await client.query("BEGIN");
-  try {
-    const detectiveIdsBySlug = new Map();
-    await seedCoreDetectives(client, detectiveIdsBySlug);
-    await seedArchiveDirectory(client, detectiveIdsBySlug);
-    await seedPictureBook(client, detectiveIdsBySlug);
-    await client.query("COMMIT");
+  const importedBatchCount = await client.query(
+    "SELECT COUNT(*)::int AS count FROM catalog_import_batches"
+  );
+  if (importedBatchCount.rows[0].count > 0) {
     console.log(
-      `Catalog seed: complete (${coreDetectives.length} core, ${archiveDirectory.entries.length} directory, ${pictureBookCatalog.entries.length} picture-book entries)`
+      `Catalog seed: preserved existing catalog (${importedBatchCount.rows[0].count} recorded content batches)`
     );
-  } catch (error) {
-    await client.query("ROLLBACK");
-    throw error;
+  } else {
+    await client.query("BEGIN");
+    try {
+      const detectiveIdsBySlug = new Map();
+      await seedCoreDetectives(client, detectiveIdsBySlug);
+      await seedArchiveDirectory(client, detectiveIdsBySlug);
+      await seedPictureBook(client, detectiveIdsBySlug);
+      await client.query("COMMIT");
+      console.log(
+        `Catalog seed: complete (${coreDetectives.length} core, ${archiveDirectory.entries.length} directory, ${pictureBookCatalog.entries.length} picture-book entries)`
+      );
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    }
   }
 } finally {
   if (seedLockHeld) {
