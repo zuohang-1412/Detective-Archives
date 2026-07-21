@@ -109,7 +109,9 @@ function renderMetrics(data) {
     ["待审内容", data.pendingReviewCount + data.pendingCommentCount],
     ["待处理举报", data.openReportCount],
     ["链接反馈", data.openLinkFeedbackCount],
-    ["待复核链接", data.staleLinkCount]
+    ["确认失效链接", data.brokenLinkCount],
+    ["待人工复核", data.unconfirmedLinkCount],
+    ["超期未巡检", data.staleLinkCount]
   ];
   elements.metrics.replaceChildren(...metrics.map(([label, value]) => {
     const card = document.createElement("article");
@@ -256,10 +258,12 @@ function renderWorks(items) {
         const row = document.createElement("div");
         row.className = "link-row";
         const health = link.lastCheckOk === null
-          ? "待巡检"
+          ? link.lastCheckError
+            ? `待复核 ${link.lastCheckError}`
+            : "待巡检"
           : link.lastCheckOk
             ? `正常 ${link.lastStatusCode || ""}`.trim()
-            : `异常 ${link.lastCheckError || link.lastStatusCode || "未知"}`;
+            : `确认失效 ${link.lastCheckError || link.lastStatusCode || "未知"}`;
         row.append(textElement(
           "span",
           "",

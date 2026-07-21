@@ -18,7 +18,8 @@
 | 登录异常 | 登录路由非 2xx 比例突然升高 | 检查微信服务状态、AppSecret 和网络 |
 | 审核积压 | 待审核内容超过运营阈值 | 通知审核人员处理，不自动公开 |
 | 备份缺失 | 26 小时无成功备份 | 立即手工备份并排查定时任务 |
-| 正版链接异常 | `last_check_ok=false` 或连续失败达到 3 次 | 人工打开复核，必要时在后台停用并处理读者反馈 |
+| 正版链接确认失效 | `last_check_ok=false` 或连续确认失败达到 3 次 | 人工打开复核，必要时在后台停用并处理读者反馈 |
+| 正版链接暂无法确认 | `last_check_ok IS NULL` 且已有 `last_check_error` | 从其他网络人工打开；不因超时、反爬、429 或 5xx 自动下架 |
 
 ## 正版链接巡检
 
@@ -28,13 +29,34 @@
 npm run links:check
 ```
 
-命令会校验 HTTPS、DNS 解析和每次重定向，拒绝本机、私网和保留地址，保存状态码、耗时、最终地址和失败原因。HTTP 401/403 视为“站点存在但需要权限”，不会自动判定为失效。只重试上次失败的链接：
+命令会校验 HTTPS、DNS 解析和每次重定向，拒绝本机、私网和保留地址，保存状态码、耗时、最终地址和失败原因。HTTP 401/403 视为“站点存在但需要权限”，不会自动判定为失效。巡检结果分为：
+
+- `HEALTHY`：2xx/3xx 或可确认存在的 401/403。
+- `BROKEN`：GET 最终明确返回 400、404 或 410；只有该状态会触发 `--fail-on-broken`。
+- `UNCONFIRMED`：超时、DNS/抓取失败、429、451 或 5xx，保留为待人工复核，不累计确认失败次数。
+
+巡检器会在 HEAD 不可用时自动回退 GET，并对暂时性错误重试。生产建议使用较低并发：
+
+```bash
+npm run links:check -- --concurrency=3 --retries=1 --timeout-ms=15000 --fail-on-broken
+```
+
+只重试上次确认失败或暂无法确认的链接：
 
 ```bash
 npm run links:check -- --only-failed
 ```
 
 巡检结果只作为运营线索；任何下架操作都由后台人工确认并写入审计。
+
+仓库提供 `.github/workflows/link-health.yml` 每日任务模板。为保证数据库不暴露公网，该任务固定使用带 `detective-archives` 标签的自托管 Runner，且默认跳过。部署时需要：
+
+1. 在生产私网安装 GitHub Actions 自托管 Runner，并添加 `detective-archives` 标签。
+2. 配置仓库 Secret `DETECTIVE_ARCHIVES_DATABASE_URL`。
+3. 配置变量 `DETECTIVE_ARCHIVES_PGSSLMODE=verify-full`（或记录过风险接受的实际模式）。
+4. 确认 Runner 只能读取部署目录和必要数据库网络后，设置变量 `LINK_HEALTH_ENABLED=true`。
+
+确认坏链会让任务失败并触发 GitHub Actions 通知；`UNCONFIRMED` 只写入数据库和任务日志，由后台“待人工复核”指标跟踪。禁止为了使用 GitHub 托管 Runner 而把 PostgreSQL 直接开放到公网。
 
 ## 数据库备份
 

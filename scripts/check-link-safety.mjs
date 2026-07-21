@@ -1,4 +1,9 @@
 import assert from "node:assert/strict";
+import {
+  classifyLinkHealth,
+  isHealthyLinkStatus,
+  linkHealthOutcome
+} from "./lib/link-health.mjs";
 import { isPrivateAddress, validateUrlShape } from "./lib/link-safety.mjs";
 
 for (const address of [
@@ -17,5 +22,16 @@ assert.throws(
   () => validateUrlShape("https://user:password@example.com"),
   { code: "URL_CREDENTIALS_FORBIDDEN" }
 );
+for (const status of [200, 204, 301, 401, 403]) {
+  assert.equal(isHealthyLinkStatus(status), true, `${status} must be healthy`);
+  assert.equal(classifyLinkHealth(status), linkHealthOutcome.HEALTHY);
+}
+for (const status of [400, 404, 410]) {
+  assert.equal(classifyLinkHealth(status), linkHealthOutcome.BROKEN);
+}
+for (const status of [405, 429, 451, 500, 503]) {
+  assert.equal(classifyLinkHealth(status), linkHealthOutcome.UNCONFIRMED);
+}
+assert.equal(classifyLinkHealth(null, "TIMEOUT"), linkHealthOutcome.UNCONFIRMED);
 
-console.log("Link safety checks: OK (private networks and unsafe URL shapes blocked)");
+console.log("Link safety checks: OK (unsafe destinations blocked; hard failures separated from transient checks)");

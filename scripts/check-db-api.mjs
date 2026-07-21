@@ -390,6 +390,8 @@ try {
   });
   assert.equal(dashboardResponse.statusCode, 200, dashboardResponse.body);
   assert.ok(dashboardResponse.json().data.publishedDetectiveCount >= expectedPublishedDetectiveCount);
+  assert.ok(Number.isInteger(dashboardResponse.json().data.brokenLinkCount));
+  assert.ok(Number.isInteger(dashboardResponse.json().data.unconfirmedLinkCount));
 
   const usersResponse = await app.inject({
     method: "GET",

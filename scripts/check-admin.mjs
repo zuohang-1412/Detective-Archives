@@ -15,6 +15,11 @@ new vm.Script(script, { filename: "apps/admin/app.js" });
 if (script.includes("innerHTML")) {
   throw new Error("Admin UI must not render API content with innerHTML");
 }
+for (const healthLabel of ["确认失效链接", "待人工复核", "超期未巡检"]) {
+  if (!script.includes(healthLabel)) {
+    throw new Error(`Admin UI must expose link health state: ${healthLabel}`);
+  }
+}
 
 const html = await readFile(path.join(root, "index.html"), "utf8");
 for (const asset of ["/admin/styles.css", "/admin/app.js"]) {

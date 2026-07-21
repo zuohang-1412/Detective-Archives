@@ -1,4 +1,9 @@
 import { createDatabasePoolFromEnv } from "../apps/api/dist/db/pool.js";
+import {
+  classifyLinkHealth,
+  isHealthyLinkStatus,
+  linkHealthOutcome
+} from "./lib/link-health.mjs";
 import { validatePublicHttpsUrl } from "./lib/link-safety.mjs";
 
 const database = createDatabasePoolFromEnv();
@@ -14,11 +19,26 @@ if (!Number.isInteger(limit) || limit < 1 || limit > 5_000) {
 const failOnBroken = process.argv.includes("--fail-on-broken");
 const onlyFailed = process.argv.includes("--only-failed");
 
+function integerArgument(name, fallback, minimum, maximum) {
+  const argument = process.argv.find((value) => value.startsWith(`--${name}=`));
+  const parsed = argument
+    ? Number.parseInt(argument.slice(name.length + 3), 10)
+    : fallback;
+  if (!Number.isInteger(parsed) || parsed < minimum || parsed > maximum) {
+    throw new Error(`--${name} must be an integer between ${minimum} and ${maximum}`);
+  }
+  return parsed;
+}
+
+const concurrency = integerArgument("concurrency", 5, 1, 20);
+const retries = integerArgument("retries", 1, 0, 3);
+const timeoutMs = integerArgument("timeout-ms", 10_000, 1_000, 60_000);
+
 async function fetchWithSafeRedirects(initialUrl, method) {
   let current = await validatePublicHttpsUrl(initialUrl);
   for (let redirectCount = 0; redirectCount <= 5; redirectCount += 1) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
     let response;
     try {
       response = await fetch(current, {
@@ -59,34 +79,67 @@ function errorCode(error) {
 async function checkLink(link) {
   const startedAt = Date.now();
   try {
-    let result = await fetchWithSafeRedirects(link.url, "HEAD");
-    const headStatus = result.response.status;
-    const headIsConclusive = (headStatus >= 200 && headStatus < 400)
-      || headStatus === 401
-      || headStatus === 403;
-    if (!headIsConclusive) {
-      result = await fetchWithSafeRedirects(link.url, "GET");
+    try {
+      const headResult = await fetchWithSafeRedirects(link.url, "HEAD");
+      if (isHealthyLinkStatus(headResult.response.status)) {
+        return {
+          link,
+          statusCode: headResult.response.status,
+          isOk: true,
+          lastCheckOk: true,
+          outcome: linkHealthOutcome.HEALTHY,
+          responseTimeMs: Date.now() - startedAt,
+          finalUrl: headResult.finalUrl,
+          errorCode: null
+        };
+      }
+    } catch {
+      // Some official sites reject or stall HEAD requests. GET is authoritative.
     }
+
+    let result = null;
+    let resultError = null;
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+      try {
+        result = await fetchWithSafeRedirects(link.url, "GET");
+        resultError = null;
+        const outcome = classifyLinkHealth(result.response.status);
+        if (outcome !== linkHealthOutcome.UNCONFIRMED || attempt === retries) break;
+      } catch (error) {
+        result = null;
+        resultError = error;
+        if (attempt === retries) throw error;
+      }
+    }
+    if (!result) throw resultError ?? new Error("FETCH_FAILED");
+
     const statusCode = result.response.status;
-    const isOk = (statusCode >= 200 && statusCode < 400)
-      || statusCode === 401
-      || statusCode === 403;
+    const outcome = classifyLinkHealth(statusCode);
     return {
       link,
       statusCode,
-      isOk,
+      isOk: outcome === linkHealthOutcome.HEALTHY,
+      lastCheckOk: outcome === linkHealthOutcome.HEALTHY
+        ? true
+        : outcome === linkHealthOutcome.BROKEN
+          ? false
+          : null,
+      outcome,
       responseTimeMs: Date.now() - startedAt,
       finalUrl: result.finalUrl,
-      errorCode: isOk ? null : `HTTP_${statusCode}`
+      errorCode: outcome === linkHealthOutcome.HEALTHY ? null : `HTTP_${statusCode}`
     };
   } catch (error) {
+    const code = errorCode(error);
     return {
       link,
       statusCode: null,
       isOk: false,
+      lastCheckOk: null,
+      outcome: classifyLinkHealth(null, code),
       responseTimeMs: Date.now() - startedAt,
       finalUrl: null,
-      errorCode: errorCode(error)
+      errorCode: code
     };
   }
 }
@@ -101,9 +154,13 @@ async function persistResult(result) {
     UPDATE work_links
     SET last_checked_at = NOW(),
       last_status_code = $2,
-      last_check_ok = $3,
+      last_check_ok = $7,
       last_check_error = $6,
-      consecutive_failures = CASE WHEN $3 THEN 0 ELSE consecutive_failures + 1 END,
+      consecutive_failures = CASE
+        WHEN $7::boolean IS TRUE THEN 0
+        WHEN $7::boolean IS FALSE THEN consecutive_failures + 1
+        ELSE 0
+      END,
       updated_at = NOW()
     WHERE id = $1
   `, [
@@ -112,7 +169,8 @@ async function persistResult(result) {
     result.isOk,
     result.responseTimeMs,
     result.finalUrl,
-    result.errorCode
+    result.errorCode,
+    result.lastCheckOk
   ]);
 }
 
@@ -123,13 +181,13 @@ try {
     JOIN works work ON work.id = link.work_id
     WHERE link.is_active = TRUE
       AND work.status = 'PUBLISHED'
-      AND (NOT $2::boolean OR link.last_check_ok = FALSE)
+      AND (NOT $2::boolean OR link.last_check_ok IS NOT TRUE)
     ORDER BY link.last_checked_at ASC NULLS FIRST, link.created_at
     LIMIT $1
   `, [limit, onlyFailed]);
   const results = [];
   const pending = [...links.rows];
-  const workers = Array.from({ length: Math.min(5, pending.length) }, async () => {
+  const workers = Array.from({ length: Math.min(concurrency, pending.length) }, async () => {
     while (pending.length) {
       const link = pending.shift();
       if (!link) return;
@@ -141,18 +199,24 @@ try {
   await Promise.all(workers);
 
   const failures = results.filter((result) => !result.isOk);
+  const broken = failures.filter((result) => result.outcome === linkHealthOutcome.BROKEN);
+  const unconfirmed = failures.filter((result) => result.outcome === linkHealthOutcome.UNCONFIRMED);
   console.log(JSON.stringify({
     checked: results.length,
     healthy: results.length - failures.length,
     unhealthy: failures.length,
+    broken: broken.length,
+    unconfirmed: unconfirmed.length,
+    settings: { concurrency, retries, timeoutMs },
     failures: failures.map((result) => ({
       workTitle: result.link.workTitle,
       providerName: result.link.providerName,
+      outcome: result.outcome,
       errorCode: result.errorCode,
       statusCode: result.statusCode
     }))
   }, null, 2));
-  if (failOnBroken && failures.length) process.exitCode = 1;
+  if (failOnBroken && broken.length) process.exitCode = 1;
 } finally {
   await database.end();
 }

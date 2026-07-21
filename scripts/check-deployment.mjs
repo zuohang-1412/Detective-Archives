@@ -3,11 +3,12 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = path.resolve();
-const [dockerfile, compose, caddyfile, qualityWorkflow] = await Promise.all([
+const [dockerfile, compose, caddyfile, qualityWorkflow, linkHealthWorkflow] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
   readFile(path.join(root, "ops/Caddyfile.example"), "utf8"),
-  readFile(path.join(root, ".github/workflows/quality.yml"), "utf8")
+  readFile(path.join(root, ".github/workflows/quality.yml"), "utf8"),
+  readFile(path.join(root, ".github/workflows/link-health.yml"), "utf8")
 ]);
 
 const startupSteps = [
@@ -35,5 +36,9 @@ assert.match(qualityWorkflow, /npm run check:db-api/, "CI must exercise the data
 assert.match(qualityWorkflow, /docker run[\s\S]*detective-archives-api:test/, "CI must start the built image");
 assert.match(qualityWorkflow, /npm run check:runtime/, "CI must probe the running production image");
 assert.match(qualityWorkflow, /npm run check:performance/, "CI must measure the production image latency");
+assert.match(linkHealthWorkflow, /schedule:[\s\S]*cron:/, "Link checks must support a daily schedule");
+assert.match(linkHealthWorkflow, /LINK_HEALTH_ENABLED/, "Scheduled link checks must require explicit enablement");
+assert.match(linkHealthWorkflow, /runs-on:\s*\[self-hosted, detective-archives\]/, "Link checks must run inside the private deployment network");
+assert.match(linkHealthWorkflow, /--fail-on-broken/, "Scheduled link checks must alert on confirmed failures");
 
 console.log("Deployment structure and startup sequence: OK");

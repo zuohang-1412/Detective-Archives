@@ -11,6 +11,8 @@ export async function getAdminDashboard(database: DatabaseClient) {
     pendingCommentCount: number;
     openReportCount: number;
     activeLinkCount: number;
+    brokenLinkCount: number;
+    unconfirmedLinkCount: number;
     staleLinkCount: number;
     openLinkFeedbackCount: number;
   }>(database, `
@@ -22,6 +24,13 @@ export async function getAdminDashboard(database: DatabaseClient) {
       (SELECT COUNT(*)::int FROM comments WHERE status = 'PENDING_REVIEW' AND deleted_at IS NULL) AS "pendingCommentCount",
       (SELECT COUNT(*)::int FROM reports WHERE status IN ('OPEN', 'PROCESSING')) AS "openReportCount",
       (SELECT COUNT(*)::int FROM work_links WHERE is_active = TRUE) AS "activeLinkCount",
+      (SELECT COUNT(*)::int FROM work_links
+        WHERE is_active = TRUE AND last_check_ok = FALSE) AS "brokenLinkCount",
+      (SELECT COUNT(*)::int FROM work_links
+        WHERE is_active = TRUE
+          AND last_check_ok IS NULL
+          AND last_checked_at IS NOT NULL
+          AND last_check_error IS NOT NULL) AS "unconfirmedLinkCount",
       (SELECT COUNT(*)::int FROM work_links
         WHERE is_active = TRUE
           AND (last_checked_at IS NULL OR last_checked_at < NOW() - INTERVAL '90 days')) AS "staleLinkCount",
