@@ -146,6 +146,11 @@ try {
         WHERE featured.detective_id = detective.id
       )
   `, [["PB-001-STD", "PB-002-STD", "PB-003-STD"]]);
+  const sourceCapturedDetectiveCount = await client.query(`
+    SELECT COUNT(*)::int AS count
+    FROM detectives
+    WHERE status = 'PUBLISHED' AND verification = 'SOURCE_CAPTURED'
+  `);
   const invalidMappedRecommendationCount = await client.query(`
     SELECT COUNT(*)::int AS count
     FROM picture_book_recommendations recommendation
@@ -206,6 +211,7 @@ try {
   );
   expect(invalidMappedRecommendationCount.rows[0].count, 0, "unavailable mapped recommendation count");
   expect(verifiedCoreSeedCount.rows[0].count, 3, "verified volumes 1 to 3 detective count");
+  expect(sourceCapturedDetectiveCount.rows[0].count, 0, "published source-captured detective count");
   expect(sourceCount.rows[0].count, expectedSourceCount, "directory source relation count");
   expect(workCount.rows[0].count, expectedWorkCount, "published work count");
   expect(workLinkCount.rows[0].count, expectedActiveLinkCount, "active official work link count");

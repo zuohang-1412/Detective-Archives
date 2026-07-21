@@ -100,7 +100,8 @@ if (!archiveTemplate.includes('bindtap="onLoadMore"')) {
 }
 if (!archiveScript.includes("openRecommendedWork(")
   || !archiveTemplate.includes('catchtap="openRecommendedWork"')
-  || !archiveTemplate.includes("linkedRecommendations")) {
+  || !archiveTemplate.includes("linkedRecommendations")
+  || !archiveTemplate.includes("关联作品：")) {
   throw new Error("Picture-book entries must link mapped recommendations to formal works");
 }
 for (const apiBehavior of ["getMyReview", "updateReview", "deleteReview", "deleteComment", "createAppeal"]) {

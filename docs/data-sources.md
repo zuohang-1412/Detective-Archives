@@ -5,7 +5,7 @@
 - 标准版：第 1～108 卷，每卷一条。
 - 特装版：第 105 卷额外一条“工藤新一”。
 - 数据总量：109 条。
-- 已提取推荐作品标签：73 条；其中 45 条已关联正式作品，其余 28 条保留原始标签等待核验；没有提取到推荐作的条目继续保持 `MISSING`，不推测补齐。
+- 已提取推荐作品标签：73 条，全部保留原始标签并关联同一作品、经来源确认的合集或系列；没有提取到推荐作的条目继续保持 `MISSING`，不推测补齐。
 - 稳定编号格式：`PB-{三位卷号}-{STD|SP}`，例如 `PB-001-STD`、`PB-105-SP`。
 
 截至数据快照日 2026-07-21，小学馆既刊目录和卷册资料显示最新出版至第 108 卷。
@@ -139,6 +139,10 @@ npm run check:directory
 `apps/api/src/data/catalog-expansion-recommendation-map-001.json` 是第 20 个不可变批次。它不新增或改写人物、作品和原始图鉴标签，只把 42 条名称可精确对应的推荐记录关联到既有正式作品；图鉴 API 和小程序因此可以直接进入作品详情与正版渠道。其余 31 条继续保持未映射，等待独立来源核验。导入器会校验图鉴编号、原始标签和作品 slug，补偿批次可通过 `pictureBookRecommendationUnmappings` 解除错误映射而不删除原始事实。
 
 `apps/api/src/data/catalog-expansion-core-001.json` 是第 21 个不可变批次。它以 Project Gutenberg《The Valley of Fear》、青空文库《黄金仮面》和 Agatha Christie Official《Death on the Nile》补齐第 1～3 卷基础种子人物的来源、时代、分类、别名和图鉴指定作品，并将“恐怖谷”“黄金甲面人”“尼罗河上的惨案”三个原始标签关联到正式作品。由此推荐直达达到 45/73，三位核心人物均升级为 `PRIMARY_SOURCE_CONFIRMED`；原图鉴旧译仍原样保留。
+
+`apps/api/src/data/catalog-expansion-recommendation-map-002.json` 是第 22 个不可变批次。它把剩余 28 条旧译名、单篇或单集推荐关联到既有来源已确认的同一作品、收录合集或所属系列，完成 73/73 推荐直达。原图鉴标签不改写；API 另返回正式目标标题，小程序明确显示“关联作品”，读者可以辨认《奇妙的脚步声》进入《布朗神父的天真》这类单篇到合集关系，而不会把两者伪装成同名作品。
+
+`apps/api/src/data/catalog-expansion-china-001.json` 是第 23 个不可变批次。它使用中国作家网关于孙了红/鲁平的文学专题、对雷米的作者专访，以及衢州市图书馆、WorldCat 馆藏书目，为鲁平和方木补齐第二层权威来源与各一部正式作品。两条人物记录均从 `SOURCE_CAPTURED` 升级为 `PRIMARY_SOURCE_CONFIRMED`；数据库完整性门禁随后要求所有已发布人物的单源记录数量必须为零。
 
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 

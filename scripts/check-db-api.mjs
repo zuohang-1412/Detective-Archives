@@ -214,6 +214,14 @@ try {
         "arsene-lupin-gentleman-burglar"
       );
     }],
+    ["/api/v1/picture-book?q=%E5%B8%83%E6%9C%97%E7%A5%9E%E7%88%B6", (body) => {
+      assert.equal(body.data[0].id, "PB-013-STD");
+      assert.equal(body.data[0].linkedRecommendations[0].sourceLabel, "奇妙的脚步声");
+      assert.equal(
+        body.data[0].linkedRecommendations[0].workSlug,
+        "the-innocence-of-father-brown"
+      );
+    }],
     ["/api/v1/works?pageSize=50", (body) => assert.equal(body.pagination.total, expectedPublishedWorkCount)],
     ["/api/v1/works/d-slope-murder-case", (body) => assert.equal(body.data.links.length, 2)],
     ["/api/v1/works/any-old-port-in-a-storm", (body) => {

@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-china-001",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Upgrade the final two source-captured Chinese archive extensions with authoritative literary reporting plus existing library catalog records, and add one source-backed formal work for each without inventing biographical or case details.",
+  "sources": [
+    {
+      "id": "quzhou-library-lu-ping",
+      "label": "衢州市图书馆：鲁平探案",
+      "url": "https://www.qzlib.com.cn/opac/book/900026177",
+      "quality": "LIBRARY"
+    },
+    {
+      "id": "chinawriter-lu-ping",
+      "label": "中国作家网：亚森·罗平的诞生与在中国的传播",
+      "url": "https://www.chinawriter.com.cn/n1/2021/0223/c404092-32034284.html",
+      "quality": "AUTHORITATIVE_LITERARY_MEDIA"
+    },
+    {
+      "id": "worldcat-criminal-minds",
+      "label": "WorldCat：《心理罪：第七个读者》",
+      "url": "https://search.worldcat.org/title/%3A-Criminal-minds/oclc/908319065",
+      "quality": "LIBRARY"
+    },
+    {
+      "id": "chinawriter-fang-mu",
+      "label": "中国作家网：雷米——虚实交融让悬疑写作更加迷人",
+      "url": "https://www.chinawriter.com.cn/n1/2023/0215/c403994-32623965.html",
+      "quality": "AUTHORITATIVE_LITERARY_MEDIA"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-CN-002",
+      "pictureBookEntryIds": [],
+      "slug": "lu-ping",
+      "nameZh": "鲁平",
+      "nameOriginal": "鲁平",
+      "nameEn": "Lu Ping",
+      "country": "中国",
+      "era": "民国时期",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "孙了红创造的民国侠盗人物，兼具反侦探故事中的行动者与调查者身份，常以乔装、心理判断和反侦察手段惩恶济弱。",
+      "creatorName": "孙了红",
+      "aliases": ["侠盗鲁平", "东方亚森罗苹"],
+      "tags": ["华语经典", "民国推理", "侠盗", "反侦探"],
+      "featuredCases": ["《血纸人》", "《侠盗鲁平》"],
+      "sourceIds": ["quzhou-library-lu-ping", "chinawriter-lu-ping"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "lu-ping-detective-stories",
+          "titleZh": "鲁平探案",
+          "titleOriginal": "鲁平探案",
+          "mediaType": "SHORT_STORY",
+          "summary": "孙了红笔下鲁平故事的馆藏书目入口，可结合中国作家网专题核对人物的侠盗定位、调查方式及《血纸人》等代表故事。",
+          "creatorName": "孙了红",
+          "sourceId": "quzhou-library-lu-ping",
+          "linkType": "LIBRARY",
+          "providerName": "衢州市图书馆",
+          "region": "CN"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-CN-003",
+      "pictureBookEntryIds": [],
+      "slug": "fang-mu",
+      "nameZh": "方木",
+      "nameOriginal": "方木",
+      "nameEn": "Fang Mu",
+      "country": "中国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "雷米《心理罪》系列的主角，凭犯罪心理画像和现场行为分析协助刑事调查；人物成长贯穿《第七个读者》《画像》等作品。",
+      "creatorName": "雷米",
+      "aliases": ["心理罪方木"],
+      "tags": ["犯罪心理", "华语推理", "刑事调查", "心理画像"],
+      "featuredCases": ["《心理罪：第七个读者》", "《心理罪：画像》"],
+      "sourceIds": ["worldcat-criminal-minds", "chinawriter-fang-mu"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "criminal-minds-the-seventh-reader",
+          "titleZh": "心理罪：第七个读者",
+          "titleOriginal": "心理罪：第七个读者",
+          "mediaType": "NOVEL",
+          "summary": "方木尚在大学时期遭遇校园连续案件的系列前传，中国作家网对雷米的专访确认其与《画像》共同构成方木人物经历的重要起点。",
+          "creatorName": "雷米",
+          "sourceId": "worldcat-criminal-minds",
+          "linkType": "LIBRARY",
+          "providerName": "WorldCat",
+          "region": "GLOBAL"
+        }
+      ]
+    }
+  ]
+}

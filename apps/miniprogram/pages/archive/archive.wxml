@@ -118,7 +118,7 @@
             class="recommendation-link"
             data-work-slug="{{item.linkedRecommendations[0].workSlug}}"
             catchtap="openRecommendedWork"
-          >进入作品与正版渠道 ›</view>
+          >关联作品：{{item.linkedRecommendations[0].titleZh}} · 查看正版渠道 ›</view>
         </view>
         <view wx:if="{{item.detectiveSlug}}" class="detail-state ready">查看档案</view>
         <view wx:else class="detail-state">待补全</view>
