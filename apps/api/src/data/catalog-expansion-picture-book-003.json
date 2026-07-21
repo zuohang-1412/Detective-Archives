@@ -1,0 +1,475 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-003",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "kobunsha-shinjuku-zame-dokuzaru",
+      "label": "光文社：《毒猿 新宿鮫II》",
+      "url": "https://special.kobunsha.com/osawa/kikan/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "ian-fleming-goldfinger",
+      "label": "Ian Fleming official: Goldfinger",
+      "url": "https://ianfleming.com/book/goldfinger/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "kobunsha-ningyo-naze-korosareru",
+      "label": "光文社：《人形はなぜ殺される》",
+      "url": "https://www3.kobunsha.com/kappa/author/d/16001.html",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "morgan-charlie-chan-carries-on",
+      "label": "The Morgan Library & Museum: Charlie Chan Carries On",
+      "url": "https://www.themorgan.org/printed-books/87892",
+      "quality": "MUSEUM_LIBRARY"
+    },
+    {
+      "id": "gutenberg-singing-bone",
+      "label": "Project Gutenberg: The Adventures of Dr. Thorndyke (The Singing Bone)",
+      "url": "https://www.gutenberg.org/ebooks/59478",
+      "quality": "PUBLIC_DOMAIN_LIBRARY"
+    },
+    {
+      "id": "toei-toyama-kin-san",
+      "label": "东映视频：《遠山の金さん捕物帳》",
+      "url": "https://www.toei-video.co.jp/special/kinsan/",
+      "quality": "OFFICIAL_VIDEO"
+    },
+    {
+      "id": "prh-i-the-jury",
+      "label": "Penguin Random House: I, the Jury",
+      "url": "https://www.penguinrandomhouse.com/books/355015/i-the-jury-by-mickey-spillane/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "prh-bishop-murder-case",
+      "label": "Penguin Random House: The Bishop Murder Case",
+      "url": "https://www.penguinrandomhouse.com/books/790654/the-bishop-murder-case-by-s-s-van-dine/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "ndl-utagawashiki-wa-basseyo",
+      "label": "日本国立国会图书馆：《疑わしきは罰せよ》",
+      "url": "https://ndlsearch.ndl.go.jp/books/R100000038-I1015216",
+      "quality": "NATIONAL_LIBRARY"
+    },
+    {
+      "id": "kodansha-hiiragi-shigeru",
+      "label": "讲谈社：《京人形の館殺人事件》人物书目",
+      "url": "https://www.kodansha.co.jp/book/products/0000162019",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "simon-schuster-tragedy-y",
+      "label": "Simon & Schuster: The Tragedy of Y",
+      "url": "https://www.simonandschuster.com/books/The-Tragedy-of-Y/Ellery-Queen/American-Mystery-Classics/9781613167915",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "bunshun-hana-no-hitsugi",
+      "label": "文艺春秋：《花の棺》",
+      "url": "https://books.bunshun.jp/ud/book/num/9784167246037",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-026-STD",
+      "pictureBookEntryIds": ["PB-026-STD"],
+      "slug": "inspector-samejima",
+      "nameZh": "鲛岛警部",
+      "nameOriginal": "鮫島警部",
+      "nameEn": "Inspector Samejima",
+      "country": "日本",
+      "era": "20世纪末至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "大泽在昌《新宿鲛》系列中的新宿署刑警，因独立执着地追查犯罪而被称为“新宿鲛”。",
+      "creatorName": "大泽在昌",
+      "aliases": ["鲛岛", "新宿鲛", "Samejima"],
+      "tags": ["警察小说", "新宿", "硬汉派"],
+      "featuredCases": ["《毒猿》"],
+      "sourceIds": ["kobunsha-shinjuku-zame-dokuzaru"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "dokuzaru-shinjuku-zame-ii",
+          "titleZh": "毒猿·新宿鲛II",
+          "titleOriginal": "毒猿 新宿鮫II",
+          "mediaType": "NOVEL",
+          "summary": "职业杀手“毒猿”潜入新宿，鲛岛与来自台湾的刑警共同追踪其行动，并阻止暴力进一步扩大。",
+          "sourceId": "kobunsha-shinjuku-zame-dokuzaru",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-027-STD",
+      "pictureBookEntryIds": ["PB-027-STD"],
+      "slug": "james-bond",
+      "nameZh": "詹姆斯·邦德",
+      "nameOriginal": "James Bond",
+      "nameEn": "James Bond",
+      "country": "英国",
+      "era": "20世纪中叶至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "GAME"],
+      "summary": "伊恩·弗莱明创作的英国秘密情报员，以代号零零七执行调查、潜入和反间谍任务。",
+      "creatorName": "伊恩·弗莱明",
+      "aliases": ["詹姆士·邦德", "007", "James Bond"],
+      "tags": ["间谍", "秘密调查", "英国"],
+      "featuredCases": ["《金手指》"],
+      "sourceIds": ["ian-fleming-goldfinger"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "goldfinger-novel",
+          "titleZh": "金手指",
+          "titleOriginal": "Goldfinger",
+          "mediaType": "NOVEL",
+          "releaseYear": 1959,
+          "summary": "邦德受命调查奥瑞克·金手指的黄金活动，逐步发现走私计划及其更大规模的金库阴谋。",
+          "sourceId": "ian-fleming-goldfinger",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Ian Fleming Publications",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-028-STD",
+      "pictureBookEntryIds": ["PB-028-STD"],
+      "slug": "kyosuke-kamizu",
+      "nameZh": "神津恭介",
+      "nameOriginal": "神津恭介",
+      "nameEn": "Kyosuke Kamizu",
+      "country": "日本",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "高木彬光笔下兼具法医学知识与逻辑能力的学者型侦探，常由友人松下研三记录调查过程。",
+      "creatorName": "高木彬光",
+      "aliases": ["Kamizu Kyosuke", "神津侦探"],
+      "tags": ["本格推理", "法医学", "学者侦探"],
+      "featuredCases": ["《人偶为何被杀》"],
+      "sourceIds": ["kobunsha-ningyo-naze-korosareru"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "ningyo-wa-naze-korosareru",
+          "titleZh": "人偶为何被杀",
+          "titleOriginal": "人形はなぜ殺される",
+          "mediaType": "NOVEL",
+          "summary": "人偶表演接连预告真实命案，神津恭介从消失的人偶头部、现场布置与复仇关系中拆解谜题。",
+          "sourceId": "kobunsha-ningyo-naze-korosareru",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-029-STD",
+      "pictureBookEntryIds": ["PB-029-STD"],
+      "slug": "charlie-chan",
+      "nameZh": "陈查理",
+      "nameOriginal": "Charlie Chan",
+      "nameEn": "Charlie Chan",
+      "country": "美国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "厄尔·德尔·比格斯笔下的檀香山警探，以沉稳观察、耐心询问与跨文化旅行调查处理案件。",
+      "creatorName": "厄尔·德尔·比格斯",
+      "aliases": ["Charlie Chan", "查理·陈"],
+      "tags": ["警察侦探", "檀香山", "古典推理"],
+      "featuredCases": ["《陈查理大展身手》"],
+      "sourceIds": ["morgan-charlie-chan-carries-on"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "charlie-chan-carries-on",
+          "titleZh": "陈查理大展身手",
+          "titleOriginal": "Charlie Chan Carries On",
+          "mediaType": "NOVEL",
+          "releaseYear": 1930,
+          "summary": "一支环球旅行团遭遇连续命案，陈查理接续调查并从共同旅程、人物身份与跨国线索中寻找凶手。",
+          "sourceId": "morgan-charlie-chan-carries-on",
+          "linkType": "LIBRARY",
+          "providerName": "The Morgan Library & Museum",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-030-STD",
+      "pictureBookEntryIds": ["PB-030-STD"],
+      "slug": "john-thorndyke",
+      "nameZh": "约翰·桑代克",
+      "nameOriginal": "John Thorndyke",
+      "nameEn": "John Thorndyke",
+      "country": "英国",
+      "era": "20世纪初",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "R·奥斯汀·弗里曼笔下的法医与侦探，重视物证检验、实验复现和对犯罪过程的科学重建。",
+      "creatorName": "R·奥斯汀·弗里曼",
+      "aliases": ["索恩戴克博士", "Dr. Thorndyke"],
+      "tags": ["科学侦查", "法医学", "倒叙推理"],
+      "featuredCases": ["《唱歌的白骨》"],
+      "sourceIds": ["gutenberg-singing-bone"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-singing-bone",
+          "titleZh": "唱歌的白骨",
+          "titleOriginal": "The Singing Bone",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1912,
+          "summary": "短篇集先呈现部分犯罪过程，再由桑代克依据物证与实验还原案情，是倒叙侦探叙事的早期代表。",
+          "sourceId": "gutenberg-singing-bone",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-031-STD",
+      "pictureBookEntryIds": ["PB-031-STD"],
+      "slug": "toyama-no-kin-san",
+      "nameZh": "远山金四郎（远山景元）",
+      "nameOriginal": "遠山左衛門尉景元",
+      "nameEn": "Toyama no Kin-san",
+      "country": "日本",
+      "era": "江户时代题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "以江户町奉行远山景元为原型的通俗影视角色，常化身市井游侠“金先生”查案，最终在公堂揭示身份。",
+      "creatorName": "阵出达朗",
+      "aliases": ["远山左卫门尉景元", "远山阿金", "金先生"],
+      "tags": ["时代剧", "公堂推理", "江户"],
+      "featuredCases": ["《远山阿金捕物帐》"],
+      "sourceIds": ["toei-toyama-kin-san"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "toyama-no-kin-san-torimonocho",
+          "titleZh": "远山阿金捕物帐",
+          "titleOriginal": "遠山の金さん捕物帳",
+          "mediaType": "SERIES",
+          "releaseYear": 1970,
+          "summary": "远山金四郎以市井身份住在江户长屋并卷入案件，再以北町奉行身份在公堂确认罪证与真相。",
+          "sourceId": "toei-toyama-kin-san",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "东映视频",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-032-STD",
+      "pictureBookEntryIds": ["PB-032-STD"],
+      "slug": "mike-hammer",
+      "nameZh": "迈克·汉默",
+      "nameOriginal": "Mike Hammer",
+      "nameEn": "Mike Hammer",
+      "country": "美国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "米奇·斯皮兰笔下的纽约私人侦探，行动直接强硬，常以个人方式追查暴力犯罪与朋友遭遇的不公。",
+      "creatorName": "米奇·斯皮兰",
+      "aliases": ["麦克·哈默", "Mike Hammer"],
+      "tags": ["硬汉派", "私人侦探", "纽约"],
+      "featuredCases": ["《我来审判》"],
+      "sourceIds": ["prh-i-the-jury"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "i-the-jury",
+          "titleZh": "我来审判",
+          "titleOriginal": "I, the Jury",
+          "mediaType": "NOVEL",
+          "releaseYear": 1947,
+          "summary": "汉默的好友遇害后，他从好友的调查工作和社交关系入手追查凶手，同时不断面对暴力与误导。",
+          "sourceId": "prh-i-the-jury",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-033-STD",
+      "pictureBookEntryIds": ["PB-033-STD"],
+      "slug": "philo-vance",
+      "nameZh": "菲洛·万斯",
+      "nameOriginal": "Philo Vance",
+      "nameEn": "Philo Vance",
+      "country": "美国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "S·S·范·达因笔下博学而讲究分析的纽约业余侦探，协助地方检察官处理结构复杂的谜案。",
+      "creatorName": "S·S·范·达因",
+      "aliases": ["费洛·万斯", "Philo Vance"],
+      "tags": ["黄金时代", "业余侦探", "谜题推理"],
+      "featuredCases": ["《主教杀人事件》"],
+      "sourceIds": ["prh-bishop-murder-case"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-bishop-murder-case",
+          "titleZh": "主教杀人事件",
+          "titleOriginal": "The Bishop Murder Case",
+          "mediaType": "NOVEL",
+          "releaseYear": 1929,
+          "summary": "一连串命案被设计成童谣与棋局般的谜题，万斯从受害者关系、知识背景与现场符号中判断策划者。",
+          "sourceId": "prh-bishop-murder-case",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-034-STD",
+      "pictureBookEntryIds": ["PB-034-STD"],
+      "slug": "shigeru-hiiragi",
+      "nameZh": "柊茂",
+      "nameOriginal": "柊茂",
+      "nameEn": "Shigeru Hiiragi",
+      "country": "日本",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "NOVEL", "SERIES"],
+      "summary": "和久峻三笔下绰号“红萝卜检察官”的检察官，以法庭询问、证据矛盾和生活经验查明案件事实。",
+      "creatorName": "和久峻三",
+      "aliases": ["红萝卜检察官", "赤かぶ検事", "栋茂（图鉴旧录）"],
+      "tags": ["法庭推理", "检察官", "证据调查"],
+      "featuredCases": ["《疑者有罪》／《怀疑遭受惩罚》（图鉴旧译）"],
+      "sourceIds": ["ndl-utagawashiki-wa-basseyo", "kodansha-hiiragi-shigeru"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "utagawashiki-wa-basseyo",
+          "titleZh": "疑者有罪",
+          "titleOriginal": "疑わしきは罰せよ",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1976,
+          "summary": "被告在公审阶段推翻杀人自供，柊茂面对证据与供述的冲突，重新追查可能改变案件判断的事实。",
+          "sourceId": "ndl-utagawashiki-wa-basseyo",
+          "linkType": "LIBRARY",
+          "providerName": "日本国立国会图书馆",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-035-STD",
+      "pictureBookEntryIds": ["PB-035-STD"],
+      "slug": "drury-lane",
+      "nameZh": "哲瑞·雷恩",
+      "nameOriginal": "Drury Lane",
+      "nameEn": "Drury Lane",
+      "country": "美国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL"],
+      "summary": "埃勒里·奎因以巴纳比·罗斯笔名创作的退休莎士比亚演员，失聪后凭观察、表演经验和人性判断协助破案。",
+      "creatorName": "弗雷德里克·丹奈、曼弗雷德·李",
+      "aliases": ["德鲁里·莱恩", "Drury Lane"],
+      "tags": ["黄金时代", "演员侦探", "公平推理"],
+      "featuredCases": ["《Y的悲剧》"],
+      "sourceIds": ["simon-schuster-tragedy-y"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-tragedy-of-y",
+          "titleZh": "Y的悲剧",
+          "titleOriginal": "The Tragedy of Y",
+          "mediaType": "NOVEL",
+          "releaseYear": 1932,
+          "summary": "纽约哈特家族接连发生死亡与谋杀未遂事件，雷恩从家庭结构、现场细节和表演性误导中建立推论。",
+          "sourceId": "simon-schuster-tragedy-y",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-036-STD",
+      "pictureBookEntryIds": ["PB-036-STD"],
+      "slug": "catherine-turner",
+      "nameZh": "凯瑟琳·特纳",
+      "nameOriginal": "キャサリン・ターナー",
+      "nameEn": "Catherine Turner",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "山村美纱笔下热爱日本传统文化的美国女性记者，在京都等地旅行与采访时参与调查多起案件。",
+      "creatorName": "山村美纱",
+      "aliases": ["凯瑟琳·透纳", "名侦探凯瑟琳", "Catherine Turner"],
+      "tags": ["女性侦探", "京都", "旅行推理"],
+      "featuredCases": ["《魂断花道》／《花之棺》"],
+      "sourceIds": ["bunshun-hana-no-hitsugi"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "hana-no-hitsugi",
+          "titleZh": "花之棺",
+          "titleOriginal": "花の棺",
+          "mediaType": "NOVEL",
+          "summary": "对日本花道感兴趣的凯瑟琳来到京都后，花道界接连发生命案，她从流派关系与人物动机中参与追查。",
+          "sourceId": "bunshun-hana-no-hitsugi",
+          "linkType": "PUBLISHER",
+          "providerName": "文艺春秋",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}
