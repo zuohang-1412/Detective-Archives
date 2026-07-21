@@ -110,31 +110,48 @@ export async function upsertShelfItem(
   progressPercent?: number | undefined
 ) {
   const result = await queryRows<{ id: string }>(database, `
-    INSERT INTO shelf_items (
-      user_id, work_id, status, progress_percent, started_at, completed_at
+    WITH changed AS (
+      INSERT INTO shelf_items (
+        user_id, work_id, status, progress_percent, started_at, completed_at
+      )
+      SELECT
+        $1,
+        work.id,
+        $3::progress_status,
+        CASE WHEN $3 = 'COMPLETED' THEN 100 ELSE COALESCE($4, 0) END,
+        CASE WHEN $3 = 'IN_PROGRESS' THEN NOW() ELSE NULL END,
+        CASE WHEN $3 = 'COMPLETED' THEN NOW() ELSE NULL END
+      FROM works work
+      WHERE work.id = $2 AND work.status = 'PUBLISHED'
+      ON CONFLICT (user_id, work_id) DO UPDATE SET
+        status = EXCLUDED.status,
+        progress_percent = CASE
+          WHEN EXCLUDED.status = 'COMPLETED' THEN 100
+          ELSE COALESCE($4, shelf_items.progress_percent)
+        END,
+        started_at = CASE
+          WHEN EXCLUDED.status = 'IN_PROGRESS' THEN COALESCE(shelf_items.started_at, NOW())
+          ELSE shelf_items.started_at
+        END,
+        completed_at = CASE WHEN EXCLUDED.status = 'COMPLETED' THEN NOW() ELSE NULL END,
+        updated_at = NOW()
+      RETURNING id, user_id, work_id, completed_at
+    ), engagement AS (
+      INSERT INTO shelf_engagement_facts (
+        user_id, work_id, first_added_at, first_completed_at
+      )
+      SELECT user_id, work_id, NOW(), completed_at FROM changed
+      ON CONFLICT (user_id, work_id) DO UPDATE
+      SET first_added_at = LEAST(
+          shelf_engagement_facts.first_added_at,
+          EXCLUDED.first_added_at
+        ),
+        first_completed_at = COALESCE(
+          shelf_engagement_facts.first_completed_at,
+          EXCLUDED.first_completed_at
+        )
     )
-    SELECT
-      $1,
-      work.id,
-      $3::progress_status,
-      CASE WHEN $3 = 'COMPLETED' THEN 100 ELSE COALESCE($4, 0) END,
-      CASE WHEN $3 = 'IN_PROGRESS' THEN NOW() ELSE NULL END,
-      CASE WHEN $3 = 'COMPLETED' THEN NOW() ELSE NULL END
-    FROM works work
-    WHERE work.id = $2 AND work.status = 'PUBLISHED'
-    ON CONFLICT (user_id, work_id) DO UPDATE SET
-      status = EXCLUDED.status,
-      progress_percent = CASE
-        WHEN EXCLUDED.status = 'COMPLETED' THEN 100
-        ELSE COALESCE($4, shelf_items.progress_percent)
-      END,
-      started_at = CASE
-        WHEN EXCLUDED.status = 'IN_PROGRESS' THEN COALESCE(shelf_items.started_at, NOW())
-        ELSE shelf_items.started_at
-      END,
-      completed_at = CASE WHEN EXCLUDED.status = 'COMPLETED' THEN NOW() ELSE NULL END,
-      updated_at = NOW()
-    RETURNING id
+    SELECT id FROM changed
   `, [userId, workId, status, progressPercent ?? null]);
   if (!result.rows[0]) return null;
   return getShelfItem(database, userId, workId);

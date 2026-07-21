@@ -6,6 +6,7 @@ export async function trackWorkLinkClick(
   database: DatabaseClient,
   linkId: string,
   userId: string | null,
+  visitorHash: string | null,
   requestId: string
 ) {
   const result = await queryRows<{ url: string }>(database, `
@@ -15,11 +16,13 @@ export async function trackWorkLinkClick(
       JOIN works work ON work.id = link.work_id
       WHERE link.id = $1 AND link.is_active = TRUE AND work.status = 'PUBLISHED'
     ), tracked AS (
-      INSERT INTO work_link_click_events (work_link_id, user_id, request_id)
-      SELECT id, $2, $3 FROM visible_link
+      INSERT INTO work_link_click_events (
+        work_link_id, user_id, visitor_hash, request_id
+      )
+      SELECT id, $2, $3, $4 FROM visible_link
     )
     SELECT url FROM visible_link
-  `, [linkId, userId, requestId]);
+  `, [linkId, userId, visitorHash, requestId]);
   return result.rows[0] ?? null;
 }
 

@@ -25,10 +25,25 @@ for (const paginationCapability of ["listAllAdminPages", "listAllModerationPages
     throw new Error(`Admin UI must load bounded paginated data: ${paginationCapability}`);
   }
 }
+for (const analyticsCapability of ["/admin/analytics?days=90", "renderAnalytics", "archiveDetail", "day30", "appealRecoveryRate"]) {
+  if (!script.includes(analyticsCapability)) {
+    throw new Error(`Admin UI must expose product analytics: ${analyticsCapability}`);
+  }
+}
+for (const appealCapability of ["appealQueue", "renderAppeals", "/admin/appeals/"]) {
+  if (!script.includes(appealCapability)) {
+    throw new Error(`Admin UI must expose content appeals: ${appealCapability}`);
+  }
+}
 
 const html = await readFile(path.join(root, "index.html"), "utf8");
 for (const asset of ["/admin/styles.css", "/admin/app.js"]) {
   if (!html.includes(asset)) throw new Error(`Admin HTML does not reference ${asset}`);
+}
+for (const analyticsElement of ["analyticsMetrics", "analyticsPeriod"]) {
+  if (!html.includes(`id="${analyticsElement}"`)) {
+    throw new Error(`Admin HTML must include ${analyticsElement}`);
+  }
 }
 
 console.log("Admin console structure and syntax: OK");

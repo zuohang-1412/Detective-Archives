@@ -10,6 +10,7 @@ export async function getAdminDashboard(database: DatabaseClient) {
     pendingReviewCount: number;
     pendingCommentCount: number;
     openReportCount: number;
+    openAppealCount: number;
     activeLinkCount: number;
     brokenLinkCount: number;
     unconfirmedLinkCount: number;
@@ -23,6 +24,7 @@ export async function getAdminDashboard(database: DatabaseClient) {
       (SELECT COUNT(*)::int FROM reviews WHERE status = 'PENDING_REVIEW' AND deleted_at IS NULL) AS "pendingReviewCount",
       (SELECT COUNT(*)::int FROM comments WHERE status = 'PENDING_REVIEW' AND deleted_at IS NULL) AS "pendingCommentCount",
       (SELECT COUNT(*)::int FROM reports WHERE status IN ('OPEN', 'PROCESSING')) AS "openReportCount",
+      (SELECT COUNT(*)::int FROM content_appeals WHERE status = 'OPEN') AS "openAppealCount",
       (SELECT COUNT(*)::int FROM work_links WHERE is_active = TRUE) AS "activeLinkCount",
       (SELECT COUNT(*)::int FROM work_links
         WHERE is_active = TRUE AND last_check_ok = FALSE) AS "brokenLinkCount",
@@ -50,9 +52,11 @@ export async function getModerationQueue(
     reviewCount,
     commentCount,
     reportCount,
+    appealCount,
     reviewResult,
     commentResult,
-    reportResult
+    reportResult,
+    appealResult
   ] = await Promise.all([
     queryRows<{ total: number }>(database, `
       SELECT COUNT(*)::int AS total FROM reviews
@@ -65,6 +69,10 @@ export async function getModerationQueue(
     queryRows<{ total: number }>(database, `
       SELECT COUNT(*)::int AS total FROM reports
       WHERE status IN ('OPEN', 'PROCESSING')
+    `),
+    queryRows<{ total: number }>(database, `
+      SELECT COUNT(*)::int AS total FROM content_appeals
+      WHERE status = 'OPEN'
     `),
     queryRows(database, `
       SELECT
@@ -127,15 +135,45 @@ export async function getModerationQueue(
       WHERE report.status IN ('OPEN', 'PROCESSING')
       ORDER BY report.created_at, report.id
       LIMIT $1 OFFSET $2
+    `, [pageSize, offset]),
+    queryRows(database, `
+      SELECT
+        appeal.id,
+        appeal.target_type AS "targetType",
+        appeal.target_id AS "targetId",
+        appeal.reason,
+        appeal.status::text AS status,
+        appeal.created_at AS "createdAt",
+        jsonb_build_object(
+          'id', appellant.id,
+          'displayName', appellant.display_name
+        ) AS appellant,
+        CASE
+          WHEN appeal.target_type = 'REVIEW' THEN (
+            SELECT LEFT(review.body, 300) FROM reviews review
+            WHERE review.id = appeal.target_id
+          )
+          WHEN appeal.target_type = 'COMMENT' THEN (
+            SELECT LEFT(comment.body, 300) FROM comments comment
+            WHERE comment.id = appeal.target_id
+          )
+        END AS "targetPreview"
+      FROM content_appeals appeal
+      JOIN users appellant ON appellant.id = appeal.appellant_id
+      WHERE appeal.status = 'OPEN'
+      ORDER BY appeal.created_at, appeal.id
+      LIMIT $1 OFFSET $2
     `, [pageSize, offset])
   ]);
   return {
     reviews: reviewResult.rows,
     comments: commentResult.rows,
     reports: reportResult.rows,
+    appeals: appealResult.rows,
     reviewTotal: reviewCount.rows[0]?.total ?? 0,
     commentTotal: commentCount.rows[0]?.total ?? 0,
-    reportTotal: reportCount.rows[0]?.total ?? 0
+    reportTotal: reportCount.rows[0]?.total ?? 0,
+    appealTotal: appealCount.rows[0]?.total ?? 0
   };
 }
 
@@ -176,6 +214,19 @@ export async function moderateContent(
     `, [targetId, status, action]);
     const content = changed.rows[0];
     if (!content) return null;
+    if (action === "RESTORE") {
+      await connection.query(`
+        UPDATE content_appeals
+        SET status = 'APPROVED',
+          handled_by = $1,
+          handled_at = NOW(),
+          resolution_note = $4,
+          updated_at = NOW()
+        WHERE target_type = $2
+          AND target_id = $3
+          AND status = 'OPEN'
+      `, [moderatorId, targetType, targetId, reason]);
+    }
     await connection.query(`
       INSERT INTO moderation_records (moderator_id, target_type, target_id, action, reason)
       VALUES ($1, $2, $3, $4, $5)

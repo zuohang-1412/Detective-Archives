@@ -36,28 +36,40 @@ export async function findActiveSession(
   token: string
 ): Promise<SessionRow | null> {
   const result = await queryRows<SessionRow>(database, `
-    UPDATE user_sessions session
-    SET last_seen_at = NOW()
-    FROM users account
-    WHERE session.token_hash = $1
-      AND session.user_id = account.id
-      AND session.revoked_at IS NULL
-      AND session.expires_at > NOW()
-      AND account.is_active = TRUE
-      AND (account.suspended_until IS NULL OR account.suspended_until <= NOW())
-    RETURNING
-      session.id AS "sessionId",
-      account.id,
-      account.display_name AS "displayName",
-      account.avatar_url AS "avatarUrl",
-      account.bio,
-      account.role::text AS role,
-      (
-        SELECT identity.provider_subject
-        FROM user_identities identity
-        WHERE identity.user_id = account.id AND identity.provider = 'WECHAT'
-        LIMIT 1
-      ) AS "wechatOpenId"
+    WITH active_session AS (
+      UPDATE user_sessions session
+      SET last_seen_at = NOW()
+      FROM users account
+      WHERE session.token_hash = $1
+        AND session.user_id = account.id
+        AND session.revoked_at IS NULL
+        AND session.expires_at > NOW()
+        AND account.is_active = TRUE
+        AND (account.suspended_until IS NULL OR account.suspended_until <= NOW())
+      RETURNING
+        session.id AS "sessionId",
+        account.id,
+        account.display_name AS "displayName",
+        account.avatar_url AS "avatarUrl",
+        account.bio,
+        account.role::text AS role,
+        (
+          SELECT identity.provider_subject
+          FROM user_identities identity
+          WHERE identity.user_id = account.id AND identity.provider = 'WECHAT'
+          LIMIT 1
+        ) AS "wechatOpenId"
+    ), activity AS (
+      INSERT INTO user_activity_days (
+        user_id, activity_date, first_seen_at, last_seen_at, event_count
+      )
+      SELECT id, (NOW() AT TIME ZONE 'UTC')::date, NOW(), NOW(), 1
+      FROM active_session
+      ON CONFLICT (user_id, activity_date) DO UPDATE
+      SET last_seen_at = EXCLUDED.last_seen_at,
+        event_count = user_activity_days.event_count + 1
+    )
+    SELECT * FROM active_session
   `, [sessionTokenHash(token)]);
   return result.rows[0] ?? null;
 }

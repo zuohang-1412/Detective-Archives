@@ -5,6 +5,20 @@ function getBaseUrl() {
 
 const TOKEN_KEY = "detectiveArchivesToken";
 const SESSION_EXPIRY_KEY = "detectiveArchivesSessionExpiry";
+const VISITOR_ID_KEY = "detectiveArchivesVisitorId";
+
+function getVisitorId() {
+  const existing = wx.getStorageSync(VISITOR_ID_KEY);
+  if (typeof existing === "string" && /^[A-Za-z0-9_-]{16,80}$/.test(existing)) {
+    return existing;
+  }
+  const randomPart = Array.from({ length: 4 }, () =>
+    Math.random().toString(36).slice(2, 12)
+  ).join("");
+  const visitorId = `wx_${Date.now().toString(36)}_${randomPart}`.slice(0, 80);
+  wx.setStorageSync(VISITOR_ID_KEY, visitorId);
+  return visitorId;
+}
 
 function clearSession() {
   wx.removeStorageSync(TOKEN_KEY);
@@ -33,6 +47,7 @@ function request(path, options = {}) {
       data: options.data,
       header: {
         "content-type": "application/json",
+        "x-visitor-id": getVisitorId(),
         ...(token ? { authorization: `Bearer ${token}` } : {})
       },
       timeout: options.timeout || 8000,
@@ -240,6 +255,10 @@ function createReport(data) {
   return request("/api/v1/reports", { method: "POST", data });
 }
 
+function createAppeal(data) {
+  return request("/api/v1/appeals", { method: "POST", data });
+}
+
 async function deactivateAccount() {
   try {
     await request("/api/v1/me/account", {
@@ -252,6 +271,7 @@ async function deactivateAccount() {
 }
 
 module.exports = {
+  createAppeal,
   createComment,
   createWorkLinkFeedback,
   createReport,

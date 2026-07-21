@@ -33,6 +33,14 @@ interface ReviewRow {
   likeCount: number;
   commentCount: number;
   likedByMe: boolean;
+  appeal?: {
+    id: string;
+    status: string;
+    reason: string;
+    resolutionNote: string | null;
+    createdAt: string;
+    handledAt: string | null;
+  } | null;
   work?: {
     id: string;
     slug: string;
@@ -159,7 +167,21 @@ const myReviewSelect = `
       EXISTS (
         SELECT 1 FROM review_likes likes
         WHERE likes.review_id = review.id AND likes.user_id = $1
-      ) AS "likedByMe"
+      ) AS "likedByMe",
+      (
+        SELECT jsonb_build_object(
+          'id', appeal.id,
+          'status', appeal.status,
+          'reason', appeal.reason,
+          'resolutionNote', appeal.resolution_note,
+          'createdAt', appeal.created_at,
+          'handledAt', appeal.handled_at
+        )
+        FROM content_appeals appeal
+        WHERE appeal.target_type = 'REVIEW' AND appeal.target_id = review.id
+        ORDER BY appeal.created_at DESC, appeal.id DESC
+        LIMIT 1
+      ) AS appeal
   FROM reviews review
   JOIN users account ON account.id = review.user_id
   JOIN works work ON work.id = review.work_id
@@ -262,6 +284,15 @@ export async function updateReview(
         updated_at = NOW()
       WHERE id = $2 AND user_id = $1 AND deleted_at IS NULL
       RETURNING id
+    ), cancelled_appeals AS (
+      UPDATE content_appeals
+      SET status = 'CANCELLED',
+        handled_at = NOW(),
+        resolution_note = 'AUTHOR_CHANGED_CONTENT',
+        updated_at = NOW()
+      WHERE target_type = 'REVIEW'
+        AND target_id IN (SELECT id FROM changed)
+        AND status = 'OPEN'
     ), audit AS (
       INSERT INTO audit_logs (
         actor_id, action, resource_type, resource_id, request_id, metadata
@@ -296,6 +327,15 @@ export async function softDeleteReview(
       SET deleted_at = NOW(), status = 'HIDDEN', updated_at = NOW()
       WHERE id = $2 AND user_id = $1 AND deleted_at IS NULL
       RETURNING id
+    ), cancelled_appeals AS (
+      UPDATE content_appeals
+      SET status = 'CANCELLED',
+        handled_at = NOW(),
+        resolution_note = 'AUTHOR_DELETED_CONTENT',
+        updated_at = NOW()
+      WHERE target_type = 'REVIEW'
+        AND target_id IN (SELECT id FROM removed)
+        AND status = 'OPEN'
     ), audit AS (
       INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
       SELECT $1, 'REVIEW_DELETE', 'REVIEW', id, $3 FROM removed
@@ -409,6 +449,15 @@ export async function softDeleteComment(
       SET deleted_at = NOW(), status = 'HIDDEN', updated_at = NOW()
       WHERE id = $2 AND user_id = $1 AND deleted_at IS NULL
       RETURNING id
+    ), cancelled_appeals AS (
+      UPDATE content_appeals
+      SET status = 'CANCELLED',
+        handled_at = NOW(),
+        resolution_note = 'AUTHOR_DELETED_CONTENT',
+        updated_at = NOW()
+      WHERE target_type = 'COMMENT'
+        AND target_id IN (SELECT id FROM removed)
+        AND status = 'OPEN'
     ), audit AS (
       INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
       SELECT $1, 'COMMENT_DELETE', 'COMMENT', id, $3 FROM removed

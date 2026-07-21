@@ -98,6 +98,19 @@ function expect(actual, expected, label) {
 try {
   await client.connect();
   const migrationCount = await client.query("SELECT COUNT(*)::int AS count FROM schema_migrations");
+  const analyticsSchema = await client.query(`
+    SELECT
+      to_regclass('public.catalog_view_events') IS NOT NULL AS catalog_views,
+      to_regclass('public.user_activity_days') IS NOT NULL AS activity_days,
+      to_regclass('public.content_appeals') IS NOT NULL AS content_appeals,
+      to_regclass('public.shelf_engagement_facts') IS NOT NULL AS shelf_engagement,
+      EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'work_link_click_events'
+          AND column_name = 'visitor_hash'
+      ) AS click_visitor_hash
+  `);
   const detectiveCounts = await client.query(`
     SELECT catalog_collection::text AS collection, COUNT(*)::int AS count
     FROM detectives
@@ -144,6 +157,11 @@ try {
     detectiveCounts.rows.map((row) => [row.collection, row.count])
   );
   expect(migrationCount.rows[0].count, expectedMigrationCount, "migration count");
+  expect(analyticsSchema.rows[0].catalog_views, true, "catalog analytics table");
+  expect(analyticsSchema.rows[0].activity_days, true, "daily activity table");
+  expect(analyticsSchema.rows[0].content_appeals, true, "content appeals table");
+  expect(analyticsSchema.rows[0].shelf_engagement, true, "shelf engagement facts table");
+  expect(analyticsSchema.rows[0].click_visitor_hash, true, "link click visitor hash column");
   for (const [collection, count] of expectedDetectiveCounts) {
     expect(counts.get(collection) ?? 0, count, `${collection} detective count`);
   }

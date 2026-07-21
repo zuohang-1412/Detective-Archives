@@ -38,10 +38,12 @@
 
 - 档案详情访问率。
 - 作品详情到正版渠道的点击率。
-- 新用户首次加入书架的转化率。
+- 注册已满 7 天的新用户，在注册后 7 日内首次加入书架的转化率。
 - 完成阅读/观看后发布评价的比例。
 - 7 日与 30 日留存。
 - 评论举报率、审核处理时长和申诉恢复率。
+
+首加书架只纳入已完整观察 7 天的注册用户，避免最近注册用户因观察窗口不足被误算为未转化；首次加入和首次完成由独立事实表留存，不因后续切换状态或移出书架而丢失。匿名访问按同一本地随机访客标识的 SHA-256 摘要去重，不保存原始标识、IP 或设备信息。
 
 ### 2.4 首版非目标
 
@@ -274,11 +276,13 @@ AI 任务失败可重试，但每次重试需要独立记录费用和模型信�
 | GET/PUT/DELETE | `/api/v1/me/shelf/*` | 查询和幂等维护个人档案馆 |
 | GET/POST/PATCH/DELETE | `/api/v1/works/:workId/reviews`、`/api/v1/reviews/*` | 评价、回复、点赞和作者软删除 |
 | POST | `/api/v1/reports` | 提交去重举报 |
+| POST | `/api/v1/appeals` | 作者对本人已隐藏评价或回复发起申诉 |
 | POST | `/api/v1/work-links/:linkId/click` | 记录正版链接点击并返回已核验地址 |
 | POST | `/api/v1/work-links/:linkId/feedback` | 提交失效、错链、地区或版权反馈 |
 | GET/POST/PATCH | `/api/v1/admin/detectives/*` | 侦探、创作者、来源、别名、标签和代表案件维护 |
 | GET/POST/PATCH | `/api/v1/admin/works/*`、`/api/v1/admin/work-links/*` | 作品和正版链接维护 |
-| GET/POST/PATCH | `/api/v1/admin/moderation/*`、`/api/v1/admin/reports/*` | 审核与举报处置 |
+| GET/POST/PATCH | `/api/v1/admin/moderation/*`、`/api/v1/admin/reports/*`、`/api/v1/admin/appeals/*` | 审核、举报与申诉处置 |
+| GET | `/api/v1/admin/analytics` | 按 30～365 天统计核心产品指标与样本量 |
 | GET/PATCH | `/api/v1/admin/users/*` | 用户查询、角色调整和限时处置 |
 | GET | `/api/v1/admin/audit-logs` | 审计日志筛选和分页 |
 | GET/PATCH | `/api/v1/admin/work-link-feedback/*` | 链接反馈队列、结案与停用 |
@@ -299,12 +303,15 @@ AI 任务失败可重试，但每次重试需要独立记录费用和模型信�
 | picture_book_recommendations | 图鉴推荐作品原始标签 | 可在核验后关联正式作品 |
 | work_links | 正版渠道链接 | 渠道、地区、有效状态 |
 | work_link_click_events / work_link_feedback | 链接转化与质量反馈 | 最小化点击事件、反馈状态和处置记录 |
+| catalog_view_events / user_activity_days | 匿名访问与留存统计 | 仅保存随机访客标识摘要和用户自然日活跃，不保存 IP/设备信息 |
 | detective_slug_redirects | 侦探历史访问地址 | 旧 slug 唯一并指向当前档案 |
 | shelf_items | 用户阅读/观看进度 | 用户+作品唯一 |
+| shelf_engagement_facts | 首次书架与完成事实 | 移出书架或切换状态后仍保留历史指标，用户注销时级联删除 |
 | reviews / comments | 评价与回复 | 审核、剧透、软删除 |
 | review_likes / comment_likes | 点赞 | 用户+内容唯一 |
 | reports | 举报 | 处理状态和结果 |
 | moderation_records | 审核处置 | 操作人、原因、时间 |
+| content_appeals | 隐藏内容申诉 | 作者归属、开放申诉唯一、处理人和恢复结果 |
 | ai_creation_tasks | AI 异步任务 | 模型、状态、费用、结果 |
 | audit_logs | 关键操作审计 | 操作者、资源、请求 ID |
 
@@ -341,14 +348,24 @@ OPEN → PROCESSING → RESOLVED
 
 处置失败不能丢失原举报；并发处理使用版本号或数据库条件更新避免重复结案。
 
-### 10.4 AI 任务状态
+### 10.4 申诉状态
+
+```text
+OPEN → APPROVED（恢复为 PUBLISHED）
+     ↘ REJECTED（维持 HIDDEN）
+     ↘ CANCELLED（作者编辑、删除或注销）
+```
+
+只有内容作者可以对本人未删除的 `HIDDEN` 评价或回复发起申诉，同一内容同时只能存在一条开放申诉。批准操作必须在同一事务中恢复内容、记录人工处置和审计；作者在处理前编辑、删除内容或注销账号时，原申诉自动取消。
+
+### 10.5 AI 任务状态
 
 ```text
 DRAFT → QUEUED → GENERATING → SUCCEEDED → PENDING_REVIEW → PUBLISHED
                          └→ FAILED                        └→ REJECTED
 ```
 
-### 10.5 通用异常
+### 10.6 通用异常
 
 - 参数错误：400，返回稳定业务错误码。
 - 未登录：401；无权限：403。
@@ -361,7 +378,7 @@ DRAFT → QUEUED → GENERATING → SUCCEEDED → PENDING_REVIEW → PUBLISHED
 
 - 每个请求生成或接收 `x-request-id`。
 - 登录、内容发布、链接变更、审核、封禁和角色变更写结构化日志。
-- 人工处置写入 `moderation_records`，系统关键变更写入 `audit_logs`。
+- 人工处置与申诉恢复写入 `moderation_records`，系统关键变更写入 `audit_logs`。
 - 用户正文不应完整写入普通访问日志。
 - AI 任务保留模型名称、提示词摘要、费用、失败码和审核记录。
 - 审计日志只允许追加，普通后台用户不得编辑或删除。
@@ -401,6 +418,8 @@ DRAFT → QUEUED → GENERATING → SUCCEEDED → PENDING_REVIEW → PUBLISHED
 - 公开目录、关键词与国家/时代/分类/标签筛选、侦探历史 slug 兼容、作品详情和正版链接查询。
 - 微信 code2Session 适配、哈希会话、单次令牌轮换、协议/隐私同意、退出和账号去标识化注销。
 - 用户隔离的个人书架、短评/长评、本人读取/编辑/删除、编辑后重审、回复、剧透折叠、幂等点赞、举报去重和作者软删除。
+- 作者对已隐藏评价/回复的申诉、开放申诉去重、编辑/删除自动取消、后台批准恢复或驳回，以及完整审核和审计记录。
+- 隐私最小化的匿名访问与点击事件、登录用户自然日活跃、核心指标聚合接口和后台样本量展示；覆盖第 2.3 节全部首版指标。
 - 评价与回复接入微信文本内容安全识别：明确风险直接拒绝；需复核或依赖故障保持人工待审且不会自动公开，检查状态写入审计。
 - 独立运营后台、内容审核、举报结案、用户限时处置、用户角色、审计检索和多角色发布权限。
 - 侦探、创作者、别名、标签、来源、代表案件、作品与正版链接的草稿、审核、发布、隐藏和维护流程。

@@ -1,4 +1,5 @@
 const {
+  createAppeal,
   deactivateAccount,
   deleteReview,
   getCurrentUser,
@@ -37,6 +38,7 @@ Page({
     agreementsAccepted: false,
     shelfActionId: "",
     reviewActionId: "",
+    appealActionId: "",
     loadError: "",
     error: ""
   },
@@ -80,7 +82,14 @@ Page({
       };
       const reviews = reviewResponse.data.map((review) => ({
         ...review,
-        statusLabel: reviewStatusLabels[review.status] || review.status
+        statusLabel: reviewStatusLabels[review.status] || review.status,
+        canAppeal: review.status === "HIDDEN" && review.appeal?.status !== "OPEN",
+        appealStatusLabel: {
+          OPEN: "申诉处理中",
+          APPROVED: "申诉通过，内容已恢复",
+          REJECTED: "申诉未通过",
+          CANCELLED: "申诉已取消"
+        }[review.appeal?.status] || ""
       }));
       this.setData({ loggedIn: true, user: userResponse.data, items, reviews, loadError: "" });
     } catch (error) {
@@ -230,6 +239,36 @@ Page({
           wx.showToast({ title: error.message || "删除失败", icon: "none" });
         } finally {
           this.setData({ reviewActionId: "" });
+        }
+      }
+    });
+  },
+
+  appealMyReview(event) {
+    const { reviewId } = event.currentTarget.dataset;
+    const review = this.data.reviews.find((item) => item.id === reviewId);
+    if (!review || review.status !== "HIDDEN" || this.data.appealActionId) return;
+    wx.showModal({
+      title: "申请复核",
+      content: "请说明你认为内容应恢复的原因。提交后，编辑或删除内容会自动取消本次申诉。",
+      editable: true,
+      placeholderText: "至少 5 个字，最多 500 个字",
+      success: async (result) => {
+        const reason = result.content?.trim() || "";
+        if (!result.confirm) return;
+        if (reason.length < 5) {
+          wx.showToast({ title: "请至少填写 5 个字", icon: "none" });
+          return;
+        }
+        this.setData({ appealActionId: reviewId });
+        try {
+          await createAppeal({ targetType: "REVIEW", targetId: reviewId, reason });
+          await this.refresh();
+          wx.showToast({ title: "申诉已提交", icon: "success" });
+        } catch (error) {
+          wx.showToast({ title: error.message || "申诉提交失败", icon: "none" });
+        } finally {
+          this.setData({ appealActionId: "" });
         }
       }
     });

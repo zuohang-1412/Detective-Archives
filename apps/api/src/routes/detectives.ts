@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
+import { recordCatalogView } from "../analytics/visitor.js";
 import type { DatabaseClient } from "../db/types.js";
 import {
   getDetectiveBySlug,
@@ -48,6 +49,7 @@ export const detectiveRoutes: FastifyPluginAsync<DetectiveRouteOptions> = async 
       listDetectives(options.database, parsed.data),
       listDetectiveFacets(options.database)
     ]);
+    await recordCatalogView(options.database, request, "DETECTIVE_LIST_VIEW", null);
     return {
       data: result.data,
       facets,
@@ -71,6 +73,7 @@ export const detectiveRoutes: FastifyPluginAsync<DetectiveRouteOptions> = async 
       return reply.code(404).send({ code: "DETECTIVE_NOT_FOUND", message: "未找到该侦探档案" });
     }
 
+    await recordCatalogView(options.database, request, "DETECTIVE_DETAIL_VIEW", detective.id);
     return { data: detective };
   });
 };

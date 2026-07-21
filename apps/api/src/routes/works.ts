@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
+import { recordCatalogView, visitorHashFromRequest } from "../analytics/visitor.js";
 import { bearerToken, findActiveSession } from "../auth/session.js";
 import type { DatabaseClient } from "../db/types.js";
 import { getWorkBySlug, listWorks } from "../repositories/works.js";
@@ -48,6 +49,7 @@ export const workRoutes: FastifyPluginAsync<WorkRouteOptions> = async (app, opti
     }
 
     const result = await listWorks(options.database, parsed.data);
+    await recordCatalogView(options.database, request, "WORK_LIST_VIEW", null);
     return {
       data: result.data,
       pagination: {
@@ -69,6 +71,7 @@ export const workRoutes: FastifyPluginAsync<WorkRouteOptions> = async (app, opti
     if (!work) {
       return reply.code(404).send({ code: "WORK_NOT_FOUND", message: "未找到该作品" });
     }
+    await recordCatalogView(options.database, request, "WORK_DETAIL_VIEW", work.id);
     return { data: work };
   });
 
@@ -88,6 +91,7 @@ export const workRoutes: FastifyPluginAsync<WorkRouteOptions> = async (app, opti
       options.database,
       params.data.linkId,
       session?.id ?? null,
+      visitorHashFromRequest(request),
       request.id
     );
     if (!tracked) {

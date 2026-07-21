@@ -29,6 +29,16 @@
 
       <section id="workspace" class="hidden">
         <div id="metrics" class="metrics" aria-label="运营概览"></div>
+        <div class="analytics-section">
+          <div class="section-head compact-head">
+            <div>
+              <span class="eyebrow">PRODUCT ANALYTICS</span>
+              <h2>核心产品指标</h2>
+              <p id="analyticsPeriod" class="section-note"></p>
+            </div>
+          </div>
+          <div id="analyticsMetrics" class="metrics analytics-metrics" aria-label="核心产品指标"></div>
+        </div>
         <div class="section-head">
           <div>
             <span class="eyebrow">MODERATION QUEUE</span>
@@ -49,6 +59,10 @@
           <section class="queue-column">
             <h3>待处理举报 <span id="reportCount">0</span></h3>
             <div id="reportQueue"></div>
+          </section>
+          <section class="queue-column">
+            <h3>待处理申诉 <span id="appealCount">0</span></h3>
+            <div id="appealQueue"></div>
           </section>
         </div>
 

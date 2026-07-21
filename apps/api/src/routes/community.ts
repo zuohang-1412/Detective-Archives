@@ -3,6 +3,7 @@ import { z } from "zod";
 import { bearerToken, findActiveSession } from "../auth/session.js";
 import type { ContentSafetyCheck } from "../auth/wechat-content-safety.js";
 import type { DatabaseClient } from "../db/types.js";
+import { createContentAppeal } from "../repositories/appeals.js";
 import {
   createComment,
   createReport,
@@ -48,6 +49,11 @@ const reportInputSchema = z.object({
   targetId: z.uuid(),
   reasonCode: z.enum(["SPAM", "ABUSE", "HATE", "SPOILER", "ILLEGAL", "COPYRIGHT", "OTHER"]),
   description: z.string().trim().max(500).optional()
+});
+const appealInputSchema = z.object({
+  targetType: z.enum(["REVIEW", "COMMENT"]),
+  targetId: z.uuid(),
+  reason: z.string().trim().min(5).max(500)
 });
 
 interface CommunityRouteOptions {
@@ -450,6 +456,45 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
         return reply.code(409).send({
           code: "REPORT_ALREADY_OPEN",
           message: "你已经举报过该内容，我们正在处理"
+        });
+      }
+      throw error;
+    }
+  });
+
+  app.post("/appeals", {
+    config: { rateLimit: { max: 5, timeWindow: "1 minute" } }
+  }, async (request, reply) => {
+    const body = appealInputSchema.safeParse(request.body);
+    if (!body.success) {
+      return reply.code(400).send({
+        code: "INVALID_APPEAL",
+        message: "申诉信息不符合要求"
+      });
+    }
+    const user = await requireUser(options.database, request, reply);
+    if (!user || !options.database) return;
+    try {
+      const appeal = await createContentAppeal(
+        options.database,
+        user.id,
+        body.data.targetType,
+        body.data.targetId,
+        body.data.reason,
+        request.id
+      );
+      if (!appeal) {
+        return reply.code(404).send({
+          code: "APPEAL_TARGET_NOT_FOUND",
+          message: "未找到本人可申诉的已隐藏内容"
+        });
+      }
+      return reply.code(201).send({ data: appeal });
+    } catch (error) {
+      if (databaseErrorCode(error) === "23505") {
+        return reply.code(409).send({
+          code: "APPEAL_ALREADY_OPEN",
+          message: "该内容已有待处理申诉"
         });
       }
       throw error;

@@ -57,6 +57,7 @@ export async function refreshUserSession(
       INSERT INTO user_sessions (user_id, token_hash, expires_at)
       VALUES ($1, $2, $3)
     `, [session.id, sessionTokenHash(refreshedToken), expiresAt]);
+    await recordUserActivity(connection, session.id);
 
     const {
       sessionId: _sessionId,
@@ -130,6 +131,7 @@ export async function loginWechatUser(
       INSERT INTO user_sessions (user_id, token_hash, expires_at)
       VALUES ($1, $2, $3)
     `, [user.id, sessionTokenHash(token), expiresAt]);
+    await recordUserActivity(connection, user.id);
     return { token, expiresAt: expiresAt.toISOString(), user };
   });
 }
@@ -157,7 +159,17 @@ export async function deactivateUserAccount(
       SET status = 'HIDDEN', deleted_at = COALESCE(deleted_at, NOW()), updated_at = NOW()
       WHERE user_id = $1
     `, [userId]);
+    await connection.query(`
+      UPDATE content_appeals
+      SET status = 'CANCELLED',
+        handled_at = NOW(),
+        resolution_note = 'ACCOUNT_DEACTIVATED',
+        updated_at = NOW()
+      WHERE appellant_id = $1 AND status = 'OPEN'
+    `, [userId]);
     await connection.query("DELETE FROM shelf_items WHERE user_id = $1", [userId]);
+    await connection.query("DELETE FROM shelf_engagement_facts WHERE user_id = $1", [userId]);
+    await connection.query("DELETE FROM user_activity_days WHERE user_id = $1", [userId]);
     await connection.query("DELETE FROM review_likes WHERE user_id = $1", [userId]);
     await connection.query("DELETE FROM comment_likes WHERE user_id = $1", [userId]);
     await connection.query("UPDATE user_sessions SET revoked_at = NOW() WHERE user_id = $1", [userId]);
@@ -232,4 +244,18 @@ export async function loginAdminUser(
     `, [user.id, sessionTokenHash(token), expiresAt]);
     return { token, expiresAt: expiresAt.toISOString(), user };
   });
+}
+
+async function recordUserActivity(
+  database: Pick<DatabaseClient, "query">,
+  userId: string
+) {
+  await database.query(`
+    INSERT INTO user_activity_days (
+      user_id, activity_date, first_seen_at, last_seen_at, event_count
+    ) VALUES ($1, (NOW() AT TIME ZONE 'UTC')::date, NOW(), NOW(), 1)
+    ON CONFLICT (user_id, activity_date) DO UPDATE
+    SET last_seen_at = EXCLUDED.last_seen_at,
+      event_count = user_activity_days.event_count + 1
+  `, [userId]);
 }

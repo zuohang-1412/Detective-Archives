@@ -97,8 +97,15 @@
           <view class="review-work">{{item.work.titleZh}}</view>
           <view wx:if="{{item.title}}" class="review-title">{{item.title}}</view>
           <view class="review-excerpt">{{item.body}}</view>
+          <view wx:if="{{item.appealStatusLabel}}" class="appeal-status">{{item.appealStatusLabel}}</view>
           <view class="review-controls">
             <text data-review-id="{{item.id}}" catchtap="editMyReview">编辑</text>
+            <text
+              wx:if="{{item.canAppeal}}"
+              class="review-appeal"
+              data-review-id="{{item.id}}"
+              catchtap="appealMyReview"
+            >{{appealActionId === item.id ? '提交中…' : '申请复核'}}</text>
             <text
               class="review-delete"
               data-review-id="{{item.id}}"

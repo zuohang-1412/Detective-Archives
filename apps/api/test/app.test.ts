@@ -309,6 +309,20 @@ describe("detective archives API", () => {
     assert.equal(invalidDetective.json().code, "INVALID_DETECTIVE");
   });
 
+  it("validates content appeals before database writes", async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/appeals",
+      payload: {
+        targetType: "REVIEW",
+        targetId: "00000000-0000-4000-8000-000000000001",
+        reason: "短"
+      }
+    });
+    assert.equal(response.statusCode, 400);
+    assert.equal(response.json().code, "INVALID_APPEAL");
+  });
+
   it("lists detectives with pagination", async () => {
     const response = await app.inject({ method: "GET", url: "/api/v1/detectives?pageSize=2" });
     const body = response.json();

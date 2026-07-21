@@ -15,6 +15,8 @@ import {
   suspendUser,
   updateAdminWork
 } from "../repositories/admin.js";
+import { getProductAnalytics } from "../repositories/analytics.js";
+import { handleContentAppeal } from "../repositories/appeals.js";
 import {
   createAdminDetective,
   listAdminAuditLogs,
@@ -42,6 +44,11 @@ const reportBodySchema = z.object({
   status: z.enum(["PROCESSING", "RESOLVED", "REJECTED"]),
   resolutionNote: z.string().trim().min(2).max(500)
 });
+const appealParamsSchema = z.object({ appealId: z.uuid() });
+const appealResolutionSchema = z.object({
+  status: z.enum(["APPROVED", "REJECTED"]),
+  resolutionNote: z.string().trim().min(2).max(500)
+});
 const userParamsSchema = z.object({ userId: z.uuid() });
 const suspensionBodySchema = z.object({
   durationHours: z.number().int().min(1).max(24 * 365),
@@ -52,6 +59,9 @@ const linkParamsSchema = z.object({ linkId: z.uuid() });
 const listQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(50).default(50)
+});
+const analyticsQuerySchema = z.object({
+  days: z.coerce.number().int().min(30).max(365).default(90)
 });
 const workQuerySchema = listQuerySchema.extend({ q: z.string().trim().max(80).optional() });
 const workInputSchema = z.object({
@@ -157,6 +167,24 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
     return { data: await getAdminDashboard(options.database) };
   });
 
+  app.get("/admin/analytics", async (request, reply) => {
+    const query = analyticsQuerySchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.code(400).send({
+        code: "INVALID_ANALYTICS_PERIOD",
+        message: "统计周期必须在 30 到 365 天之间"
+      });
+    }
+    const user = await authorizeRoles(
+      options.database,
+      request,
+      reply,
+      ["EDITOR", "MODERATOR", "ADMIN"]
+    );
+    if (!user || !options.database) return;
+    return { data: await getProductAnalytics(options.database, query.data.days) };
+  });
+
   app.get("/admin/moderation", async (request, reply) => {
     const query = listQuerySchema.safeParse(request.query);
     if (!query.success) {
@@ -169,7 +197,8 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
       data: {
         reviews: result.reviews,
         comments: result.comments,
-        reports: result.reports
+        reports: result.reports,
+        appeals: result.appeals
       },
       pagination: {
         page: query.data.page,
@@ -185,6 +214,10 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
         reports: {
           total: result.reportTotal,
           totalPages: Math.ceil(result.reportTotal / query.data.pageSize)
+        },
+        appeals: {
+          total: result.appealTotal,
+          totalPages: Math.ceil(result.appealTotal / query.data.pageSize)
         }
       }
     };
@@ -233,6 +266,40 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
       return reply.code(404).send({ code: "REPORT_NOT_FOUND", message: "未找到待处理举报" });
     }
     return { data: report };
+  });
+
+  app.patch("/admin/appeals/:appealId", async (request, reply) => {
+    const params = appealParamsSchema.safeParse(request.params);
+    const body = appealResolutionSchema.safeParse(request.body);
+    if (!params.success || !body.success) {
+      return reply.code(400).send({
+        code: "INVALID_APPEAL_ACTION",
+        message: "申诉处理信息不符合要求"
+      });
+    }
+    const user = await authorizeRoles(options.database, request, reply, ["MODERATOR", "ADMIN"]);
+    if (!user || !options.database) return;
+    const result = await handleContentAppeal(
+      options.database,
+      user.id,
+      params.data.appealId,
+      body.data.status,
+      body.data.resolutionNote,
+      request.id
+    );
+    if (result.kind === "NOT_FOUND") {
+      return reply.code(404).send({
+        code: "APPEAL_NOT_FOUND",
+        message: "未找到待处理申诉"
+      });
+    }
+    if (result.kind === "CONTENT_CHANGED") {
+      return reply.code(409).send({
+        code: "APPEAL_TARGET_CHANGED",
+        message: "内容状态已变化，请刷新后重新处理"
+      });
+    }
+    return { data: result.appeal };
   });
 
   app.post("/admin/users/:userId/suspend", async (request, reply) => {

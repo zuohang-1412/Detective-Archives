@@ -56,8 +56,13 @@ textarea { min-height: 110px; resize: vertical; }
 .metric-card { display: grid; gap: 7px; padding: 22px; }
 .metric-value { font: 700 32px Georgia, serif; }
 .metric-label { color: #777067; font-size: 13px; }
+.metric-note { color: #8b8278; font-size: 11px; line-height: 1.5; }
+.analytics-section { margin-bottom: 46px; }
+.analytics-metrics { margin-bottom: 0; }
+.compact-head { align-items: flex-start; margin-bottom: 16px; }
+.section-note { margin: 6px 0 0; color: #777067; font-size: 12px; line-height: 1.6; }
 .section-head { margin-bottom: 22px; }
-.queue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+.queue-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; align-items: start; }
 .queue-column > h3 span { color: #9f3123; }
 .queue-card { margin-bottom: 14px; padding: 20px; }
 .queue-context { margin-bottom: 12px; color: #9f3123; font-size: 12px; font-weight: 800; }

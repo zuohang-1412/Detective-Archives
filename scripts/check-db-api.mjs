@@ -13,6 +13,8 @@ const database = createDatabasePoolFromEnv();
 assert.ok(database, "PostgreSQL configuration is required for the database API check");
 const testAdminLoginId = "detective-archives-admin-check";
 const testAdminPassword = "integration-admin-password";
+const testVisitorId = "db_api_analytics_visitor_123456";
+const testVisitorHash = createHash("sha256").update(testVisitorId).digest("hex");
 const testWorkSlug = "database-api-check-work";
 const coreDetectives = JSON.parse(await readFile(
   new URL("../apps/api/src/data/core-detectives.json", import.meta.url), "utf8"
@@ -45,6 +47,24 @@ const testIdentitySubjects = [
   createHash("sha256").update(testAdminLoginId).digest("hex")
 ];
 async function cleanupTestUsers() {
+  await database.query("DELETE FROM catalog_view_events WHERE visitor_hash = $1", [testVisitorHash]);
+  await database.query("DELETE FROM work_link_click_events WHERE visitor_hash = $1", [testVisitorHash]);
+  await database.query(`
+    DELETE FROM content_appeals
+    WHERE appellant_id IN (
+      SELECT user_id FROM user_identities
+      WHERE provider IN ('WECHAT', 'ADMIN') AND provider_subject = ANY($1)
+    )
+    OR target_id IN (
+      SELECT review.id FROM reviews review
+      JOIN user_identities identity ON identity.user_id = review.user_id
+      WHERE identity.provider IN ('WECHAT', 'ADMIN') AND identity.provider_subject = ANY($1)
+      UNION
+      SELECT comment.id FROM comments comment
+      JOIN user_identities identity ON identity.user_id = comment.user_id
+      WHERE identity.provider IN ('WECHAT', 'ADMIN') AND identity.provider_subject = ANY($1)
+    )
+  `, [testIdentitySubjects]);
   await database.query(`
     DELETE FROM audit_logs
     WHERE actor_id IN (
@@ -195,14 +215,19 @@ try {
   ];
 
   for (const [url, verify] of checks) {
-    const response = await app.inject({ method: "GET", url });
+    const response = await app.inject({
+      method: "GET",
+      url,
+      headers: { "x-visitor-id": testVisitorId }
+    });
     assert.equal(response.statusCode, 200, `${url}: ${response.body}`);
     verify(response.json());
   }
 
   const workResponse = await app.inject({
     method: "GET",
-    url: "/api/v1/works/a-study-in-scarlet"
+    url: "/api/v1/works/a-study-in-scarlet",
+    headers: { "x-visitor-id": testVisitorId }
   });
   const workId = workResponse.json().data.id;
   const missingConsentResponse = await app.inject({
@@ -316,6 +341,21 @@ try {
     headers: authorization
   });
   assert.equal(invalidShelfPaginationResponse.statusCode, 400, invalidShelfPaginationResponse.body);
+  const pausedAfterCompletionResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: authorization,
+    payload: { status: "PAUSED" }
+  });
+  assert.equal(pausedAfterCompletionResponse.statusCode, 200, pausedAfterCompletionResponse.body);
+  assert.equal(pausedAfterCompletionResponse.json().data.completedAt, null);
+  const persistentCompletionFact = await database.query(`
+    SELECT first_added_at, first_completed_at
+    FROM shelf_engagement_facts
+    WHERE user_id = $1 AND work_id = $2
+  `, [userId, workId]);
+  assert.equal(persistentCompletionFact.rowCount, 1);
+  assert.ok(persistentCompletionFact.rows[0].first_completed_at);
 
   const secondaryLoginResponse = await app.inject({
     method: "POST",
@@ -692,10 +732,16 @@ try {
     payload: { status: "PUBLISHED" }
   });
   assert.equal(restoreManagedWorkResponse.statusCode, 200, restoreManagedWorkResponse.body);
+  const trackedManagedWorkViewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${testWorkSlug}`,
+    headers: { "x-visitor-id": testVisitorId }
+  });
+  assert.equal(trackedManagedWorkViewResponse.statusCode, 200, trackedManagedWorkViewResponse.body);
   const linkClickResponse = await app.inject({
     method: "POST",
     url: `/api/v1/work-links/${managedLinkId}/click`,
-    headers: authorization
+    headers: { ...authorization, "x-visitor-id": testVisitorId }
   });
   assert.equal(linkClickResponse.statusCode, 200, linkClickResponse.body);
   assert.equal(linkClickResponse.json().data.url, "https://example.com/detective-archives-integration-check");
@@ -954,6 +1000,62 @@ try {
   assert.equal(publicReviewResponse.statusCode, 200, publicReviewResponse.body);
   assert.equal(publicReviewResponse.json().data[0].containsSpoiler, true);
 
+  const hideReviewForAppealResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/REVIEW/${reviewId}`,
+    headers: adminAuthorization,
+    payload: { action: "HIDE", reason: "集成检查隐藏后申诉" }
+  });
+  assert.equal(hideReviewForAppealResponse.statusCode, 200, hideReviewForAppealResponse.body);
+  const wrongOwnerAppealResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/appeals",
+    headers: secondaryAuthorization,
+    payload: { targetType: "REVIEW", targetId: reviewId, reason: "并非本人内容不能申诉" }
+  });
+  assert.equal(wrongOwnerAppealResponse.statusCode, 404, wrongOwnerAppealResponse.body);
+  const appealResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/appeals",
+    headers: authorization,
+    payload: { targetType: "REVIEW", targetId: reviewId, reason: "内容没有违规，希望重新复核并恢复" }
+  });
+  assert.equal(appealResponse.statusCode, 201, appealResponse.body);
+  const appealId = appealResponse.json().data.id;
+  const duplicateAppealResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/appeals",
+    headers: authorization,
+    payload: { targetType: "REVIEW", targetId: reviewId, reason: "重复申诉应当被幂等保护" }
+  });
+  assert.equal(duplicateAppealResponse.statusCode, 409, duplicateAppealResponse.body);
+  const ownHiddenReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/me/reviews/${reviewId}`,
+    headers: authorization
+  });
+  assert.equal(ownHiddenReviewResponse.statusCode, 200, ownHiddenReviewResponse.body);
+  assert.equal(ownHiddenReviewResponse.json().data.appeal.status, "OPEN");
+  const appealQueueResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/moderation",
+    headers: adminAuthorization
+  });
+  assert.ok(appealQueueResponse.json().data.appeals.some((item) => item.id === appealId));
+  const approveAppealResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/appeals/${appealId}`,
+    headers: adminAuthorization,
+    payload: { status: "APPROVED", resolutionNote: "复核后确认可以恢复" }
+  });
+  assert.equal(approveAppealResponse.statusCode, 200, approveAppealResponse.body);
+  assert.equal(approveAppealResponse.json().data.status, "APPROVED");
+  const restoredReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/reviews/${reviewId}`
+  });
+  assert.equal(restoredReviewResponse.statusCode, 200, restoredReviewResponse.body);
+
   const concurrentLikeResponses = await Promise.all(Array.from({ length: 5 }, () => app.inject({
     method: "PUT",
     url: `/api/v1/reviews/${reviewId}/like`,
@@ -1130,6 +1232,13 @@ try {
   `, [deactivatedTestUserId]);
   assert.ok(consentRecord.rows[0].terms_accepted_at);
   assert.ok(consentRecord.rows[0].privacy_accepted_at);
+  const deactivationShelfResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: deactivationAuthorization,
+    payload: { status: "WISHLIST", progressPercent: 0 }
+  });
+  assert.equal(deactivationShelfResponse.statusCode, 200, deactivationShelfResponse.body);
   const deactivateResponse = await app.inject({
     method: "DELETE",
     url: "/api/v1/me/account",
@@ -1145,12 +1254,16 @@ try {
   assert.equal(deactivatedSessionResponse.statusCode, 401, deactivatedSessionResponse.body);
   const deactivatedRecord = await database.query(`
     SELECT is_active, display_name, deactivated_at,
-      (SELECT COUNT(*)::int FROM user_identities WHERE user_id = users.id) AS identity_count
+      (SELECT COUNT(*)::int FROM user_identities WHERE user_id = users.id) AS identity_count,
+      (SELECT COUNT(*)::int FROM shelf_engagement_facts WHERE user_id = users.id) AS shelf_fact_count,
+      (SELECT COUNT(*)::int FROM user_activity_days WHERE user_id = users.id) AS activity_day_count
     FROM users WHERE id = $1
   `, [deactivatedTestUserId]);
   assert.equal(deactivatedRecord.rows[0].is_active, false);
   assert.equal(deactivatedRecord.rows[0].display_name, "已注销用户");
   assert.equal(deactivatedRecord.rows[0].identity_count, 0);
+  assert.equal(deactivatedRecord.rows[0].shelf_fact_count, 0);
+  assert.equal(deactivatedRecord.rows[0].activity_day_count, 0);
 
   const logoutResponse = await app.inject({
     method: "POST",
@@ -1165,8 +1278,52 @@ try {
   });
   assert.equal(expiredResponse.statusCode, 401, expiredResponse.body);
 
+  await database.query(`
+    UPDATE users SET created_at = NOW() - INTERVAL '8 days' WHERE id = $1
+  `, [userId]);
+  await database.query(`
+    UPDATE shelf_engagement_facts
+    SET first_added_at = NOW() - INTERVAL '8 days' + INTERVAL '1 hour'
+    WHERE user_id = $1
+  `, [userId]);
+  await database.query(`
+    INSERT INTO user_activity_days (
+      user_id, activity_date, first_seen_at, last_seen_at, event_count
+    ) VALUES (
+      $1,
+      (NOW() AT TIME ZONE 'UTC')::date - 1,
+      NOW() - INTERVAL '1 day',
+      NOW() - INTERVAL '1 day',
+      1
+    )
+    ON CONFLICT (user_id, activity_date) DO UPDATE
+    SET last_seen_at = EXCLUDED.last_seen_at
+  `, [userId]);
+
+  const analyticsResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/analytics?days=90",
+    headers: adminAuthorization
+  });
+  assert.equal(analyticsResponse.statusCode, 200, analyticsResponse.body);
+  const analytics = analyticsResponse.json().data;
+  assert.equal(analytics.periodDays, 90);
+  assert.ok(analytics.archiveDetail.listVisitors >= 1);
+  assert.ok(analytics.archiveDetail.detailVisitors >= 1);
+  assert.ok(analytics.officialLink.detailVisitors >= 1);
+  assert.ok(analytics.officialLink.clickVisitors >= 1);
+  assert.ok(analytics.firstShelf.newUsers >= 1);
+  assert.ok(analytics.firstShelf.convertedUsers >= 1);
+  assert.ok(analytics.retention.day7.eligibleUsers >= 1);
+  assert.ok(analytics.retention.day7.retainedUsers >= 1);
+  assert.equal(typeof analytics.retention.day7.rate, "number");
+  assert.equal(typeof analytics.communityModeration.commentReportRate, "number");
+  assert.ok(analytics.communityModeration.handledAppeals >= 1);
+  assert.ok(analytics.communityModeration.approvedAppeals >= 1);
+  assert.ok(analytics.communityModeration.appealRecoveryRate > 0);
+
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account, community and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, product analytics, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account, community and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();

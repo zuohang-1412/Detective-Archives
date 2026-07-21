@@ -241,6 +241,18 @@
   color: #85776b;
 }
 
+.review-appeal {
+  color: #9f3123;
+  font-weight: 700;
+}
+
+.appeal-status {
+  margin-top: 12rpx;
+  color: #8a5b32;
+  font-size: 21rpx;
+  line-height: 1.5;
+}
+
 .review-status {
   padding: 7rpx 12rpx;
   border-radius: 999rpx;

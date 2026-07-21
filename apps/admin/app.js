@@ -11,12 +11,16 @@ const elements = {
   logoutButton: document.querySelector("#logoutButton"),
   refreshButton: document.querySelector("#refreshButton"),
   metrics: document.querySelector("#metrics"),
+  analyticsMetrics: document.querySelector("#analyticsMetrics"),
+  analyticsPeriod: document.querySelector("#analyticsPeriod"),
   reviewQueue: document.querySelector("#reviewQueue"),
   commentQueue: document.querySelector("#commentQueue"),
   reportQueue: document.querySelector("#reportQueue"),
+  appealQueue: document.querySelector("#appealQueue"),
   reviewCount: document.querySelector("#reviewCount"),
   commentCount: document.querySelector("#commentCount"),
   reportCount: document.querySelector("#reportCount"),
+  appealCount: document.querySelector("#appealCount"),
   workForm: document.querySelector("#workForm"),
   workTitle: document.querySelector("#workTitle"),
   workSlug: document.querySelector("#workSlug"),
@@ -104,8 +108,8 @@ async function listAllAdminPages(path) {
 }
 
 async function listAllModerationPages() {
-  const result = { reviews: [], comments: [], reports: [] };
-  const totals = { reviews: 0, comments: 0, reports: 0 };
+  const result = { reviews: [], comments: [], reports: [], appeals: [] };
+  const totals = { reviews: 0, comments: 0, reports: 0, appeals: 0 };
   let page = 1;
   let totalPages = 1;
   do {
@@ -113,13 +117,15 @@ async function listAllModerationPages() {
     result.reviews.push(...response.data.reviews);
     result.comments.push(...response.data.comments);
     result.reports.push(...response.data.reports);
-    for (const type of ["reviews", "comments", "reports"]) {
+    result.appeals.push(...response.data.appeals);
+    for (const type of ["reviews", "comments", "reports", "appeals"]) {
       totals[type] = response.pagination?.[type]?.total ?? result[type].length;
     }
     totalPages = Math.max(
       response.pagination?.reviews?.totalPages ?? 1,
       response.pagination?.comments?.totalPages ?? 1,
-      response.pagination?.reports?.totalPages ?? 1
+      response.pagination?.reports?.totalPages ?? 1,
+      response.pagination?.appeals?.totalPages ?? 1
     );
     page += 1;
   } while (page <= totalPages && page <= maxAutomaticPages);
@@ -154,6 +160,7 @@ function renderMetrics(data) {
     ["已发布作品", data.publishedWorkCount],
     ["待审内容", data.pendingReviewCount + data.pendingCommentCount],
     ["待处理举报", data.openReportCount],
+    ["待处理申诉", data.openAppealCount],
     ["链接反馈", data.openLinkFeedbackCount],
     ["确认失效链接", data.brokenLinkCount],
     ["待人工复核", data.unconfirmedLinkCount],
@@ -164,6 +171,31 @@ function renderMetrics(data) {
     card.className = "metric-card";
     card.append(textElement("strong", "metric-value", String(value)));
     card.append(textElement("span", "metric-label", label));
+    return card;
+  }));
+}
+
+function renderAnalytics(data) {
+  const formatRate = (value) => `${Number(value || 0).toFixed(2)}%`;
+  const formatHours = (value) => value === null ? "暂无样本" : `${Number(value).toFixed(2)} 小时`;
+  const metrics = [
+    ["档案详情访问率", formatRate(data.archiveDetail.rate), `${data.archiveDetail.detailVisitors} / ${data.archiveDetail.listVisitors} 位访客`],
+    ["正版渠道点击率", formatRate(data.officialLink.rate), `${data.officialLink.clickVisitors} / ${data.officialLink.detailVisitors} 位访客`],
+    ["新用户 7 日首加书架", formatRate(data.firstShelf.rate), `${data.firstShelf.convertedUsers} / ${data.firstShelf.newUsers} 位已观察满 7 天的新用户`],
+    ["完成后发布评价", formatRate(data.completedReview.rate), `${data.completedReview.reviewedWorks} / ${data.completedReview.completedWorks} 条完成记录`],
+    ["7 日留存", formatRate(data.retention.day7.rate), `${data.retention.day7.retainedUsers} / ${data.retention.day7.eligibleUsers} 位到期用户`],
+    ["30 日留存", formatRate(data.retention.day30.rate), `${data.retention.day30.retainedUsers} / ${data.retention.day30.eligibleUsers} 位到期用户`],
+    ["评论举报率", formatRate(data.communityModeration.commentReportRate), `${data.communityModeration.reportedComments} / ${data.communityModeration.publishedComments} 条评论`],
+    ["平均审核时长", formatHours(data.communityModeration.averageModerationHours), `${data.communityModeration.moderationDecisions} 次首次审核`],
+    ["申诉恢复率", formatRate(data.communityModeration.appealRecoveryRate), `${data.communityModeration.approvedAppeals} / ${data.communityModeration.handledAppeals} 条已结申诉`]
+  ];
+  elements.analyticsPeriod.textContent = `统计周期：最近 ${data.periodDays} 天；匿名访问按本地随机标识摘要去重，首加书架仅统计已观察满 7 天的新用户，留存按 UTC 自然日计算。`;
+  elements.analyticsMetrics.replaceChildren(...metrics.map(([label, value, note]) => {
+    const card = document.createElement("article");
+    card.className = "metric-card";
+    card.append(textElement("strong", "metric-value", value));
+    card.append(textElement("span", "metric-label", label));
+    card.append(textElement("span", "metric-note", note));
     return card;
   }));
 }
@@ -234,6 +266,36 @@ function renderReports(items) {
     actions.className = "card-actions";
     actions.append(actionButton("已处理", "approve-button", () => resolveReport(item.id, "RESOLVED")));
     actions.append(actionButton("驳回", "reject-button", () => resolveReport(item.id, "REJECTED")));
+    card.append(actions);
+    return card;
+  }));
+}
+
+async function resolveAppeal(appealId, status) {
+  const note = window.prompt("请输入申诉处理结论（至少 2 个字）");
+  if (!note || note.trim().length < 2) return;
+  await api(`/admin/appeals/${appealId}`, {
+    method: "PATCH",
+    data: { status, resolutionNote: note.trim() }
+  });
+  await loadWorkspace();
+}
+
+function renderAppeals(items) {
+  if (!items.length) {
+    elements.appealQueue.replaceChildren(textElement("p", "empty", "当前没有待处理申诉"));
+    return;
+  }
+  elements.appealQueue.replaceChildren(...items.map((item) => {
+    const card = document.createElement("article");
+    card.className = "queue-card";
+    card.append(textElement("div", "queue-context", `${item.targetType} · ${item.appellant.displayName}`));
+    card.append(textElement("p", "queue-body", item.targetPreview || "原内容不可用"));
+    card.append(textElement("p", "report-description", `申诉说明：${item.reason}`));
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    actions.append(actionButton("恢复内容", "approve-button", () => resolveAppeal(item.id, "APPROVED")));
+    actions.append(actionButton("维持处理", "reject-button", () => resolveAppeal(item.id, "REJECTED")));
     card.append(actions);
     return card;
   }));
@@ -533,8 +595,9 @@ function renderAuditLogs(items) {
 async function loadWorkspace() {
   elements.workspaceError.textContent = "";
   try {
-    const [dashboard, moderation, works, detectives, linkFeedback, users, audits] = await Promise.all([
+    const [dashboard, analytics, moderation, works, detectives, linkFeedback, users, audits] = await Promise.all([
       api("/admin/dashboard"),
+      api("/admin/analytics?days=90"),
       listAllModerationPages(),
       listAllAdminPages("/admin/works"),
       listAllAdminPages("/admin/detectives"),
@@ -544,13 +607,16 @@ async function loadWorkspace() {
     ]);
     showWorkspace();
     renderMetrics(dashboard.data);
+    renderAnalytics(analytics.data);
     const queue = moderation.data;
     elements.reviewCount.textContent = String(moderation.totals.reviews);
     elements.commentCount.textContent = String(moderation.totals.comments);
     elements.reportCount.textContent = String(moderation.totals.reports);
+    elements.appealCount.textContent = String(moderation.totals.appeals);
     renderContentQueue(elements.reviewQueue, queue.reviews, "REVIEW");
     renderContentQueue(elements.commentQueue, queue.comments, "COMMENT");
     renderReports(queue.reports);
+    renderAppeals(queue.appeals);
     renderWorks(works.data);
     renderDetectives(detectives.data);
     renderLinkFeedback(linkFeedback.data);
