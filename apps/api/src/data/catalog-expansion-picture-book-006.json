@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-006",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "openlibrary-my-mother-detective",
+      "label": "Open Library: My Mother, the Detective",
+      "url": "https://openlibrary.org/books/OL757342M/My_mother_the_detective",
+      "quality": "LIBRARY_CATALOG"
+    },
+    {
+      "id": "kodansha-norizuki-achievements",
+      "label": "讲谈社：《法月纶太郎的功绩》",
+      "url": "https://www.kodansha.co.jp/book/products/0000158466",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "prh-cat-who-read-backwards",
+      "label": "Penguin Random House: The Cat Who Could Read Backwards",
+      "url": "https://www.penguinrandomhouse.com/books/346304/the-cat-who-could-read-backwards-by-lilian-jackson-braun/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "bunshun-detective-galileo",
+      "label": "文艺春秋：东野圭吾“伽利略系列”官方网站",
+      "url": "https://www.bunshun.co.jp/galileo/index.html",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shinchosha-fugou-keiji",
+      "label": "新潮社：《富豪刑事》",
+      "url": "https://www.shinchosha.co.jp/book/117116/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "lupin-part6-character",
+      "label": "《鲁邦三世 PART6》官方网站：钱形警部",
+      "url": "https://www.lupin-3rd.net/part6/character/",
+      "quality": "OFFICIAL_SITE"
+    },
+    {
+      "id": "danbrown-da-vinci-code",
+      "label": "Dan Brown Official Website: The Da Vinci Code",
+      "url": "https://danbrown.com/books/novels/the-da-vinci-code/",
+      "quality": "CREATOR_OFFICIAL_SITE"
+    },
+    {
+      "id": "chuko-agojuuro",
+      "label": "中央公论新社：《颚十郎捕物帐（上）》",
+      "url": "https://www.chuko.co.jp/bunko/2026/03/207771.html",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kawade-jusankaku-kankei",
+      "label": "河出书房新社：《十三角关系》",
+      "url": "https://www.kawade.co.jp/np/isbn/9784309419022/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "toei-tarao-bannai",
+      "label": "东映视频：多罗尾伴内系列",
+      "url": "https://www.toei-video.co.jp/catalog/dszs10144/",
+      "quality": "OFFICIAL_DISTRIBUTOR"
+    },
+    {
+      "id": "penguin-moonstone",
+      "label": "Penguin Books Australia: The Moonstone",
+      "url": "https://www.penguin.com.au/books/the-moonstone-9780099519003",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-059-STD",
+      "pictureBookEntryIds": ["PB-059-STD"],
+      "slug": "bronx-mom",
+      "nameZh": "布朗克斯的妈妈",
+      "nameOriginal": "Mom",
+      "nameEn": "Mom",
+      "country": "美国",
+      "era": "20世纪中后期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["SHORT_STORY", "NOVEL"],
+      "summary": "詹姆斯·亚菲笔下住在纽约布朗克斯的安乐椅侦探，常在家庭晚餐中听儿子戴夫讲述疑案，再以生活经验、人物动机和几个简单问题找出破绽。",
+      "creatorName": "詹姆斯·亚菲",
+      "aliases": ["布朗克斯区的妈妈", "布朗克斯妈妈", "妈妈", "Mom"],
+      "tags": ["安乐椅侦探", "家庭推理", "短篇系列"],
+      "featuredCases": ["《妈妈无所不知》", "《我的母亲，侦探》"],
+      "sourceIds": ["openlibrary-my-mother-detective"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "my-mother-the-detective",
+          "titleZh": "我的母亲，侦探",
+          "titleOriginal": "My Mother, the Detective",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1997,
+          "summary": "短篇全集收录妈妈在布朗克斯听取儿子讲述案件、从证词与人情常理中发现矛盾并完成远程推理的系列故事。",
+          "sourceId": "openlibrary-my-mother-detective",
+          "linkType": "LIBRARY",
+          "providerName": "Open Library",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-060-STD",
+      "pictureBookEntryIds": ["PB-060-STD"],
+      "slug": "rintaro-norizuki",
+      "nameZh": "法月纶太郎",
+      "nameOriginal": "法月綸太郎",
+      "nameEn": "Rintaro Norizuki",
+      "country": "日本",
+      "era": "20世纪末至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SHORT_STORY", "COMIC"],
+      "summary": "法月纶太郎笔下与作者同名的推理小说家兼侦探，常与担任警视的父亲法月警视交换调查信息，以严谨逻辑反复检验多种可能性。",
+      "creatorName": "法月纶太郎",
+      "aliases": ["法月綸太郎", "Rintaro Norizuki"],
+      "tags": ["新本格", "父子搭档", "逻辑推理"],
+      "featuredCases": ["《都市传说拼图》"],
+      "sourceIds": ["kodansha-norizuki-achievements"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "urban-legend-puzzle",
+          "titleZh": "都市传说拼图",
+          "titleOriginal": "都市伝説パズル",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 2001,
+          "summary": "一则知名都市传说似乎在现实中重演，法月纶太郎从被害现场留下的信息与叙述方式入手，辨析故事模板背后的犯罪逻辑。",
+          "sourceId": "kodansha-norizuki-achievements",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-061-STD",
+      "pictureBookEntryIds": ["PB-061-STD"],
+      "slug": "koko-siamese-cat",
+      "nameZh": "科科",
+      "nameOriginal": "Koko",
+      "nameEn": "Koko",
+      "country": "美国",
+      "era": "20世纪中后期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL"],
+      "summary": "莉莲·杰克逊·布劳恩“猫是谁”系列中的暹罗猫，与记者吉姆·奎勒兰共同生活，会以异常行为、叫声和对物品的兴趣提示案件线索。",
+      "creatorName": "莉莲·杰克逊·布劳恩",
+      "aliases": ["酷酷", "可可", "暹罗猫科科", "Koko"],
+      "tags": ["动物侦探", "暹罗猫", "温馨推理"],
+      "featuredCases": ["《猫能看懂线索》", "《倒着读书的猫》"],
+      "sourceIds": ["prh-cat-who-read-backwards"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-cat-who-could-read-backwards",
+          "titleZh": "倒着读书的猫",
+          "titleOriginal": "The Cat Who Could Read Backwards",
+          "mediaType": "NOVEL",
+          "releaseYear": 1966,
+          "summary": "记者奎勒兰调查艺术圈中的凶案与破坏事件，新结识的暹罗猫科科不断对关键人物和物品作出反应，成为发现线索的重要伙伴。",
+          "sourceId": "prh-cat-who-read-backwards",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-062-STD",
+      "pictureBookEntryIds": ["PB-062-STD"],
+      "slug": "manabu-yukawa",
+      "nameZh": "汤川学",
+      "nameOriginal": "湯川学",
+      "nameEn": "Manabu Yukawa",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "东野圭吾“伽利略系列”中的大学物理学者，面对看似超自然的犯罪现象，会通过实验、物理模型和逻辑推演帮助刑警草薙俊平查明机制。",
+      "creatorName": "东野圭吾",
+      "aliases": ["伽利略", "汤川教授", "湯川学", "Manabu Yukawa"],
+      "tags": ["科学推理", "物理学者", "警学合作"],
+      "featuredCases": ["《燃烧》", "《侦探伽利略》"],
+      "sourceIds": ["bunshun-detective-galileo"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "detective-galileo",
+          "titleZh": "侦探伽利略",
+          "titleOriginal": "探偵ガリレオ",
+          "mediaType": "NOVEL",
+          "releaseYear": 1998,
+          "summary": "草薙刑警接连遇到人体突然燃烧等超常疑案，向大学同学汤川学求助；汤川以科学实验重现现象并揭示人为犯罪手法。",
+          "sourceId": "bunshun-detective-galileo",
+          "linkType": "PUBLISHER",
+          "providerName": "文艺春秋",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-063-STD",
+      "pictureBookEntryIds": ["PB-063-STD"],
+      "slug": "daisuke-kanbe",
+      "nameZh": "神户大助",
+      "nameOriginal": "神戸大助",
+      "nameEn": "Daisuke Kanbe",
+      "country": "日本",
+      "era": "20世纪后期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES", "ANIMATION"],
+      "summary": "筒井康隆《富豪刑事》中的警察，以巨额家产作为调查资源，反向利用金钱、奢华场景和嫌疑人的贪欲设计局面，解决常规手段难以突破的案件。",
+      "creatorName": "筒井康隆",
+      "aliases": ["富豪刑事", "神戸大助", "Daisuke Kanbe"],
+      "tags": ["刑警", "财力侦查", "反类型"],
+      "featuredCases": ["《富豪刑事的诱饵》", "《密室的富豪刑事》"],
+      "sourceIds": ["shinchosha-fugou-keiji"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "fugou-keiji",
+          "titleZh": "富豪刑事",
+          "titleOriginal": "富豪刑事",
+          "mediaType": "NOVEL",
+          "releaseYear": 1978,
+          "summary": "神户大助以普通刑警无法承担的巨额投入设置诱饵和复现场景，在抢劫、密室与诱拐等案件中让嫌疑人暴露动机与行动。",
+          "sourceId": "shinchosha-fugou-keiji",
+          "linkType": "PUBLISHER",
+          "providerName": "新潮社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-064-STD",
+      "pictureBookEntryIds": ["PB-064-STD"],
+      "slug": "koichi-zenigata",
+      "nameZh": "钱形幸一警部",
+      "nameOriginal": "銭形警部",
+      "nameEn": "Inspector Koichi Zenigata",
+      "country": "日本",
+      "era": "20世纪后期至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["COMIC", "ANIMATION", "FILM", "SERIES"],
+      "summary": "加藤一彦《鲁邦三世》系列中长期追捕鲁邦的国际刑警，虽然经常被盗贼脱身，却最熟悉鲁邦的行动方式，并在更大危机中展现判断力与正义感。",
+      "creatorName": "加藤一彦（Monkey Punch）",
+      "aliases": ["钱形警官", "钱形警部", "銭形幸一", "Inspector Zenigata"],
+      "tags": ["国际刑警", "宿敌", "漫画动画"],
+      "featuredCases": ["《欲速则不盗之一》（图鉴旧译，保留待考）", "《鲁邦三世 PART6》"],
+      "sourceIds": ["lupin-part6-character"],
+      "verification": "SOURCE_CAPTURED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "lupin-the-third-part-6",
+          "titleZh": "鲁邦三世 PART6",
+          "titleOriginal": "ルパン三世 PART6",
+          "mediaType": "ANIMATION",
+          "releaseYear": 2021,
+          "summary": "鲁邦一行面对新的盗窃与阴谋，钱形警部持续追踪其行动，并凭借对鲁邦习惯和伪装方式的了解介入多起复杂事件。",
+          "sourceId": "lupin-part6-character",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "LUPIN THE THIRD NETWORK",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-065-STD",
+      "pictureBookEntryIds": ["PB-065-STD"],
+      "slug": "robert-langdon",
+      "nameZh": "罗伯特·兰登教授",
+      "nameOriginal": "Robert Langdon",
+      "nameEn": "Robert Langdon",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "丹·布朗笔下研究宗教图像与符号学的哈佛教授，常在谋杀和公共危机中解读艺术、建筑、密码与历史文本，沿线索追查幕后组织。",
+      "creatorName": "丹·布朗",
+      "aliases": ["罗伯特·兰登", "兰登教授", "Robert Langdon"],
+      "tags": ["符号学", "历史谜题", "冒险悬疑"],
+      "featuredCases": ["《达·芬奇密码》"],
+      "sourceIds": ["danbrown-da-vinci-code"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-da-vinci-code",
+          "titleZh": "达·芬奇密码",
+          "titleOriginal": "The Da Vinci Code",
+          "mediaType": "NOVEL",
+          "releaseYear": 2003,
+          "summary": "卢浮宫馆长遇害并留下密码，兰登与密码专家索菲·奈芙沿达·芬奇作品和历史符号追踪线索，寻找凶手及其试图夺取的秘密。",
+          "sourceId": "danbrown-da-vinci-code",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Dan Brown Official Website",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-066-STD",
+      "pictureBookEntryIds": ["PB-066-STD"],
+      "slug": "senba-akojuro",
+      "nameZh": "仙波阿古十郎",
+      "nameOriginal": "仙波阿古十郎",
+      "nameEn": "Senba Akojuro",
+      "country": "日本",
+      "era": "江户时代题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "NOVEL"],
+      "summary": "久生十兰《颚十郎捕物帐》的主人公，因突出的长下巴得名“颚十郎”；作为北町奉行所例缲方见习，以奇特视角和机敏推理侦破怪案。",
+      "creatorName": "久生十兰",
+      "aliases": ["颚十郎", "顎十郎", "仙波阿古十郎", "Senba Akojuro"],
+      "tags": ["捕物帐", "江户", "历史推理"],
+      "featuredCases": ["《幽灵远岛船》（图鉴旧译《远岛船》）"],
+      "sourceIds": ["chuko-agojuuro"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "agojuuro-torimonocho-first",
+          "titleZh": "颚十郎捕物帐（上）",
+          "titleOriginal": "顎十郎捕物帳（上）",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 2026,
+          "summary": "权威整理本收录仙波阿古十郎处理的江户怪案，包含图鉴所提远岛船相关篇目，可由出版社书目核对人物身份和系列归属。",
+          "sourceId": "chuko-agojuuro",
+          "linkType": "PUBLISHER",
+          "providerName": "中央公论新社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-067-STD",
+      "pictureBookEntryIds": ["PB-067-STD"],
+      "slug": "kanki-ibaraki",
+      "nameZh": "荆木欢喜",
+      "nameOriginal": "荊木歓喜",
+      "nameEn": "Kanki Ibaraki",
+      "country": "日本",
+      "era": "20世纪中期题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL"],
+      "summary": "山田风太郎笔下嗜酒而观察敏锐的医生侦探，面对封闭人际关系中的谋杀，会从身体状况、证词矛盾与感情纠葛中重建事件。",
+      "creatorName": "山田风太郎",
+      "aliases": ["茨木欢喜（图鉴旧写）", "荆木歓喜", "荊木歓喜", "Kanki Ibaraki"],
+      "tags": ["医生侦探", "本格推理", "人物关系"],
+      "featuredCases": ["《十三角关系》"],
+      "sourceIds": ["kawade-jusankaku-kankei"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "jusankaku-kankei",
+          "titleZh": "十三角关系",
+          "titleOriginal": "十三角関係",
+          "mediaType": "NOVEL",
+          "summary": "一名女性遭十字架式杀害，围绕丈夫、员工和蒙面人等十二名相关者形成复杂嫌疑网，荆木欢喜追查各人关系并逼近真相。",
+          "sourceId": "kawade-jusankaku-kankei",
+          "linkType": "PUBLISHER",
+          "providerName": "河出书房新社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-068-STD",
+      "pictureBookEntryIds": ["PB-068-STD"],
+      "slug": "tarao-bannai",
+      "nameZh": "多罗尾伴内",
+      "nameOriginal": "多羅尾伴内",
+      "nameEn": "Tarao Bannai",
+      "country": "日本",
+      "era": "20世纪中期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["FILM", "SERIES"],
+      "summary": "比佐芳武创作的银幕名侦探，以七种面孔和多重身份潜入案件相关场所，再在关键时刻揭示伪装、汇总证据并制伏凶手。",
+      "creatorName": "比佐芳武",
+      "aliases": ["七张脸", "七面侦探", "多羅尾伴内", "Tarao Bannai"],
+      "tags": ["变装侦探", "日本电影", "动作推理"],
+      "featuredCases": ["《七张脸》", "《独眼魔王》"],
+      "sourceIds": ["toei-tarao-bannai"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "tarao-bannai-series",
+          "titleZh": "多罗尾伴内系列",
+          "titleOriginal": "多羅尾伴内シリーズ",
+          "mediaType": "FILM",
+          "releaseYear": 1953,
+          "summary": "东映系列让拥有七张面孔的多罗尾伴内调查财宝、球场杀人、秘密结社和国际犯罪等案件，以变装与双枪展开侦查和对决。",
+          "sourceId": "toei-tarao-bannai",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "东映视频",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-069-STD",
+      "pictureBookEntryIds": ["PB-069-STD"],
+      "slug": "sergeant-richard-cuff",
+      "nameZh": "理查德·卡夫警佐",
+      "nameOriginal": "Sergeant Richard Cuff",
+      "nameEn": "Sergeant Richard Cuff",
+      "country": "英国",
+      "era": "19世纪",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "威尔基·柯林斯《月亮宝石》中的伦敦警佐，性情冷静且爱好玫瑰，通过观察宅邸人员、衣物与时间线调查宝石失窃案，是早期职业警探形象。",
+      "creatorName": "威尔基·柯林斯",
+      "aliases": ["理查德·克夫", "卡夫警佐", "克夫警佐", "Sergeant Cuff"],
+      "tags": ["早期侦探小说", "职业警探", "维多利亚时代"],
+      "featuredCases": ["《月亮宝石》"],
+      "sourceIds": ["penguin-moonstone"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-moonstone",
+          "titleZh": "月亮宝石",
+          "titleOriginal": "The Moonstone",
+          "mediaType": "NOVEL",
+          "releaseYear": 1868,
+          "summary": "一枚来自印度的黄色钻石在英国庄园中失踪，卡夫警佐调查居住者、仆役与相关物证，在多位叙述者的证词中追踪被掩盖的行动。",
+          "sourceId": "penguin-moonstone",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Books Australia",
+          "region": "GLOBAL"
+        }
+      ]
+    }
+  ]
+}

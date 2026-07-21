@@ -103,6 +103,8 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-link-fix-002.json` 记录第二轮不可变链接纠错：巡检确认 Apple Books、Apple TV 地区页返回 404，Sourcebooks 页面拒绝标准访问后，分别替换为 Audible Japan、The Roku Channel 和 British Library Shop 的可用正版入口。三个旧地址仅停止公开，不删除其来源、巡检和批次审计记录。
 
+`apps/api/src/data/catalog-expansion-picture-book-006.json` 是第九个不可变批次，把第 59～69 卷的 11 位人物关联到正式档案和代表作品，包括布朗克斯的妈妈、法月纶太郎、科科、汤川学、神户大助、钱形幸一警部、罗伯特·兰登教授、仙波阿古十郎、荆木欢喜、多罗尾伴内和理查德·卡夫警佐。该批次通过出版社、创作者官网、系列官网、官方发行商和图书馆目录核验，并纠正“茨木欢喜”为“荆木欢喜”、“理查德·克夫”为“理查德·卡夫警佐”；“酷酷”“远岛船”“欲速则不盗之一”等旧称或待考篇名继续作为可检索别名和图鉴标签保留。
+
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 正版链接通过 `npm run links:check` 定时巡检。巡检只记录健康状态和连续失败次数，不自动下架；超时或失败必须由运营人员人工确认，避免把反爬、区域限制或临时网络问题误判为失效链接。
