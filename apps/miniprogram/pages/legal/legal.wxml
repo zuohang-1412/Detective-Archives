@@ -1,0 +1,15 @@
+<view class="page-shell">
+  <text class="eyebrow">LEGAL & PRIVACY</text>
+  <view class="section-title">{{document.title}}</view>
+  <view class="updated-at">更新日期：{{document.updatedAt}}</view>
+
+  <view class="operator-card">
+    <view>运营主体：{{operatorName}}</view>
+    <view>联系渠道：{{privacyContact}}</view>
+  </view>
+
+  <view wx:for="{{document.sections}}" wx:key="index" class="legal-section">
+    <view class="legal-title">{{item[0]}}</view>
+    <view class="legal-body">{{item[1]}}</view>
+  </view>
+</view>

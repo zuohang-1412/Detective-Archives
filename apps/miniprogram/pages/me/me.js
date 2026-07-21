@@ -1,4 +1,5 @@
 const {
+  deactivateAccount,
   getCurrentUser,
   hasAuthToken,
   listMyReviews,
@@ -31,6 +32,7 @@ Page({
     ],
     loading: false,
     loggingIn: false,
+    agreementsAccepted: false,
     error: ""
   },
 
@@ -81,9 +83,13 @@ Page({
 
   async login() {
     if (this.data.loggingIn) return;
+    if (!this.data.agreementsAccepted) {
+      this.setData({ error: "请先阅读并同意用户协议和隐私政策" });
+      return;
+    }
     this.setData({ loggingIn: true, error: "" });
     try {
-      await loginWechat();
+      await loginWechat({ termsAccepted: true, privacyAccepted: true });
       await this.refresh();
       wx.showToast({ title: "登录成功", icon: "success" });
     } catch (error) {
@@ -91,6 +97,15 @@ Page({
     } finally {
       this.setData({ loggingIn: false });
     }
+  },
+
+  toggleAgreements(event) {
+    this.setData({ agreementsAccepted: event.detail.value.length > 0, error: "" });
+  },
+
+  openLegal(event) {
+    const { type } = event.currentTarget.dataset;
+    wx.navigateTo({ url: `/pages/legal/legal?type=${type}` });
   },
 
   confirmLogout() {
@@ -101,6 +116,34 @@ Page({
         if (!result.confirm) return;
         await logout();
         this.setData({ loggedIn: false, user: null, items: [], reviews: [] });
+      }
+    });
+  },
+
+  confirmDeactivate() {
+    wx.showModal({
+      title: "注销账号",
+      content: "注销后微信身份和会话将被移除，书架清空，你发布的评价与回复会被隐藏。该操作无法撤销。",
+      confirmText: "继续注销",
+      confirmColor: "#9f3123",
+      success: (first) => {
+        if (!first.confirm) return;
+        wx.showModal({
+          title: "再次确认",
+          content: "确定永久注销当前账号吗？",
+          confirmText: "确认注销",
+          confirmColor: "#9f3123",
+          success: async (second) => {
+            if (!second.confirm) return;
+            try {
+              await deactivateAccount();
+              this.setData({ loggedIn: false, user: null, items: [], reviews: [] });
+              wx.showToast({ title: "账号已注销", icon: "none" });
+            } catch (error) {
+              wx.showToast({ title: error.message || "注销失败", icon: "none" });
+            }
+          }
+        });
       }
     });
   },

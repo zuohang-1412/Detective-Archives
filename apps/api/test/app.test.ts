@@ -87,10 +87,21 @@ describe("detective archives API", () => {
   });
 
   it("keeps login and shelf writes unavailable without server configuration", async () => {
-    const loginResponse = await app.inject({
+    const consentResponse = await app.inject({
       method: "POST",
       url: "/api/v1/auth/wechat",
       payload: { code: "temporary-code" }
+    });
+    assert.equal(consentResponse.statusCode, 400);
+    assert.equal(consentResponse.json().code, "INVALID_LOGIN_REQUEST");
+
+    const loginResponse = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/wechat",
+      payload: {
+        code: "temporary-code",
+        agreements: { termsAccepted: true, privacyAccepted: true }
+      }
     });
     assert.equal(loginResponse.statusCode, 503);
     assert.equal(loginResponse.json().code, "AUTH_NOT_CONFIGURED");

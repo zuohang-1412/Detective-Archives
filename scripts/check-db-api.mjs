@@ -8,9 +8,11 @@ assert.ok(database, "PostgreSQL configuration is required for the database API c
 const testAdminLoginId = "detective-archives-admin-check";
 const testAdminPassword = "integration-admin-password";
 const testWorkSlug = "database-api-check-work";
+let deactivatedTestUserId = null;
 const testIdentitySubjects = [
   "detective-archives-db-api-check-primary",
   "detective-archives-db-api-check-secondary",
+  "detective-archives-db-api-check-deactivation",
   createHash("sha256").update(testAdminLoginId).digest("hex")
 ];
 async function cleanupTestUsers() {
@@ -83,6 +85,11 @@ async function cleanupTestUsers() {
       WHERE provider IN ('WECHAT', 'ADMIN') AND provider_subject = ANY($1)
     )
   `, [testIdentitySubjects]);
+  if (deactivatedTestUserId) {
+    await database.query("DELETE FROM audit_logs WHERE actor_id = $1", [deactivatedTestUserId]);
+    await database.query("DELETE FROM users WHERE id = $1", [deactivatedTestUserId]);
+    deactivatedTestUserId = null;
+  }
 }
 await cleanupTestUsers();
 const app = await buildApp({
@@ -90,7 +97,9 @@ const app = await buildApp({
   wechatCodeExchange: async (code) => ({
     providerSubject: code === "secondary-user"
       ? testIdentitySubjects[1]
-      : testIdentitySubjects[0]
+      : code === "deactivation-user"
+        ? testIdentitySubjects[2]
+        : testIdentitySubjects[0]
   }),
   adminCredentialValidator: (loginId, password) => (
     loginId === testAdminLoginId && password === testAdminPassword
@@ -128,10 +137,20 @@ try {
     url: "/api/v1/works/a-study-in-scarlet"
   });
   const workId = workResponse.json().data.id;
+  const missingConsentResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: { code: "missing-consent" }
+  });
+  assert.equal(missingConsentResponse.statusCode, 400, missingConsentResponse.body);
   const loginResponse = await app.inject({
     method: "POST",
     url: "/api/v1/auth/wechat",
-    payload: { code: "database-api-check", profile: { displayName: "集成测试用户" } }
+    payload: {
+      code: "database-api-check",
+      agreements: { termsAccepted: true, privacyAccepted: true },
+      profile: { displayName: "集成测试用户" }
+    }
   });
   assert.equal(loginResponse.statusCode, 201, loginResponse.body);
   const token = loginResponse.json().data.token;
@@ -141,7 +160,11 @@ try {
   const repeatLoginResponse = await app.inject({
     method: "POST",
     url: "/api/v1/auth/wechat",
-    payload: { code: "database-api-check", profile: { displayName: "不会重复创建" } }
+    payload: {
+      code: "database-api-check",
+      agreements: { termsAccepted: true, privacyAccepted: true },
+      profile: { displayName: "不会重复创建" }
+    }
   });
   assert.equal(repeatLoginResponse.statusCode, 201, repeatLoginResponse.body);
   assert.equal(repeatLoginResponse.json().data.user.id, userId);
@@ -193,7 +216,10 @@ try {
   const secondaryLoginResponse = await app.inject({
     method: "POST",
     url: "/api/v1/auth/wechat",
-    payload: { code: "secondary-user" }
+    payload: {
+      code: "secondary-user",
+      agreements: { termsAccepted: true, privacyAccepted: true }
+    }
   });
   assert.equal(secondaryLoginResponse.statusCode, 201, secondaryLoginResponse.body);
   const secondaryAuthorization = {
@@ -494,6 +520,46 @@ try {
     )
   `, [adminUserId]);
   assert.ok(adminAuditResponse.rows[0].count >= 4);
+
+  const deactivationLoginResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: {
+      code: "deactivation-user",
+      agreements: { termsAccepted: true, privacyAccepted: true }
+    }
+  });
+  assert.equal(deactivationLoginResponse.statusCode, 201, deactivationLoginResponse.body);
+  deactivatedTestUserId = deactivationLoginResponse.json().data.user.id;
+  const deactivationAuthorization = {
+    authorization: `Bearer ${deactivationLoginResponse.json().data.token}`
+  };
+  const consentRecord = await database.query(`
+    SELECT terms_accepted_at, privacy_accepted_at FROM users WHERE id = $1
+  `, [deactivatedTestUserId]);
+  assert.ok(consentRecord.rows[0].terms_accepted_at);
+  assert.ok(consentRecord.rows[0].privacy_accepted_at);
+  const deactivateResponse = await app.inject({
+    method: "DELETE",
+    url: "/api/v1/me/account",
+    headers: deactivationAuthorization,
+    payload: { confirmation: "DELETE" }
+  });
+  assert.equal(deactivateResponse.statusCode, 204, deactivateResponse.body);
+  const deactivatedSessionResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: deactivationAuthorization
+  });
+  assert.equal(deactivatedSessionResponse.statusCode, 401, deactivatedSessionResponse.body);
+  const deactivatedRecord = await database.query(`
+    SELECT is_active, display_name, deactivated_at,
+      (SELECT COUNT(*)::int FROM user_identities WHERE user_id = users.id) AS identity_count
+    FROM users WHERE id = $1
+  `, [deactivatedTestUserId]);
+  assert.equal(deactivatedRecord.rows[0].is_active, false);
+  assert.equal(deactivatedRecord.rows[0].display_name, "已注销用户");
+  assert.equal(deactivatedRecord.rows[0].identity_count, 0);
 
   const logoutResponse = await app.inject({
     method: "POST",

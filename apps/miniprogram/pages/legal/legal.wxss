@@ -1,0 +1,33 @@
+.updated-at {
+  margin-top: -10rpx;
+  color: #777269;
+  font-size: 22rpx;
+}
+
+.operator-card {
+  margin: 30rpx 0 42rpx;
+  padding: 24rpx;
+  border: 1rpx solid #cdbfa9;
+  border-radius: 11rpx;
+  background: #fffaf0;
+  color: #625c54;
+  font-size: 23rpx;
+  line-height: 1.8;
+}
+
+.legal-section {
+  margin-bottom: 34rpx;
+}
+
+.legal-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.legal-body {
+  margin-top: 12rpx;
+  color: #514d47;
+  font-size: 25rpx;
+  line-height: 1.85;
+}

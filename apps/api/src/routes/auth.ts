@@ -5,10 +5,18 @@ import { bearerToken, findActiveSession, sessionTokenHash } from "../auth/sessio
 import type { WechatCodeExchange } from "../auth/wechat.js";
 import { WechatCodeExchangeError } from "../auth/wechat.js";
 import type { DatabaseClient } from "../db/types.js";
-import { loginAdminUser, loginWechatUser } from "../repositories/users.js";
+import {
+  deactivateUserAccount,
+  loginAdminUser,
+  loginWechatUser
+} from "../repositories/users.js";
 
 const loginSchema = z.object({
   code: z.string().trim().min(1).max(200),
+  agreements: z.object({
+    termsAccepted: z.literal(true),
+    privacyAccepted: z.literal(true)
+  }),
   profile: z.object({
     displayName: z.string().trim().min(1).max(60).default("推理读者"),
     avatarUrl: z.url().max(1000).optional()
@@ -18,6 +26,7 @@ const adminLoginSchema = z.object({
   loginId: z.string().trim().min(1).max(120),
   password: z.string().min(1).max(500)
 });
+const deactivateSchema = z.object({ confirmation: z.literal("DELETE") });
 
 interface AuthRouteOptions {
   database?: DatabaseClient;
@@ -108,6 +117,29 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
       UPDATE user_sessions SET revoked_at = NOW()
       WHERE token_hash = $1 AND revoked_at IS NULL
     `, [sessionTokenHash(token)]);
+    return reply.code(204).send();
+  });
+
+  app.delete("/me/account", async (request, reply) => {
+    const body = deactivateSchema.safeParse(request.body);
+    if (!body.success) {
+      return reply.code(400).send({
+        code: "ACCOUNT_DEACTIVATION_CONFIRMATION_REQUIRED",
+        message: "请确认注销账号"
+      });
+    }
+    if (!options.database) {
+      return reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
+    }
+    const token = bearerToken(request);
+    const session = token ? await findActiveSession(options.database, token) : null;
+    if (!session) {
+      return reply.code(401).send({ code: "AUTH_REQUIRED", message: "请先登录" });
+    }
+    const deactivated = await deactivateUserAccount(options.database, session.id, request.id);
+    if (!deactivated) {
+      return reply.code(409).send({ code: "ACCOUNT_CANNOT_BE_DEACTIVATED", message: "账号无法注销" });
+    }
     return reply.code(204).send();
   });
 };

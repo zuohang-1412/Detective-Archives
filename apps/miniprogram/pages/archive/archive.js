@@ -1,4 +1,8 @@
-const { listArchiveDirectory, listPictureBookEntries } = require("../../services/api");
+const {
+  listArchiveDirectory,
+  listDetectives,
+  listPictureBookEntries
+} = require("../../services/api");
 
 const categoryLabels = {
   WORLD_LITERATURE: "世界文学",
@@ -11,14 +15,15 @@ const categoryLabels = {
 Page({
   data: {
     query: "",
-    activeSection: "pictureBook",
+    activeSection: "detectives",
     sections: [
+      { id: "detectives", label: "侦探档案" },
       { id: "pictureBook", label: "图鉴索引" },
       { id: "extension", label: "扩展收录" },
       { id: "history", label: "历史断案" }
     ],
-    sectionTitle: "名侦探图鉴索引",
-    searchPlaceholder: "侦探名称、别名或推荐作品",
+    sectionTitle: "侦探档案目录",
+    searchPlaceholder: "侦探、创作者或标签",
     entries: [],
     coverage: null,
     coverageText: "",
@@ -50,6 +55,10 @@ Page({
     }
 
     const sectionConfig = {
+      detectives: {
+        sectionTitle: "侦探档案目录",
+        searchPlaceholder: "侦探、创作者或标签"
+      },
       pictureBook: {
         sectionTitle: "名侦探图鉴索引",
         searchPlaceholder: "侦探名称、别名或推荐作品"
@@ -77,6 +86,15 @@ Page({
   async search() {
     this.setData({ loading: true, error: "" });
     try {
+      if (this.data.activeSection === "detectives") {
+        const response = await listDetectives({ q: this.data.query, pageSize: 50 });
+        this.setData({
+          entries: response.data,
+          coverage: response.pagination,
+          coverageText: `已发布 ${response.pagination.total} 位侦探与历史断案人物档案`
+        });
+        return;
+      }
       if (this.data.activeSection === "pictureBook") {
         const response = await listPictureBookEntries({ q: this.data.query, pageSize: 150 });
         this.setData({
@@ -113,6 +131,10 @@ Page({
 
   openEntry(event) {
     const { slug, id, name } = event.currentTarget.dataset;
+    if (this.data.activeSection === "detectives") {
+      if (slug) wx.navigateTo({ url: `/pages/detective/detective?slug=${slug}` });
+      return;
+    }
     if (this.data.activeSection !== "pictureBook") {
       const entry = this.data.entries.find((item) => item.id === id);
       if (!entry) {

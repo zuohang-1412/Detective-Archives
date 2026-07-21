@@ -33,7 +33,31 @@
   <view wx:elif="{{error}}" class="state-message">{{error}}</view>
   <view wx:elif="{{!entries.length}}" class="state-message">没有找到匹配档案</view>
   <view wx:else class="result-list">
-    <block wx:if="{{activeSection === 'pictureBook'}}">
+    <block wx:if="{{activeSection === 'detectives'}}">
+      <view
+        wx:for="{{entries}}"
+        wx:key="id"
+        class="card result-card directory-card"
+        data-slug="{{item.slug}}"
+        bindtap="openEntry"
+      >
+        <view class="archive-badge {{item.subjectKind === 'HISTORICAL' ? 'historical' : ''}}">
+          {{item.subjectKind === 'HISTORICAL' ? '史实' : '侦探'}}
+        </view>
+        <view class="result-main">
+          <view class="result-title-row">
+            <view class="result-name">{{item.nameZh}}</view>
+          </view>
+          <view class="muted result-meta">{{item.nameOriginal}} · {{item.country}}</view>
+          <view wx:if="{{item.creatorName}}" class="muted result-meta">创作者 {{item.creatorName}}</view>
+          <view class="result-summary">{{item.summary}}</view>
+          <view wx:if="{{item.works.length}}" class="featured-work">代表作品：{{item.works[0].titleZh}}</view>
+        </view>
+        <view class="detail-state ready">查看档案</view>
+      </view>
+    </block>
+
+    <block wx:elif="{{activeSection === 'pictureBook'}}">
       <view
         wx:for="{{entries}}"
         wx:key="id"

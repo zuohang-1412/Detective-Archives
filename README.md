@@ -15,6 +15,7 @@
 - 微信 `code2Session` 服务端身份、不可逆会话令牌、退出登录和个人书架进度。
 - 短评/长评、剧透折叠、回复、点赞、举报、作者软删除和默认待审核流程。
 - 内置运营后台：独立管理员登录、数据概览、评价/回复审核、举报处理、用户处置、作品与正版链接维护。
+- 登录前协议/隐私确认、同意时间留存，以及撤销身份、会话和个人内容的账号注销流程。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
@@ -82,6 +83,7 @@ npm run dev:api
 - `POST /api/v1/auth/wechat`
 - `GET /api/v1/auth/me`
 - `POST /api/v1/auth/logout`
+- `DELETE /api/v1/me/account`
 - `GET /api/v1/me/shelf`
 - `PUT /api/v1/me/shelf/:workId`
 - `DELETE /api/v1/me/shelf/:workId`
@@ -104,6 +106,7 @@ npm run dev:api
 使用微信开发者工具导入仓库根目录。开发阶段使用游客 AppID，接口地址由 `apps/miniprogram/app.js` 中的 `apiBaseUrl` 控制。
 
 接入真实小程序前，需要替换 `project.config.json` 中的 AppID，并为生产环境配置合法的 HTTPS API 域名。
+同时需要在 `apps/miniprogram/app.js` 中填写真实运营主体和隐私联系渠道；生产预检会拒绝这些字段保留占位文本。
 
 ## 质量检查
 

@@ -69,7 +69,7 @@ function listArchiveDirectory(params = {}) {
   return request("/api/v1/archive-directory", { data: params });
 }
 
-function loginWechat() {
+function loginWechat(agreements) {
   return new Promise((resolve, reject) => {
     wx.login({
       timeout: 8000,
@@ -81,7 +81,11 @@ function loginWechat() {
         try {
           const response = await request("/api/v1/auth/wechat", {
             method: "POST",
-            data: { code: result.code, profile: { displayName: "推理读者" } }
+            data: {
+              code: result.code,
+              agreements,
+              profile: { displayName: "推理读者" }
+            }
           });
           wx.setStorageSync(TOKEN_KEY, response.data.token);
           resolve(response);
@@ -180,10 +184,22 @@ function createReport(data) {
   return request("/api/v1/reports", { method: "POST", data });
 }
 
+async function deactivateAccount() {
+  try {
+    await request("/api/v1/me/account", {
+      method: "DELETE",
+      data: { confirmation: "DELETE" }
+    });
+  } finally {
+    wx.removeStorageSync(TOKEN_KEY);
+  }
+}
+
 module.exports = {
   createComment,
   createReport,
   createReview,
+  deactivateAccount,
   deleteReview,
   getCurrentUser,
   getDetective,

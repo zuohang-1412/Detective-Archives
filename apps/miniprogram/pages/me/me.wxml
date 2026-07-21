@@ -10,6 +10,15 @@
     <block wx:else>
       <view class="profile-copy">登录后记录阅读或观看进度，之后还能在作品下留下短评与长评。</view>
       <button class="login-button" loading="{{loggingIn}}" bindtap="login">微信快捷登录</button>
+      <checkbox-group class="agreement-row" bindchange="toggleAgreements">
+        <label>
+          <checkbox value="accepted" color="#9f3123" checked="{{agreementsAccepted}}" />
+          <text>我已阅读并同意</text>
+        </label>
+        <text class="legal-link" data-type="terms" catchtap="openLegal">《用户协议》</text>
+        <text>和</text>
+        <text class="legal-link" data-type="privacy" catchtap="openLegal">《隐私政策》</text>
+      </checkbox-group>
     </block>
   </view>
 
@@ -70,6 +79,12 @@
         </view>
         <view class="review-status {{item.status === 'PUBLISHED' ? 'published' : ''}}">{{item.statusLabel}}</view>
       </view>
+    </view>
+
+    <view class="account-settings">
+      <text class="legal-link" data-type="terms" bindtap="openLegal">用户协议</text>
+      <text class="legal-link" data-type="privacy" bindtap="openLegal">隐私政策</text>
+      <text class="deactivate-link" bindtap="confirmDeactivate">注销账号</text>
     </view>
   </block>
 </view>

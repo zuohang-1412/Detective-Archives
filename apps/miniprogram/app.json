@@ -6,7 +6,8 @@
     "pages/work/work",
     "pages/me/me",
     "pages/review-editor/review-editor",
-    "pages/review-detail/review-detail"
+    "pages/review-detail/review-detail",
+    "pages/legal/legal"
   ],
   "window": {
     "navigationBarBackgroundColor": "#101820",

@@ -37,8 +37,10 @@ export async function loginWechatUser(
     let user = existing.rows[0];
     if (!user) {
       const created = await queryRows<AuthUser>(connection, `
-        INSERT INTO users (display_name, avatar_url)
-        VALUES ($1, $2)
+        INSERT INTO users (
+          display_name, avatar_url, terms_accepted_at, privacy_accepted_at
+        )
+        VALUES ($1, $2, NOW(), NOW())
         RETURNING id, display_name AS "displayName", avatar_url AS "avatarUrl",
           bio, role::text AS role
       `, [profile.displayName, profile.avatarUrl ?? null]);
@@ -49,12 +51,21 @@ export async function loginWechatUser(
           user_id, provider, provider_subject, union_subject
         ) VALUES ($1, 'WECHAT', $2, $3)
       `, [user.id, identity.providerSubject, identity.unionSubject ?? null]);
-    } else if (identity.unionSubject) {
+    } else {
       await connection.query(`
-        UPDATE user_identities
-        SET union_subject = COALESCE(union_subject, $2)
-        WHERE provider = 'WECHAT' AND provider_subject = $1
-      `, [identity.providerSubject, identity.unionSubject]);
+        UPDATE users
+        SET terms_accepted_at = COALESCE(terms_accepted_at, NOW()),
+          privacy_accepted_at = COALESCE(privacy_accepted_at, NOW()),
+          updated_at = NOW()
+        WHERE id = $1
+      `, [user.id]);
+      if (identity.unionSubject) {
+        await connection.query(`
+          UPDATE user_identities
+          SET union_subject = COALESCE(union_subject, $2)
+          WHERE provider = 'WECHAT' AND provider_subject = $1
+        `, [identity.providerSubject, identity.unionSubject]);
+      }
     }
 
     const token = createSessionToken();
@@ -64,6 +75,54 @@ export async function loginWechatUser(
       VALUES ($1, $2, $3)
     `, [user.id, sessionTokenHash(token), expiresAt]);
     return { token, expiresAt: expiresAt.toISOString(), user };
+  });
+}
+
+export async function deactivateUserAccount(
+  database: DatabaseClient,
+  userId: string,
+  requestId: string
+) {
+  return withTransaction(database, async (connection) => {
+    const active = await queryRows<{ id: string }>(connection, `
+      SELECT id FROM users
+      WHERE id = $1 AND role = 'USER' AND is_active = TRUE
+      FOR UPDATE
+    `, [userId]);
+    if (!active.rows[0]) return false;
+
+    await connection.query(`
+      UPDATE reviews
+      SET status = 'HIDDEN', deleted_at = COALESCE(deleted_at, NOW()), updated_at = NOW()
+      WHERE user_id = $1
+    `, [userId]);
+    await connection.query(`
+      UPDATE comments
+      SET status = 'HIDDEN', deleted_at = COALESCE(deleted_at, NOW()), updated_at = NOW()
+      WHERE user_id = $1
+    `, [userId]);
+    await connection.query("DELETE FROM shelf_items WHERE user_id = $1", [userId]);
+    await connection.query("DELETE FROM review_likes WHERE user_id = $1", [userId]);
+    await connection.query("DELETE FROM comment_likes WHERE user_id = $1", [userId]);
+    await connection.query("UPDATE user_sessions SET revoked_at = NOW() WHERE user_id = $1", [userId]);
+    await connection.query("DELETE FROM user_identities WHERE user_id = $1", [userId]);
+    await connection.query(`
+      INSERT INTO audit_logs (
+        actor_id, action, resource_type, resource_id, request_id
+      ) VALUES ($1, 'ACCOUNT_DEACTIVATE', 'USER', $1, $2)
+    `, [userId, requestId]);
+    await connection.query(`
+      UPDATE users
+      SET display_name = '已注销用户',
+        avatar_url = NULL,
+        bio = NULL,
+        is_active = FALSE,
+        deactivated_at = NOW(),
+        deactivation_reason = 'USER_REQUEST',
+        updated_at = NOW()
+      WHERE id = $1
+    `, [userId]);
+    return true;
   });
 }
 
