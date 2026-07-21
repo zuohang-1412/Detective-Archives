@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-003",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace two confirmed 404 Apple TV episode URLs with current legal series access pages while retaining the historical links as inactive audit records.",
+  "sources": [
+    {
+      "id": "hulu-house-series",
+      "label": "Hulu: House",
+      "url": "https://www.hulu.com/series/house-ef39603f-eb90-4248-8237-f6168d7c1be1",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "usa-network-monk-streaming",
+      "label": "USA Network: How to watch every episode of Monk",
+      "url": "https://www.usanetwork.com/usa-insider/monk-show-how-to-watch-where-to-stream",
+      "quality": "OFFICIAL_BROADCASTER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-071-STD",
+      "pictureBookEntryIds": [],
+      "slug": "gregory-house",
+      "nameZh": "格雷戈里·豪斯医生",
+      "nameOriginal": "Dr. Gregory House",
+      "nameEn": "Dr. Gregory House",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "大卫·肖创作的天才诊断医师，把罕见疾病当作需要排除假设的谜题，以症状、病史、环境调查和反常规实验寻找真正病因。",
+      "creatorName": "大卫·肖",
+      "aliases": ["豪斯医生", "Dr. House", "Gregory House"],
+      "tags": ["医疗推理", "诊断医师", "电视系列"],
+      "featuredCases": ["《Frozen》（图鉴原标）", "《冰冻》"],
+      "sourceIds": ["hulu-house-series"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "house-frozen",
+          "titleZh": "冰冻",
+          "titleOriginal": "Frozen",
+          "mediaType": "SERIES",
+          "releaseYear": 2008,
+          "summary": "南极科考站唯一的医生患上不明疾病且无法撤离，豪斯只能通过网络指导她自检和使用有限药品，在远程证据不足的条件下逐步排除病因。",
+          "sourceId": "hulu-house-series",
+          "linkType": "STREAMING",
+          "providerName": "Hulu",
+          "region": "US",
+          "deactivateLinkUrls": [
+            "https://tv.apple.com/us/episode/frozen/umc.cmc.6eu5q16f35ylqsow5t7fn8s5i?showId=umc.cmc.1819eevcg6tlw0ifen6ml04fy"
+          ]
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-073-STD",
+      "pictureBookEntryIds": [],
+      "slug": "adrian-monk",
+      "nameZh": "艾德里安·蒙克",
+      "nameOriginal": "Adrian Monk",
+      "nameEn": "Adrian Monk",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "安迪·布莱克曼创作的前旧金山警探兼顾问，受到强迫症和多种恐惧困扰，却能凭极端敏锐的秩序感发现空间、行为和证词中的细小异常。",
+      "creatorName": "安迪·布莱克曼",
+      "aliases": ["神探阿蒙", "蒙克先生", "Adrian Monk"],
+      "tags": ["警察顾问", "观察推理", "电视系列"],
+      "featuredCases": ["《我对裁决有异议》", "《评决有异议》"],
+      "sourceIds": ["usa-network-monk-streaming"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "mr-monk-gets-jury-duty",
+          "titleZh": "评决有异议",
+          "titleOriginal": "Mr. Monk Gets Jury Duty",
+          "mediaType": "SERIES",
+          "releaseYear": 2006,
+          "summary": "蒙克被选为陪审员，在审理一宗伤人案时又从垃圾箱篷布下发现尸体；他一边与其他陪审员磨合，一边揭开两起案件的关联。",
+          "sourceId": "usa-network-monk-streaming",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "USA Network / Peacock",
+          "region": "US",
+          "deactivateLinkUrls": [
+            "https://tv.apple.com/jp/episode/%E8%A9%95%E6%B1%BA%E3%81%AB%E7%95%B0%E8%AD%B0%E3%81%82%E3%82%8A/umc.cmc.62hp8vbjqsocpyv5yzl4d1plz?showId=umc.cmc.3ex33ik94lruzc3atqc4nb66d"
+          ]
+        }
+      ]
+    }
+  ]
+}

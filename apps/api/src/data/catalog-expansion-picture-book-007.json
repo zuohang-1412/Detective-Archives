@@ -1,0 +1,472 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-007",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "gutenberg-trents-last-case",
+      "label": "Project Gutenberg: Trent's Last Case",
+      "url": "https://www.gutenberg.org/ebooks/2568",
+      "quality": "PUBLIC_DIGITAL_LIBRARY"
+    },
+    {
+      "id": "apple-house-frozen",
+      "label": "Apple TV: House - Frozen",
+      "url": "https://tv.apple.com/us/episode/frozen/umc.cmc.6eu5q16f35ylqsow5t7fn8s5i?showId=umc.cmc.1819eevcg6tlw0ifen6ml04fy",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "kobunsha-rinjo",
+      "label": "光文社：《临场》",
+      "url": "https://en.kobunsha.com/books/9784334743031/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "apple-monk-verdict",
+      "label": "Apple TV：《神探阿蒙》评决有异议",
+      "url": "https://tv.apple.com/jp/episode/%E8%A9%95%E6%B1%BA%E3%81%AB%E7%95%B0%E8%AD%B0%E3%81%82%E3%82%8A/umc.cmc.62hp8vbjqsocpyv5yzl4d1plz?showId=umc.cmc.3ex33ik94lruzc3atqc4nb66d",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "tsogen-black-trunk",
+      "label": "东京创元社：《黑色皮箱》",
+      "url": "https://www.tsogen.co.jp/np/isbn/9784488403034",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tsogen-flying-horse",
+      "label": "东京创元社：《空中飞马》",
+      "url": "https://www.tsogen.co.jp/np/isbn/9784488413019",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "jeffery-bone-collector",
+      "label": "Jeffery Deaver Official Website: The Bone Collector",
+      "url": "https://www.jefferydeaver.com/novel/the-bone-collector/",
+      "quality": "CREATOR_OFFICIAL_SITE"
+    },
+    {
+      "id": "kadokawa-glass-hammer",
+      "label": "KADOKAWA：《玻璃之锤》",
+      "url": "https://www.kadokawa.co.jp/product/200704000297/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tkj-team-batista",
+      "label": "宝岛社：《巴提斯塔团队的荣光》新装版",
+      "url": "https://tkj.jp/book/?cd=72464201",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-kubinashi",
+      "label": "讲谈社：《如无头作祟之物》",
+      "url": "https://www.kodansha.co.jp/book/products/0000205356",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-biblia-first",
+      "label": "KADOKAWA：《古书堂事件手帖～栞子与她的奇异宾客～》",
+      "url": "https://www.kadokawa.co.jp/product/201101000190/",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-070-STD",
+      "pictureBookEntryIds": ["PB-070-STD"],
+      "slug": "philip-trent",
+      "nameZh": "菲利普·特伦特",
+      "nameOriginal": "Philip Trent",
+      "nameEn": "Philip Trent",
+      "country": "英国",
+      "era": "20世纪初",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "E·C·本特利笔下的画家、记者和业余侦探，擅长现场观察与人物访谈，却也会因感情和先入判断犯错，体现早期侦探小说对“无误名探”的反思。",
+      "creatorName": "E·C·本特利",
+      "aliases": ["菲利浦·特伦特", "特伦特", "Philip Trent"],
+      "tags": ["业余侦探", "记者", "古典推理"],
+      "featuredCases": ["《特伦特最后一案》"],
+      "sourceIds": ["gutenberg-trents-last-case"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "trents-last-case",
+          "titleZh": "特伦特最后一案",
+          "titleOriginal": "Trent's Last Case",
+          "mediaType": "NOVEL",
+          "releaseYear": 1913,
+          "summary": "富商曼德森在乡间庄园遭枪杀，特伦特调查现场、家庭关系和时间线并形成一套解释，却必须面对自己的推论可能从根本上出错。",
+          "sourceId": "gutenberg-trents-last-case",
+          "linkType": "LIBRARY",
+          "providerName": "Project Gutenberg",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-071-STD",
+      "pictureBookEntryIds": ["PB-071-STD"],
+      "slug": "gregory-house",
+      "nameZh": "格雷戈里·豪斯医生",
+      "nameOriginal": "Dr. Gregory House",
+      "nameEn": "Dr. Gregory House",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "大卫·肖创作的天才诊断医师，把罕见疾病当作需要排除假设的谜题，以症状、病史、环境调查和反常规实验寻找真正病因。",
+      "creatorName": "大卫·肖",
+      "aliases": ["豪斯医生", "Dr. House", "Gregory House"],
+      "tags": ["医疗推理", "诊断医师", "电视系列"],
+      "featuredCases": ["《Frozen》（图鉴原标）", "《冰冻》"],
+      "sourceIds": ["apple-house-frozen"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "house-frozen",
+          "titleZh": "冰冻",
+          "titleOriginal": "Frozen",
+          "mediaType": "SERIES",
+          "releaseYear": 2008,
+          "summary": "南极科考站唯一的医生患上不明疾病且无法撤离，豪斯只能通过网络指导她自检和使用有限药品，在远程证据不足的条件下逐步排除病因。",
+          "sourceId": "apple-house-frozen",
+          "linkType": "STREAMING",
+          "providerName": "Apple TV",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-072-STD",
+      "pictureBookEntryIds": ["PB-072-STD"],
+      "slug": "yoshio-kuraishi",
+      "nameZh": "仓石义男",
+      "nameOriginal": "倉石義男",
+      "nameEn": "Yoshio Kuraishi",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "SERIES", "FILM"],
+      "summary": "横山秀夫《临场》中的搜查一课检视官，外号“终身检视官”，以对尸体和现场细节的敏锐观察纠正自杀、病死或他杀的错误定性。",
+      "creatorName": "横山秀夫",
+      "aliases": ["终身检视官", "倉石義男", "Yoshio Kuraishi"],
+      "tags": ["检视官", "警察小说", "现场勘查"],
+      "featuredCases": ["《红色名片》"],
+      "sourceIds": ["kobunsha-rinjo"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "rinjo",
+          "titleZh": "临场",
+          "titleOriginal": "臨場",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 2004,
+          "summary": "八篇警察故事围绕仓石义男展开，他从其他调查者忽略的尸体与现场证据入手，重新判断案件性质；首篇即为图鉴所列《红色名片》。",
+          "sourceId": "kobunsha-rinjo",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-073-STD",
+      "pictureBookEntryIds": ["PB-073-STD"],
+      "slug": "adrian-monk",
+      "nameZh": "艾德里安·蒙克",
+      "nameOriginal": "Adrian Monk",
+      "nameEn": "Adrian Monk",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "安迪·布莱克曼创作的前旧金山警探兼顾问，受到强迫症和多种恐惧困扰，却能凭极端敏锐的秩序感发现空间、行为和证词中的细小异常。",
+      "creatorName": "安迪·布莱克曼",
+      "aliases": ["神探阿蒙", "蒙克先生", "Adrian Monk"],
+      "tags": ["警察顾问", "观察推理", "电视系列"],
+      "featuredCases": ["《我对裁决有异议》", "《评决有异议》"],
+      "sourceIds": ["apple-monk-verdict"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "mr-monk-gets-jury-duty",
+          "titleZh": "评决有异议",
+          "titleOriginal": "Mr. Monk Gets Jury Duty",
+          "mediaType": "SERIES",
+          "releaseYear": 2006,
+          "summary": "蒙克被选为陪审员，在审理一宗伤人案时又从垃圾箱篷布下发现尸体；他一边与其他陪审员磨合，一边揭开两起案件的关联。",
+          "sourceId": "apple-monk-verdict",
+          "linkType": "STREAMING",
+          "providerName": "Apple TV",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-074-STD",
+      "pictureBookEntryIds": ["PB-074-STD"],
+      "slug": "inspector-onitsura",
+      "nameZh": "鬼贯警部",
+      "nameOriginal": "鬼貫警部",
+      "nameEn": "Inspector Onitsura",
+      "country": "日本",
+      "era": "20世纪中后期",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "鲇川哲也笔下的警视厅警部，以铁路时刻、交通路径和证词逐项验证不在场证明，在战后日本本格推理中持续调查多起复杂命案。",
+      "creatorName": "鲇川哲也",
+      "aliases": ["鬼貫警部", "Inspector Onitsura"],
+      "tags": ["警部", "不在场证明", "铁路推理"],
+      "featuredCases": ["《黑色皮箱》"],
+      "sourceIds": ["tsogen-black-trunk"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-black-trunk",
+          "titleZh": "黑色皮箱",
+          "titleOriginal": "黒いトランク",
+          "mediaType": "NOVEL",
+          "releaseYear": 1956,
+          "summary": "汐留站发现皮箱藏尸，寄件人随后溺亡，表面结案后鬼贯赴九州重查，在神秘蓝衣人和严密不在场证明之间追索真实运输路线。",
+          "sourceId": "tsogen-black-trunk",
+          "linkType": "PUBLISHER",
+          "providerName": "东京创元社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-075-STD",
+      "pictureBookEntryIds": ["PB-075-STD"],
+      "slug": "shunputei-enshi",
+      "nameZh": "春樱亭圆紫",
+      "nameOriginal": "春桜亭円紫",
+      "nameEn": "Shunputei Enshi",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "COMIC"],
+      "summary": "北村薰“圆紫先生与我”系列中的落语家，倾听女大学生“我”遇到的日常怪事，以语言、习俗和人物心理解释没有谋杀的生活谜题。",
+      "creatorName": "北村薰",
+      "aliases": ["圆紫师匠", "春桜亭円紫", "Shunputei Enshi"],
+      "tags": ["日常之谜", "落语家", "安乐椅推理"],
+      "featuredCases": ["《空中飞马》"],
+      "sourceIds": ["tsogen-flying-horse"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "sora-tobu-uma",
+          "titleZh": "空中飞马",
+          "titleOriginal": "空飛ぶ馬",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 1989,
+          "summary": "连作短篇从“织部之灵”到同名篇，让女大学生带来日常中的细小疑问，圆紫师匠通过叙述细节和人情推演还原事情经过。",
+          "sourceId": "tsogen-flying-horse",
+          "linkType": "PUBLISHER",
+          "providerName": "东京创元社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-076-STD",
+      "pictureBookEntryIds": ["PB-076-STD"],
+      "slug": "lincoln-rhyme",
+      "nameZh": "林肯·莱姆",
+      "nameOriginal": "Lincoln Rhyme",
+      "nameEn": "Lincoln Rhyme",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "杰夫里·迪弗笔下的前纽约警局刑事鉴识主管，事故后高位截瘫，仍在住所实验室分析微量物证，并通过艾米莉亚·萨克斯远程指挥现场勘查。",
+      "creatorName": "杰夫里·迪弗",
+      "aliases": ["林肯.莱姆", "林肯·瑞姆", "Lincoln Rhyme"],
+      "tags": ["刑事鉴识", "物证推理", "搭档侦查"],
+      "featuredCases": ["《人骨拼图》", "《骨头收藏家》"],
+      "sourceIds": ["jeffery-bone-collector"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-bone-collector",
+          "titleZh": "人骨拼图",
+          "titleOriginal": "The Bone Collector",
+          "mediaType": "NOVEL",
+          "releaseYear": 1997,
+          "summary": "铁路旁发现被掩埋的尸体后，退休中的莱姆与初次参与现场鉴识的萨克斯合作，解读凶手留下的微量证据并抢救下一名受害者。",
+          "sourceId": "jeffery-bone-collector",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Jeffery Deaver Official Website",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-077-STD",
+      "pictureBookEntryIds": ["PB-077-STD"],
+      "slug": "kei-enomoto",
+      "nameZh": "榎本径",
+      "nameOriginal": "榎本径",
+      "nameEn": "Kei Enomoto",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "贵志祐介“防犯侦探”系列中的防盗顾问，熟悉门锁、警报、建筑和入侵技术，与律师青砥纯子合作破解看似无法进出的密室。",
+      "creatorName": "贵志祐介",
+      "aliases": ["防犯侦探榎本", "榎本径", "Kei Enomoto"],
+      "tags": ["密室推理", "防盗技术", "搭档侦查"],
+      "featuredCases": ["《玻璃之锤》"],
+      "sourceIds": ["kadokawa-glass-hammer"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-glass-hammer",
+          "titleZh": "玻璃之锤",
+          "titleOriginal": "硝子のハンマー",
+          "mediaType": "NOVEL",
+          "releaseYear": 2004,
+          "summary": "公司高层死在设有密码电梯、监控和严密门禁的办公室，榎本径与青砥纯子从安防系统和建筑条件验证密室形成方式。",
+          "sourceId": "kadokawa-glass-hammer",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-078-STD",
+      "pictureBookEntryIds": ["PB-078-STD"],
+      "slug": "keisuke-shiratori",
+      "nameZh": "白鸟圭辅",
+      "nameOriginal": "白鳥圭輔",
+      "nameEn": "Keisuke Shiratori",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "海堂尊“田口·白鸟”系列中的厚生劳动省官员，言辞尖锐、擅长审讯和逻辑追问，与医生田口公平合作调查医疗系统中的异常死亡。",
+      "creatorName": "海堂尊",
+      "aliases": ["逻辑怪兽", "白鳥圭輔", "Keisuke Shiratori"],
+      "tags": ["医疗推理", "官员侦探", "审讯"],
+      "featuredCases": ["《巴提斯塔团队的荣光》"],
+      "sourceIds": ["tkj-team-batista"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-glory-of-team-batista",
+          "titleZh": "巴提斯塔团队的荣光",
+          "titleOriginal": "チーム・バチスタの栄光",
+          "mediaType": "NOVEL",
+          "releaseYear": 2006,
+          "summary": "成功率极高的心脏手术团队连续出现术中死亡，田口公平展开内部调查，白鸟圭辅随后介入，以强势询问和行为分析检验医疗事故与犯罪的可能。",
+          "sourceId": "tkj-team-batista",
+          "linkType": "PUBLISHER",
+          "providerName": "宝岛社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-079-STD",
+      "pictureBookEntryIds": ["PB-079-STD"],
+      "slug": "genya-tojo",
+      "nameZh": "刀城言耶",
+      "nameOriginal": "刀城言耶",
+      "nameEn": "Genya Tojo",
+      "country": "日本",
+      "era": "昭和时代题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL"],
+      "summary": "三津田信三笔下调查怪谈的推理作家，为搜集地方传说进入封闭村落，在尊重民俗恐惧的同时从仪式、家族史和物证中寻找人为解释。",
+      "creatorName": "三津田信三",
+      "aliases": ["刀城言耶", "Genya Tojo"],
+      "tags": ["民俗推理", "恐怖本格", "作家侦探"],
+      "featuredCases": ["《如无头作祟之物》"],
+      "sourceIds": ["kodansha-kubinashi"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kubinashi-no-gotoki-tataru-mono",
+          "titleZh": "如无头作祟之物",
+          "titleOriginal": "首無の如き祟るもの",
+          "mediaType": "NOVEL",
+          "releaseYear": 2007,
+          "summary": "奥多摩媛首村流传无头怪物传说，旧家双胞胎参加十三夜参拜后惨剧开始，刀城言耶调查跨越战中战后的无头杀人。",
+          "sourceId": "kodansha-kubinashi",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-080-STD",
+      "pictureBookEntryIds": ["PB-080-STD"],
+      "slug": "shioriko-shinokawa",
+      "nameZh": "篠川栞子",
+      "nameOriginal": "篠川栞子",
+      "nameEn": "Shioriko Shinokawa",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "SERIES", "FILM", "ANIMATION"],
+      "summary": "三上延《古书堂事件手帖》中的旧书店女店主，虽不善与陌生人交谈，却拥有深厚版本学和文学知识，能从书的装帧、流转和阅读痕迹解开委托人的秘密。",
+      "creatorName": "三上延",
+      "aliases": ["筱川栞子", "栞子小姐", "Shioriko Shinokawa"],
+      "tags": ["日常之谜", "古书", "女性侦探"],
+      "featuredCases": ["《古书堂事件手帖～栞子与她的奇异宾客～》"],
+      "sourceIds": ["kadokawa-biblia-first"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "biblia-bookstore-first",
+          "titleZh": "古书堂事件手帖～栞子与她的奇异宾客～",
+          "titleOriginal": "ビブリア古書堂の事件手帖 ～栞子さんと奇妙な客人たち～",
+          "mediaType": "NOVEL",
+          "releaseYear": 2011,
+          "summary": "镰仓旧书店接连收到与实在书籍有关的委托，栞子根据版本、题记与持有历史还原书籍背后的隐情，并与五浦大辅建立搭档关系。",
+          "sourceId": "kadokawa-biblia-first",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}

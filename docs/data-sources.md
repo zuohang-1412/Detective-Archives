@@ -105,6 +105,10 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-picture-book-006.json` 是第九个不可变批次，把第 59～69 卷的 11 位人物关联到正式档案和代表作品，包括布朗克斯的妈妈、法月纶太郎、科科、汤川学、神户大助、钱形幸一警部、罗伯特·兰登教授、仙波阿古十郎、荆木欢喜、多罗尾伴内和理查德·卡夫警佐。该批次通过出版社、创作者官网、系列官网、官方发行商和图书馆目录核验，并纠正“茨木欢喜”为“荆木欢喜”、“理查德·克夫”为“理查德·卡夫警佐”；“酷酷”“远岛船”“欲速则不盗之一”等旧称或待考篇名继续作为可检索别名和图鉴标签保留。
 
+`apps/api/src/data/catalog-expansion-picture-book-007.json` 把第 70～80 卷的 11 位人物关联到正式档案和代表作品，包括菲利普·特伦特、格雷戈里·豪斯医生、仓石义男、艾德里安·蒙克、鬼贯警部、春樱亭圆紫、林肯·莱姆、榎本径、白鸟圭辅、刀城言耶和篠川栞子。图鉴没有列出推荐作的第 76～80 卷分别补入经创作者官网或出版社确认的系列首作、代表作；“frozen”“我对裁决有异议”等原始标签继续保留以便检索。
+
+`apps/api/src/data/catalog-expansion-link-fix-003.json` 和 `catalog-expansion-link-fix-004.json` 保存第 70～80 卷巡检产生的纠错链：两个 Apple TV 单集地址经 GET 再确认仍为 404 后停止公开，分别换为 USA Network/Peacock 的全剧观看指引和 Universal Pictures 官方发行页；曾因地区重定向落到不可用页的 Hulu 地址也作为中间历史记录保留。巡检器现在会在 HEAD 返回非确定状态时再执行 GET，避免把“不支持 HEAD 但网页可正常打开”的正版站点误判失效。
+
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 正版链接通过 `npm run links:check` 定时巡检。巡检只记录健康状态和连续失败次数，不自动下架；超时或失败必须由运营人员人工确认，避免把反爬、区域限制或临时网络问题误判为失效链接。

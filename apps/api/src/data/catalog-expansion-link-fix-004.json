@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-004",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace a region-redirected Hulu series URL with the stable official Universal Pictures home-entertainment page while retaining the historical link as an inactive audit record.",
+  "sources": [
+    {
+      "id": "universal-house-complete-series",
+      "label": "Universal Pictures At Home: House - The Complete Series",
+      "url": "https://www.universalpicturesathome.com/tv/house-the-complete-series",
+      "quality": "OFFICIAL_DISTRIBUTOR"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-071-STD",
+      "pictureBookEntryIds": [],
+      "slug": "gregory-house",
+      "nameZh": "格雷戈里·豪斯医生",
+      "nameOriginal": "Dr. Gregory House",
+      "nameEn": "Dr. Gregory House",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES"],
+      "summary": "大卫·肖创作的天才诊断医师，把罕见疾病当作需要排除假设的谜题，以症状、病史、环境调查和反常规实验寻找真正病因。",
+      "creatorName": "大卫·肖",
+      "aliases": ["豪斯医生", "Dr. House", "Gregory House"],
+      "tags": ["医疗推理", "诊断医师", "电视系列"],
+      "featuredCases": ["《Frozen》（图鉴原标）", "《冰冻》"],
+      "sourceIds": ["universal-house-complete-series"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "house-frozen",
+          "titleZh": "冰冻",
+          "titleOriginal": "Frozen",
+          "mediaType": "SERIES",
+          "releaseYear": 2008,
+          "summary": "南极科考站唯一的医生患上不明疾病且无法撤离，豪斯只能通过网络指导她自检和使用有限药品，在远程证据不足的条件下逐步排除病因。",
+          "sourceId": "universal-house-complete-series",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Universal Pictures At Home",
+          "region": "US",
+          "deactivateLinkUrls": [
+            "https://www.hulu.com/series/house-ef39603f-eb90-4248-8237-f6168d7c1be1"
+          ]
+        }
+      ]
+    }
+  ]
+}

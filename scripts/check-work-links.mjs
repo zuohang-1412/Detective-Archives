@@ -60,7 +60,11 @@ async function checkLink(link) {
   const startedAt = Date.now();
   try {
     let result = await fetchWithSafeRedirects(link.url, "HEAD");
-    if (result.response.status === 405 || result.response.status === 501) {
+    const headStatus = result.response.status;
+    const headIsConclusive = (headStatus >= 200 && headStatus < 400)
+      || headStatus === 401
+      || headStatus === 403;
+    if (!headIsConclusive) {
       result = await fetchWithSafeRedirects(link.url, "GET");
     }
     const statusCode = result.response.status;
