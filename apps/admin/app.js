@@ -255,10 +255,15 @@ function renderWorks(items) {
       item.links.forEach((link) => {
         const row = document.createElement("div");
         row.className = "link-row";
+        const health = link.lastCheckOk === null
+          ? "待巡检"
+          : link.lastCheckOk
+            ? `正常 ${link.lastStatusCode || ""}`.trim()
+            : `异常 ${link.lastCheckError || link.lastStatusCode || "未知"}`;
         row.append(textElement(
           "span",
           "",
-          `${link.providerName} · ${link.isActive ? "启用" : "停用"} · 点击 ${link.clickCount} · 待处理 ${link.openFeedbackCount}`
+          `${link.providerName} · ${link.isActive ? "启用" : "停用"} · ${health} · 点击 ${link.clickCount} · 待处理 ${link.openFeedbackCount}`
         ));
         row.append(actionButton(link.isActive ? "停用" : "启用", "text-button", () => toggleWorkLink(link)));
         links.append(row);

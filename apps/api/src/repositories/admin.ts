@@ -239,6 +239,10 @@ export async function listAdminWorks(database: DatabaseClient, query?: string | 
           'region', link.region,
           'isActive', link.is_active,
           'lastCheckedAt', link.last_checked_at,
+          'lastCheckOk', link.last_check_ok,
+          'lastStatusCode', link.last_status_code,
+          'lastCheckError', link.last_check_error,
+          'consecutiveFailures', link.consecutive_failures,
           'clickCount', (
             SELECT COUNT(*)::int FROM work_link_click_events click
             WHERE click.work_link_id = link.id

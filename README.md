@@ -8,20 +8,20 @@
 
 - 原生微信小程序：首页、档案搜索、侦探详情、作品详情与正版渠道。
 - TypeScript API：健康检查、数据库仓储、侦探/图鉴/扩展目录/作品查询。
-- 三位演示侦探及代表作品数据。
+- 26 位正式目录人物及首批 13 部可浏览代表作品数据。
 - 第 1～108 卷名侦探图鉴索引，共 109 条记录（含第 105 卷特装版）。
 - 20 位图鉴之外的知名虚构侦探，以及 3 位独立展示的历史断案人物。
 - PostgreSQL 运行时连接、增量迁移、目录初始化、作品与正版链接仓储和完整性检查。
-- 微信 `code2Session` 服务端身份、不可逆会话令牌、退出登录和个人书架进度。
+- 微信 `code2Session` 服务端身份、单次轮换会话令牌、退出登录和个人书架进度。
 - 短评/长评、剧透折叠、回复、点赞、举报、作者软删除和默认待审核流程。
-- 内置运营后台：独立管理员登录、数据概览、评价/回复审核、举报处理、用户处置、作品与正版链接维护。
+- 内置运营后台：独立管理员登录、数据概览、侦探/来源/代表案件/作品维护、评价审核、举报处理、角色管理、审计日志和链接质量反馈。
 - 登录前协议/隐私确认、同意时间留存，以及撤销身份、会话和个人内容的账号注销流程。
 - 安全响应头、登录与社区限流、生产配置硬校验、请求指标和优雅停机。
 - Docker/Caddy 部署基线、CI 质量门禁、数据库备份脚本与上线运行手册。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
-侦探资料维护深化和 AI 视频仍属于后续实现范围，详见 `docs/PRD-v0.1.md`。
+图鉴人物与正式作品仍在分批扩充；AI 视频属于 P2 范围，详见 `docs/PRD-v0.1.md`。
 
 ## 项目结构
 
@@ -83,6 +83,7 @@ npm run dev:api
 - `GET /api/v1/works?q=东方快车`
 - `GET /api/v1/works/murder-on-the-orient-express`
 - `POST /api/v1/auth/wechat`
+- `POST /api/v1/auth/refresh`
 - `GET /api/v1/auth/me`
 - `POST /api/v1/auth/logout`
 - `DELETE /api/v1/me/account`
@@ -95,6 +96,8 @@ npm run dev:api
 - `PUT|DELETE /api/v1/reviews/:reviewId/like`
 - `PUT|DELETE /api/v1/comments/:commentId/like`
 - `POST /api/v1/reports`
+- `POST /api/v1/work-links/:linkId/click`
+- `POST /api/v1/work-links/:linkId/feedback`
 - `POST /api/v1/auth/admin`
 - `GET /api/v1/admin/dashboard`
 - `GET /api/v1/admin/moderation`
@@ -102,6 +105,10 @@ npm run dev:api
 - `PATCH /api/v1/admin/reports/:reportId`
 - `GET|POST /api/v1/admin/works`
 - `POST /api/v1/admin/works/:workId/links`
+- `GET|POST|PATCH /api/v1/admin/detectives`
+- `GET|PATCH /api/v1/admin/users`
+- `GET /api/v1/admin/audit-logs`
+- `GET|PATCH /api/v1/admin/work-link-feedback`
 
 ### 4. 打开小程序
 
@@ -149,6 +156,20 @@ npm run release:check
 
 ```bash
 npm run catalog:sync
+```
+
+正式目录扩充采用“预检后导入”。默认批次可先查看数据库差异，再事务化应用；已经应用的批次通过文件校验和保证不可静默改写：
+
+```bash
+npm run catalog:preflight
+npm run catalog:apply
+```
+
+定时巡检启用中的正版链接，并仅重试上轮失败项：
+
+```bash
+npm run links:check
+npm run links:check -- --only-failed
 ```
 
 ## 品牌与内容原则

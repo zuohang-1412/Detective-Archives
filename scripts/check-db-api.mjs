@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { buildApp } from "../apps/api/dist/app.js";
 import { createDatabasePoolFromEnv } from "../apps/api/dist/db/pool.js";
 
@@ -8,6 +9,13 @@ assert.ok(database, "PostgreSQL configuration is required for the database API c
 const testAdminLoginId = "detective-archives-admin-check";
 const testAdminPassword = "integration-admin-password";
 const testWorkSlug = "database-api-check-work";
+const catalogExpansion = JSON.parse(await readFile(
+  new URL("../apps/api/src/data/catalog-expansion.json", import.meta.url),
+  "utf8"
+));
+const expectedPublishedWorkCount = 5 + new Set(
+  catalogExpansion.detectives.flatMap((detective) => detective.works.map((work) => work.slug))
+).size;
 const testDetectiveSlug = "database-api-check-detective";
 const testDetectiveUpdatedSlug = "database-api-check-detective-updated";
 let deactivatedTestUserId = null;
@@ -134,7 +142,7 @@ try {
     ["/api/v1/picture-book?q=%E9%B2%81%E9%82%A6", (body) => {
       assert.equal(body.data[0].id, "PB-004-STD");
     }],
-    ["/api/v1/works?pageSize=20", (body) => assert.equal(body.pagination.total, 5)],
+    ["/api/v1/works?pageSize=20", (body) => assert.equal(body.pagination.total, expectedPublishedWorkCount)],
     ["/api/v1/works/d-slope-murder-case", (body) => assert.equal(body.data.links.length, 2)]
   ];
 

@@ -1,4 +1,5 @@
 import { readdir } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import pg from "pg";
 import { postgresConfig, targetDatabaseName } from "./lib/postgres-config.mjs";
@@ -9,6 +10,15 @@ const failures = [];
 const migrationFiles = (await readdir(path.resolve("database/migrations")))
   .filter((file) => /^\d{3}_[a-z0-9_]+\.sql$/.test(file));
 const expectedMigrationCount = 1 + migrationFiles.length;
+const expansion = JSON.parse(await readFile(
+  path.resolve("apps/api/src/data/catalog-expansion.json"),
+  "utf8"
+));
+const expansionWorkCount = new Set(
+  expansion.detectives.flatMap((detective) => detective.works.map((work) => work.slug))
+).size;
+const expectedWorkCount = 5 + expansionWorkCount;
+const expectedActiveLinkCount = 6 + expansionWorkCount;
 
 function expect(actual, expected, label) {
   if (actual !== expected) {
@@ -63,9 +73,9 @@ try {
   expect(pictureBookCount.rows[0].count, 109, "picture-book entry count");
   expect(recommendationCount.rows[0].count, 73, "picture-book recommendation count");
   expect(sourceCount.rows[0].count, 23, "directory source relation count");
-  expect(workCount.rows[0].count, 5, "core work count");
-  expect(workLinkCount.rows[0].count, 6, "active official work link count");
-  expect(detailedWorkCount.rows[0].count, 5, "detailed published work count");
+  expect(workCount.rows[0].count, expectedWorkCount, "published work count");
+  expect(workLinkCount.rows[0].count, expectedActiveLinkCount, "active official work link count");
+  expect(detailedWorkCount.rows[0].count, expectedWorkCount, "detailed published work count");
   expect(categorizedDirectoryCount.rows[0].count, 23, "categorized directory count");
   expect(orphanCount.rows[0].count, 0, "orphan source count");
 
@@ -73,7 +83,7 @@ try {
     throw new Error(failures.join("; "));
   }
 
-  console.log("Database integrity: OK (26 detectives, 5 works, 109 picture-book entries)");
+  console.log(`Database integrity: OK (26 detectives, ${expectedWorkCount} works, 109 picture-book entries)`);
 } finally {
   await client.end();
 }

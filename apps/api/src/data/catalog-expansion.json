@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-world-literature-001",
+  "snapshotDate": "2026-07-21",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "simon-schuster-lord-peter-wimsey",
+      "label": "Simon & Schuster: The Dorothy L. Sayers Collection",
+      "url": "https://www.simonandschuster.com/books/The-Dorothy-L-Sayers-Collection/Sayers/9781398860704",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "pan-macmillan-inspector-morse",
+      "label": "Pan Macmillan: Inspector Morse Mysteries",
+      "url": "https://www.panmacmillan.com/series/inspector-morse-mysteries/panmac24536",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-pd-james",
+      "label": "Penguin Random House: P. D. James",
+      "url": "https://sites.prh.com/pdjames",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-kurt-wallander",
+      "label": "Penguin Random House: Kurt Wallander Series",
+      "url": "https://www.penguinrandomhouse.com/series/KWN/kurt-wallander-series/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-michael-connelly",
+      "label": "Penguin Random House: Michael Connelly",
+      "url": "https://www.penguinrandomhouse.com/authors/5522/michael-connelly/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "robert-galbraith-cormoran-strike",
+      "label": "Robert Galbraith: Cormoran Strike",
+      "url": "https://robert-galbraith.com/strike-books/the-cuckoos-calling/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "kerry-greenwood-phryne-fisher",
+      "label": "Kerry Greenwood: Books",
+      "url": "https://kerrygreenwood.com/books/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "simon-schuster-nancy-drew",
+      "label": "Simon & Schuster: Nancy Drew Series",
+      "url": "https://www.simonandschuster.com/series/Nancy-Drew",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-WL-001",
+      "slug": "lord-peter-wimsey",
+      "nameZh": "彼得·温西勋爵",
+      "nameOriginal": "Lord Peter Wimsey",
+      "nameEn": "Lord Peter Wimsey",
+      "country": "英国",
+      "era": "20世纪上半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "英国贵族业余侦探，善于在社交礼仪和阶层关系中发现矛盾。",
+      "creatorName": "多萝西·L·塞耶斯",
+      "aliases": ["彼得·温西", "Lord Peter"],
+      "tags": ["黄金时代", "业余侦探", "英国推理"],
+      "featuredCases": ["《谁的尸体？》"],
+      "sourceIds": ["simon-schuster-lord-peter-wimsey"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "whose-body",
+          "titleZh": "谁的尸体？",
+          "titleOriginal": "Whose Body?",
+          "mediaType": "NOVEL",
+          "releaseYear": 1923,
+          "summary": "一具身份不明的尸体出现在伦敦住宅中，彼得·温西勋爵从身份错位和时间线矛盾着手调查。",
+          "sourceId": "simon-schuster-lord-peter-wimsey",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-002",
+      "slug": "inspector-morse",
+      "nameZh": "莫尔斯探长",
+      "nameOriginal": "Inspector Morse",
+      "nameEn": "Inspector Morse",
+      "country": "英国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "牛津警探，以文字、音乐修养和逆向推理审视复杂命案。",
+      "creatorName": "科林·德克斯特",
+      "aliases": ["恩迪沃·莫尔斯", "Endeavour Morse"],
+      "tags": ["警察小说", "牛津", "英国推理"],
+      "featuredCases": ["《开往伍德斯托克的末班车》"],
+      "sourceIds": ["pan-macmillan-inspector-morse"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "last-bus-to-woodstock",
+          "titleZh": "开往伍德斯托克的末班车",
+          "titleOriginal": "Last Bus to Woodstock",
+          "mediaType": "NOVEL",
+          "releaseYear": 1975,
+          "summary": "牛津郊外发生年轻女性遇害案，莫尔斯与刘易斯在消退的线索和相互矛盾的证言中寻找突破。",
+          "sourceId": "pan-macmillan-inspector-morse",
+          "linkType": "PUBLISHER",
+          "providerName": "Pan Macmillan",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-003",
+      "slug": "adam-dalgliesh",
+      "nameZh": "亚当·达格利什",
+      "nameOriginal": "Adam Dalgliesh",
+      "nameEn": "Adam Dalgliesh",
+      "country": "英国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "兼具诗人身份的苏格兰场警官，调查风格冷静克制。",
+      "creatorName": "P. D. 詹姆斯",
+      "aliases": ["达格利什警长", "Dalgliesh"],
+      "tags": ["警察小说", "文学推理", "苏格兰场"],
+      "featuredCases": ["《掩上她的脸》"],
+      "sourceIds": ["penguin-pd-james"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "cover-her-face",
+          "titleZh": "掩上她的脸",
+          "titleOriginal": "Cover Her Face",
+          "mediaType": "NOVEL",
+          "releaseYear": 1962,
+          "summary": "乡间宅邸中的家庭聚会后发生命案，达格利什在阶层关系、秘密和证词之间展开调查。",
+          "sourceId": "penguin-pd-james",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-004",
+      "slug": "kurt-wallander",
+      "nameZh": "库尔特·瓦兰德",
+      "nameOriginal": "Kurt Wallander",
+      "nameEn": "Kurt Wallander",
+      "country": "瑞典",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "瑞典刑警，以耐心走访和对社会环境的观察推进调查。",
+      "creatorName": "亨宁·曼凯尔",
+      "aliases": ["库尔特·维兰德", "瓦兰德警探"],
+      "tags": ["北欧犯罪", "警察小说", "社会派"],
+      "featuredCases": ["《无脸杀手》"],
+      "sourceIds": ["penguin-kurt-wallander"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "faceless-killers",
+          "titleZh": "无脸杀手",
+          "titleOriginal": "Mördare utan ansikte",
+          "mediaType": "NOVEL",
+          "releaseYear": 1991,
+          "summary": "瑞典乡间一对老人遭遇暴力袭击，瓦兰德必须在社会紧张加剧前厘清受害者关系和有限线索。",
+          "sourceId": "penguin-kurt-wallander",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-005",
+      "slug": "harry-bosch",
+      "nameZh": "哈里·博斯",
+      "nameOriginal": "Harry Bosch",
+      "nameEn": "Harry Bosch",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "洛杉矶警探，坚持追索旧案和被忽视受害者的真相。",
+      "creatorName": "迈克尔·康奈利",
+      "aliases": ["Hieronymus Bosch", "博斯警探"],
+      "tags": ["硬汉派", "警察小说", "洛杉矶"],
+      "featuredCases": ["《黑色回声》"],
+      "sourceIds": ["penguin-michael-connelly"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-black-echo",
+          "titleZh": "黑色回声",
+          "titleOriginal": "The Black Echo",
+          "mediaType": "NOVEL",
+          "releaseYear": 1992,
+          "summary": "一名越战老兵被发现死于洛杉矶排水管道，博斯在旧日战场经历和当前案件之间追查联系。",
+          "sourceId": "penguin-michael-connelly",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-006",
+      "slug": "cormoran-strike",
+      "nameZh": "科莫兰·斯特莱克",
+      "nameOriginal": "Cormoran Strike",
+      "nameEn": "Cormoran Strike",
+      "country": "英国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "退伍军人出身的伦敦私人侦探，依靠实地调查与证词交叉核对破案。",
+      "creatorName": "罗伯特·加尔布雷思",
+      "aliases": ["斯特莱克", "Strike"],
+      "tags": ["私人侦探", "现代推理", "伦敦"],
+      "featuredCases": ["《布谷鸟的呼唤》"],
+      "sourceIds": ["robert-galbraith-cormoran-strike"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-cuckoos-calling",
+          "titleZh": "布谷鸟的呼唤",
+          "titleOriginal": "The Cuckoo's Calling",
+          "mediaType": "NOVEL",
+          "releaseYear": 2013,
+          "summary": "一名模特坠楼后被认定为自杀，她的兄长委托斯特莱克重新调查死亡经过和复杂人际关系。",
+          "sourceId": "robert-galbraith-cormoran-strike",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Robert Galbraith Official",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-007",
+      "slug": "phryne-fisher",
+      "nameZh": "芙里妮·费雪",
+      "nameOriginal": "Phryne Fisher",
+      "nameEn": "Phryne Fisher",
+      "country": "澳大利亚",
+      "era": "20世纪20年代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "活跃于二十世纪二十年代墨尔本的独立女性侦探。",
+      "creatorName": "凯瑞·格林伍德",
+      "aliases": ["菲林·费雪", "费雪小姐"],
+      "tags": ["女性侦探", "历史推理", "墨尔本"],
+      "featuredCases": ["《可卡因蓝调》"],
+      "sourceIds": ["kerry-greenwood-phryne-fisher"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "cocaine-blues",
+          "titleZh": "可卡因蓝调",
+          "titleOriginal": "Cocaine Blues",
+          "mediaType": "NOVEL",
+          "releaseYear": 1989,
+          "summary": "费雪回到墨尔本后调查一宗涉及毒品、医疗和上流社交圈的案件，并由此开启侦探生涯。",
+          "sourceId": "kerry-greenwood-phryne-fisher",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Kerry Greenwood Official",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-008",
+      "slug": "nancy-drew",
+      "nameZh": "南茜·德鲁",
+      "nameOriginal": "Nancy Drew",
+      "nameEn": "Nancy Drew",
+      "country": "美国",
+      "era": "20世纪至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "以好奇心、行动力和逻辑能力解决谜案的青年业余侦探。",
+      "creatorName": "卡罗琳·基恩（集体笔名）",
+      "aliases": ["南希·德鲁"],
+      "tags": ["青少年推理", "女性侦探", "业余侦探"],
+      "featuredCases": ["《古钟之谜》"],
+      "sourceIds": ["simon-schuster-nancy-drew"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-secret-of-the-old-clock",
+          "titleZh": "古钟之谜",
+          "titleOriginal": "The Secret of the Old Clock",
+          "mediaType": "NOVEL",
+          "releaseYear": 1930,
+          "summary": "南茜围绕一份失踪遗嘱展开调查，在古钟、家族利益和接连出现的阻碍中寻找真相。",
+          "sourceId": "simon-schuster-nancy-drew",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "GLOBAL"
+        }
+      ]
+    }
+  ]
+}

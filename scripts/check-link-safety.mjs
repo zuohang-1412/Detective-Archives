@@ -1,0 +1,21 @@
+import assert from "node:assert/strict";
+import { isPrivateAddress, validateUrlShape } from "./lib/link-safety.mjs";
+
+for (const address of [
+  "0.0.0.0", "10.0.0.1", "100.64.0.1", "127.0.0.1", "169.254.1.1",
+  "172.16.0.1", "172.31.255.255", "192.168.1.1", "198.18.0.1", "224.0.0.1",
+  "::", "::1", "fc00::1", "fd00::1", "fe80::1", "::ffff:127.0.0.1"
+]) {
+  assert.equal(isPrivateAddress(address), true, `${address} must be blocked`);
+}
+for (const address of ["1.1.1.1", "8.8.8.8", "93.184.216.34", "2606:4700:4700::1111"]) {
+  assert.equal(isPrivateAddress(address), false, `${address} must be allowed`);
+}
+assert.equal(validateUrlShape("https://example.com/path").hostname, "example.com");
+assert.throws(() => validateUrlShape("http://example.com"), { code: "HTTPS_REQUIRED" });
+assert.throws(
+  () => validateUrlShape("https://user:password@example.com"),
+  { code: "URL_CREDENTIALS_FORBIDDEN" }
+);
+
+console.log("Link safety checks: OK (private networks and unsafe URL shapes blocked)");
