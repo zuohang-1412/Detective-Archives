@@ -107,6 +107,8 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-picture-book-007.json` 把第 70～80 卷的 11 位人物关联到正式档案和代表作品，包括菲利普·特伦特、格雷戈里·豪斯医生、仓石义男、艾德里安·蒙克、鬼贯警部、春樱亭圆紫、林肯·莱姆、榎本径、白鸟圭辅、刀城言耶和篠川栞子。图鉴没有列出推荐作的第 76～80 卷分别补入经创作者官网或出版社确认的系列首作、代表作；“frozen”“我对裁决有异议”等原始标签继续保留以便检索。
 
+`apps/api/src/data/catalog-expansion-picture-book-008.json` 把第 81～91 卷的 11 位人物关联到正式档案和代表作品，包括薄野的便利屋“我”、影山、折木奉太郎、莉丝贝特·莎兰德、福家警部补、吉敷竹史、江神二郎、掟上今日子、九条樱子、怪盗山猫和凜田莉子。该段图鉴没有列出推荐作，因此统一补入经出版社确认的系列首作或代表作；“薄野的便利屋”“九条樱子”“凛田莉子”等原始简体写法继续作为别名保留，便于按图鉴文字检索。
+
 `apps/api/src/data/catalog-expansion-link-fix-003.json` 和 `catalog-expansion-link-fix-004.json` 保存第 70～80 卷巡检产生的纠错链：两个 Apple TV 单集地址经 GET 再确认仍为 404 后停止公开，分别换为 USA Network/Peacock 的全剧观看指引和 Universal Pictures 官方发行页；曾因地区重定向落到不可用页的 Hulu 地址也作为中间历史记录保留。巡检器现在会在 HEAD 返回非确定状态时再执行 GET，避免把“不支持 HEAD 但网页可正常打开”的正版站点误判失效。
 
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。

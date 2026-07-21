@@ -1,0 +1,472 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-picture-book-008",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Only factual catalog fields, original short summaries and authoritative source links are stored; no source descriptions, covers or copyrighted excerpts are copied.",
+  "sources": [
+    {
+      "id": "hayakawa-tantei-bar",
+      "label": "早川书房：《侦探在酒吧》",
+      "url": "https://www.hayakawa-online.co.jp/shop/g/g0000020521/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shogakukan-nazotoki-dinner",
+      "label": "小学馆：《推理要在晚餐后》系列",
+      "url": "https://www.shogakukan.co.jp/pr/nazoD/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-hyouka",
+      "label": "KADOKAWA：《冰菓》",
+      "url": "https://www.kadokawa.co.jp/product/200108000110/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "prh-dragon-tattoo",
+      "label": "Penguin Random House: The Girl with the Dragon Tattoo",
+      "url": "https://www.penguinrandomhouse.com/books/98144/the-girl-with-the-dragon-tattoo-by-stieg-larsson/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tsogen-fukuie-greeting",
+      "label": "东京创元社：《福家警部补的问候》",
+      "url": "https://www.tsogen.co.jp/np/isbn/9784488470029",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kobunsha-hayabusa-catalog",
+      "label": "光文社：2026年4月电子书目录（《改订完全版 寝台特急“隼”号1/60秒的障壁》）",
+      "url": "https://pr.kobunsha.com/denshishoseki/pdf/all_202604.pdf",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tsogen-egami-series",
+      "label": "东京创元社：江神二郎系列",
+      "url": "https://www.tsogen.co.jp/sp/searchresult.html?ser_id=238",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-okitegami-memo",
+      "label": "讲谈社：《掟上今日子的备忘录》",
+      "url": "https://www.kodansha.co.jp/book/products/0000188947",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-sakurako",
+      "label": "KADOKAWA：《樱子小姐脚下埋着尸体》系列",
+      "url": "https://promo.kadokawa.co.jp/sakurako/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-yamaneko",
+      "label": "KADOKAWA：《怪盗侦探山猫》",
+      "url": "https://www.kadokawa.co.jp/product/200909000518/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-bannou-q",
+      "label": "KADOKAWA：《万能鉴定士Q的事件簿 I》",
+      "url": "https://www.kadokawa.co.jp/product/200912000591/",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-081-STD",
+      "pictureBookEntryIds": ["PB-081-STD"],
+      "slug": "susukino-handyman-ore",
+      "nameZh": "薄野的便利屋“我”",
+      "nameOriginal": "ススキノの便利屋〈俺〉",
+      "nameEn": "The Susukino Handyman",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "FILM"],
+      "summary": "东直己“薄野侦探”系列中没有公开姓名的第一人称主人公，以札幌薄野的酒吧为据点承接寻人和调查委托，依靠街头关系、行动力与硬汉式判断追查案件。",
+      "creatorName": "东直己",
+      "aliases": ["薄野的便利屋", "俺", "ススキノの便利屋", "The Susukino Handyman"],
+      "tags": ["私家侦探", "硬汉推理", "札幌薄野"],
+      "featuredCases": ["《侦探在酒吧》"],
+      "sourceIds": ["hayakawa-tantei-bar"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "tantei-wa-bar-ni-iru",
+          "titleZh": "侦探在酒吧",
+          "titleOriginal": "探偵はバーにいる",
+          "mediaType": "NOVEL",
+          "releaseYear": 1992,
+          "summary": "在札幌薄野以便利屋为业的“我”从酒吧接下寻找失踪女子的委托，看似寻常的求助逐渐牵出一宗危险的杀人事件。",
+          "sourceId": "hayakawa-tantei-bar",
+          "linkType": "PUBLISHER",
+          "providerName": "早川书房",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-082-STD",
+      "pictureBookEntryIds": ["PB-082-STD"],
+      "slug": "kageyama-butler",
+      "nameZh": "影山",
+      "nameOriginal": "影山",
+      "nameEn": "Kageyama",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "SERIES", "FILM", "ANIMATION"],
+      "summary": "东川笃哉笔下宝生丽子的管家兼司机，听取大小姐对案件的转述后，以犀利毒舌指出推理漏洞，并从人物关系和被忽略的细节中还原真相。",
+      "creatorName": "东川笃哉",
+      "aliases": ["毒舌管家", "管家影山", "Kageyama"],
+      "tags": ["安乐椅推理", "管家", "幽默推理"],
+      "featuredCases": ["《推理要在晚餐后》"],
+      "sourceIds": ["shogakukan-nazotoki-dinner"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "nazotoki-wa-dinner-no-ato-de",
+          "titleZh": "推理要在晚餐后",
+          "titleOriginal": "謎解きはディナーのあとで",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 2010,
+          "summary": "警察刑事兼财团千金宝生丽子在晚餐时讲述自己遇到的难案，管家影山逐一检验线索与证词，并用辛辣却准确的推理揭开案件真相。",
+          "sourceId": "shogakukan-nazotoki-dinner",
+          "linkType": "PUBLISHER",
+          "providerName": "小学馆",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-083-STD",
+      "pictureBookEntryIds": ["PB-083-STD"],
+      "slug": "houtarou-oreki",
+      "nameZh": "折木奉太郎",
+      "nameOriginal": "折木奉太郎",
+      "nameEn": "Houtarou Oreki",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "ANIMATION", "FILM"],
+      "summary": "米泽穗信“古典部”系列的高中生，以“非必要之事不做，必要之事从简”为原则，却拥有敏锐的观察与演绎能力，常在千反田爱瑠的追问下破解校园日常之谜。",
+      "creatorName": "米泽穗信",
+      "aliases": ["古典部的折木", "节能主义者", "Houtarou Oreki"],
+      "tags": ["高中生侦探", "日常之谜", "校园推理"],
+      "featuredCases": ["《冰菓》"],
+      "sourceIds": ["kadokawa-hyouka"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "hyouka",
+          "titleZh": "冰菓",
+          "titleOriginal": "氷菓",
+          "mediaType": "NOVEL",
+          "releaseYear": 2001,
+          "summary": "折木奉太郎加入濒临废社的古典部，与伙伴调查三十三年前社刊《冰菓》及千反田家族记忆中的谜团，逐步还原被校史简化的学生运动真相。",
+          "sourceId": "kadokawa-hyouka",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-084-STD",
+      "pictureBookEntryIds": ["PB-084-STD"],
+      "slug": "lisbeth-salander",
+      "nameZh": "莉丝贝特·莎兰德",
+      "nameOriginal": "Lisbeth Salander",
+      "nameEn": "Lisbeth Salander",
+      "country": "瑞典",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "斯蒂格·拉森“千禧年”系列的调查员与黑客，擅长数字取证、背景调查和信息关联，以极强记忆力与独立意志追查针对女性的暴力和权力体系中的犯罪。",
+      "creatorName": "斯蒂格·拉森",
+      "aliases": ["莉丝·莎兰德", "龙纹身的女孩", "Lisbeth Salander"],
+      "tags": ["调查员", "黑客", "数字取证"],
+      "featuredCases": ["《龙纹身的女孩》"],
+      "sourceIds": ["prh-dragon-tattoo"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-girl-with-the-dragon-tattoo",
+          "titleZh": "龙纹身的女孩",
+          "titleOriginal": "Män som hatar kvinnor",
+          "mediaType": "NOVEL",
+          "releaseYear": 2005,
+          "summary": "记者米凯尔·布隆维斯特调查海莉失踪旧案，莎兰德以背景调查和电脑取证加入，两人从范耶尔家族档案中发现持续多年的暴力犯罪线索。",
+          "sourceId": "prh-dragon-tattoo",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-085-STD",
+      "pictureBookEntryIds": ["PB-085-STD"],
+      "slug": "assistant-inspector-fukuie",
+      "nameZh": "福家警部补",
+      "nameOriginal": "福家警部補",
+      "nameEn": "Assistant Inspector Fukuie",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["SHORT_STORY", "SERIES"],
+      "summary": "大仓崇裕笔下的警视厅搜查员，以看似随和而持续不断的询问逼近破绽；故事常先展示犯案过程，再由她从细小矛盾中拆解凶手精心准备的计划。",
+      "creatorName": "大仓崇裕",
+      "aliases": ["福家警部補", "Assistant Inspector Fukuie"],
+      "tags": ["警察侦探", "倒叙推理", "审讯"],
+      "featuredCases": ["《福家警部补的问候》"],
+      "sourceIds": ["tsogen-fukuie-greeting"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "fukuie-keibuho-no-aisatsu",
+          "titleZh": "福家警部补的问候",
+          "titleOriginal": "福家警部補の挨拶",
+          "mediaType": "SHORT_STORY",
+          "releaseYear": 2006,
+          "summary": "四篇倒叙案件先交代凶手与手法，再让福家警部补检视现场、追问证词，以不起眼的矛盾逐步击穿自以为完美的不在场证明。",
+          "sourceId": "tsogen-fukuie-greeting",
+          "linkType": "PUBLISHER",
+          "providerName": "东京创元社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-086-STD",
+      "pictureBookEntryIds": ["PB-086-STD"],
+      "slug": "takeshi-yoshiki",
+      "nameZh": "吉敷竹史",
+      "nameOriginal": "吉敷竹史",
+      "nameEn": "Takeshi Yoshiki",
+      "country": "日本",
+      "era": "20世纪后期至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "岛田庄司笔下警视厅搜查一课刑警，长期调查与铁路时刻、地域传说和社会问题交织的复杂命案，重视实地走访、时间线验证及犯罪动机。",
+      "creatorName": "岛田庄司",
+      "aliases": ["刑警吉敷竹史", "Takeshi Yoshiki"],
+      "tags": ["警察侦探", "铁路推理", "不在场证明"],
+      "featuredCases": ["《寝台特急“隼”号1/60秒的障壁》"],
+      "sourceIds": ["kobunsha-hayabusa-catalog"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "hayabusa-one-sixtieth-second-wall",
+          "titleZh": "寝台特急“隼”号1/60秒的障壁",
+          "titleOriginal": "寝台特急「はやぶさ」1/60秒の壁",
+          "mediaType": "NOVEL",
+          "releaseYear": 1984,
+          "summary": "公寓浴室出现身份被破坏的女尸，但死亡推定时刻显示被害人应在寝台特急“隼”号上；吉敷竹史从列车时刻和身份线索挑战时间障壁。",
+          "sourceId": "kobunsha-hayabusa-catalog",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-087-STD",
+      "pictureBookEntryIds": ["PB-087-STD"],
+      "slug": "jiro-egami",
+      "nameZh": "江神二郎",
+      "nameOriginal": "江神二郎",
+      "nameEn": "Jiro Egami",
+      "country": "日本",
+      "era": "昭和末期至平成题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL"],
+      "summary": "有栖川有栖“学生爱丽丝”系列中英都大学推理小说研究会会长，性格沉静，善于整理封闭环境中的证词、空间关系与逻辑可能性。",
+      "creatorName": "有栖川有栖",
+      "aliases": ["江神部长", "学生爱丽丝系列的江神", "Jiro Egami"],
+      "tags": ["大学生侦探", "本格推理", "封闭空间"],
+      "featuredCases": ["《月光游戏 Y的悲剧'88》"],
+      "sourceIds": ["tsogen-egami-series"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "gekkou-game-y-no-higeki-88",
+          "titleZh": "月光游戏 Y的悲剧'88",
+          "titleOriginal": "月光ゲーム Yの悲劇'88",
+          "mediaType": "NOVEL",
+          "releaseYear": 1989,
+          "summary": "大学生露营者因火山活动被困在矢吹山营地，连续杀人随之发生；江神二郎从临终讯息、营地布局和幸存者证词中锁定真相。",
+          "sourceId": "tsogen-egami-series",
+          "linkType": "PUBLISHER",
+          "providerName": "东京创元社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-088-STD",
+      "pictureBookEntryIds": ["PB-088-STD"],
+      "slug": "kyoko-okitegami",
+      "nameZh": "掟上今日子",
+      "nameOriginal": "掟上今日子",
+      "nameEn": "Kyoko Okitegami",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "SERIES"],
+      "summary": "西尾维新“忘却侦探”系列的私人侦探，睡醒后记忆会重置，因此必须在一天内记录线索并解决案件，以速度、现场判断和写在身上的备忘维持调查连续性。",
+      "creatorName": "西尾维新",
+      "aliases": ["忘却侦探", "最快的侦探", "Kyoko Okitegami"],
+      "tags": ["私人侦探", "记忆障碍", "快速推理"],
+      "featuredCases": ["《掟上今日子的备忘录》"],
+      "sourceIds": ["kodansha-okitegami-memo"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "okitegami-kyouko-no-bibouroku",
+          "titleZh": "掟上今日子的备忘录",
+          "titleOriginal": "掟上今日子の備忘録",
+          "mediaType": "NOVEL",
+          "releaseYear": 2014,
+          "summary": "总被卷入案件并遭怀疑的隐馆厄介求助于掟上今日子；她必须赶在睡眠抹去当天记忆之前，完成调查、保存必要记录并洗清委托人嫌疑。",
+          "sourceId": "kodansha-okitegami-memo",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-089-STD",
+      "pictureBookEntryIds": ["PB-089-STD"],
+      "slug": "sakurako-kujo",
+      "nameZh": "九条樱子",
+      "nameOriginal": "九条櫻子",
+      "nameEn": "Sakurako Kujo",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "ANIMATION", "SERIES"],
+      "summary": "太田紫织笔下居住在北海道旭川的骨骼标本师，精通骨骼学和法医学观察，能从遗骸状态推断死亡经过，并与高中生馆胁正太郎追查案件。",
+      "creatorName": "太田紫织",
+      "aliases": ["九条櫻子", "樱子小姐", "Sakurako Kujo"],
+      "tags": ["骨骼学", "法医学推理", "女性侦探"],
+      "featuredCases": ["《樱子小姐脚下埋着尸体》"],
+      "sourceIds": ["kadokawa-sakurako"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "sakurako-san-no-ashimoto",
+          "titleZh": "樱子小姐脚下埋着尸体",
+          "titleOriginal": "櫻子さんの足下には死体が埋まっている",
+          "mediaType": "NOVEL",
+          "releaseYear": 2012,
+          "summary": "高中生正太郎与热爱骨骼的九条樱子相识后不断遇到遗骸和死亡事件，樱子从骨骼形态、损伤与现场状态推导被掩盖的事实。",
+          "sourceId": "kadokawa-sakurako",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-090-STD",
+      "pictureBookEntryIds": ["PB-090-STD"],
+      "slug": "mysterious-thief-yamaneko",
+      "nameZh": "怪盗山猫",
+      "nameOriginal": "山猫",
+      "nameEn": "Mysterious Thief Yamaneko",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES", "OTHER"],
+      "summary": "神永学笔下身份成谜的怪盗，窃取恶人的财物时也揭露其罪行，坚持不杀人；他兼用潜入、情报操控和布局反制企图陷害自己的势力。",
+      "creatorName": "神永学",
+      "aliases": ["怪盗山猫", "山猫", "Mysterious Thief Yamaneko"],
+      "tags": ["怪盗", "反英雄", "犯罪调查"],
+      "featuredCases": ["《怪盗侦探山猫》"],
+      "sourceIds": ["kadokawa-yamaneko"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kaitou-tantei-yamaneko",
+          "titleZh": "怪盗侦探山猫",
+          "titleOriginal": "怪盗探偵山猫",
+          "mediaType": "NOVEL",
+          "releaseYear": 2010,
+          "summary": "以不杀人为信条、专门揭露恶行的怪盗山猫被列为抢劫杀人嫌疑人；记者胜村介入追查，逐渐发现案件背后的嫁祸与操控。",
+          "sourceId": "kadokawa-yamaneko",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-091-STD",
+      "pictureBookEntryIds": ["PB-091-STD"],
+      "slug": "riko-rinda",
+      "nameZh": "凜田莉子",
+      "nameOriginal": "凜田莉子",
+      "nameEn": "Riko Rinda",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "COMIC", "FILM"],
+      "summary": "松冈圭祐“万能鉴定士Q”系列的年轻鉴定师，凭观察、广泛知识和逻辑判断识别艺术品、商品及社会现象中的伪装，特点是以非暴力调查解决骗局。",
+      "creatorName": "松冈圭祐",
+      "aliases": ["凛田莉子", "万能鉴定士Q", "Riko Rinda"],
+      "tags": ["鉴定师", "知识推理", "女性侦探"],
+      "featuredCases": ["《万能鉴定士Q的事件簿 I》"],
+      "sourceIds": ["kadokawa-bannou-q"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "bannou-kanteishi-q-case-files-1",
+          "titleZh": "万能鉴定士Q的事件簿 I",
+          "titleOriginal": "万能鑑定士Ｑの事件簿 I",
+          "mediaType": "NOVEL",
+          "releaseYear": 2010,
+          "summary": "凜田莉子成长为万能鉴定士后，与记者小笠原悠斗调查遍布东京的力士贴纸异象，并追索一场足以扰乱社会的连锁骗局。",
+          "sourceId": "kadokawa-bannou-q",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    }
+  ]
+}
