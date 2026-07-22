@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "status": "PASSED",
+  "contentModerator": "上线前填写实际内容审核负责人",
+  "alertResponder": "上线前填写实际生产告警负责人",
+  "completedAt": "上线前填写 ISO-8601 演练完成时间",
+  "evidenceReference": "上线前填写发布工单或证据目录引用",
+  "scenarios": [
+    {
+      "id": "CONTENT_MODERATION",
+      "result": "PASSED",
+      "evidenceReference": "上线前填写评价发布与拒绝证据引用"
+    },
+    {
+      "id": "REPORT_RESOLUTION",
+      "result": "PASSED",
+      "evidenceReference": "上线前填写重复举报与结案审计证据引用"
+    },
+    {
+      "id": "USER_RESTRICTION",
+      "result": "PASSED",
+      "evidenceReference": "上线前填写用户限制及数据权利证据引用"
+    },
+    {
+      "id": "EMERGENCY_UNPUBLISH",
+      "result": "PASSED",
+      "evidenceReference": "上线前填写作品、评价和链接紧急下架证据引用"
+    }
+  ]
+}

@@ -30,6 +30,7 @@
     "rollbackPassed": false,
     "contentSafetyPassed": false,
     "iosDevicePassed": false,
-    "androidDevicePassed": false
+    "androidDevicePassed": false,
+    "operationsDrillReceipt": null
   }
 }

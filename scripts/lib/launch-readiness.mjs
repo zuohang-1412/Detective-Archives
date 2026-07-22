@@ -1,4 +1,5 @@
 import { validCandidateUploadReceipt } from "./miniprogram-release.mjs";
+import { validOperationsDrillReceipt } from "./operations-drill.mjs";
 
 const PHASES = ["PRE_DEPLOY", "POST_DEPLOY", "SUBMISSION", "RELEASE"];
 const placeholderPattern = /(?:replace|example|your[-_. ]|strong-password|managed-postgres|change-?me|dummy|test-only|ci-only|上线前|待填写|todo)/i;
@@ -59,7 +60,11 @@ function corsConfigured(value) {
   return value.split(",").map((origin) => origin.trim()).every(exactHttpsOrigin);
 }
 
-export function auditLaunchReadiness({ environment = {}, manifest = {} } = {}) {
+export function auditLaunchReadiness({
+  environment = {},
+  manifest = {},
+  operationsRunbookSha256 = null
+} = {}) {
   const appId = environment.WECHAT_APP_ID?.trim();
   const miniProgramAppId = environment.MINIPROGRAM_APP_ID?.trim();
   const operatorName = nested(manifest, "operator", "legalName");
@@ -129,6 +134,13 @@ export function auditLaunchReadiness({ environment = {}, manifest = {} } = {}) {
       nested(manifest, "validation", "contentSafetyPassed") === true,
       "Live WeChat content-safety pass, review, rejection and dependency-failure paths were verified."),
 
+    item("operations_drill", "SUBMISSION", "OPERATIONS",
+      /^[0-9a-f]{64}$/i.test(operationsRunbookSha256 || "")
+        && validOperationsDrillReceipt(
+          nested(manifest, "validation", "operationsDrillReceipt"),
+          { runbookSha256: operationsRunbookSha256 }
+        ),
+      "Named operators passed the four-scenario drill against the current operations runbook."),
     item("wechat_service_category", "SUBMISSION", "WECHAT_OWNER",
       nested(manifest, "wechat", "serviceCategoryConfigured") === true,
       "The Mini Program service category is configured."),

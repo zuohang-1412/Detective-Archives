@@ -17,7 +17,11 @@ const [
   releaseRollbackDrill,
   releaseDrillCompose,
   rootPackage,
-  catalogSeedScript
+  catalogSeedScript,
+  operationsDrillScript,
+  operationsDrillTemplate,
+  operationsRunbook,
+  launchReadinessLibrary
 ] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
@@ -32,7 +36,11 @@ const [
   readFile(path.join(root, "scripts/check-release-rollback.mjs"), "utf8"),
   readFile(path.join(root, "ops/compose.release-drill.yaml"), "utf8"),
   readFile(path.join(root, "package.json"), "utf8"),
-  readFile(path.join(root, "scripts/db-seed-catalog.mjs"), "utf8")
+  readFile(path.join(root, "scripts/db-seed-catalog.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/record-operations-drill.mjs"), "utf8"),
+  readFile(path.join(root, "ops/operations-drill-record.example.json"), "utf8"),
+  readFile(path.join(root, "docs/runbook.md"), "utf8"),
+  readFile(path.join(root, "scripts/lib/launch-readiness.mjs"), "utf8")
 ]);
 
 const startupSteps = [
@@ -89,6 +97,7 @@ assert.match(deployScript, /Restoring previous application image/, "Failed deplo
 assert.match(rollbackScript, /docker image inspect/, "Rollback must require an existing local image");
 assert.match(rollbackScript, /npm run check:runtime/, "Rollback must verify the restored runtime");
 assert.match(rootPackage, /"check:release-rollback"/, "The release rollback drill must have an npm entrypoint");
+assert.match(rootPackage, /"operations:drill:record"/, "The operations drill must have an npm entrypoint");
 assert.match(qualityWorkflow, /npm run check:release-rollback/, "CI must execute the real release rollback drill");
 assert.match(qualityWorkflow, /postgres:16/, "CI PostgreSQL must match the explicitly installed backup client major version");
 assert.match(qualityWorkflow, /postgresql-client-16/, "CI must install a matching PostgreSQL backup client");
@@ -103,5 +112,16 @@ assert.match(releaseRollbackDrill, /previous-image-tag/, "The drill must verify 
 assert.match(releaseRollbackDrill, /ops\/verify-backup\.sh/, "The drill must verify the mandatory deployment backup");
 assert.match(catalogSeedScript, /FROM catalog_import_batches/, "Base seeding must detect immutable content history");
 assert.match(catalogSeedScript, /preserved existing catalog/, "Redeployment must preserve batch-owned catalog fields and relations");
+assert.match(operationsDrillScript, /recordOperationsDrill/, "The operations drill command must persist validated evidence");
+for (const scenario of [
+  "CONTENT_MODERATION",
+  "REPORT_RESOLUTION",
+  "USER_RESTRICTION",
+  "EMERGENCY_UNPUBLISH"
+]) {
+  assert.match(operationsDrillTemplate, new RegExp(scenario), `Operations drill template must include ${scenario}`);
+}
+assert.match(operationsRunbook, /operations:drill:record/, "The runbook must explain how to record the operations drill");
+assert.match(launchReadinessLibrary, /item\("operations_drill", "SUBMISSION"/, "Submission must require operations drill evidence");
 
 console.log("Deployment structure and startup sequence: OK");

@@ -19,6 +19,7 @@
 - 登录前协议/隐私确认、微信平台隐私状态查询与授权同步、同意时间留存、个人数据 JSON 导出，以及撤销身份、会话和个人内容的账号注销流程；账号受限期间仍可导出、退出和注销，开发工具固定使用明确的稳定基础库版本。
 - 隐私最小化的档案/作品访问转化、正版点击、首加书架、完成后评价、7/30 日留存、评论举报、审核时长和申诉恢复率，以及安全响应头、限流、生产配置硬校验、运维指标和优雅停机。
 - Docker/Caddy 部署基线、CI 质量门禁、数据库备份脚本、小程序候选预览/上传入口与上线运行手册。
+- 四场景运营上岗演练记录器：把内容审核、举报结案、用户限制和紧急下架证据绑定源码提交及运行手册，并纳入提审门禁。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
@@ -163,7 +164,7 @@ npm run launch:audit -- --env-file=.env.production --manifest=ops/launch-readine
 npm run release:check
 ```
 
-`launch:audit` 只报告门禁状态和责任域，不输出数据库密码、AppSecret、后台密码或监控令牌。它按 `PRE_DEPLOY`、`POST_DEPLOY`、`SUBMISSION`、`RELEASE` 四阶段核验，实际清单从 `ops/launch-readiness.example.json` 复制后填写，且已被 Git 忽略。部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成预部署审计、小程序配置生成、发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。GitHub Quality 还会在独立空库中使用两个不同镜像 ID 实际执行这两个脚本，核对备份、当前/上一镜像状态与回滚后的数据库和 HTTP 探测；正式服务器仍需按同一流程留下生产演练证据。
+`launch:audit` 只报告门禁状态和责任域，不输出数据库密码、AppSecret、后台密码或监控令牌。它按 `PRE_DEPLOY`、`POST_DEPLOY`、`SUBMISSION`、`RELEASE` 四阶段核验 31 项，实际清单从 `ops/launch-readiness.example.json` 复制后填写，且已被 Git 忽略。真实运营人员完成四场景上岗演练后，使用仓库外记录执行 `npm run operations:drill:record -- --record=/absolute/path/operations-drill.json`；提审门禁会校验绑定当前运行手册的回执。部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成预部署审计、小程序配置生成、发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。GitHub Quality 还会在独立空库中使用两个不同镜像 ID 实际执行这两个脚本，核对备份、当前/上一镜像状态与回滚后的数据库和 HTTP 探测；正式服务器仍需按同一流程留下生产演练证据。
 
 基础目录种子只负责没有内容批次历史的新数据库。检测到 `catalog_import_batches` 后，重复启动会保留批次维护的人物字段、图鉴关联、来源与代表案件；正式内容变更必须继续通过新的不可变批次完成，不能依赖重跑基础种子覆盖线上数据。
 

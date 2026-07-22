@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { auditLaunchReadiness, summarizeLaunchReadiness } from "./lib/launch-readiness.mjs";
+
+const operationsRunbookSha256 = createHash("sha256")
+  .update(await readFile(new URL("../docs/runbook.md", import.meta.url), "utf8"))
+  .digest("hex");
+const operationsDrillCompletedAt = new Date().toISOString();
 
 const secretValues = {
   database: "database-password-must-never-appear",
@@ -69,11 +76,32 @@ const manifest = {
     rollbackPassed: true,
     contentSafetyPassed: true,
     iosDevicePassed: true,
-    androidDevicePassed: true
+    androidDevicePassed: true,
+    operationsDrillReceipt: {
+      schemaVersion: 1,
+      action: "operations_drill",
+      status: "PASSED",
+      contentModerator: "内容审核负责人",
+      alertResponder: "生产告警负责人",
+      completedAt: operationsDrillCompletedAt,
+      evidenceReference: "OPS-2026-0722 发布演练工单",
+      sourceCommit: "d".repeat(40),
+      runbookSha256: operationsRunbookSha256,
+      scenarios: [
+        "CONTENT_MODERATION",
+        "REPORT_RESOLUTION",
+        "USER_RESTRICTION",
+        "EMERGENCY_UNPUBLISH"
+      ].map((id) => ({
+        id,
+        result: "PASSED",
+        evidenceReference: `OPS-2026-0722#${id}`
+      }))
+    }
   }
 };
 
-const readyItems = auditLaunchReadiness({ environment, manifest });
+const readyItems = auditLaunchReadiness({ environment, manifest, operationsRunbookSha256 });
 const readyReport = summarizeLaunchReadiness(readyItems, "RELEASE");
 assert.equal(readyReport.status, "READY");
 assert.equal(readyReport.readyThrough, "RELEASE");
@@ -101,14 +129,19 @@ beforeDeployment.wechat.reviewApproved = false;
 beforeDeployment.wechat.released = false;
 beforeDeployment.validation.iosDevicePassed = false;
 beforeDeployment.validation.androidDevicePassed = false;
-const phasedItems = auditLaunchReadiness({ environment, manifest: beforeDeployment });
+const phasedItems = auditLaunchReadiness({
+  environment,
+  manifest: beforeDeployment,
+  operationsRunbookSha256
+});
 assert.equal(summarizeLaunchReadiness(phasedItems, "PRE_DEPLOY").status, "READY");
 assert.equal(summarizeLaunchReadiness(phasedItems, "POST_DEPLOY").status, "BLOCKED");
 assert.equal(summarizeLaunchReadiness(phasedItems, "RELEASE").readyThrough, "PRE_DEPLOY");
 
 const mismatch = auditLaunchReadiness({
   environment: { ...environment, MINIPROGRAM_APP_ID: "wxdifferent123" },
-  manifest
+  manifest,
+  operationsRunbookSha256
 });
 assert.equal(mismatch.find((entry) => entry.id === "wechat_app_identity").status, "MISSING_OR_INVALID");
 
@@ -118,7 +151,8 @@ const candidateAppMismatch = auditLaunchReadiness({
     WECHAT_APP_ID: "wxotherproduction123",
     MINIPROGRAM_APP_ID: "wxotherproduction123"
   },
-  manifest
+  manifest,
+  operationsRunbookSha256
 });
 assert.equal(
   candidateAppMismatch.find((entry) => entry.id === "candidate_uploaded").status,
@@ -128,9 +162,34 @@ assert.equal(
 const missingUploadEvidence = structuredClone(manifest);
 delete missingUploadEvidence.wechat.candidateUploadReceipt;
 assert.equal(
-  auditLaunchReadiness({ environment, manifest: missingUploadEvidence })
+  auditLaunchReadiness({ environment, manifest: missingUploadEvidence, operationsRunbookSha256 })
     .find((entry) => entry.id === "candidate_uploaded").status,
   "MISSING_OR_INVALID"
+);
+
+const missingOperationsDrill = structuredClone(manifest);
+delete missingOperationsDrill.validation.operationsDrillReceipt;
+assert.equal(
+  auditLaunchReadiness({
+    environment,
+    manifest: missingOperationsDrill,
+    operationsRunbookSha256
+  }).find((entry) => entry.id === "operations_drill").status,
+  "MISSING_OR_INVALID"
+);
+assert.equal(
+  auditLaunchReadiness({
+    environment,
+    manifest,
+    operationsRunbookSha256: "e".repeat(64)
+  }).find((entry) => entry.id === "operations_drill").status,
+  "MISSING_OR_INVALID"
+);
+assert.equal(
+  auditLaunchReadiness({ environment, manifest })
+    .find((entry) => entry.id === "operations_drill").status,
+  "MISSING_OR_INVALID",
+  "Operations drill readiness must be bound to the current runbook hash"
 );
 
 const placeholders = auditLaunchReadiness({
@@ -140,7 +199,8 @@ const placeholders = auditLaunchReadiness({
     WECHAT_APP_SECRET: "replace-with-real-appsecret",
     ADMIN_LOGIN_PASSWORD: "replace-with-at-least-16-random-characters"
   },
-  manifest
+  manifest,
+  operationsRunbookSha256
 });
 assert.equal(placeholders.find((entry) => entry.id === "database_configuration").status, "MISSING_OR_INVALID");
 assert.equal(placeholders.find((entry) => entry.id === "wechat_app_secret").status, "MISSING_OR_INVALID");

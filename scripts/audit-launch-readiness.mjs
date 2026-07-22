@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parseEnv } from "node:util";
@@ -44,7 +45,13 @@ try {
 if (manifest.schemaVersion !== 1) throw new Error("Launch manifest schemaVersion must be 1");
 
 const report = summarizeLaunchReadiness(
-  auditLaunchReadiness({ environment, manifest }),
+  auditLaunchReadiness({
+    environment,
+    manifest,
+    operationsRunbookSha256: createHash("sha256")
+      .update(await readFile(path.resolve("docs/runbook.md"), "utf8"))
+      .digest("hex")
+  }),
   options.phase
 );
 
