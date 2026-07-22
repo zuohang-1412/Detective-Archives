@@ -8,8 +8,13 @@ const [
   compose,
   caddyfile,
   qualityWorkflow,
+  actionlintConfig,
   linkHealthWorkflow,
   backupWorkflow,
+  productionMonitoringWorkflow,
+  productionMonitoringCommand,
+  productionMonitoringLibrary,
+  productionMonitoringCheck,
   backupScript,
   apiServer,
   deployScript,
@@ -38,8 +43,13 @@ const [
   readFile(path.join(root, "compose.yaml"), "utf8"),
   readFile(path.join(root, "ops/Caddyfile.example"), "utf8"),
   readFile(path.join(root, ".github/workflows/quality.yml"), "utf8"),
+  readFile(path.join(root, ".github/actionlint.yaml"), "utf8"),
   readFile(path.join(root, ".github/workflows/link-health.yml"), "utf8"),
   readFile(path.join(root, ".github/workflows/database-backup.yml"), "utf8"),
+  readFile(path.join(root, ".github/workflows/production-monitoring.yml"), "utf8"),
+  readFile(path.join(root, "scripts/monitor-production.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/lib/production-monitoring.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/check-production-monitoring.mjs"), "utf8"),
   readFile(path.join(root, "ops/backup-postgres.sh"), "utf8"),
   readFile(path.join(root, "apps/api/src/server.ts"), "utf8"),
   readFile(path.join(root, "ops/deploy-release.sh"), "utf8"),
@@ -92,6 +102,7 @@ assert.match(qualityWorkflow, /npm run check:db-api/, "CI must exercise the data
 assert.match(qualityWorkflow, /docker run[\s\S]*detective-archives-api:test/, "CI must start the built image");
 assert.match(qualityWorkflow, /npm run check:runtime/, "CI must probe the running production image");
 assert.match(qualityWorkflow, /npm run check:performance/, "CI must measure the production image latency");
+assert.match(actionlintConfig, /self-hosted-runner:[\s\S]*detective-archives/, "Workflow linting must know the private runner label");
 assert.match(linkHealthWorkflow, /schedule:[\s\S]*cron:/, "Link checks must support a daily schedule");
 assert.match(linkHealthWorkflow, /LINK_HEALTH_ENABLED/, "Scheduled link checks must require explicit enablement");
 assert.match(linkHealthWorkflow, /runs-on:\s*\[self-hosted, detective-archives\]/, "Link checks must run inside the private deployment network");
@@ -101,6 +112,23 @@ assert.match(backupWorkflow, /DATABASE_BACKUP_ENABLED/, "Scheduled backups must 
 assert.match(backupWorkflow, /runs-on:\s*\[self-hosted, detective-archives\]/, "Backups must run inside the private deployment network");
 assert.match(backupWorkflow, /backup-postgres\.sh/, "Scheduled backups must use the verified backup script");
 assert.match(backupWorkflow, /verify-backup\.sh/, "Scheduled backups must verify the new archive");
+assert.match(productionMonitoringWorkflow, /cron:\s*"3\/5 \* \* \* \*"/, "Public production monitoring must run every five minutes");
+assert.match(productionMonitoringWorkflow, /PRODUCTION_MONITORING_ENABLED/, "Scheduled production monitoring must require explicit enablement");
+assert.match(productionMonitoringWorkflow, /runs-on:\s*ubuntu-24\.04/, "Public monitoring must run outside the private production host");
+assert.match(productionMonitoringWorkflow, /PRODUCTION_METRICS_AUTH_TOKEN/, "Public monitoring must use a dedicated metrics secret");
+assert.match(productionMonitoringWorkflow, /permissions:[\s\S]*issues:\s*write/, "Monitoring must be allowed to route incidents through issues");
+assert.match(productionMonitoringWorkflow, /actions\/github-script@v9/, "Monitoring incidents must use the current GitHub script runtime");
+assert.match(productionMonitoringWorkflow, /listForRepo[\s\S]*state:\s*"open"/, "Monitoring incidents must be deduplicated");
+assert.match(productionMonitoringWorkflow, /state:\s*"closed"/, "Recovered monitoring incidents must be closed");
+assert.match(productionMonitoringWorkflow, /steps\.probe\.outcome == 'failure'[\s\S]*exit 1/, "Monitoring failures must preserve a failed workflow status");
+assert.match(productionMonitoringCommand, /runProductionMonitoring/, "Production monitoring must have a direct command entrypoint");
+assert.match(productionMonitoringLibrary, /validatePublicApiOrigin/, "Production monitoring must reject non-public or non-HTTPS origins");
+assert.match(productionMonitoringLibrary, /\/metrics must reject requests without the monitoring token/, "Production monitoring must verify metrics authentication");
+assert.match(productionMonitoringLibrary, /max5xxRatio/, "Production monitoring must enforce an HTTP error threshold");
+assert.match(productionMonitoringLibrary, /maxP95Seconds/, "Production monitoring must enforce a latency threshold");
+assert.match(productionMonitoringLibrary, /maxResidentMemoryBytes/, "Production monitoring must enforce a memory threshold");
+assert.match(productionMonitoringLibrary, /maxEventLoopLagSeconds/, "Production monitoring must enforce an event-loop threshold");
+assert.match(productionMonitoringCheck, /must reject requests/, "Monitoring checks must cover an exposed metrics endpoint");
 assert.match(backupScript, /BACKUP_DIRECTORY must be an absolute dedicated directory/, "Backup cleanup must require a dedicated absolute directory");
 assert.match(backupScript, /client\/server major version mismatch/, "Backups must reject a PostgreSQL client/server major version mismatch");
 assert.match(backupScript, /sha256sum/, "Backups must record an integrity checksum");
@@ -126,6 +154,8 @@ assert.match(rootPackage, /"check:release-rollback"/, "The release rollback dril
 assert.match(rootPackage, /"operations:drill:record"/, "The operations drill must have an npm entrypoint");
 assert.match(rootPackage, /"release:drill:production"/, "The production rollback drill must have an npm entrypoint");
 assert.match(rootPackage, /"check:production-release-drill"/, "The production rollback evidence must have an automated check");
+assert.match(rootPackage, /"monitor:production"/, "Production monitoring must have an npm entrypoint");
+assert.match(rootPackage, /"check:production-monitoring"/, "Production monitoring must have an automated check");
 assert.match(rootPackage, /"wechat:acceptance:record"/, "WeChat acceptance must have a recording entrypoint");
 assert.match(rootPackage, /"check:wechat-acceptance"/, "WeChat acceptance must have an automated check");
 assert.match(rootPackage, /"wechat:publication:record"/, "WeChat publication must have a recording entrypoint");

@@ -172,6 +172,8 @@ npm run release:check
 
 `launch:audit` 只报告门禁状态和责任域，不输出数据库密码、AppSecret、后台密码或监控令牌。它按 `PRE_DEPLOY`、`POST_DEPLOY`、`SUBMISSION`、`RELEASE` 四阶段核验 31 项，实际清单从 `ops/launch-readiness.example.json` 复制后填写，且已被 Git 忽略。真实运营人员完成四场景上岗演练后，使用仓库外记录执行 `npm run operations:drill:record -- --record=/absolute/path/operations-drill.json`；提审门禁会校验绑定当前运行手册的回执。部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成预部署审计、小程序配置生成、发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。GitHub Quality 还会在独立空库中使用两个不同镜像 ID 实际执行这两个脚本，核对备份、当前/上一镜像状态与回滚后的数据库和 HTTP 探测；正式服务器仍需按同一流程留下生产演练证据。
 
+生产域名可用后，先手工执行 `PUBLIC_API_BASE_URL=https://真实域名 METRICS_AUTH_TOKEN=独立令牌 npm run monitor:production`。仓库同时提供默认关闭的 GitHub 外部监控：每 5 分钟从独立托管 Runner 验证数据库就绪、指标凭证以及 5xx、P95、内存和事件循环阈值；失败时只创建一个去重告警 Issue，恢复后自动关闭。正式启用所需变量和告警演练见运行手册。
+
 基础目录种子只负责没有内容批次历史的新数据库。检测到 `catalog_import_batches` 后，重复启动会保留批次维护的人物字段、图鉴关联、来源与代表案件；正式内容变更必须继续通过新的不可变批次完成，不能依赖重跑基础种子覆盖线上数据。
 
 图鉴与扩展目录数据的来源、编号和核验状态见 `docs/data-sources.md`。如需从公开索引重新生成 1～100 卷事实字段，可执行：

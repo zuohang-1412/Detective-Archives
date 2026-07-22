@@ -93,6 +93,7 @@ npm run launch:audit -- --env-file=.env.production --phase=release
 
 - 每 1 分钟探测 `/ready`；连续 3 次失败触发告警。
 - 采集 `/metrics`，关注请求量、5xx 比例、P95 响应时间、进程内存和事件循环延迟。
+- GitHub 外部安全网每 5 分钟复核一次公网可用性和指标阈值；它用于发现监控盲区，不替代上述 1 分钟生产探测。
 - 每日检查容器重启次数、数据库连接数、磁盘空间和最近一次备份时间。
 - 每日执行正版链接健康巡检，检查失败项和连续失败次数；巡检不会自动下架链接。
 - 每周从备份中抽取一个归档，在隔离数据库完成真实恢复演练。
@@ -109,6 +110,27 @@ npm run launch:audit -- --env-file=.env.production --phase=release
 | 备份缺失 | 26 小时无成功备份 | 立即手工备份并排查定时任务 |
 | 正版链接确认失效 | `last_check_ok=false` 或连续确认失败达到 3 次 | 人工打开复核，必要时在后台停用并处理读者反馈 |
 | 正版链接暂无法确认 | `last_check_ok IS NULL` 且已有 `last_check_error` | 按底层 TLS/DNS/超时错误从其他网络人工打开；不自动下架 |
+
+## 生产外部监控
+
+仓库提供 `.github/workflows/production-monitoring.yml`。它固定使用 GitHub 托管 Runner，从生产网络之外检查精确 HTTPS 域名，且默认关闭。启用前配置：
+
+1. 仓库变量 `PUBLIC_API_BASE_URL=https://实际 API 域名`。
+2. 仓库 Secret `PRODUCTION_METRICS_AUTH_TOKEN`，值与生产 `METRICS_AUTH_TOKEN` 一致；不得复用 AppSecret、数据库或后台密码。
+3. 可选仓库变量 `MONITOR_MAX_5XX_RATIO`（默认 `0.02`）、`MONITOR_MAX_P95_SECONDS`（默认 `1`）、`MONITOR_MAX_RSS_BYTES`（默认 `805306368`）、`MONITOR_MAX_EVENT_LOOP_LAG_SECONDS`（默认 `0.25`）和 `MONITOR_SAMPLE_INTERVAL_MS`（默认 `15000`）。
+4. 先从 Actions 手工运行 `Production Monitoring`，确认 `/ready`、无令牌访问 `/metrics` 返回 401、带令牌指标与所有阈值通过。
+5. 临时填写错误的公开域名并手工运行一次，确认只创建一个带 `production-monitoring` 标签的告警 Issue；恢复正确域名后再次运行，确认自动留言并关闭。演练期间不要修改生产令牌，也不要把令牌写入 Issue。
+6. 命名实际告警接收人并确认其订阅仓库 Issue 后，设置 `PRODUCTION_MONITORING_ENABLED=true`；只有手工成功、故障开单和恢复闭环都完成后，才能把实际上线清单的 `monitoringReady` 设为 `true`。
+
+本地或受控终端可用同一探测器复核，输出只含公开域名、阈值结果与时间，不含监控令牌：
+
+```bash
+PUBLIC_API_BASE_URL=https://api.example.cn \
+METRICS_AUTH_TOKEN='独立监控令牌' \
+npm run monitor:production
+```
+
+GitHub 定时任务的最短间隔为 5 分钟，且可能因平台负载延迟，因此生产环境仍需另行配置 1 分钟外部 `/ready` 探测；GitHub 任务作为独立告警通道和公网回归安全网。
 
 ## 正版链接巡检
 

@@ -83,6 +83,10 @@ PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- \
 - 生产 PostgreSQL 优先使用 `PGSSLMODE=verify-full`；若云厂商仅提供私网非 SSL 连接，应通过安全组隔离并记录风险接受。
 - 微信公众平台“开发管理 → 开发设置 → 服务器域名”中，将 API 域名加入 `request` 合法域名。
 
+### 外部监控和告警
+
+生产域名部署完成后先从服务器外执行 `npm run monitor:production`，确认公网 `/ready`、受保护 `/metrics` 和默认生产阈值通过。随后按 `docs/runbook.md` 配置并手工演练 `Production Monitoring` 工作流；它每 5 分钟从 GitHub 托管 Runner 复核公网可用性，失败创建去重 Issue，恢复自动关闭。正式的 1 分钟可用性探测、Prometheus 采集和告警接收人仍由生产监控服务负责；只有两个通道都生效并完成故障/恢复演练后，才能在实际上线清单确认 `monitoringReady`。
+
 ## 5. 小程序生产配置与提审
 
 使用真实公开信息生成小程序配置：
