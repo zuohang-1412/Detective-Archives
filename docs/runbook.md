@@ -120,7 +120,9 @@ npm run launch:audit -- --env-file=.env.production --phase=release
 3. 可选仓库变量 `MONITOR_MAX_5XX_RATIO`（默认 `0.02`）、`MONITOR_MAX_P95_SECONDS`（默认 `1`）、`MONITOR_MAX_RSS_BYTES`（默认 `805306368`）、`MONITOR_MAX_EVENT_LOOP_LAG_SECONDS`（默认 `0.25`）和 `MONITOR_SAMPLE_INTERVAL_MS`（默认 `15000`）。
 4. 先从 Actions 手工运行 `Production Monitoring`，确认 `/ready`、无令牌访问 `/metrics` 返回 401、带令牌指标与所有阈值通过。
 5. 临时填写错误的公开域名并手工运行一次，确认只创建一个带 `production-monitoring` 标签的告警 Issue；恢复正确域名后再次运行，确认自动留言并关闭。演练期间不要修改生产令牌，也不要把令牌写入 Issue。
-6. 命名实际告警接收人并确认其订阅仓库 Issue 后，设置 `PRODUCTION_MONITORING_ENABLED=true`；只有手工成功、故障开单和恢复闭环都完成后，才能把实际上线清单的 `monitoringReady` 设为 `true`。
+6. 命名实际告警接收人并确认其订阅仓库 Issue。把 `ops/monitoring-drill-record.example.json` 复制到仓库外受控目录，逐项登记健康运行、首次故障、第二次相同故障和恢复运行的公开 Run/Issue 编号、时间和非敏感工单引用；四次运行必须来自当前提交，后三步必须指向同一个 Issue。
+7. 执行 `npm run monitoring:drill:record -- --record=/secure/evidence/monitoring-drill.json --env-file=.env.production`。记录器只接受绝对仓库外路径，将当前提交、真实域名、仓库和清单中的告警负责人绑定到 30 天有效回执，并原子更新实际上线清单。旧 `monitoringReady` 布尔字段不再生效。
+8. 回执生成且 `launch:audit --phase=post_deploy` 中 `monitoring_and_alerting` 为 `READY` 后，设置 `PRODUCTION_MONITORING_ENABLED=true`。证据引用禁止包含访问令牌、签名参数、URL 用户名/密码或临时下载地址。
 
 本地或受控终端可用同一探测器复核，输出只含公开域名、阈值结果与时间，不含监控令牌：
 
@@ -233,7 +235,9 @@ unset BACKUP_ENCRYPTION_PASSPHRASE
 4. 把变量 `DETECTIVE_ARCHIVES_BACKUP_DIRECTORY` 指向专用绝对目录；设置 `DETECTIVE_ARCHIVES_BACKUP_KEY_ID`（默认 `primary`，只含字母数字、点、下划线或连字符），用于标记制品对应的密钥代次。
 5. 设置 `DETECTIVE_ARCHIVES_PGSSLMODE=verify-full`（或记录过风险接受的实际模式），按需设置本机 `DETECTIVE_ARCHIVES_BACKUP_RETENTION_DAYS`（默认 14 天）和离站 `DETECTIVE_ARCHIVES_OFFSITE_RETENTION_DAYS`（默认 30 天，GitHub 通常最多 90 天或以仓库设置为准）。
 6. 确认 Runner 已安装 Node.js 24，以及与数据库主版本完全一致的 `psql`、`pg_dump`、`pg_restore` 和 `sha256sum`。先手工运行一次 `Database Backup`，确认日志不含口令、本机只留下 `.dump.enc`/`.sha256`、制品页可下载两个文件。
-7. 从制品页下载刚生成的密文，按上面的步骤完成真实隔离恢复并记录开始时间、恢复完成时间、数据时间点、RPO、RTO 和负责人；成功后设置变量 `DATABASE_BACKUP_ENABLED=true`，再把实际上线清单的 `offsiteBackupReady` 设为 `true`。
+7. 从制品页下载刚生成的密文和 `.sha256`，按上面的步骤完成真实隔离恢复并记录制品 Run/Artifact 编号、密钥代次、密文文件名/SHA-256、下载时间、恢复点、开始/完成时间、负责人以及 `check:db` / `check:db-api` 的 150/146/109/92 基线结果。
+8. 把 `ops/offsite-backup-drill-record.example.json` 复制到仓库外受控目录，准确计算 `rpoSeconds=恢复完成时间-归档恢复点`、`rtoSeconds=恢复完成时间-恢复开始时间`，执行 `npm run backup:drill:record -- --record=/secure/evidence/offsite-backup-drill.json --env-file=.env.production`。回执要求 RPO 不超过 26 小时、RTO 不超过 4 小时、所有恢复步骤为 `PASSED`，且绑定当前提交、真实域名和清单负责人；旧 `offsiteBackupReady` 布尔字段不再生效。
+9. `launch:audit --phase=post_deploy` 中 `offsite_backup` 为 `READY` 后设置变量 `DATABASE_BACKUP_ENABLED=true`。制品 URL 必须是不含签名参数的 GitHub 页面地址，密钥、解密明文和临时下载链接不得写入记录。
 
 任务使用随机盐、随机 IV、scrypt 派生密钥和 AES-256-GCM 认证密文；同一明文重复加密也不会得到相同输出。GitHub 制品是与生产主机分离的首层离站副本，但不能代替长期对象锁或多云灾备；每周仍需抽取制品恢复，重要运营期应另行复制到受控对象存储。数据库不得为了定时任务开放到公网。轮换密钥时先修改 `BACKUP_KEY_ID` 并保存旧密钥，旧制品过期后才能销毁旧密钥。
 

@@ -15,12 +15,12 @@
   "infrastructure": {
     "serverProvisioned": false,
     "domainFiled": false,
-    "databasePrivate": false,
-    "monitoringReady": false,
-    "offsiteBackupReady": false
+    "databasePrivate": false
   },
   "validation": {
     "productionReleaseReceipt": null,
+    "monitoringDrillReceipt": null,
+    "offsiteBackupDrillReceipt": null,
     "wechatAcceptanceReceipt": null,
     "wechatPublicationReceipt": null,
     "operationsDrillReceipt": null

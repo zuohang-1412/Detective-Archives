@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "PASSED",
+  "repository": "zuohang-1412/Detective-Archives",
+  "sourceCommit": "填写四十位当前提交号",
+  "publicApiOrigin": "https://填写真实API域名",
+  "alertResponder": "填写实际上线清单中的告警负责人",
+  "completedAt": "2026-07-22T05:00:00.000Z",
+  "evidenceReference": "MON-YYYY-MM-DD 生产告警闭环工单",
+  "checks": [
+    {
+      "id": "BASELINE_HEALTHY",
+      "conclusion": "success",
+      "runId": "填写健康运行ID",
+      "runUrl": "https://github.com/zuohang-1412/Detective-Archives/actions/runs/填写健康运行ID",
+      "sourceCommit": "填写四十位当前提交号",
+      "completedAt": "2026-07-22T04:00:00.000Z",
+      "evidenceReference": "MON-YYYY-MM-DD#BASELINE_HEALTHY",
+      "issueNumber": null,
+      "issueUrl": null,
+      "issueState": "NONE"
+    },
+    {
+      "id": "INCIDENT_CREATED",
+      "conclusion": "failure",
+      "runId": "填写首次故障运行ID",
+      "runUrl": "https://github.com/zuohang-1412/Detective-Archives/actions/runs/填写首次故障运行ID",
+      "sourceCommit": "填写四十位当前提交号",
+      "completedAt": "2026-07-22T04:15:00.000Z",
+      "evidenceReference": "MON-YYYY-MM-DD#INCIDENT_CREATED",
+      "issueNumber": 123,
+      "issueUrl": "https://github.com/zuohang-1412/Detective-Archives/issues/123",
+      "issueState": "OPEN"
+    },
+    {
+      "id": "INCIDENT_DEDUPLICATED",
+      "conclusion": "failure",
+      "runId": "填写重复故障运行ID",
+      "runUrl": "https://github.com/zuohang-1412/Detective-Archives/actions/runs/填写重复故障运行ID",
+      "sourceCommit": "填写四十位当前提交号",
+      "completedAt": "2026-07-22T04:30:00.000Z",
+      "evidenceReference": "MON-YYYY-MM-DD#INCIDENT_DEDUPLICATED",
+      "issueNumber": 123,
+      "issueUrl": "https://github.com/zuohang-1412/Detective-Archives/issues/123",
+      "issueState": "OPEN"
+    },
+    {
+      "id": "RECOVERY_CLOSED",
+      "conclusion": "success",
+      "runId": "填写恢复运行ID",
+      "runUrl": "https://github.com/zuohang-1412/Detective-Archives/actions/runs/填写恢复运行ID",
+      "sourceCommit": "填写四十位当前提交号",
+      "completedAt": "2026-07-22T05:00:00.000Z",
+      "evidenceReference": "MON-YYYY-MM-DD#RECOVERY_CLOSED",
+      "issueNumber": 123,
+      "issueUrl": "https://github.com/zuohang-1412/Detective-Archives/issues/123",
+      "issueState": "CLOSED"
+    }
+  ]
+}

@@ -85,11 +85,11 @@ PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- \
 
 ### 外部监控和告警
 
-生产域名部署完成后先从服务器外执行 `npm run monitor:production`，确认公网 `/ready`、受保护 `/metrics` 和默认生产阈值通过。随后按 `docs/runbook.md` 配置并手工演练 `Production Monitoring` 工作流；它每 5 分钟从 GitHub 托管 Runner 复核公网可用性，失败创建去重 Issue，恢复自动关闭。正式的 1 分钟可用性探测、Prometheus 采集和告警接收人仍由生产监控服务负责；只有两个通道都生效并完成故障/恢复演练后，才能在实际上线清单确认 `monitoringReady`。
+生产域名部署完成后先从服务器外执行 `npm run monitor:production`，确认公网 `/ready`、受保护 `/metrics` 和默认生产阈值通过。随后按 `docs/runbook.md` 配置并手工演练 `Production Monitoring` 工作流；它每 5 分钟从 GitHub 托管 Runner 复核公网可用性，失败创建去重 Issue，恢复自动关闭。正式的 1 分钟可用性探测、Prometheus 采集和告警接收人仍由生产监控服务负责。四步演练完成后必须从仓库外记录执行 `monitoring:drill:record`；上线审计只接受 30 天内、绑定当前提交/域名/负责人且证明同一 Issue 去重与恢复关单的回执，不再读取 `monitoringReady`。
 
 ### 加密离站备份
 
-每日备份工作流必须在能访问数据库私网的自托管 Runner 上运行。它先生成并验证 PostgreSQL custom-format 归档，再用仓库 Secret 中独立的 32 字符以上口令和随机盐/随机 IV 执行 AES-256-GCM 流式认证加密；密文解密验证成功后删除本机明文，并将密文及 SHA-256 边车上传到 GitHub 制品存储。默认离站保留 30 天，最长范围受仓库 Actions 保留设置约束。加密口令不得与数据库、AppSecret、后台或监控凭证复用，口令代次通过非敏感 `BACKUP_KEY_ID` 标识；轮换时必须保留旧制品对应的旧密钥。正式确认 `offsiteBackupReady` 前，必须从制品页下载一份生产来源密文，按运行手册在隔离库完成解密、`pg_restore`、数据库完整性和 API 回归，并记录 RPO/RTO。
+每日备份工作流必须在能访问数据库私网的自托管 Runner 上运行。它先生成并验证 PostgreSQL custom-format 归档，再用仓库 Secret 中独立的 32 字符以上口令和随机盐/随机 IV 执行 AES-256-GCM 流式认证加密；密文解密验证成功后删除本机明文，并将密文及 SHA-256 边车上传到 GitHub 制品存储。默认离站保留 30 天，最长范围受仓库 Actions 保留设置约束。加密口令不得与数据库、AppSecret、后台或监控凭证复用，口令代次通过非敏感 `BACKUP_KEY_ID` 标识；轮换时必须保留旧制品对应的旧密钥。正式上线前必须从制品页下载一份生产来源密文，在隔离库完成解密、`pg_restore`、数据库完整性和 API 回归，再从仓库外记录执行 `backup:drill:record`。上线审计要求制品身份与密文 SHA-256、RPO≤26 小时、RTO≤4 小时、150/146/109/92 基线及当前提交/域名/负责人全部匹配，不再读取 `offsiteBackupReady`。
 
 ## 5. 小程序生产配置与提审
 

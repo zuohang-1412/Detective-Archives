@@ -158,12 +158,12 @@ await writeFile(readinessFile, JSON.stringify({
   infrastructure: {
     serverProvisioned: true,
     domainFiled: true,
-    databasePrivate: true,
-    monitoringReady: false,
-    offsiteBackupReady: false
+    databasePrivate: true
   },
   validation: {
     productionReleaseReceipt: null,
+    monitoringDrillReceipt: null,
+    offsiteBackupDrillReceipt: null,
     wechatAcceptanceReceipt: null,
     wechatPublicationReceipt: null
   }

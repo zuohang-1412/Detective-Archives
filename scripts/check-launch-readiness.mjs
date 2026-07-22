@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import {
+  buildMonitoringDrillReceipt,
+  buildOffsiteBackupDrillReceipt,
+  MONITORING_DRILL_SCENARIOS,
+  OFFSITE_BACKUP_CONTENT_BASELINE
+} from "./lib/infrastructure-drills.mjs";
 import { auditLaunchReadiness, summarizeLaunchReadiness } from "./lib/launch-readiness.mjs";
 import { PRODUCTION_PROBE_CHECKS } from "./lib/production-release-drill.mjs";
 import {
@@ -21,7 +27,7 @@ const operationsRunbookSha256 = createHash("sha256")
   .digest("hex");
 const operationsDrillCompletedAt = new Date().toISOString();
 const sourceCommit = "a".repeat(40);
-const productionReleaseCompletedAt = new Date().toISOString();
+const productionReleaseCompletedAt = new Date(Math.floor(Date.now() / 1000) * 1000).toISOString();
 const productionProbe = {
   schemaVersion: 1,
   status: "PASSED",
@@ -189,9 +195,7 @@ const manifest = {
   infrastructure: {
     serverProvisioned: true,
     domainFiled: true,
-    databasePrivate: true,
-    monitoringReady: true,
-    offsiteBackupReady: true
+    databasePrivate: true
   },
   validation: {
     productionReleaseReceipt,
@@ -219,6 +223,94 @@ const manifest = {
     }
   }
 };
+
+const repository = "zuohang-1412/Detective-Archives";
+const releaseTime = Date.parse(productionReleaseCompletedAt);
+const monitoringTimes = [45, 30, 15, 0].map((minutesAgo) => (
+  new Date(releaseTime - minutesAgo * 60 * 1000).toISOString()
+));
+const monitoringIssueNumber = 42;
+const monitoringIssueUrl = "https://github.com/" + repository + "/issues/" + monitoringIssueNumber;
+manifest.validation.monitoringDrillReceipt = buildMonitoringDrillReceipt({
+  record: {
+    schemaVersion: 1,
+    status: "PASSED",
+    repository,
+    sourceCommit,
+    publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+    alertResponder: manifest.operator.alertResponder,
+    completedAt: productionReleaseCompletedAt,
+    evidenceReference: "MON-2026-0722 生产告警闭环工单",
+    checks: MONITORING_DRILL_SCENARIOS.map((id, index) => ({
+      id,
+      conclusion: ["success", "failure", "failure", "success"][index],
+      runId: String(1001 + index),
+      runUrl: "https://github.com/" + repository + "/actions/runs/" + (1001 + index),
+      sourceCommit,
+      completedAt: monitoringTimes[index],
+      evidenceReference: "MON-2026-0722#" + id,
+      issueNumber: index === 0 ? null : monitoringIssueNumber,
+      issueUrl: index === 0 ? null : monitoringIssueUrl,
+      issueState: ["NONE", "OPEN", "OPEN", "CLOSED"][index]
+    }))
+  },
+  manifest,
+  repository,
+  sourceCommit,
+  publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+  now: releaseTime
+});
+
+const backupRecoveryPointAt = new Date(releaseTime - 2 * 60 * 60 * 1000).toISOString();
+const backupFileTimestamp = backupRecoveryPointAt
+  .replaceAll("-", "")
+  .replaceAll(":", "")
+  .replace(".000Z", "Z");
+manifest.validation.offsiteBackupDrillReceipt = buildOffsiteBackupDrillReceipt({
+  record: {
+    schemaVersion: 1,
+    status: "PASSED",
+    repository,
+    sourceCommit,
+    publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+    operator: manifest.operator.alertResponder,
+    completedAt: productionReleaseCompletedAt,
+    evidenceReference: "BKP-2026-0722 离站恢复演练工单",
+    artifact: {
+      runId: "2001",
+      runAttempt: 1,
+      runUrl: "https://github.com/" + repository + "/actions/runs/2001",
+      sourceCommit,
+      artifactId: "3001",
+      artifactUrl: "https://github.com/" + repository + "/actions/runs/2001/artifacts/3001",
+      artifactName: "detective-archives-backup-primary-2001-1",
+      keyId: "primary",
+      archiveFileName: "detective-archives-" + backupFileTimestamp + ".dump.enc",
+      archiveSha256: "c".repeat(64),
+      createdAt: new Date(releaseTime - 100 * 60 * 1000).toISOString(),
+      downloadedAt: new Date(releaseTime - 60 * 60 * 1000).toISOString()
+    },
+    restore: {
+      recoveryPointAt: backupRecoveryPointAt,
+      startedAt: new Date(releaseTime - 30 * 60 * 1000).toISOString(),
+      completedAt: productionReleaseCompletedAt,
+      rpoSeconds: 7200,
+      rtoSeconds: 1800,
+      encryptedVerification: "PASSED",
+      decryption: "PASSED",
+      pgRestore: "PASSED",
+      databaseCheck: "PASSED",
+      apiCheck: "PASSED",
+      counts: { ...OFFSITE_BACKUP_CONTENT_BASELINE },
+      evidenceReference: "BKP-2026-0722#ISOLATED_RESTORE"
+    }
+  },
+  manifest,
+  repository,
+  sourceCommit,
+  publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+  now: releaseTime
+});
 
 for (const event of ["REVIEW_SUBMITTED", "REVIEW_APPROVED", "PRODUCTION_RELEASED"]) {
   const result = buildWechatPublicationReceipt({
@@ -259,10 +351,10 @@ for (const secret of Object.values(secretValues)) {
 
 const beforeDeployment = structuredClone(manifest);
 delete beforeDeployment.validation.productionReleaseReceipt;
+delete beforeDeployment.validation.monitoringDrillReceipt;
+delete beforeDeployment.validation.offsiteBackupDrillReceipt;
 delete beforeDeployment.validation.wechatAcceptanceReceipt;
 delete beforeDeployment.validation.wechatPublicationReceipt;
-beforeDeployment.infrastructure.monitoringReady = false;
-beforeDeployment.infrastructure.offsiteBackupReady = false;
 beforeDeployment.wechat.candidateUploaded = false;
 const phasedItems = auditLaunchReadiness({
   environment,
@@ -345,6 +437,25 @@ for (const id of ["tls_verified", "production_release_check", "rollback_drill"])
   assert.equal(
     missingProductionItems.find((entry) => entry.id === id).status,
     "MISSING_OR_INVALID"
+  );
+}
+
+const forgedInfrastructureBooleans = structuredClone(manifest);
+delete forgedInfrastructureBooleans.validation.monitoringDrillReceipt;
+delete forgedInfrastructureBooleans.validation.offsiteBackupDrillReceipt;
+forgedInfrastructureBooleans.infrastructure.monitoringReady = true;
+forgedInfrastructureBooleans.infrastructure.offsiteBackupReady = true;
+const forgedInfrastructureItems = auditLaunchReadiness({
+  environment,
+  manifest: forgedInfrastructureBooleans,
+  operationsRunbookSha256,
+  sourceCommit
+});
+for (const id of ["monitoring_and_alerting", "offsite_backup"]) {
+  assert.equal(
+    forgedInfrastructureItems.find((entry) => entry.id === id).status,
+    "MISSING_OR_INVALID",
+    id + " must reject manually edited readiness booleans"
   );
 }
 

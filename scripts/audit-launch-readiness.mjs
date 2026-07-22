@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parseEnv } from "node:util";
+import { parseGithubRepository } from "./lib/infrastructure-drills.mjs";
 import { auditLaunchReadiness, PHASES, summarizeLaunchReadiness } from "./lib/launch-readiness.mjs";
 
 const options = {
@@ -45,19 +46,25 @@ try {
 }
 if (manifest.schemaVersion !== 1) throw new Error("Launch manifest schemaVersion must be 1");
 
+function gitValue(argumentsArray) {
+  const result = spawnSync("git", argumentsArray, {
+    cwd: path.resolve(),
+    encoding: "utf8",
+    windowsHide: true
+  });
+  return result.status === 0 ? result.stdout.trim() : "";
+}
+
+const sourceCommitValue = gitValue(["rev-parse", "HEAD"]);
+const sourceCommit = /^[0-9a-f]{40}$/i.test(sourceCommitValue) ? sourceCommitValue : null;
+const repository = parseGithubRepository(gitValue(["remote", "get-url", "origin"]));
+
 const report = summarizeLaunchReadiness(
   auditLaunchReadiness({
     environment,
     manifest,
-    sourceCommit: (() => {
-      const result = spawnSync("git", ["rev-parse", "HEAD"], {
-        cwd: path.resolve(),
-        encoding: "utf8",
-        windowsHide: true
-      });
-      const value = result.status === 0 ? result.stdout.trim() : "";
-      return /^[0-9a-f]{40}$/i.test(value) ? value : null;
-    })(),
+    sourceCommit,
+    repository,
     operationsRunbookSha256: createHash("sha256")
       .update(await readFile(path.resolve("docs/runbook.md"), "utf8"))
       .digest("hex")

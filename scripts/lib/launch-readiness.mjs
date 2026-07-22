@@ -1,10 +1,15 @@
 import { validCandidateUploadReceipt } from "./miniprogram-release.mjs";
+import {
+  validMonitoringDrillReceipt,
+  validOffsiteBackupDrillReceipt
+} from "./infrastructure-drills.mjs";
 import { validOperationsDrillReceipt } from "./operations-drill.mjs";
 import { validProductionReleaseReceipt } from "./production-release-drill.mjs";
 import { validWechatAcceptanceReceipt } from "./wechat-acceptance.mjs";
 import { validWechatPublicationReceipt } from "./wechat-publication.mjs";
 
 const PHASES = ["PRE_DEPLOY", "POST_DEPLOY", "SUBMISSION", "RELEASE"];
+const DEFAULT_GITHUB_REPOSITORY = "zuohang-1412/Detective-Archives";
 const placeholderPattern = /(?:replace|example|your[-_. ]|strong-password|managed-postgres|change-?me|dummy|test-only|ci-only|上线前|待填写|todo)/i;
 
 function present(value, minimumLength = 1) {
@@ -67,7 +72,8 @@ export function auditLaunchReadiness({
   environment = {},
   manifest = {},
   operationsRunbookSha256 = null,
-  sourceCommit = null
+  sourceCommit = null,
+  repository = DEFAULT_GITHUB_REPOSITORY
 } = {}) {
   const appId = environment.WECHAT_APP_ID?.trim();
   const miniProgramAppId = environment.MINIPROGRAM_APP_ID?.trim();
@@ -85,6 +91,26 @@ export function auditLaunchReadiness({
       {
         publicApiOrigin: environment.PUBLIC_API_BASE_URL,
         sourceCommit
+      }
+    );
+  const monitoringDrillReceiptValid = sourceCommitValid
+    && validMonitoringDrillReceipt(
+      nested(manifest, "validation", "monitoringDrillReceipt"),
+      {
+        repository,
+        sourceCommit,
+        publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+        alertResponder: nested(manifest, "operator", "alertResponder")
+      }
+    );
+  const offsiteBackupDrillReceiptValid = sourceCommitValid
+    && validOffsiteBackupDrillReceipt(
+      nested(manifest, "validation", "offsiteBackupDrillReceipt"),
+      {
+        repository,
+        sourceCommit,
+        publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+        operator: nested(manifest, "operator", "alertResponder")
       }
     );
   const wechatAcceptanceReceiptValid = sourceCommitValid
@@ -185,11 +211,11 @@ export function auditLaunchReadiness({
       productionReleaseReceiptValid,
       "A current release receipt proves the previous-image rollback and candidate recovery passed."),
     item("monitoring_and_alerting", "POST_DEPLOY", "OPERATIONS",
-      nested(manifest, "infrastructure", "monitoringReady") === true,
-      "External readiness monitoring, metrics collection and alert routing are active."),
+      monitoringDrillReceiptValid,
+      "A current receipt proves healthy monitoring, incident deduplication and recovery routing."),
     item("offsite_backup", "POST_DEPLOY", "OPERATIONS",
-      nested(manifest, "infrastructure", "offsiteBackupReady") === true,
-      "Daily encrypted backup and independent storage are active."),
+      offsiteBackupDrillReceiptValid,
+      "A current receipt proves an encrypted offsite artifact and timed isolated restore."),
     item("content_safety_live", "POST_DEPLOY", "WECHAT_OWNER",
       wechatAcceptanceReceiptValid,
       "A candidate-bound receipt proves live WeChat content-safety paths were verified."),
@@ -269,4 +295,4 @@ export function summarizeLaunchReadiness(items, targetPhase = "RELEASE") {
   };
 }
 
-export { PHASES };
+export { DEFAULT_GITHUB_REPOSITORY, PHASES };

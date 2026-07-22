@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "status": "PASSED",
+  "repository": "zuohang-1412/Detective-Archives",
+  "sourceCommit": "填写四十位当前提交号",
+  "publicApiOrigin": "https://填写真实API域名",
+  "operator": "填写实际上线清单中的告警负责人",
+  "completedAt": "2026-07-22T03:35:00.000Z",
+  "evidenceReference": "BKP-YYYY-MM-DD 离站恢复演练工单",
+  "artifact": {
+    "runId": "填写备份运行ID",
+    "runAttempt": 1,
+    "runUrl": "https://github.com/zuohang-1412/Detective-Archives/actions/runs/填写备份运行ID",
+    "sourceCommit": "填写四十位当前提交号",
+    "artifactId": "填写制品ID",
+    "artifactUrl": "https://github.com/zuohang-1412/Detective-Archives/actions/runs/填写备份运行ID/artifacts/填写制品ID",
+    "artifactName": "detective-archives-backup-primary-填写备份运行ID-1",
+    "keyId": "primary",
+    "archiveFileName": "detective-archives-20260722T020000Z.dump.enc",
+    "archiveSha256": "填写下载密文的六十四位SHA256",
+    "createdAt": "2026-07-22T02:15:00.000Z",
+    "downloadedAt": "2026-07-22T03:00:00.000Z"
+  },
+  "restore": {
+    "recoveryPointAt": "2026-07-22T02:00:00.000Z",
+    "startedAt": "2026-07-22T03:05:00.000Z",
+    "completedAt": "2026-07-22T03:35:00.000Z",
+    "rpoSeconds": 5700,
+    "rtoSeconds": 1800,
+    "encryptedVerification": "PASSED",
+    "decryption": "PASSED",
+    "pgRestore": "PASSED",
+    "databaseCheck": "PASSED",
+    "apiCheck": "PASSED",
+    "counts": {
+      "detectives": 150,
+      "works": 146,
+      "pictureBookEntries": 109,
+      "recommendations": 92
+    },
+    "evidenceReference": "BKP-YYYY-MM-DD#ISOLATED_RESTORE"
+  }
+}

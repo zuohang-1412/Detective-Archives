@@ -20,6 +20,7 @@
 - 隐私最小化的档案/作品访问转化、正版点击、首加书架、完成后评价、7/30 日留存、评论举报、审核时长和申诉恢复率，以及安全响应头、限流、生产配置硬校验、运维指标和优雅停机。
 - Docker/Caddy 部署基线、CI 质量门禁、数据库备份与 AES-256-GCM 加密离站制品、小程序候选预览/上传入口与上线运行手册。
 - 四场景运营上岗演练记录器：把内容审核、举报结案、用户限制和紧急下架证据绑定源码提交及运行手册，并纳入提审门禁。
+- 基础设施演练记录器：监控必须证明健康、首次开单、重复故障去重和恢复关单；离站备份必须证明真实制品摘要、密钥代次、计时隔离恢复及 150/146/109/92 内容基线，两个门禁均拒绝手工布尔值。
 - 产品 PRD、页面规划和技术架构文档。
 - API 自动化测试。
 
@@ -170,11 +171,11 @@ npm run launch:audit -- --env-file=.env.production --manifest=ops/launch-readine
 npm run release:check
 ```
 
-`launch:audit` 只报告门禁状态和责任域，不输出数据库密码、AppSecret、后台密码或监控令牌。它按 `PRE_DEPLOY`、`POST_DEPLOY`、`SUBMISSION`、`RELEASE` 四阶段核验 31 项，实际清单从 `ops/launch-readiness.example.json` 复制后填写，且已被 Git 忽略。真实运营人员完成四场景上岗演练后，使用仓库外记录执行 `npm run operations:drill:record -- --record=/absolute/path/operations-drill.json`；提审门禁会校验绑定当前运行手册的回执。部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成预部署审计、小程序配置生成、发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。GitHub Quality 还会在独立空库中使用两个不同镜像 ID 实际执行这两个脚本，核对备份、当前/上一镜像状态与回滚后的数据库和 HTTP 探测；正式服务器仍需按同一流程留下生产演练证据。
+`launch:audit` 只报告门禁状态和责任域，不输出数据库密码、AppSecret、后台密码或监控令牌。它按 `PRE_DEPLOY`、`POST_DEPLOY`、`SUBMISSION`、`RELEASE` 四阶段核验 31 项，实际清单从 `ops/launch-readiness.example.json` 复制后填写，且已被 Git 忽略。真实运营人员完成四场景上岗演练后，使用仓库外记录执行 `npm run operations:drill:record -- --record=/absolute/path/operations-drill.json`；提审门禁会校验绑定当前运行手册的回执。监控和离站恢复也必须分别通过 `monitoring:drill:record` 与 `backup:drill:record` 导入仓库外证据，旧的 `monitoringReady` / `offsiteBackupReady` 字段不再生效。部署、备份、监控、回滚和小程序提审步骤见 `docs/deployment.md` 与 `docs/runbook.md`。生产服务器可通过 `ops/deploy-release.sh` 完成预部署审计、小程序配置生成、发布前备份、带提交号构建、运行时探测和失败自动回滚，并通过 `ops/rollback-release.sh` 恢复上一稳定镜像。GitHub Quality 还会在独立空库中使用两个不同镜像 ID 实际执行这两个脚本，核对备份、当前/上一镜像状态与回滚后的数据库和 HTTP 探测；正式服务器仍需按同一流程留下生产演练证据。
 
-生产域名可用后，先手工执行 `PUBLIC_API_BASE_URL=https://真实域名 METRICS_AUTH_TOKEN=独立令牌 npm run monitor:production`。仓库同时提供默认关闭的 GitHub 外部监控：每 5 分钟从独立托管 Runner 验证数据库就绪、指标凭证以及 5xx、P95、内存和事件循环阈值；失败时只创建一个去重告警 Issue，恢复后自动关闭。正式启用所需变量和告警演练见运行手册。
+生产域名可用后，先手工执行 `PUBLIC_API_BASE_URL=https://真实域名 METRICS_AUTH_TOKEN=独立令牌 npm run monitor:production`。仓库同时提供默认关闭的 GitHub 外部监控：每 5 分钟从独立托管 Runner 验证数据库就绪、指标凭证以及 5xx、P95、内存和事件循环阈值；失败时只创建一个去重告警 Issue，恢复后自动关闭。按 `ops/monitoring-drill-record.example.json` 留下四步外部记录后，执行 `npm run monitoring:drill:record -- --record=/absolute/path/monitoring-drill.json --env-file=.env.production`，只有近期且绑定当前提交/域名/负责人的回执能通过部署后门禁。
 
-每日数据库任务会在私网 Runner 生成并校验 PostgreSQL 归档，再以独立密钥执行流式 AES-256-GCM 认证加密；只有解密验证通过后才删除本机明文，并把密文与 SHA-256 边车复制到 GitHub 制品存储。下载、密钥代次、解密和隔离恢复步骤见运行手册；正式上线仍需用生产来源制品完成一次计时恢复演练。
+每日数据库任务会在私网 Runner 生成并校验 PostgreSQL 归档，再以独立密钥执行流式 AES-256-GCM 认证加密；只有解密验证通过后才删除本机明文，并把密文与 SHA-256 边车复制到 GitHub 制品存储。用生产来源制品完成计时隔离恢复后，按 `ops/offsite-backup-drill-record.example.json` 记录并执行 `npm run backup:drill:record -- --record=/absolute/path/offsite-backup-drill.json --env-file=.env.production`；门禁会校验制品/密文、RPO≤26 小时、RTO≤4 小时、全部恢复检查和当前内容基线。
 
 基础目录种子只负责没有内容批次历史的新数据库。检测到 `catalog_import_batches` 后，重复启动会保留批次维护的人物字段、图鉴关联、来源与代表案件；正式内容变更必须继续通过新的不可变批次完成，不能依赖重跑基础种子覆盖线上数据。
 

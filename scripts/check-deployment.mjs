@@ -18,6 +18,11 @@ const [
   productionMonitoringCommand,
   productionMonitoringLibrary,
   productionMonitoringCheck,
+  infrastructureDrillCommand,
+  infrastructureDrillLibrary,
+  infrastructureDrillCheck,
+  monitoringDrillTemplate,
+  offsiteBackupDrillTemplate,
   backupScript,
   apiServer,
   deployScript,
@@ -56,6 +61,11 @@ const [
   readFile(path.join(root, "scripts/monitor-production.mjs"), "utf8"),
   readFile(path.join(root, "scripts/lib/production-monitoring.mjs"), "utf8"),
   readFile(path.join(root, "scripts/check-production-monitoring.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/record-infrastructure-drill.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/lib/infrastructure-drills.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/check-infrastructure-drills.mjs"), "utf8"),
+  readFile(path.join(root, "ops/monitoring-drill-record.example.json"), "utf8"),
+  readFile(path.join(root, "ops/offsite-backup-drill-record.example.json"), "utf8"),
   readFile(path.join(root, "ops/backup-postgres.sh"), "utf8"),
   readFile(path.join(root, "apps/api/src/server.ts"), "utf8"),
   readFile(path.join(root, "ops/deploy-release.sh"), "utf8"),
@@ -151,6 +161,14 @@ assert.match(productionMonitoringLibrary, /maxP95Seconds/, "Production monitorin
 assert.match(productionMonitoringLibrary, /maxResidentMemoryBytes/, "Production monitoring must enforce a memory threshold");
 assert.match(productionMonitoringLibrary, /maxEventLoopLagSeconds/, "Production monitoring must enforce an event-loop threshold");
 assert.match(productionMonitoringCheck, /must reject requests/, "Monitoring checks must cover an exposed metrics endpoint");
+assert.match(infrastructureDrillCommand, /recordMonitoringDrill[\s\S]*recordOffsiteBackupDrill/, "Infrastructure evidence must have one guarded recorder entrypoint");
+assert.match(infrastructureDrillLibrary, /INCIDENT_DEDUPLICATED[\s\S]*RECOVERY_CLOSED/, "Monitoring readiness must require incident deduplication and recovery closure");
+assert.match(infrastructureDrillLibrary, /maximumRecoveryPointObjectiveSeconds/, "Offsite recovery evidence must enforce the RPO bound");
+assert.match(infrastructureDrillLibrary, /maximumRecoveryTimeObjectiveSeconds/, "Offsite recovery evidence must enforce the RTO bound");
+assert.match(infrastructureDrillLibrary, /record path must be absolute/, "Infrastructure evidence must originate outside the repository");
+assert.match(infrastructureDrillCheck, /manually edited readiness booleans|outside the repository/, "Infrastructure drill tests must reject weak evidence paths");
+assert.match(monitoringDrillTemplate, /BASELINE_HEALTHY[\s\S]*INCIDENT_CREATED[\s\S]*INCIDENT_DEDUPLICATED[\s\S]*RECOVERY_CLOSED/, "Monitoring drill template must cover the complete incident lifecycle");
+assert.match(offsiteBackupDrillTemplate, /archiveSha256[\s\S]*rpoSeconds[\s\S]*rtoSeconds/, "Backup drill template must capture artifact integrity and recovery objectives");
 assert.match(backupScript, /BACKUP_DIRECTORY must be an absolute dedicated directory/, "Backup cleanup must require a dedicated absolute directory");
 assert.match(backupScript, /client\/server major version mismatch/, "Backups must reject a PostgreSQL client/server major version mismatch");
 assert.match(backupScript, /sha256sum/, "Backups must record an integrity checksum");
