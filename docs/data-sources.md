@@ -148,6 +148,10 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-recommendation-map-003.json` 是第 27 个不可变批次。它从用户提供的 Bilibili 图鉴整理中继续提取第 59、63、76～92 卷共 19 条可读推荐原文，并逐条映射到已核验正式作品；其中新增光文社《奇想、天を動かす》、东京创元社《双頭の悪魔》和 KADOKAWA《万能鑑定士Q：全事件簿》三个出版社入口。数据库种子在已有批次历史时只增量同步原始推荐，不删除旧行或改写 `work_id`，所以第二镜像启动和重复部署后仍保持 92/92 映射。第 93～100 卷在该页面只有图片，第 101～108 卷及第 105 卷特装版当前来源没有推荐文字，17 条继续保持 `MISSING`。
 
+`apps/api/src/data/catalog-expansion-directory-works-001.json` 是第 28 个不可变批次。真实数据库审计发现 13 位已发布目录人物还没有正式作品入口，该批次为霍桑、罗飞、L、金田一一、加贺恭一郎、姬川玲子、贝努瓦·布兰克、杰西卡·弗莱彻、维罗妮卡·玛斯、戴尔·库珀、狄仁杰、包拯和宋慈各补入一部代表作品。书籍与漫画优先采用出版社或书目入口，影视作品采用制片方或官方平台，历史人物采用中央纪委国家监委与最高人民检察院等公共机构页面；作品的作者、编剧、导演和绘者按独立身份入库，不再合并为一段作者文字。
+
+`catalog-expansion-link-fix-007.json` 与 `catalog-expansion-link-fix-008.json` 是第 29、30 个批次，记录《美眉校探》入口的完整前向补偿过程。Hulu 页面在线巡检确认 404 后，第 29 批改用浏览器可见的 Apple TV 官方页面；该页面对生产巡检客户端仍固定返回 404，因此第 30 批回滚第 29 批，归档过度具体的第四季记录，并以完整剧集和当前健康的 Prime Video 官方入口替代。旧作品与旧链接均保留为归档/停用审计历史，公开目录只展示最终记录。
+
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 错误批次采用前向补偿，不删除可能已有书架、评价或审计引用的记录。补偿文件必须位于清单末尾，以 `rollbackOf` 指向紧邻的最新批次、填写不少于 10 字的 `rollbackReason`，并恢复旧档案、通过 `archiveDetectiveSlugs` / `archiveWorkSlugs` 归档新内容，或用 `pictureBookRecommendationUnmappings` 解除错误推荐映射。先执行 `npm run catalog:rollback:preflight -- --file=...`，确认差异后再执行 `npm run catalog:rollback:apply -- --file=...`。成功后原批次标记为 `ROLLED_BACK`，补偿批次标记为 `APPLIED`，重复执行保持幂等；归档作品的公开链接会同步停用，原始图鉴推荐标签始终保留。

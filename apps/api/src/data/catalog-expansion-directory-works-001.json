@@ -1,0 +1,602 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-directory-works-001",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Close the remaining published-detective discovery gaps with one source-backed formal work and one legitimate publisher, studio, streaming, library or public-institution destination for each record; preserve concise original summaries and separate creator credits by role.",
+  "sources": [
+    {
+      "id": "wuhan-university-huo-sang",
+      "label": "武汉大学出版社：程小青和他在中国侦探小说史上的影响",
+      "url": "https://www.wdp.com.cn/books/2024-08-07/10832.html",
+      "quality": "ACADEMIC_PUBLISHER"
+    },
+    {
+      "id": "google-books-huo-sang",
+      "label": "Google Books：《霍桑探案集》",
+      "url": "https://books.google.com/books/about/%E9%9C%8D%E6%A1%91%E6%8E%A2%E6%A1%88%E9%9B%86.html?id=DI2oyAEACAAJ",
+      "quality": "LIBRARY_CATALOG"
+    },
+    {
+      "id": "hayakawa-death-notice-store",
+      "label": "早川书房：《死亡通知书 暗黑者》",
+      "url": "https://www.hayakawa-online.co.jp/shop/g/g0000612994/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "viz-death-note",
+      "label": "VIZ: Death Note",
+      "url": "https://www.viz.com/death-note",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-kindaichi-title",
+      "label": "讲谈社：《金田一少年事件簿》作品页",
+      "url": "https://www.kodansha.co.jp/titles/1000000083",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-newcomer",
+      "label": "讲谈社：《新参者》",
+      "url": "https://www.kodansha.co.jp/book/products/0000206339",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kobunsha-reiko-himekawa",
+      "label": "光文社：姫川玲子系列官方网站",
+      "url": "https://special.kobunsha.com/himekawareiko/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "lionsgate-knives-out",
+      "label": "Lionsgate: Knives Out",
+      "url": "https://www.lionsgate.com/movies/knives-out",
+      "quality": "OFFICIAL_STUDIO"
+    },
+    {
+      "id": "netflix-murder-she-wrote",
+      "label": "Netflix: Murder, She Wrote",
+      "url": "https://www.netflix.com/title/70140417",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "hulu-veronica-mars-current",
+      "label": "Hulu: Veronica Mars",
+      "url": "https://www.hulu.com/series/veronica-mars-4626972c-9da7-40fe-aed7-977f55f48fc5",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "paramount-twin-peaks-current",
+      "label": "Paramount+: Twin Peaks",
+      "url": "https://www.paramountplus.com/shows/twin_peaks/",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "ccdi-di-renjie",
+      "label": "中央纪委国家监委：狄仁杰",
+      "url": "https://m.ccdi.gov.cn/content/cf/83/26830.html",
+      "quality": "PUBLIC_INSTITUTION"
+    },
+    {
+      "id": "ccdi-bao-zheng",
+      "label": "中央纪委国家监委：包拯",
+      "url": "https://www.ccdi.gov.cn/yaowen/201804/t20180421_170375.html",
+      "quality": "PUBLIC_INSTITUTION"
+    },
+    {
+      "id": "spp-song-ci",
+      "label": "最高人民检察院：《洗冤集录》与宋慈",
+      "url": "https://www.spp.gov.cn/spp/llyj/201806/t20180619_382132.shtml",
+      "quality": "PUBLIC_INSTITUTION"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-CN-001",
+      "pictureBookEntryIds": [],
+      "slug": "huo-sang",
+      "nameZh": "霍桑",
+      "nameOriginal": "霍桑",
+      "nameEn": "Huo Sang",
+      "country": "中国",
+      "era": "民国时期",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "mediaTypes": ["NOVEL", "SHORT_STORY"],
+      "summary": "程小青笔下活跃于近代上海的中国私家侦探，强调科学检验和逻辑推断。",
+      "creatorName": "程小青",
+      "aliases": ["神探霍桑"],
+      "tags": ["华语经典", "民国推理", "私家侦探"],
+      "featuredCases": ["《霍桑探案集》"],
+      "sourceIds": ["wuhan-university-huo-sang", "google-books-huo-sang"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "huo-sang-detective-stories",
+          "titleZh": "霍桑探案集",
+          "titleOriginal": "霍桑探案集",
+          "mediaType": "SHORT_STORY",
+          "summary": "程小青创作的霍桑系列探案故事合集，以近代上海为主要舞台，通过科学检验、现场观察与逻辑推理展开调查。",
+          "creators": [
+            { "nameZh": "程小青", "creditType": "AUTHOR" }
+          ],
+          "sourceId": "google-books-huo-sang",
+          "linkType": "LIBRARY",
+          "providerName": "Google Books",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-CN-004",
+      "pictureBookEntryIds": [],
+      "slug": "luo-fei",
+      "nameZh": "罗飞",
+      "nameOriginal": "罗飞",
+      "nameEn": "Luo Fei",
+      "country": "中国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "长期追查高智商犯罪的刑警，重视行为逻辑、证据链和心理博弈。",
+      "creatorName": "周浩晖",
+      "aliases": ["刑警罗飞"],
+      "tags": ["刑警", "华语推理", "心理博弈"],
+      "featuredCases": ["《死亡通知单》", "《暗黑者》"],
+      "sourceIds": ["hayakawa-death-notice-store"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "death-notice-luo-fei",
+          "titleZh": "死亡通知单",
+          "titleOriginal": "死亡通知单",
+          "mediaType": "NOVEL",
+          "summary": "罗飞带领调查人员追踪以死亡通知书预告行动的犯罪者，在连续案件中重建旧案、动机与证据之间的联系。",
+          "creators": [
+            { "nameZh": "周浩晖", "creditType": "AUTHOR" }
+          ],
+          "sourceId": "hayakawa-death-notice-store",
+          "linkType": "PUBLISHER",
+          "providerName": "早川书房",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-JP-001",
+      "pictureBookEntryIds": [],
+      "slug": "l-lawliet",
+      "nameZh": "L",
+      "nameOriginal": "L Lawliet",
+      "nameEn": "L Lawliet",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "ANIMATION", "FILM"],
+      "summary": "以极强分析能力和非常规手段追查连续神秘死亡事件的天才侦探。",
+      "creatorName": "大场鸫、小畑健",
+      "aliases": ["L·Lawliet", "龙崎", "流河旱树"],
+      "tags": ["漫画侦探", "心理博弈", "天才型"],
+      "featuredCases": ["《死亡笔记》"],
+      "sourceIds": ["viz-death-note"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "death-note-manga",
+          "titleZh": "死亡笔记",
+          "titleOriginal": "DEATH NOTE",
+          "mediaType": "COMIC",
+          "releaseYear": 2003,
+          "summary": "围绕能够决定他人生死的笔记展开的心理博弈，侦探 L 通过案件模式、行为试探和严密推理追查使用者。",
+          "creators": [
+            { "nameZh": "大场鸫", "creditType": "AUTHOR" },
+            { "nameZh": "小畑健", "creditType": "ILLUSTRATOR" }
+          ],
+          "sourceId": "viz-death-note",
+          "linkType": "PUBLISHER",
+          "providerName": "VIZ Media",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-JP-002",
+      "pictureBookEntryIds": [],
+      "slug": "hajime-kindaichi",
+      "nameZh": "金田一一",
+      "nameOriginal": "金田一一",
+      "nameEn": "Hajime Kindaichi",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["COMIC", "ANIMATION", "SERIES"],
+      "summary": "高中生侦探，擅长破解密室、不在场证明和连续杀人谜局。",
+      "creatorName": "金成阳三郎、天树征丸、佐藤文也",
+      "aliases": ["金田一少年", "Hajime Kindaichi"],
+      "tags": ["漫画侦探", "本格推理", "少年侦探"],
+      "featuredCases": ["《金田一少年事件簿》"],
+      "sourceIds": ["kodansha-kindaichi-title"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "kindaichi-case-files",
+          "titleZh": "金田一少年事件簿",
+          "titleOriginal": "金田一少年の事件簿",
+          "mediaType": "COMIC",
+          "releaseYear": 1992,
+          "summary": "高中生金田一一面对密室、孤岛与不在场证明等复杂谜局，通过现场线索和逻辑推演揭示案件真相。",
+          "creators": [
+            { "nameZh": "金成阳三郎", "creditType": "AUTHOR" },
+            { "nameZh": "天树征丸", "creditType": "AUTHOR" },
+            { "nameZh": "佐藤文也", "creditType": "ILLUSTRATOR" }
+          ],
+          "sourceId": "kodansha-kindaichi-title",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-JP-003",
+      "pictureBookEntryIds": [],
+      "slug": "kyoichiro-kaga",
+      "nameZh": "加贺恭一郎",
+      "nameOriginal": "加賀恭一郎",
+      "nameEn": "Kyoichiro Kaga",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "重视走访与人情关系的刑警，从生活细节中还原犯罪动机。",
+      "creatorName": "东野圭吾",
+      "aliases": ["Kaga Kyoichiro"],
+      "tags": ["警察小说", "社会派", "日本推理"],
+      "featuredCases": ["《毕业》", "《新参者》"],
+      "sourceIds": ["kodansha-newcomer"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "shinzanmono-kaga",
+          "titleZh": "新参者",
+          "titleOriginal": "新参者",
+          "mediaType": "NOVEL",
+          "releaseYear": 2009,
+          "summary": "加贺恭一郎在日本桥走访与一宗女性遇害案有关的人们，从日常生活中的隐瞒和善意逐步还原案件。",
+          "creators": [
+            { "nameZh": "东野圭吾", "creditType": "AUTHOR" }
+          ],
+          "sourceId": "kodansha-newcomer",
+          "linkType": "PUBLISHER",
+          "providerName": "讲谈社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-JP-004",
+      "pictureBookEntryIds": [],
+      "slug": "reiko-himekawa",
+      "nameZh": "姬川玲子",
+      "nameOriginal": "姫川玲子",
+      "nameEn": "Reiko Himekawa",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": ["NOVEL", "SERIES", "FILM"],
+      "summary": "直觉敏锐的女性刑警，在高压团队与复杂犯罪中坚持追查真相。",
+      "creatorName": "誉田哲也",
+      "aliases": ["Reiko Himekawa"],
+      "tags": ["女性刑警", "警察小说", "日本推理"],
+      "featuredCases": ["《草莓之夜》"],
+      "sourceIds": ["kobunsha-reiko-himekawa"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "strawberry-night-himekawa",
+          "titleZh": "草莓之夜",
+          "titleOriginal": "ストロベリーナイト",
+          "mediaType": "NOVEL",
+          "releaseYear": 2006,
+          "summary": "姬川玲子调查一具被塑料布包裹的遗体，逐渐发现案件并非孤立事件，并与团队追查连续犯罪的组织方式。",
+          "creators": [
+            { "nameZh": "誉田哲也", "creditType": "AUTHOR" }
+          ],
+          "sourceId": "kobunsha-reiko-himekawa",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-SC-001",
+      "pictureBookEntryIds": [],
+      "slug": "benoit-blanc",
+      "nameZh": "贝努瓦·布兰克",
+      "nameOriginal": "Benoit Blanc",
+      "nameEn": "Benoit Blanc",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["FILM"],
+      "summary": "以谈话、观察和反常细节揭开封闭关系网中谎言的私人侦探。",
+      "creatorName": "莱恩·约翰逊",
+      "aliases": ["布兰克侦探"],
+      "tags": ["电影侦探", "封闭空间", "现代本格"],
+      "featuredCases": ["《利刃出鞘》", "《玻璃洋葱》"],
+      "sourceIds": ["lionsgate-knives-out"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "knives-out-film",
+          "titleZh": "利刃出鞘",
+          "titleOriginal": "Knives Out",
+          "mediaType": "FILM",
+          "releaseYear": 2019,
+          "summary": "犯罪小说家在家族聚会后死亡，布兰克从相互矛盾的叙述、家庭关系和现场细节中追查真正经过。",
+          "creators": [
+            { "nameZh": "莱恩·约翰逊", "creditType": "SCREENWRITER" },
+            { "nameZh": "莱恩·约翰逊", "creditType": "DIRECTOR" }
+          ],
+          "sourceId": "lionsgate-knives-out",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Lionsgate",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-SC-002",
+      "pictureBookEntryIds": [],
+      "slug": "jessica-fletcher",
+      "nameZh": "杰西卡·弗莱彻",
+      "nameOriginal": "Jessica Fletcher",
+      "nameEn": "Jessica Fletcher",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "NOVEL"],
+      "summary": "推理小说作家兼业余调查者，经常从日常人际关系中识破凶案。",
+      "creatorName": "Peter S. Fischer、Richard Levinson、William Link",
+      "aliases": ["J. B. Fletcher"],
+      "tags": ["女性侦探", "舒适推理", "影视侦探"],
+      "featuredCases": ["《女作家与谋杀案》"],
+      "sourceIds": ["netflix-murder-she-wrote"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "murder-she-wrote-series",
+          "titleZh": "女作家与谋杀案",
+          "titleOriginal": "Murder, She Wrote",
+          "mediaType": "SERIES",
+          "releaseYear": 1984,
+          "summary": "推理小说作家杰西卡·弗莱彻在旅行和社区生活中不断遇到案件，并通过观察人际关系与叙述矛盾找出真相。",
+          "creators": [
+            { "nameZh": "Peter S. Fischer", "creditType": "SCREENWRITER" },
+            { "nameZh": "Richard Levinson", "creditType": "SCREENWRITER" },
+            { "nameZh": "William Link", "creditType": "SCREENWRITER" }
+          ],
+          "sourceId": "netflix-murder-she-wrote",
+          "linkType": "STREAMING",
+          "providerName": "Netflix",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-SC-003",
+      "pictureBookEntryIds": [],
+      "slug": "veronica-mars",
+      "nameZh": "维罗妮卡·玛斯",
+      "nameOriginal": "Veronica Mars",
+      "nameEn": "Veronica Mars",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM", "NOVEL"],
+      "summary": "从校园调查成长为职业私家侦探的现代黑色侦探形象。",
+      "creatorName": "罗布·托马斯",
+      "aliases": ["美眉校探"],
+      "tags": ["青少年推理", "新黑色", "女性侦探"],
+      "featuredCases": ["《美眉校探》"],
+      "sourceIds": ["hulu-veronica-mars-current"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "veronica-mars-season-four",
+          "titleZh": "美眉校探 第四季",
+          "titleOriginal": "Veronica Mars Season 4",
+          "mediaType": "SERIES",
+          "releaseYear": 2019,
+          "summary": "已经成为职业私家侦探的维罗妮卡调查海滨小镇连环爆炸案，在旧关系和新嫌疑人之间重建事件链。",
+          "creators": [
+            { "nameZh": "罗布·托马斯", "creditType": "SCREENWRITER" }
+          ],
+          "sourceId": "hulu-veronica-mars-current",
+          "linkType": "STREAMING",
+          "providerName": "Hulu",
+          "region": "US"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-SC-004",
+      "pictureBookEntryIds": [],
+      "slug": "dale-cooper",
+      "nameZh": "戴尔·库珀",
+      "nameOriginal": "Dale Cooper",
+      "nameEn": "Dale Cooper",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "FBI 探员，结合规范调查、直觉和心理线索侦办劳拉·帕尔默案。",
+      "creatorName": "大卫·林奇、马克·弗罗斯特",
+      "aliases": ["库珀探员", "Agent Cooper"],
+      "tags": ["FBI", "超现实", "影视侦探"],
+      "featuredCases": ["《双峰》"],
+      "sourceIds": ["paramount-twin-peaks-current"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "twin-peaks-series",
+          "titleZh": "双峰",
+          "titleOriginal": "Twin Peaks",
+          "mediaType": "SERIES",
+          "releaseYear": 1990,
+          "summary": "FBI 探员戴尔·库珀来到双峰镇调查劳拉·帕尔默遇害案，案件逐步揭开小镇关系与异常现象。",
+          "creators": [
+            { "nameZh": "大卫·林奇", "creditType": "SCREENWRITER" },
+            { "nameZh": "大卫·林奇", "creditType": "DIRECTOR" },
+            { "nameZh": "马克·弗罗斯特", "creditType": "SCREENWRITER" }
+          ],
+          "sourceId": "paramount-twin-peaks-current",
+          "linkType": "STREAMING",
+          "providerName": "Paramount+",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "HIS-CN-001",
+      "pictureBookEntryIds": [],
+      "slug": "di-renjie",
+      "nameZh": "狄仁杰",
+      "nameOriginal": "狄仁杰",
+      "nameEn": "Di Renjie",
+      "country": "中国·唐代",
+      "era": "唐代",
+      "subjectKind": "HISTORICAL",
+      "collection": "HISTORICAL_CASES",
+      "category": "HISTORICAL_JUSTICE",
+      "mediaTypes": ["HISTORY", "NOVEL", "SERIES", "FILM"],
+      "summary": "唐代官员与司法人物；后世公案小说和《大唐狄公案》对其神探形象进行了文学重塑。",
+      "aliases": ["狄公", "Judge Dee"],
+      "tags": ["历史人物", "司法官", "文学重塑"],
+      "featuredCases": ["《旧唐书·狄仁杰传》", "《大唐狄公案》"],
+      "sourceIds": ["ccdi-di-renjie"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "old-book-of-tang-di-renjie",
+          "titleZh": "旧唐书·狄仁杰传",
+          "titleOriginal": "旧唐书·狄仁杰传",
+          "mediaType": "OTHER",
+          "summary": "《旧唐书》中的狄仁杰传记是核对其官员经历与司法实践的历史材料，后世神探形象与史实需要区分阅读。",
+          "creators": [
+            { "nameZh": "刘昫等", "creditType": "AUTHOR" }
+          ],
+          "sourceId": "ccdi-di-renjie",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "中央纪委国家监委",
+          "region": "CN"
+        }
+      ]
+    },
+    {
+      "catalogId": "HIS-CN-002",
+      "pictureBookEntryIds": [],
+      "slug": "bao-zheng",
+      "nameZh": "包拯",
+      "nameOriginal": "包拯",
+      "nameEn": "Bao Zheng",
+      "country": "中国·北宋",
+      "era": "北宋",
+      "subjectKind": "HISTORICAL",
+      "collection": "HISTORICAL_CASES",
+      "category": "HISTORICAL_JUSTICE",
+      "mediaTypes": ["HISTORY", "NOVEL", "OPERA", "SERIES"],
+      "summary": "北宋官员，以清廉公正著称；民间公案、戏曲和影视塑造了广泛传播的包公断案形象。",
+      "aliases": ["包公", "包青天"],
+      "tags": ["历史人物", "清官文化", "公案文学"],
+      "featuredCases": ["《宋史·包拯传》", "包公案故事"],
+      "sourceIds": ["ccdi-bao-zheng"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "history-of-song-bao-zheng",
+          "titleZh": "宋史·包拯传",
+          "titleOriginal": "宋史·包拯传",
+          "mediaType": "OTHER",
+          "summary": "《宋史》中的包拯传记记录其官员经历与执法主张，可作为区分历史人物和后世包公故事的基础材料。",
+          "creators": [
+            { "nameZh": "脱脱等", "creditType": "AUTHOR" }
+          ],
+          "sourceId": "ccdi-bao-zheng",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "中央纪委国家监委",
+          "region": "CN"
+        }
+      ]
+    },
+    {
+      "catalogId": "HIS-CN-003",
+      "pictureBookEntryIds": [],
+      "slug": "song-ci",
+      "nameZh": "宋慈",
+      "nameOriginal": "宋慈",
+      "nameEn": "Song Ci",
+      "country": "中国·南宋",
+      "era": "南宋",
+      "subjectKind": "HISTORICAL",
+      "collection": "HISTORICAL_CASES",
+      "category": "HISTORICAL_JUSTICE",
+      "mediaTypes": ["HISTORY", "FORENSICS", "SERIES"],
+      "summary": "南宋刑狱官员与《洗冤集录》作者，代表以现场检验和证据辨析处理刑狱的传统。",
+      "aliases": ["宋提刑"],
+      "tags": ["历史人物", "法医学", "刑狱检验"],
+      "featuredCases": ["《洗冤集录》"],
+      "sourceIds": ["spp-song-ci"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "washing-away-of-wrongs",
+          "titleZh": "洗冤集录",
+          "titleOriginal": "洗冤集录",
+          "mediaType": "OTHER",
+          "releaseYear": 1247,
+          "summary": "宋慈汇集并校订检验经验，结合刑狱实践写成的法医学著作，强调现场检验、伤情辨析和程序记录。",
+          "creators": [
+            { "nameZh": "宋慈", "creditType": "AUTHOR" }
+          ],
+          "sourceId": "spp-song-ci",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "最高人民检察院",
+          "region": "CN"
+        }
+      ]
+    }
+  ]
+}

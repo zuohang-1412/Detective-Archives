@@ -16,6 +16,12 @@ const sourceSchema = z.object({
   url: z.url().refine((url) => url.startsWith("https://"), "source URL must use HTTPS"),
   quality: z.string().regex(/^[A-Z][A-Z0-9_]{1,29}$/)
 });
+const workCreatorSchema = z.object({
+  nameZh: z.string().trim().min(1).max(120),
+  creditType: z.enum([
+    "AUTHOR", "SCREENWRITER", "DIRECTOR", "ILLUSTRATOR", "EDITOR", "OTHER"
+  ])
+});
 const workSchema = z.object({
   slug: slugSchema.max(120),
   titleZh: z.string().min(1).max(200),
@@ -26,6 +32,7 @@ const workSchema = z.object({
   releaseYear: z.number().int().min(1000).max(2200).optional(),
   summary: z.string().min(10).max(5000),
   creatorName: z.string().min(1).max(120).optional(),
+  creators: z.array(workCreatorSchema).min(1).max(20).optional(),
   sourceId: z.string().min(1).max(100),
   linkType: z.enum([
     "PUBLISHER", "BOOKSTORE", "LIBRARY", "STREAMING", "OFFICIAL_SITE", "OTHER"
@@ -35,6 +42,24 @@ const workSchema = z.object({
   deactivateLinkUrls: z.array(
     z.url().refine((url) => url.startsWith("https://"), "replacement URL must use HTTPS")
   ).max(20).default([])
+}).superRefine((work, context) => {
+  if (work.creatorName && work.creators) {
+    context.addIssue({
+      code: "custom",
+      path: ["creators"],
+      message: "use creators instead of combining creatorName and creators"
+    });
+  }
+  const keys = (work.creators ?? []).map(
+    (creator) => `${creator.nameZh.toLocaleLowerCase("zh-CN")}\u0000${creator.creditType}`
+  );
+  if (new Set(keys).size !== keys.length) {
+    context.addIssue({
+      code: "custom",
+      path: ["creators"],
+      message: "work creator and credit type must be unique"
+    });
+  }
 });
 const pictureBookRecommendationMappingSchema = z.object({
   entryId: z.string().regex(/^PB-\d{3}-(?:STD|SP)$/),
@@ -613,17 +638,26 @@ try {
               recommendation_order = EXCLUDED.recommendation_order
           `, [detectiveId, workId, workIndex]);
 
-          const workCreatorName = work.creatorName ?? detective.creatorName;
-          if (workCreatorName) {
+          const workCreators = work.creators ?? (
+            work.creatorName
+              ? [{ nameZh: work.creatorName, creditType: "AUTHOR" }]
+              : detective.creatorName
+                ? [{ nameZh: detective.creatorName, creditType: "AUTHOR" }]
+                : []
+          );
+          await client.query("DELETE FROM work_creators WHERE work_id = $1", [workId]);
+          for (const workCreator of workCreators) {
             const creator = await client.query(`
               INSERT INTO creators (name_zh, status) VALUES ($1, 'PUBLISHED')
-              ON CONFLICT (name_zh) DO UPDATE SET updated_at = NOW()
+              ON CONFLICT (name_zh) DO UPDATE SET
+                status = 'PUBLISHED',
+                updated_at = NOW()
               RETURNING id
-            `, [workCreatorName]);
+            `, [workCreator.nameZh]);
             await client.query(`
               INSERT INTO work_creators (work_id, creator_id, credit_type)
-              VALUES ($1, $2, 'AUTHOR') ON CONFLICT DO NOTHING
-            `, [workId, creator.rows[0].id]);
+              VALUES ($1, $2, $3)
+            `, [workId, creator.rows[0].id, workCreator.creditType]);
           }
           const source = sourcesById.get(work.sourceId);
           await client.query(`

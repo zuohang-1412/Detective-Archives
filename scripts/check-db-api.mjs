@@ -223,6 +223,13 @@ try {
     ["/api/v1/detectives/sherlock-holmes", (body) => {
       assert.equal(body.data.works[0].slug, "a-study-in-scarlet");
     }],
+    ["/api/v1/detectives/l-lawliet", (body) => {
+      assert.ok(body.data.works.some((work) => work.slug === "death-note-manga"));
+    }],
+    ["/api/v1/detectives/veronica-mars", (body) => {
+      assert.ok(body.data.works.some((work) => work.slug === "veronica-mars-series"));
+      assert.ok(!body.data.works.some((work) => work.slug === "veronica-mars-season-four"));
+    }],
     ["/api/v1/detectives?country=%E6%97%A5%E6%9C%AC&era=%E5%BD%93%E4%BB%A3&category=JAPANESE_POPULAR&subjectKind=FICTIONAL&tag=%E6%9C%AC%E6%A0%BC%E6%8E%A8%E7%90%86&pageSize=50", (body) => {
       assert.ok(body.pagination.total > 0);
       assert.ok(body.data.every((detective) => detective.country === "日本"));
@@ -266,6 +273,31 @@ try {
     ["/api/v1/works/any-old-port-in-a-storm", (body) => {
       assert.equal(body.data.links.length, 1);
       assert.equal(body.data.links[0].providerName, "Prime Video");
+    }],
+    ["/api/v1/works/death-note-manga", (body) => {
+      assert.deepEqual(
+        new Set(body.data.creators.map((creator) => `${creator.nameZh}:${creator.creditType}`)),
+        new Set(["大场鸫:AUTHOR", "小畑健:ILLUSTRATOR"])
+      );
+      assert.equal(body.data.detectives[0].slug, "l-lawliet");
+      assert.equal(body.data.links[0].providerName, "VIZ Media");
+    }],
+    ["/api/v1/works/knives-out-film", (body) => {
+      assert.deepEqual(
+        new Set(body.data.creators.map((creator) => `${creator.nameZh}:${creator.creditType}`)),
+        new Set(["莱恩·约翰逊:SCREENWRITER", "莱恩·约翰逊:DIRECTOR"])
+      );
+      assert.equal(body.data.detectives[0].slug, "benoit-blanc");
+    }],
+    ["/api/v1/works/washing-away-of-wrongs", (body) => {
+      assert.equal(body.data.releaseYear, 1247);
+      assert.equal(body.data.detectives[0].slug, "song-ci");
+      assert.equal(body.data.links[0].providerName, "最高人民检察院");
+    }],
+    ["/api/v1/works/veronica-mars-series", (body) => {
+      assert.equal(body.data.releaseYear, 2004);
+      assert.equal(body.data.detectives[0].slug, "veronica-mars");
+      assert.equal(body.data.links[0].providerName, "Prime Video");
     }]
   ];
 
@@ -278,6 +310,13 @@ try {
     assert.equal(response.statusCode, 200, `${url}: ${response.body}`);
     verify(response.json());
   }
+
+  const archivedVeronicaSeason = await app.inject({
+    method: "GET",
+    url: "/api/v1/works/veronica-mars-season-four",
+    headers: { "x-visitor-id": testVisitorId }
+  });
+  assert.equal(archivedVeronicaSeason.statusCode, 404, archivedVeronicaSeason.body);
 
   const workResponse = await app.inject({
     method: "GET",

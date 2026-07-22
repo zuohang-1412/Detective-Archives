@@ -191,6 +191,35 @@ try {
   const detailedWorkCount = await client.query(
     "SELECT COUNT(*)::int AS count FROM works WHERE status = 'PUBLISHED' AND summary IS NOT NULL"
   );
+  const publishedDetectiveWithoutWorkCount = await client.query(`
+    SELECT COUNT(*)::int AS count
+    FROM detectives detective
+    WHERE detective.status = 'PUBLISHED'
+      AND NOT EXISTS (
+        SELECT 1
+        FROM detective_works relation
+        JOIN works work ON work.id = relation.work_id
+        WHERE relation.detective_id = detective.id
+          AND work.status = 'PUBLISHED'
+          AND EXISTS (
+            SELECT 1 FROM work_links link
+            WHERE link.work_id = work.id AND link.is_active = TRUE
+          )
+      )
+  `);
+  const incompletePublishedWorkCount = await client.query(`
+    SELECT COUNT(*)::int AS count
+    FROM works work
+    WHERE work.status = 'PUBLISHED'
+      AND (
+        NOT EXISTS (SELECT 1 FROM work_creators relation WHERE relation.work_id = work.id)
+        OR NOT EXISTS (SELECT 1 FROM detective_works relation WHERE relation.work_id = work.id)
+        OR NOT EXISTS (
+          SELECT 1 FROM work_links link
+          WHERE link.work_id = work.id AND link.is_active = TRUE
+        )
+      )
+  `);
   const categorizedDirectoryCount = await client.query(`
     SELECT COUNT(*)::int AS count
     FROM detectives
@@ -239,6 +268,16 @@ try {
   expect(workCount.rows[0].count, expectedWorkCount, "published work count");
   expect(workLinkCount.rows[0].count, expectedActiveLinkCount, "active official work link count");
   expect(detailedWorkCount.rows[0].count, expectedPublishedWorkCount, "detailed published work count");
+  expect(
+    publishedDetectiveWithoutWorkCount.rows[0].count,
+    0,
+    "published detectives without a published linked work and active official link"
+  );
+  expect(
+    incompletePublishedWorkCount.rows[0].count,
+    0,
+    "published works without creators, detectives or active official links"
+  );
   expect(categorizedDirectoryCount.rows[0].count, expectedDirectoryCount, "categorized directory count");
   expect(orphanCount.rows[0].count, 0, "orphan source count");
   const actualBatchStatuses = new Map(

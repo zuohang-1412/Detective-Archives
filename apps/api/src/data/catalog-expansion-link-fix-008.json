@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-008",
+  "rollbackOf": "catalog-expansion-link-fix-007",
+  "rollbackReason": "Apple TV serves the verified series page to browsers but returns a deterministic HTTP 404 to the production link-health client, so the destination cannot satisfy the automated publication gate.",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Archive the overly specific Season 4 record after Apple TV returned a crawler-specific 404, replace it with the complete Veronica Mars series and a currently healthy Prime Video official destination, and retain both prior platform links as inactive audit history.",
+  "archiveWorkSlugs": ["veronica-mars-season-four"],
+  "sources": [
+    {
+      "id": "prime-video-veronica-mars",
+      "label": "Prime Video：Veronica Mars",
+      "url": "https://www.primevideo.com/detail/Veronica-Mars/0N5BSGSQ90ILL57MK4PHQH341L",
+      "quality": "OFFICIAL_PLATFORM"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-SC-003",
+      "pictureBookEntryIds": [],
+      "slug": "veronica-mars",
+      "nameZh": "维罗妮卡·玛斯",
+      "nameOriginal": "Veronica Mars",
+      "nameEn": "Veronica Mars",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM", "NOVEL"],
+      "summary": "从校园调查成长为职业私家侦探的现代黑色侦探形象。",
+      "creatorName": "罗布·托马斯",
+      "aliases": ["美眉校探"],
+      "tags": ["青少年推理", "新黑色", "女性侦探"],
+      "featuredCases": ["《美眉校探》"],
+      "sourceIds": ["prime-video-veronica-mars"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "veronica-mars-series",
+          "titleZh": "美眉校探",
+          "titleOriginal": "Veronica Mars",
+          "mediaType": "SERIES",
+          "releaseYear": 2004,
+          "summary": "维罗妮卡在海王星镇协助父亲经营私家侦探事务所，从校园委托、失踪与谋杀案件中追查权力关系和被掩盖的真相。",
+          "creators": [
+            { "nameZh": "罗布·托马斯", "creditType": "SCREENWRITER" }
+          ],
+          "sourceId": "prime-video-veronica-mars",
+          "linkType": "STREAMING",
+          "providerName": "Prime Video",
+          "region": "GLOBAL"
+        }
+      ]
+    }
+  ]
+}

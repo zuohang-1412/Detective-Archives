@@ -21,7 +21,7 @@ export const MONITORING_DRILL_SCENARIOS = Object.freeze([
 
 export const OFFSITE_BACKUP_CONTENT_BASELINE = Object.freeze({
   detectives: 150,
-  works: 146,
+  works: 160,
   pictureBookEntries: 109,
   recommendations: 92
 });

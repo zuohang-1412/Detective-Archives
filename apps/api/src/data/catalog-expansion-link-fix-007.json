@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-007",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace the confirmed-404 Hulu destination for Veronica Mars with Apple TV's current official series page, which includes Season 4, while retaining the historical Hulu URL as an inactive audit record.",
+  "sources": [
+    {
+      "id": "apple-tv-veronica-mars",
+      "label": "Apple TV：《美眉校探》",
+      "url": "https://tv.apple.com/us/show/veronica-mars/umc.cmc.2vgmd7sdkd0co11kskwykv1gc",
+      "quality": "OFFICIAL_PLATFORM"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-SC-003",
+      "pictureBookEntryIds": [],
+      "slug": "veronica-mars",
+      "nameZh": "维罗妮卡·玛斯",
+      "nameOriginal": "Veronica Mars",
+      "nameEn": "Veronica Mars",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM", "NOVEL"],
+      "summary": "从校园调查成长为职业私家侦探的现代黑色侦探形象。",
+      "creatorName": "罗布·托马斯",
+      "aliases": ["美眉校探"],
+      "tags": ["青少年推理", "新黑色", "女性侦探"],
+      "featuredCases": ["《美眉校探》"],
+      "sourceIds": ["apple-tv-veronica-mars"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "veronica-mars-season-four",
+          "titleZh": "美眉校探 第四季",
+          "titleOriginal": "Veronica Mars Season 4",
+          "mediaType": "SERIES",
+          "releaseYear": 2019,
+          "summary": "已经成为职业私家侦探的维罗妮卡调查海滨小镇连环爆炸案，在旧关系和新嫌疑人之间重建事件链。",
+          "creators": [
+            { "nameZh": "罗布·托马斯", "creditType": "SCREENWRITER" }
+          ],
+          "sourceId": "apple-tv-veronica-mars",
+          "linkType": "STREAMING",
+          "providerName": "Apple TV",
+          "region": "US",
+          "deactivateLinkUrls": [
+            "https://www.hulu.com/series/veronica-mars-4626972c-9da7-40fe-aed7-977f55f48fc5"
+          ]
+        }
+      ]
+    }
+  ]
+}

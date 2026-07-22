@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import {
+  catalogSlugify,
   linkedPictureBookRecommendations,
   loadCatalogBatches,
   uniqueImportedWorks
@@ -10,6 +11,10 @@ import {
 const { manifest, batches } = await loadCatalogBatches();
 const pictureBookCatalog = JSON.parse(await readFile(
   path.resolve("apps/api/src/data/picture-book-index.json"),
+  "utf8"
+));
+const archiveDirectory = JSON.parse(await readFile(
+  path.resolve("apps/api/src/data/archive-directory-index.json"),
   "utf8"
 ));
 const capturedRecommendationKeys = new Set(
@@ -26,6 +31,7 @@ const workTitles = new Map();
 const pictureBookIds = new Set();
 const knownDetectiveSlugs = new Set();
 const knownWorkSlugs = new Set();
+const workSlugsByDetective = new Map();
 let detectiveRecordCount = 0;
 let previousBatchKey = null;
 
@@ -76,6 +82,7 @@ for (const { input, filename } of batches) {
   }
   for (const slug of input.archiveWorkSlugs ?? []) {
     assert.equal(knownWorkSlugs.has(slug), true, `${filename}: cannot archive unknown work ${slug}`);
+    for (const workSlugs of workSlugsByDetective.values()) workSlugs.delete(slug);
   }
 
   const sourceIds = new Set(input.sources.map((source) => source.id));
@@ -92,6 +99,8 @@ for (const { input, filename } of batches) {
     batchDetectiveSlugs.add(detective.slug);
     batchCatalogIds.add(detective.catalogId);
     knownDetectiveSlugs.add(detective.slug);
+    const detectiveWorkSlugs = workSlugsByDetective.get(detective.slug) ?? new Set();
+    workSlugsByDetective.set(detective.slug, detectiveWorkSlugs);
     assert.equal(
       slugCatalogIds.has(detective.slug) && slugCatalogIds.get(detective.slug) !== detective.catalogId,
       false,
@@ -120,8 +129,22 @@ for (const { input, filename } of batches) {
       assert.equal(batchWorkSlugs.has(work.slug), false, `duplicate work slug ${work.slug}`);
       batchWorkSlugs.add(work.slug);
       knownWorkSlugs.add(work.slug);
+      detectiveWorkSlugs.add(work.slug);
       assert.ok(work.summary.length >= 10);
       assert.equal(sourceIds.has(work.sourceId), true, `${work.slug}: unknown source ${work.sourceId}`);
+      assert.equal(
+        Boolean(work.creatorName && work.creators),
+        false,
+        `${work.slug}: use creators instead of combining creatorName and creators`
+      );
+      const creatorKeys = (work.creators ?? []).map(
+        (creator) => `${creator.nameZh.toLocaleLowerCase("zh-CN")}\u0000${creator.creditType}`
+      );
+      assert.equal(
+        new Set(creatorKeys).size,
+        creatorKeys.length,
+        `${work.slug}: creator and credit type must be unique`
+      );
       if (!isRollback) {
         assert.equal(
           workTitles.has(work.slug) && workTitles.get(work.slug) !== work.titleZh,
@@ -163,6 +186,13 @@ for (const { input, filename } of batches) {
 
 const uniqueWorks = uniqueImportedWorks(batches);
 const recommendationMappings = linkedPictureBookRecommendations(batches);
+for (const entry of archiveDirectory.entries) {
+  const slug = catalogSlugify(entry.names.en);
+  assert.ok(
+    (workSlugsByDetective.get(slug)?.size ?? 0) > 0,
+    `${entry.id}: every published directory detective must have a formal work`
+  );
+}
 assert.equal(
   recommendationMappings.size,
   capturedRecommendationKeys.size,

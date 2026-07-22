@@ -337,6 +337,48 @@
       "label": "Macmillan: Jar City",
       "url": "https://us.macmillan.com/books/9780312426385/jarcity/",
       "quality": "PUBLISHER"
+    },
+    {
+      "id": "google-books-huo-sang",
+      "label": "Google Books：《霍桑探案集》",
+      "url": "https://books.google.com/books/about/%E9%9C%8D%E6%A1%91%E6%8E%A2%E6%A1%88%E9%9B%86.html?id=DI2oyAEACAAJ",
+      "quality": "LIBRARY"
+    },
+    {
+      "id": "hayakawa-death-notice-store",
+      "label": "早川书房：《死亡通知书 暗黒者》",
+      "url": "https://www.hayakawa-online.co.jp/shop/g/g0000612994/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kodansha-kindaichi-title",
+      "label": "讲谈社：《金田一少年事件簿》作品页",
+      "url": "https://www.kodansha.co.jp/titles/1000000083",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "lionsgate-knives-out",
+      "label": "Lionsgate: Knives Out",
+      "url": "https://www.lionsgate.com/movies/knives-out",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "netflix-murder-she-wrote",
+      "label": "Netflix: Murder, She Wrote",
+      "url": "https://www.netflix.com/title/70140417",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "paramount-twin-peaks-current",
+      "label": "Paramount+: Twin Peaks",
+      "url": "https://www.paramountplus.com/shows/twin_peaks/",
+      "quality": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "prime-video-veronica-mars",
+      "label": "Prime Video: Veronica Mars",
+      "url": "https://www.primevideo.com/detail/Veronica-Mars/0N5BSGSQ90ILL57MK4PHQH341L",
+      "quality": "OFFICIAL_PLATFORM"
     }
   ],
   "entries": [
@@ -850,7 +892,7 @@
       "summary": "以谈话、观察和反常细节揭开封闭关系网中谎言的私人侦探。",
       "featuredWorks": ["《利刃出鞘》", "《玻璃洋葱》"],
       "tags": ["电影侦探", "封闭空间", "现代本格"],
-      "sourceIds": ["netflix-glass-onion"],
+      "sourceIds": ["lionsgate-knives-out"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
@@ -869,7 +911,7 @@
       "summary": "推理小说作家兼业余调查者，经常从日常人际关系中识破凶案。",
       "featuredWorks": ["《女作家与谋杀案》"],
       "tags": ["女性侦探", "舒适推理", "影视侦探"],
-      "sourceIds": ["penguin-jessica-fletcher"],
+      "sourceIds": ["netflix-murder-she-wrote"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
@@ -888,7 +930,7 @@
       "summary": "从校园调查成长为职业私家侦探的现代黑色侦探形象。",
       "featuredWorks": ["《美眉校探》"],
       "tags": ["青少年推理", "新黑色", "女性侦探"],
-      "sourceIds": ["netflix-veronica-mars"],
+      "sourceIds": ["prime-video-veronica-mars"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
@@ -907,7 +949,7 @@
       "summary": "FBI 探员，结合规范调查、直觉和心理线索侦办劳拉·帕尔默案。",
       "featuredWorks": ["《双峰》"],
       "tags": ["FBI", "超现实", "影视侦探"],
-      "sourceIds": ["paramount-twin-peaks"],
+      "sourceIds": ["paramount-twin-peaks-current"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
@@ -945,7 +987,7 @@
       "summary": "高中生侦探，擅长破解密室、不在场证明和连续杀人谜局。",
       "featuredWorks": ["《金田一少年事件簿》"],
       "tags": ["漫画侦探", "本格推理", "少年侦探"],
-      "sourceIds": ["kodansha-china-kindaichi"],
+      "sourceIds": ["kodansha-kindaichi-title"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
@@ -1002,7 +1044,7 @@
       "summary": "程小青笔下活跃于近代上海的中国私家侦探，强调科学检验和逻辑推断。",
       "featuredWorks": ["《霍桑探案集》"],
       "tags": ["华语经典", "民国推理", "私家侦探"],
-      "sourceIds": ["wuhan-university-huo-sang"],
+      "sourceIds": ["wuhan-university-huo-sang", "google-books-huo-sang"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
@@ -1059,7 +1101,7 @@
       "summary": "长期追查高智商犯罪的刑警，重视行为逻辑、证据链和心理博弈。",
       "featuredWorks": ["《死亡通知单》", "《暗黑者》"],
       "tags": ["刑警", "华语推理", "心理博弈"],
-      "sourceIds": ["hayakawa-death-notice"],
+      "sourceIds": ["hayakawa-death-notice-store"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {

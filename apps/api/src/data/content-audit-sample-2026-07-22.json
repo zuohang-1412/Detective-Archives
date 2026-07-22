@@ -365,11 +365,11 @@
       "expected": {
         "nameZh": "贝努瓦·布兰克",
         "creatorName": "莱恩·约翰逊",
-        "featuredCase": "《玻璃洋葱》"
+        "featuredCase": "《利刃出鞘》"
       },
-      "evidenceSourceIds": ["netflix-glass-onion"],
+      "evidenceSourceIds": ["lionsgate-knives-out"],
       "result": "PASS",
-      "note": "Netflix's official media center identifies Benoit Blanc and Rian Johnson."
+      "note": "Lionsgate's official film page identifies Knives Out as Benoit Blanc's investigation written and directed by Rian Johnson."
     },
     {
       "recordId": "EXT-JP-003",
