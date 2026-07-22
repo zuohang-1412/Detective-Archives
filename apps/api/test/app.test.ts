@@ -489,8 +489,8 @@ describe("detective archives API", () => {
     });
     const extensionsBody = extensionsResponse.json();
     assert.equal(extensionsResponse.statusCode, 200);
-    assert.equal(extensionsBody.data.length, 26);
-    assert.equal(extensionsBody.coverage.extensionCount, 26);
+    assert.equal(extensionsBody.data.length, 32);
+    assert.equal(extensionsBody.coverage.extensionCount, 32);
     assert.ok(extensionsBody.data.every((entry: { id: string }) => entry.id.startsWith("EXT-")));
 
     const historicalResponse = await app.inject({

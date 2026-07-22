@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-global-detectives-001",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Add six influential detective characters from Norway, Italy, the United States and China using separate official series and first-work pages; store only factual catalog fields and original short summaries.",
+  "sources": [
+    {
+      "id": "penguin-harry-hole-series",
+      "label": "Penguin Random House: A Detective Hole Novel Series",
+      "url": "https://www.penguinrandomhouse.com/series/HHN/a-detective-hole-novel/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-the-bat",
+      "label": "Penguin Random House: The Bat",
+      "url": "https://www.penguinrandomhouse.com/books/216064/the-bat-by-jo-nesbo-translated-by-don-bartlett/9780345807090/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "pan-macmillan-montalbano-series",
+      "label": "Pan Macmillan: Inspector Montalbano Mysteries",
+      "url": "https://www.panmacmillan.com/series/inspector-montalbano-mysteries/S103551144653",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "pan-macmillan-shape-water",
+      "label": "Pan Macmillan: The Shape of Water",
+      "url": "https://www.panmacmillan.com/authors/andrea-camilleri/the-shape-of-water/9781529042023",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "patricia-cornwell-scarpetta-series",
+      "label": "Patricia Cornwell: The Scarpetta Series",
+      "url": "https://www.patriciacornwell.com/the-scarpetta-series",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "simon-schuster-postmortem",
+      "label": "Simon & Schuster: Postmortem",
+      "url": "https://www.simonandschuster.com/books/Postmortem/Patricia-Cornwell/9781668271056",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "walter-mosley-easy-rawlins",
+      "label": "Walter Mosley: Easy Rawlins Mysteries",
+      "url": "https://www.waltermosley.com/books/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "walter-mosley-devil-blue-dress",
+      "label": "Walter Mosley: Devil in a Blue Dress",
+      "url": "https://www.waltermosley.com/devil-in-a-blue-dress/",
+      "quality": "OFFICIAL_CREATOR"
+    },
+    {
+      "id": "soho-inspector-chen-series",
+      "label": "Soho Press: Inspector Chen Investigations",
+      "url": "https://sohopress.com/series/inspector-chen-investigations/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "soho-death-red-heroine",
+      "label": "Soho Press: Death of a Red Heroine",
+      "url": "https://sohopress.com/books/death-of-a-red-heroine/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "simon-schuster-dave-robicheaux-series",
+      "label": "Simon & Schuster: Dave Robicheaux Series",
+      "url": "https://www.simonandschuster.com/search/books/Series-Dave-Robicheaux/_/N-1z11kw7",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "simon-schuster-neon-rain",
+      "label": "Simon & Schuster: The Neon Rain",
+      "url": "https://www.simonandschuster.com/books/The-Neon-Rain/James-Lee-Burke/9780743449205",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-WL-015",
+      "pictureBookEntryIds": [],
+      "slug": "harry-hole",
+      "nameZh": "哈里·霍勒",
+      "nameOriginal": "Harry Hole",
+      "nameEn": "Harry Hole",
+      "country": "挪威",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "奥斯陆刑警，办案方式执着而不循常规，常在跨国案件与个人困境中追查连环犯罪。",
+      "creatorName": "尤·奈斯博",
+      "aliases": ["哈利·霍勒", "霍勒警探", "Harry Hole"],
+      "tags": ["北欧犯罪", "警察小说", "奥斯陆", "连环案件"],
+      "featuredCases": ["《蝙蝠》"],
+      "sourceIds": ["penguin-harry-hole-series", "penguin-the-bat"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-bat-harry-hole",
+          "titleZh": "蝙蝠",
+          "titleOriginal": "Flaggermusmannen / The Bat",
+          "mediaType": "NOVEL",
+          "releaseYear": 1997,
+          "summary": "霍勒被派往悉尼协助调查一名挪威女子遇害案，并从多起未破案件中发现可能延续多年的犯罪模式。",
+          "creatorName": "尤·奈斯博",
+          "sourceId": "penguin-the-bat",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-016",
+      "pictureBookEntryIds": [],
+      "slug": "salvo-montalbano",
+      "nameZh": "萨尔沃·蒙塔尔巴诺",
+      "nameOriginal": "Salvo Montalbano",
+      "nameEn": "Salvo Montalbano",
+      "country": "意大利",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "西西里维加塔警局探长，在地方关系、制度压力与日常生活细节之间坚持独立判断。",
+      "creatorName": "安德烈亚·卡米莱里",
+      "aliases": ["蒙塔尔巴诺探长", "Inspector Montalbano", "Montalbano"],
+      "tags": ["警察小说", "意大利推理", "西西里", "社会观察"],
+      "featuredCases": ["《水的形状》"],
+      "sourceIds": ["pan-macmillan-montalbano-series", "pan-macmillan-shape-water"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-shape-of-water-montalbano",
+          "titleZh": "水的形状",
+          "titleOriginal": "La forma dell'acqua / The Shape of Water",
+          "mediaType": "NOVEL",
+          "releaseYear": 1994,
+          "summary": "一名地方名流被发现死于城镇边缘地带，蒙塔尔巴诺拒绝接受仓促结论，从权力关系和被安排的现场中追查死因。",
+          "creatorName": "安德烈亚·卡米莱里",
+          "sourceId": "pan-macmillan-shape-water",
+          "linkType": "PUBLISHER",
+          "providerName": "Pan Macmillan",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-017",
+      "pictureBookEntryIds": [],
+      "slug": "kay-scarpetta",
+      "nameZh": "凯·斯卡佩塔",
+      "nameOriginal": "Kay Scarpetta",
+      "nameEn": "Kay Scarpetta",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "首席法医，以病理检验、实验室证据和现场重建推进调查，同时面对专业判断受到的制度压力。",
+      "creatorName": "帕特丽夏·康薇尔",
+      "aliases": ["凯·史卡佩塔", "女法医史卡佩塔", "Kay Scarpetta"],
+      "tags": ["法医推理", "女性调查者", "科学侦查", "程序推理"],
+      "featuredCases": ["《尸体会说话》"],
+      "sourceIds": ["patricia-cornwell-scarpetta-series", "simon-schuster-postmortem"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "postmortem-scarpetta",
+          "titleZh": "尸体会说话",
+          "titleOriginal": "Postmortem",
+          "mediaType": "NOVEL",
+          "releaseYear": 1990,
+          "summary": "里士满接连发生女性遇害案，斯卡佩塔从法医检验与新型科学证据中寻找共同特征，同时应对调查内部的干扰。",
+          "creatorName": "帕特丽夏·康薇尔",
+          "sourceId": "simon-schuster-postmortem",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-018",
+      "pictureBookEntryIds": [],
+      "slug": "easy-rawlins",
+      "nameZh": "伊齐·罗林斯",
+      "nameOriginal": "Ezekiel “Easy” Rawlins",
+      "nameEn": "Easy Rawlins",
+      "country": "美国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "二战退伍军人出身的洛杉矶私人调查者，在种族隔离与城市权力结构中依靠社区关系寻找真相。",
+      "creatorName": "沃尔特·莫斯利",
+      "aliases": ["伊西·罗林斯", "伊兹·罗林斯", "Easy Rawlins", "Ezekiel Rawlins"],
+      "tags": ["硬汉派", "私人侦探", "洛杉矶", "非裔美国文学"],
+      "featuredCases": ["《蓝衣魔鬼》"],
+      "sourceIds": ["walter-mosley-easy-rawlins", "walter-mosley-devil-blue-dress"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "devil-in-a-blue-dress",
+          "titleZh": "蓝衣魔鬼",
+          "titleOriginal": "Devil in a Blue Dress",
+          "mediaType": "NOVEL",
+          "releaseYear": 1990,
+          "summary": "失去工作的罗林斯为保住房屋接受寻找失踪女子的委托，却逐渐卷入战后洛杉矶的谋杀、腐败与身份秘密。",
+          "creatorName": "沃尔特·莫斯利",
+          "sourceId": "walter-mosley-devil-blue-dress",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Walter Mosley",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-CN-005",
+      "pictureBookEntryIds": [],
+      "slug": "inspector-chen-cao",
+      "nameZh": "陈超",
+      "nameOriginal": "Chen Cao",
+      "nameEn": "Inspector Chen Cao",
+      "country": "中国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "CHINESE_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "兼具诗人和翻译者身份的上海刑警，在社会转型与组织压力中通过走访、文本和关系网络调查案件。",
+      "creatorName": "裘小龙",
+      "aliases": ["陈超探长", "陈探长", "Inspector Chen", "Chen Cao"],
+      "tags": ["华语推理", "警察小说", "上海", "社会派"],
+      "featuredCases": ["《红英之死》"],
+      "sourceIds": ["soho-inspector-chen-series", "soho-death-red-heroine"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "death-of-a-red-heroine",
+          "titleZh": "红英之死",
+          "titleOriginal": "Death of a Red Heroine",
+          "mediaType": "NOVEL",
+          "releaseYear": 2000,
+          "summary": "一名劳模女性的遗体在上海水道被发现，陈超调查她的生活轨迹时，逐步触及案件背后的社会关系与权力阻力。",
+          "creatorName": "裘小龙",
+          "sourceId": "soho-death-red-heroine",
+          "linkType": "PUBLISHER",
+          "providerName": "Soho Press",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-019",
+      "pictureBookEntryIds": [],
+      "slug": "dave-robicheaux",
+      "nameZh": "戴夫·罗比肖",
+      "nameOriginal": "Dave Robicheaux",
+      "nameEn": "Dave Robicheaux",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "路易斯安那刑警与调查者，在河湾社区、地方历史和个人创伤交织的案件中追索责任。",
+      "creatorName": "詹姆斯·李·伯克",
+      "aliases": ["戴夫·罗比切奥", "大卫·罗比肖", "Dave Robicheaux"],
+      "tags": ["警察小说", "南方哥特", "路易斯安那", "硬汉派"],
+      "featuredCases": ["《霓虹雨》"],
+      "sourceIds": ["simon-schuster-dave-robicheaux-series", "simon-schuster-neon-rain"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-neon-rain",
+          "titleZh": "霓虹雨",
+          "titleOriginal": "The Neon Rain",
+          "mediaType": "NOVEL",
+          "releaseYear": 1987,
+          "summary": "罗比肖调查一名年轻女子在河湾遇害的案件，由此进入毒品、走私与地方权力相互勾连的危险网络。",
+          "creatorName": "詹姆斯·李·伯克",
+          "sourceId": "simon-schuster-neon-rain",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "GLOBAL"
+        }
+      ]
+    }
+  ]
+}

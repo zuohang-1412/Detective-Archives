@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "auditDate": "2026-07-22",
-  "method": "Stratified sample across picture-book volumes 1-25, 26-58, 59-80, 81-102, 103-108, the volume 105 special edition, and every archive-directory category. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official platform, public institution or library records.",
-  "sampleCount": 30,
+  "method": "Stratified sample across picture-book volumes 1-25, 26-58, 59-80, 81-102, 103-108, the volume 105 special edition, every archive-directory category, and all six entries in the latest global-detective batch. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official creator, public institution or library records.",
+  "sampleCount": 36,
   "samples": [
     {
       "recordId": "PB-004-STD",
@@ -418,6 +418,78 @@
       "evidenceSourceIds": ["spp-song-ci"],
       "result": "PASS",
       "note": "The Supreme People's Procuratorate article confirms Song Ci's authorship and forensic-judicial role."
+    },
+    {
+      "recordId": "EXT-WL-015",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "哈里·霍勒",
+        "creatorName": "尤·奈斯博",
+        "featuredCase": "《蝙蝠》"
+      },
+      "evidenceSourceIds": ["penguin-harry-hole-series", "penguin-the-bat"],
+      "result": "PASS",
+      "note": "Penguin Random House separately confirms the Detective Hole series identity and The Bat as its first installment."
+    },
+    {
+      "recordId": "EXT-WL-016",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "萨尔沃·蒙塔尔巴诺",
+        "creatorName": "安德烈亚·卡米莱里",
+        "featuredCase": "《水的形状》"
+      },
+      "evidenceSourceIds": ["pan-macmillan-montalbano-series", "pan-macmillan-shape-water"],
+      "result": "PASS",
+      "note": "Pan Macmillan's series and title pages confirm Salvo Montalbano, Andrea Camilleri and the first novel."
+    },
+    {
+      "recordId": "EXT-WL-017",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "凯·斯卡佩塔",
+        "creatorName": "帕特丽夏·康薇尔",
+        "featuredCase": "《尸体会说话》"
+      },
+      "evidenceSourceIds": ["patricia-cornwell-scarpetta-series", "simon-schuster-postmortem"],
+      "result": "PASS",
+      "note": "The creator's Scarpetta series page and Simon & Schuster's Postmortem page independently support the character and debut work."
+    },
+    {
+      "recordId": "EXT-WL-018",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "伊齐·罗林斯",
+        "creatorName": "沃尔特·莫斯利",
+        "featuredCase": "《蓝衣魔鬼》"
+      },
+      "evidenceSourceIds": ["walter-mosley-easy-rawlins", "walter-mosley-devil-blue-dress"],
+      "result": "PASS",
+      "note": "Walter Mosley's official series bibliography and book page identify Easy Rawlins and Devil in a Blue Dress."
+    },
+    {
+      "recordId": "EXT-CN-005",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "陈超",
+        "creatorName": "裘小龙",
+        "featuredCase": "《红英之死》"
+      },
+      "evidenceSourceIds": ["soho-inspector-chen-series", "soho-death-red-heroine"],
+      "result": "PASS",
+      "note": "Soho Press's series and first-book pages confirm Inspector Chen Cao, Qiu Xiaolong and Death of a Red Heroine."
+    },
+    {
+      "recordId": "EXT-WL-019",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "戴夫·罗比肖",
+        "creatorName": "詹姆斯·李·伯克",
+        "featuredCase": "《霓虹雨》"
+      },
+      "evidenceSourceIds": ["simon-schuster-dave-robicheaux-series", "simon-schuster-neon-rain"],
+      "result": "PASS",
+      "note": "Simon & Schuster's series index and title page confirm Dave Robicheaux, James Lee Burke and The Neon Rain."
     }
   ]
 }
