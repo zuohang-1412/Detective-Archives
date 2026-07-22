@@ -60,6 +60,21 @@ API_ENV_FILE=.env.production sh ops/rollback-release.sh
 
 GitHub Quality 会为演练创建独立空库，并在隔离的 Compose 项目中构建两个不同镜像；启动基线镜像后实际调用 `deploy-release.sh`，核对强制备份、镜像 ID、`.release-state`，再调用 `rollback-release.sh` 并复核数据库与 HTTP，最后删除专用数据库和镜像。该演练保证脚本每次提交都可执行且不受其他集成测试数据影响，但不能替代正式服务器上的域名、TLS、监控、生产数据库网络和真实上一镜像演练。
 
+### 正式服务器回滚演练与回执
+
+正式环境部署成功且本机保留上一稳定镜像后，执行一次自动化回滚演练。首次使用本能力前，候选镜像和上一镜像都必须由当前版本的 `deploy-release.sh` 构建，二者携带不同的 40 位源码提交标签；重新部署两个不同提交后再演练，不能使用标签为 `unknown` 的旧镜像。工作区除生产配置生成器允许的两个文件外必须无未提交修改，最近一次带 SHA-256 边车的部署备份不得超过 26 小时。
+
+```bash
+PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- \
+  --env-file=.env.production \
+  --manifest=ops/launch-readiness.json \
+  --state-directory=/var/lib/detective-archives/release-state
+```
+
+命令会依次核对当前容器和 OCI 源码提交、从公网验证证书与 HTTP→HTTPS 跳转、探测健康/就绪/目录/社区/后台/监控，切换到上一镜像后重复探测，再恢复候选镜像并第三次探测。DNS 解析到本机、私网、保留或文档网段，证书未授权、低于 TLS 1.2、剩余有效期不足 7 天，备份过期/为空/校验失败，镜像或源码提交不一致时均会拒绝。失败时工具优先恢复候选镜像；恢复也失败时必须立即按故障处置流程人工介入。
+
+成功回执保存在专用状态目录的 `production-release/`，并原子写入被 Git 忽略的实际 `ops/launch-readiness.json`。上线审计的 `tls_verified`、`production_release_check` 和 `rollback_drill` 三项只接受 30 天内、绑定当前 Git 提交与当前公网域名的完整回执，手工布尔值不能通过。
+
 ## 4. HTTPS 与网络
 
 - API 容器只绑定宿主机 `127.0.0.1:3000`，由 Caddy 对公网提供 443。

@@ -20,7 +20,8 @@
 - [x] 生产日志配置已通过真实 Pino 输出验证，不包含 AppSecret、后台/数据库密码、微信 code、Cookie、完整 Bearer 或会话令牌；上线后仍需抽样复核采集端。
 - [x] `ops/deploy-release.sh` 已生成上线前数据库备份，且备份在隔离环境完成恢复验证。
 - [x] GitHub 候选环境以两个不同镜像 ID 实际执行 `ops/deploy-release.sh` 和 `ops/rollback-release.sh`，并验证强制备份、`.release-state`、回滚后镜像、数据库与 HTTP。
-- [ ] 正式服务器的 `.release-state/previous-image-tag` 对应镜像仍在本机，并已完成一次带生产监控证据的真实回滚演练。
+- [x] 正式生产演练工具已覆盖公网 DNS/TLS/跳转、核心 API/后台/监控、备份 SHA-256、候选/上一镜像 OCI 提交、失败恢复和绑定当前提交的原子回执门禁。
+- [ ] 正式服务器的 `.release-state/previous-image-tag` 对应镜像仍在本机，并已执行 `release:drill:production` 取得生产回执。
 - [x] 已在真实库克隆的隔离库演练最新内容批次的补偿回滚，确认只归档目标内容、停用对应链接并保留用户关系；正式运营人员仍需在生产来源隔离库复演。
 
 ## P1：首发前完成

@@ -2,11 +2,87 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { auditLaunchReadiness, summarizeLaunchReadiness } from "./lib/launch-readiness.mjs";
+import { PRODUCTION_PROBE_CHECKS } from "./lib/production-release-drill.mjs";
 
 const operationsRunbookSha256 = createHash("sha256")
   .update(await readFile(new URL("../docs/runbook.md", import.meta.url), "utf8"))
   .digest("hex");
 const operationsDrillCompletedAt = new Date().toISOString();
+const sourceCommit = "a".repeat(40);
+const productionReleaseCompletedAt = new Date().toISOString();
+const productionProbe = {
+  schemaVersion: 1,
+  status: "PASSED",
+  publicApiOrigin: "https://api.detective-archives.test",
+  checkedAt: productionReleaseCompletedAt,
+  httpRedirect: {
+    status: 308,
+    location: "https://api.detective-archives.test/health"
+  },
+  tls: {
+    authorized: true,
+    protocol: "TLSv1.3",
+    validFrom: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    validTo: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    fingerprint256: Array.from({ length: 32 }, () => "AA").join(":")
+  },
+  checks: PRODUCTION_PROBE_CHECKS.map((id) => ({ id, status: "PASSED" }))
+};
+const candidateImage = {
+  tag: "release-candidate",
+  imageId: `sha256:${"1".repeat(64)}`,
+  sourceCommit
+};
+const previousImage = {
+  tag: "release-previous",
+  imageId: `sha256:${"2".repeat(64)}`,
+  sourceCommit: "b".repeat(40)
+};
+const productionReleaseReceipt = {
+  schemaVersion: 1,
+  action: "production_release_drill",
+  status: "PASSED",
+  sourceCommit,
+  publicApiOrigin: productionProbe.publicApiOrigin,
+  startedAt: productionReleaseCompletedAt,
+  completedAt: productionReleaseCompletedAt,
+  durationMs: 0,
+  candidate: candidateImage,
+  previous: previousImage,
+  backup: {
+    status: "PASSED",
+    fileName: "detective-archives-20260722T080000Z.dump",
+    checksumSha256: "c".repeat(64),
+    sizeBytes: 1024,
+    completedAt: productionReleaseCompletedAt
+  },
+  phases: [
+    {
+      id: "CANDIDATE_BEFORE_ROLLBACK",
+      currentTag: candidateImage.tag,
+      previousTag: previousImage.tag,
+      runningTag: candidateImage.tag,
+      imageId: candidateImage.imageId,
+      probe: structuredClone(productionProbe)
+    },
+    {
+      id: "PREVIOUS_AFTER_ROLLBACK",
+      currentTag: previousImage.tag,
+      previousTag: candidateImage.tag,
+      runningTag: previousImage.tag,
+      imageId: previousImage.imageId,
+      probe: structuredClone(productionProbe)
+    },
+    {
+      id: "CANDIDATE_RESTORED",
+      currentTag: candidateImage.tag,
+      previousTag: previousImage.tag,
+      runningTag: candidateImage.tag,
+      imageId: candidateImage.imageId,
+      probe: structuredClone(productionProbe)
+    }
+  ]
+};
 
 const secretValues = {
   database: "database-password-must-never-appear",
@@ -52,7 +128,7 @@ const manifest = {
       status: "SUCCEEDED",
       appid: environment.MINIPROGRAM_APP_ID,
       version: "0.1.0-rc.1",
-      sourceCommit: "a".repeat(40),
+      sourceCommit,
       robot: 1,
       completedAt: new Date().toISOString(),
       ciPackage: "miniprogram-ci@2.1.31",
@@ -71,9 +147,7 @@ const manifest = {
     offsiteBackupReady: true
   },
   validation: {
-    tlsVerified: true,
-    productionReleaseCheckPassed: true,
-    rollbackPassed: true,
+    productionReleaseReceipt,
     contentSafetyPassed: true,
     iosDevicePassed: true,
     androidDevicePassed: true,
@@ -101,7 +175,12 @@ const manifest = {
   }
 };
 
-const readyItems = auditLaunchReadiness({ environment, manifest, operationsRunbookSha256 });
+const readyItems = auditLaunchReadiness({
+  environment,
+  manifest,
+  operationsRunbookSha256,
+  sourceCommit
+});
 const readyReport = summarizeLaunchReadiness(readyItems, "RELEASE");
 assert.equal(readyReport.status, "READY");
 assert.equal(readyReport.readyThrough, "RELEASE");
@@ -113,9 +192,7 @@ for (const secret of Object.values(secretValues)) {
 }
 
 const beforeDeployment = structuredClone(manifest);
-beforeDeployment.validation.tlsVerified = false;
-beforeDeployment.validation.productionReleaseCheckPassed = false;
-beforeDeployment.validation.rollbackPassed = false;
+delete beforeDeployment.validation.productionReleaseReceipt;
 beforeDeployment.validation.contentSafetyPassed = false;
 beforeDeployment.infrastructure.monitoringReady = false;
 beforeDeployment.infrastructure.offsiteBackupReady = false;
@@ -132,7 +209,8 @@ beforeDeployment.validation.androidDevicePassed = false;
 const phasedItems = auditLaunchReadiness({
   environment,
   manifest: beforeDeployment,
-  operationsRunbookSha256
+  operationsRunbookSha256,
+  sourceCommit
 });
 assert.equal(summarizeLaunchReadiness(phasedItems, "PRE_DEPLOY").status, "READY");
 assert.equal(summarizeLaunchReadiness(phasedItems, "POST_DEPLOY").status, "BLOCKED");
@@ -141,7 +219,8 @@ assert.equal(summarizeLaunchReadiness(phasedItems, "RELEASE").readyThrough, "PRE
 const mismatch = auditLaunchReadiness({
   environment: { ...environment, MINIPROGRAM_APP_ID: "wxdifferent123" },
   manifest,
-  operationsRunbookSha256
+  operationsRunbookSha256,
+  sourceCommit
 });
 assert.equal(mismatch.find((entry) => entry.id === "wechat_app_identity").status, "MISSING_OR_INVALID");
 
@@ -152,7 +231,8 @@ const candidateAppMismatch = auditLaunchReadiness({
     MINIPROGRAM_APP_ID: "wxotherproduction123"
   },
   manifest,
-  operationsRunbookSha256
+  operationsRunbookSha256,
+  sourceCommit
 });
 assert.equal(
   candidateAppMismatch.find((entry) => entry.id === "candidate_uploaded").status,
@@ -162,8 +242,65 @@ assert.equal(
 const missingUploadEvidence = structuredClone(manifest);
 delete missingUploadEvidence.wechat.candidateUploadReceipt;
 assert.equal(
-  auditLaunchReadiness({ environment, manifest: missingUploadEvidence, operationsRunbookSha256 })
+  auditLaunchReadiness({
+    environment,
+    manifest: missingUploadEvidence,
+    operationsRunbookSha256,
+    sourceCommit
+  })
     .find((entry) => entry.id === "candidate_uploaded").status,
+  "MISSING_OR_INVALID"
+);
+
+const staleCommitEvidence = structuredClone(manifest);
+staleCommitEvidence.validation.productionReleaseReceipt.sourceCommit = "f".repeat(40);
+staleCommitEvidence.validation.productionReleaseReceipt.candidate.sourceCommit = "f".repeat(40);
+staleCommitEvidence.wechat.candidateUploadReceipt.sourceCommit = "f".repeat(40);
+const staleCommitItems = auditLaunchReadiness({
+  environment,
+  manifest: staleCommitEvidence,
+  operationsRunbookSha256,
+  sourceCommit
+});
+for (const id of [
+  "tls_verified",
+  "production_release_check",
+  "rollback_drill",
+  "candidate_uploaded"
+]) {
+  assert.equal(
+    staleCommitItems.find((entry) => entry.id === id).status,
+    "MISSING_OR_INVALID",
+    `${id} must reject evidence from another source commit`
+  );
+}
+
+const missingProductionReceipt = structuredClone(manifest);
+delete missingProductionReceipt.validation.productionReleaseReceipt;
+const missingProductionItems = auditLaunchReadiness({
+  environment,
+  manifest: missingProductionReceipt,
+  operationsRunbookSha256,
+  sourceCommit
+});
+for (const id of ["tls_verified", "production_release_check", "rollback_drill"]) {
+  assert.equal(
+    missingProductionItems.find((entry) => entry.id === id).status,
+    "MISSING_OR_INVALID"
+  );
+}
+
+const unresolvedSourceItems = auditLaunchReadiness({
+  environment,
+  manifest,
+  operationsRunbookSha256
+});
+assert.equal(
+  unresolvedSourceItems.find((entry) => entry.id === "production_release_check").status,
+  "MISSING_OR_INVALID"
+);
+assert.equal(
+  unresolvedSourceItems.find((entry) => entry.id === "candidate_uploaded").status,
   "MISSING_OR_INVALID"
 );
 
@@ -173,7 +310,8 @@ assert.equal(
   auditLaunchReadiness({
     environment,
     manifest: missingOperationsDrill,
-    operationsRunbookSha256
+    operationsRunbookSha256,
+    sourceCommit
   }).find((entry) => entry.id === "operations_drill").status,
   "MISSING_OR_INVALID"
 );
@@ -181,12 +319,13 @@ assert.equal(
   auditLaunchReadiness({
     environment,
     manifest,
-    operationsRunbookSha256: "e".repeat(64)
+    operationsRunbookSha256: "e".repeat(64),
+    sourceCommit
   }).find((entry) => entry.id === "operations_drill").status,
   "MISSING_OR_INVALID"
 );
 assert.equal(
-  auditLaunchReadiness({ environment, manifest })
+  auditLaunchReadiness({ environment, manifest, sourceCommit })
     .find((entry) => entry.id === "operations_drill").status,
   "MISSING_OR_INVALID",
   "Operations drill readiness must be bound to the current runbook hash"
@@ -200,7 +339,8 @@ const placeholders = auditLaunchReadiness({
     ADMIN_LOGIN_PASSWORD: "replace-with-at-least-16-random-characters"
   },
   manifest,
-  operationsRunbookSha256
+  operationsRunbookSha256,
+  sourceCommit
 });
 assert.equal(placeholders.find((entry) => entry.id === "database_configuration").status, "MISSING_OR_INVALID");
 assert.equal(placeholders.find((entry) => entry.id === "wechat_app_secret").status, "MISSING_OR_INVALID");

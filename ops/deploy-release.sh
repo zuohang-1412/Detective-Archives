@@ -24,12 +24,24 @@ case "$env_file" in
   *) env_file="./$env_file" ;;
 esac
 
-for command_name in docker curl npm psql pg_dump pg_restore sha256sum; do
+for command_name in docker curl git node npm psql pg_dump pg_restore sha256sum; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "Required command is unavailable: $command_name" >&2
     exit 1
   fi
 done
+
+source_commit="$(git rev-parse HEAD 2>/dev/null || true)"
+if [ "${#source_commit}" -ne 40 ]; then
+  echo "Could not resolve a full source commit for the release image" >&2
+  exit 1
+fi
+case "$source_commit" in
+  *[!0-9a-fA-F]*)
+    echo "The release source commit is invalid" >&2
+    exit 1
+    ;;
+esac
 
 case "$state_directory" in
   ""|/|.)
@@ -89,7 +101,8 @@ echo "Creating the mandatory pre-deployment database backup"
 sh ops/backup-postgres.sh
 
 echo "Building detective-archives-api:$release_tag"
-API_ENV_FILE="$env_file" IMAGE_TAG="$release_tag" docker compose build api
+API_ENV_FILE="$env_file" IMAGE_TAG="$release_tag" SOURCE_COMMIT="$source_commit" \
+  docker compose build api
 
 echo "Starting detective-archives-api:$release_tag"
 if ! API_ENV_FILE="$env_file" IMAGE_TAG="$release_tag" docker compose up -d --no-build api; then

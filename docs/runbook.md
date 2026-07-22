@@ -10,6 +10,19 @@ npm run launch:audit -- --env-file=.env.production --phase=release
 
 审计器会按预部署、部署后、提审和正式发布四阶段列出阻塞项及责任域，不打印输入值。运营人员只能在取得可复查证据后更新布尔项，例如 TLS 探测结果、回滚记录、真机测试记录或微信审核结果；每次变更应在发布工单中记录时间和证据位置。
 
+### 生产发布回滚证据
+
+部署机必须保留两个由新版部署脚本构建、来自不同 Git 提交且可读取 OCI 源码标签的镜像。确认最近 26 小时的生产备份及 `.sha256` 边车可读后执行：
+
+```bash
+PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- \
+  --env-file=.env.production \
+  --manifest=ops/launch-readiness.json \
+  --state-directory=/var/lib/detective-archives/release-state
+```
+
+演练会真实执行“候选版→上一版→候选版”，每次切换后从公网验证 HTTPS、证书、跳转、核心 API、社区、运营后台和鉴权监控。若命令报告候选版恢复失败，立即停止发布并按“故障处置”人工恢复；不要再次盲目切换。成功后再次执行 `launch:audit --phase=post_deploy`，三个生产发布门禁应同时为 `READY`。回执绑定当前提交、域名、镜像 ID、备份摘要和三次探测，不得手工复制、修改或用布尔值替代。
+
 ## 运营上岗演练
 
 微信提审前，清单中的实际内容审核负责人和生产告警负责人必须在受控候选环境完成四个场景。只使用明确标注的测试账号、测试作品和测试评价；不得拿真实用户内容做演练，也不得把令牌、密码、用户个人信息或违规正文复制到证据记录。

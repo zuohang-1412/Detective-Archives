@@ -166,9 +166,7 @@ await writeFile(readinessFile, JSON.stringify({
     offsiteBackupReady: false
   },
   validation: {
-    tlsVerified: false,
-    productionReleaseCheckPassed: false,
-    rollbackPassed: false,
+    productionReleaseReceipt: null,
     contentSafetyPassed: false,
     iosDevicePassed: false,
     androidDevicePassed: false

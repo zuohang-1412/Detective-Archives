@@ -187,7 +187,7 @@ export function buildMiniProgramReleasePlan({
   });
 }
 
-export function validCandidateUploadReceipt(receipt, appid) {
+export function validCandidateUploadReceipt(receipt, appid, sourceCommit = null) {
   if (!receipt
     || receipt.schemaVersion !== 1
     || receipt.action !== "upload"
@@ -197,6 +197,7 @@ export function validCandidateUploadReceipt(receipt, appid) {
     return false;
   }
   if (!/^[0-9a-f]{40}$/i.test(receipt.sourceCommit || "")) return false;
+  if (sourceCommit && receipt.sourceCommit !== sourceCommit) return false;
   if (!/^[0-9a-f]{64}$/i.test(receipt.projectConfigSha256 || "")
     || !/^[0-9a-f]{64}$/i.test(receipt.miniProgramConfigSha256 || "")) return false;
   if (!Number.isInteger(receipt.robot) || receipt.robot < 1 || receipt.robot > 30) return false;

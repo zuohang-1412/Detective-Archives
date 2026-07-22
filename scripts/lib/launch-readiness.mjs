@@ -1,5 +1,6 @@
 import { validCandidateUploadReceipt } from "./miniprogram-release.mjs";
 import { validOperationsDrillReceipt } from "./operations-drill.mjs";
+import { validProductionReleaseReceipt } from "./production-release-drill.mjs";
 
 const PHASES = ["PRE_DEPLOY", "POST_DEPLOY", "SUBMISSION", "RELEASE"];
 const placeholderPattern = /(?:replace|example|your[-_. ]|strong-password|managed-postgres|change-?me|dummy|test-only|ci-only|上线前|待填写|todo)/i;
@@ -63,7 +64,8 @@ function corsConfigured(value) {
 export function auditLaunchReadiness({
   environment = {},
   manifest = {},
-  operationsRunbookSha256 = null
+  operationsRunbookSha256 = null,
+  sourceCommit = null
 } = {}) {
   const appId = environment.WECHAT_APP_ID?.trim();
   const miniProgramAppId = environment.MINIPROGRAM_APP_ID?.trim();
@@ -73,6 +75,15 @@ export function auditLaunchReadiness({
   const sslMode = environment.PGSSLMODE?.trim().toLowerCase();
   const secureDatabaseTransport = ["verify-ca", "verify-full"].includes(sslMode)
     || (databasePrivate && ["disable", "allow", "prefer"].includes(sslMode));
+  const sourceCommitValid = /^[0-9a-f]{40}$/i.test(sourceCommit || "");
+  const productionReleaseReceiptValid = sourceCommitValid
+    && validProductionReleaseReceipt(
+      nested(manifest, "validation", "productionReleaseReceipt"),
+      {
+        publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+        sourceCommit
+      }
+    );
 
   return [
     item("database_configuration", "PRE_DEPLOY", "ENGINEERING", databaseConfigured(environment),
@@ -116,14 +127,14 @@ export function auditLaunchReadiness({
       "The production database is not exposed to the public internet."),
 
     item("tls_verified", "POST_DEPLOY", "INFRASTRUCTURE",
-      nested(manifest, "validation", "tlsVerified") === true,
-      "The public API certificate and HTTP-to-HTTPS redirect were verified."),
+      productionReleaseReceiptValid,
+      "A current release receipt proves the public certificate and HTTP-to-HTTPS redirect."),
     item("production_release_check", "POST_DEPLOY", "ENGINEERING",
-      nested(manifest, "validation", "productionReleaseCheckPassed") === true,
-      "The real production environment passed the release gate and runtime probes."),
+      productionReleaseReceiptValid,
+      "A current release receipt proves the real production runtime probes passed."),
     item("rollback_drill", "POST_DEPLOY", "ENGINEERING",
-      nested(manifest, "validation", "rollbackPassed") === true,
-      "A real previous-image rollback and recovery probe passed."),
+      productionReleaseReceiptValid,
+      "A current release receipt proves the previous-image rollback and candidate recovery passed."),
     item("monitoring_and_alerting", "POST_DEPLOY", "OPERATIONS",
       nested(manifest, "infrastructure", "monitoringReady") === true,
       "External readiness monitoring, metrics collection and alert routing are active."),
@@ -160,9 +171,14 @@ export function auditLaunchReadiness({
       nested(manifest, "validation", "androidDevicePassed") === true,
       "The complete production flow passed on a real Android WeChat device."),
     item("candidate_uploaded", "SUBMISSION", "WECHAT_OWNER",
-      nested(manifest, "wechat", "candidateUploaded") === true
-        && validCandidateUploadReceipt(nested(manifest, "wechat", "candidateUploadReceipt"), appId),
-      "The verified candidate has a valid successful upload receipt for this AppID."),
+      sourceCommitValid
+        && nested(manifest, "wechat", "candidateUploaded") === true
+        && validCandidateUploadReceipt(
+          nested(manifest, "wechat", "candidateUploadReceipt"),
+          appId,
+          sourceCommit
+        ),
+      "The verified candidate has a valid successful upload receipt for this AppID and source commit."),
     item("review_submitted", "SUBMISSION", "WECHAT_OWNER",
       nested(manifest, "wechat", "reviewSubmitted") === true,
       "The candidate and required declarations were submitted for review."),

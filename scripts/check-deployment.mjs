@@ -21,7 +21,9 @@ const [
   operationsDrillScript,
   operationsDrillTemplate,
   operationsRunbook,
-  launchReadinessLibrary
+  launchReadinessLibrary,
+  productionDrillCommand,
+  productionDrillLibrary
 ] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
@@ -40,7 +42,9 @@ const [
   readFile(path.join(root, "scripts/record-operations-drill.mjs"), "utf8"),
   readFile(path.join(root, "ops/operations-drill-record.example.json"), "utf8"),
   readFile(path.join(root, "docs/runbook.md"), "utf8"),
-  readFile(path.join(root, "scripts/lib/launch-readiness.mjs"), "utf8")
+  readFile(path.join(root, "scripts/lib/launch-readiness.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/drill-production-release.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/lib/production-release-drill.mjs"), "utf8")
 ]);
 
 const startupSteps = [
@@ -58,7 +62,9 @@ for (const step of startupSteps) {
 }
 
 assert.match(dockerfile, /^USER node$/m, "Runtime container must use the node user");
+assert.match(dockerfile, /org\.opencontainers\.image\.revision/, "Runtime images must carry a source revision label");
 assert.match(compose, /read_only:\s*true/, "API filesystem must be read-only");
+assert.match(compose, /SOURCE_COMMIT:\s*\$\{SOURCE_COMMIT:-unknown\}/, "Compose builds must accept the source revision");
 assert.match(compose, /no-new-privileges:true/, "API must disable privilege escalation");
 assert.match(compose, /127\.0\.0\.1:3000:3000/, "API port must bind to loopback");
 assert.match(compose, /healthcheck:[\s\S]*\/ready/, "Compose must probe database readiness");
@@ -82,6 +88,8 @@ assert.match(backupScript, /client\/server major version mismatch/, "Backups mus
 assert.match(backupScript, /sha256sum/, "Backups must record an integrity checksum");
 assert.match(apiServer, /createWechatContentSafetyCheckFromEnv/, "Production API must initialize WeChat content safety");
 assert.match(deployScript, /npm run release:check/, "Deployments must run the production release gate");
+assert.match(deployScript, /git rev-parse HEAD/, "Deployments must resolve the full source commit");
+assert.match(deployScript, /SOURCE_COMMIT="\$source_commit"/, "Deployments must bind the image to the source commit");
 const launchAuditIndex = deployScript.indexOf("audit-launch-readiness.mjs");
 const miniProgramConfigIndex = deployScript.indexOf("npm run config:miniprogram");
 const releaseCheckIndex = deployScript.indexOf("npm run release:check");
@@ -98,6 +106,8 @@ assert.match(rollbackScript, /docker image inspect/, "Rollback must require an e
 assert.match(rollbackScript, /npm run check:runtime/, "Rollback must verify the restored runtime");
 assert.match(rootPackage, /"check:release-rollback"/, "The release rollback drill must have an npm entrypoint");
 assert.match(rootPackage, /"operations:drill:record"/, "The operations drill must have an npm entrypoint");
+assert.match(rootPackage, /"release:drill:production"/, "The production rollback drill must have an npm entrypoint");
+assert.match(rootPackage, /"check:production-release-drill"/, "The production rollback evidence must have an automated check");
 assert.match(qualityWorkflow, /npm run check:release-rollback/, "CI must execute the real release rollback drill");
 assert.match(qualityWorkflow, /postgres:16/, "CI PostgreSQL must match the explicitly installed backup client major version");
 assert.match(qualityWorkflow, /postgresql-client-16/, "CI must install a matching PostgreSQL backup client");
@@ -123,5 +133,11 @@ for (const scenario of [
 }
 assert.match(operationsRunbook, /operations:drill:record/, "The runbook must explain how to record the operations drill");
 assert.match(launchReadinessLibrary, /item\("operations_drill", "SUBMISSION"/, "Submission must require operations drill evidence");
+assert.match(productionDrillCommand, /PRODUCTION_ROLLBACK_DRILL/, "Production rollback must require a one-shot opt-in");
+assert.match(productionDrillCommand, /inspectRecentBackup/, "Production rollback must require recent backup evidence");
+assert.match(productionDrillCommand, /recordProductionReleaseReceipt/, "Production rollback must persist validated evidence");
+assert.match(productionDrillLibrary, /inspectPublicTls/, "Production evidence must inspect the public TLS connection");
+assert.match(productionDrillLibrary, /CANDIDATE_RESTORED/, "Production evidence must verify candidate recovery");
+assert.match(launchReadinessLibrary, /validProductionReleaseReceipt/, "Post-deployment gates must require a production receipt");
 
 console.log("Deployment structure and startup sequence: OK");

@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parseEnv } from "node:util";
@@ -48,6 +49,15 @@ const report = summarizeLaunchReadiness(
   auditLaunchReadiness({
     environment,
     manifest,
+    sourceCommit: (() => {
+      const result = spawnSync("git", ["rev-parse", "HEAD"], {
+        cwd: path.resolve(),
+        encoding: "utf8",
+        windowsHide: true
+      });
+      const value = result.status === 0 ? result.stdout.trim() : "";
+      return /^[0-9a-f]{40}$/i.test(value) ? value : null;
+    })(),
     operationsRunbookSha256: createHash("sha256")
       .update(await readFile(path.resolve("docs/runbook.md"), "utf8"))
       .digest("hex")
