@@ -186,7 +186,7 @@ const archive = await loadPage("archive", {
     return { data: [], coverage: { latestPublishedVolume: 108, entryCount: 109 } };
   },
   async listArchiveDirectory() {
-    return { data: [], coverage: { extensionCount: 32, historicalCount: 3 } };
+    return { data: [], coverage: { extensionCount: 38, historicalCount: 3 } };
   }
 });
 archive.searchRequestId = 0;

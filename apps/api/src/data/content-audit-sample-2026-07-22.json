@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "auditDate": "2026-07-22",
-  "method": "Stratified sample across picture-book volumes 1-25, 26-58, 59-80, 81-102, 103-108, the volume 105 special edition, every archive-directory category, and all six entries in the latest global-detective batch. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official creator, public institution or library records.",
-  "sampleCount": 36,
+  "method": "Stratified sample across picture-book volumes 1-25, 26-58, 59-80, 81-102, 103-108, the volume 105 special edition, every archive-directory category, and all twelve entries in the two latest global-detective batches. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official creator, public institution or library records.",
+  "sampleCount": 42,
   "samples": [
     {
       "recordId": "PB-004-STD",
@@ -490,6 +490,78 @@
       "evidenceSourceIds": ["simon-schuster-dave-robicheaux-series", "simon-schuster-neon-rain"],
       "result": "PASS",
       "note": "Simon & Schuster's series index and title page confirm Dave Robicheaux, James Lee Burke and The Neon Rain."
+    },
+    {
+      "recordId": "EXT-WL-020",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "阿米莉亚·皮博迪",
+        "creatorName": "伊丽莎白·彼得斯",
+        "featuredCase": "《沙洲上的鳄鱼》"
+      },
+      "evidenceSourceIds": ["hachette-amelia-peabody-series", "hachette-crocodile-sandbank"],
+      "result": "PASS",
+      "note": "Hachette's series and title pages confirm Amelia Peabody, Elizabeth Peters and Crocodile on the Sandbank."
+    },
+    {
+      "recordId": "EXT-WL-021",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "圭多·布鲁内蒂",
+        "creatorName": "唐娜·莱昂",
+        "featuredCase": "《拉·费尼切之死》"
+      },
+      "evidenceSourceIds": ["penguin-brunetti-series", "penguin-death-la-fenice"],
+      "result": "PASS",
+      "note": "Penguin UK's series and first-book pages confirm Guido Brunetti, Donna Leon and Death at La Fenice."
+    },
+    {
+      "recordId": "EXT-WL-022",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "阿尔芒·加马什",
+        "creatorName": "露易丝·佩妮",
+        "featuredCase": "《静物》"
+      },
+      "evidenceSourceIds": ["macmillan-gamache-series", "macmillan-still-life-gamache"],
+      "result": "PASS",
+      "note": "Macmillan's series and title pages confirm Armand Gamache, Louise Penny and Still Life."
+    },
+    {
+      "recordId": "EXT-WL-023",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "梅茜·多布斯",
+        "creatorName": "杰奎琳·温斯皮尔",
+        "featuredCase": "《梅茜·多布斯》"
+      },
+      "evidenceSourceIds": ["macmillan-maisie-dobbs-series", "soho-maisie-dobbs"],
+      "result": "PASS",
+      "note": "Macmillan's series page and Soho Press's book page confirm Maisie Dobbs, Jacqueline Winspear and the debut novel."
+    },
+    {
+      "recordId": "EXT-WL-024",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "西里·派布恩医生",
+        "creatorName": "科林·科特里尔",
+        "featuredCase": "《验尸官的午餐》"
+      },
+      "evidenceSourceIds": ["soho-dr-siri-series", "soho-coroners-lunch"],
+      "result": "PASS",
+      "note": "Soho Press's series and first-book pages confirm Dr. Siri Paiboun, Colin Cotterill and The Coroner's Lunch."
+    },
+    {
+      "recordId": "EXT-WL-025",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "埃伦杜尔·斯维恩松",
+        "creatorName": "阿诺德·英德里达松",
+        "featuredCase": "Jar City"
+      },
+      "evidenceSourceIds": ["macmillan-erlendur-series", "macmillan-jar-city"],
+      "result": "PASS",
+      "note": "Macmillan's series and title pages confirm Inspector Erlendur, Arnaldur Indridason and Jar City."
     }
   ]
 }

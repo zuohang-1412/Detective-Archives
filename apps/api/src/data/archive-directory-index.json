@@ -3,9 +3,9 @@
   "snapshotDate": "2026-07-22",
   "contentPolicy": "Store factual catalog fields, original short summaries and source links only; do not copy source descriptions, covers or stills.",
   "coverage": {
-    "extensionCount": 32,
+    "extensionCount": 38,
     "historicalCount": 3,
-    "entryCount": 35
+    "entryCount": 41
   },
   "sources": [
     {
@@ -252,6 +252,78 @@
       "id": "simon-schuster-neon-rain",
       "label": "Simon & Schuster: The Neon Rain",
       "url": "https://www.simonandschuster.com/books/The-Neon-Rain/James-Lee-Burke/9780743449205",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "hachette-amelia-peabody-series",
+      "label": "Hachette Book Group: Amelia Peabody",
+      "url": "https://www.hachettebookgroup.com/series/elizabeth-peters/amelia-peabody/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "hachette-crocodile-sandbank",
+      "label": "Hachette UK: Crocodile on the Sandbank",
+      "url": "https://www.hachette.co.uk/titles/elizabeth-peters/crocodile-on-the-sandbank/9781780334462/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-brunetti-series",
+      "label": "Penguin UK: A Commissario Brunetti Mystery",
+      "url": "https://www.penguin.co.uk/series/BRUNETTI/a-commissario-brunetti-mystery",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-death-la-fenice",
+      "label": "Penguin UK: Death at La Fenice",
+      "url": "https://www.penguin.co.uk/books/358331/death-at-la-fenice-by-donna-leon/9781529158304",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "macmillan-gamache-series",
+      "label": "Macmillan: Chief Inspector Gamache Novel",
+      "url": "https://us.macmillan.com/series/chiefinspectorgamachenovel",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "macmillan-still-life-gamache",
+      "label": "Macmillan: Still Life",
+      "url": "https://us.macmillan.com/books/9781250068736/stilllife/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "macmillan-maisie-dobbs-series",
+      "label": "Macmillan: Maisie Dobbs Novels",
+      "url": "https://us.macmillan.com/series/maisiedobbsnovels",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "soho-maisie-dobbs",
+      "label": "Soho Press: Maisie Dobbs",
+      "url": "https://sohopress.com/books/maisie-dobbs/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "soho-dr-siri-series",
+      "label": "Soho Press: Dr. Siri Mysteries",
+      "url": "https://sohopress.com/series/the-dr-siri-mysteries/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "soho-coroners-lunch",
+      "label": "Soho Press: The Coroner's Lunch",
+      "url": "https://sohopress.com/books/the-coroners-lunch/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "macmillan-erlendur-series",
+      "label": "Macmillan: An Inspector Erlendur Series",
+      "url": "https://us.macmillan.com/series/aninspectorerlendurseries",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "macmillan-jar-city",
+      "label": "Macmillan: Jar City",
+      "url": "https://us.macmillan.com/books/9780312426385/jarcity/",
       "quality": "PUBLISHER"
     }
   ],
@@ -634,6 +706,120 @@
       "featuredWorks": ["《霓虹雨》"],
       "tags": ["警察小说", "南方哥特", "路易斯安那", "硬汉派"],
       "sourceIds": ["simon-schuster-dave-robicheaux-series", "simon-schuster-neon-rain"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-020",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "阿米莉亚·皮博迪",
+        "original": "Amelia Peabody",
+        "en": "Amelia Peabody",
+        "aliases": ["阿梅莉亚·皮博迪", "Amelia Peabody Emerson", "Amelia Peabody"]
+      },
+      "region": "英国",
+      "creatorName": "伊丽莎白·彼得斯",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "维多利亚时代的独立女性与埃及学爱好者，在旅行和考古现场中以观察、推理与坚决行动调查异常事件。",
+      "featuredWorks": ["《沙洲上的鳄鱼》"],
+      "tags": ["女性侦探", "历史推理", "埃及学", "考古谜案"],
+      "sourceIds": ["hachette-amelia-peabody-series", "hachette-crocodile-sandbank"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-021",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "圭多·布鲁内蒂",
+        "original": "Guido Brunetti",
+        "en": "Guido Brunetti",
+        "aliases": ["布鲁内蒂警监", "布鲁内蒂探长", "Commissario Brunetti", "Guido Brunetti"]
+      },
+      "region": "意大利",
+      "creatorName": "唐娜·莱昂",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "威尼斯警务委员，在城市人情、行政体系与社会不平等之间，以耐心走访和道德判断推进调查。",
+      "featuredWorks": ["《拉·费尼切之死》"],
+      "tags": ["警察小说", "威尼斯", "社会派", "意大利推理"],
+      "sourceIds": ["penguin-brunetti-series", "penguin-death-la-fenice"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-022",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "阿尔芒·加马什",
+        "original": "Armand Gamache",
+        "en": "Armand Gamache",
+        "aliases": ["加马什总督察", "Inspector Gamache", "Chief Inspector Gamache", "Armand Gamache"]
+      },
+      "region": "加拿大",
+      "creatorName": "露易丝·佩妮",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "魁北克省警察局重案调查负责人，重视倾听、团队判断与社区关系，在表面宁静的环境中识别隐蔽冲突。",
+      "featuredWorks": ["《静物》"],
+      "tags": ["警察小说", "加拿大推理", "魁北克", "乡村谜案"],
+      "sourceIds": ["macmillan-gamache-series", "macmillan-still-life-gamache"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-023",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "梅茜·多布斯",
+        "original": "Maisie Dobbs",
+        "en": "Maisie Dobbs",
+        "aliases": ["梅西·多布斯", "Maisie Dobbs"]
+      },
+      "region": "英国",
+      "creatorName": "杰奎琳·温斯皮尔",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "第一次世界大战后在伦敦独立执业的调查员，结合访谈、心理观察和自身战地经历处理案件。",
+      "featuredWorks": ["《梅茜·多布斯》"],
+      "tags": ["女性侦探", "私人侦探", "历史推理", "战后英国"],
+      "sourceIds": ["macmillan-maisie-dobbs-series", "soho-maisie-dobbs"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-024",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "西里·派布恩医生",
+        "original": "Dr. Siri Paiboun",
+        "en": "Dr. Siri Paiboun",
+        "aliases": ["西里医生", "Dr Siri", "Siri Paiboun", "Dr. Siri Paiboun"]
+      },
+      "region": "老挝",
+      "creatorName": "科林·科特里尔",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "在老挝政权更迭后被任命为国家验尸官的年长医生，在资源有限与行政压力下调查异常死亡。",
+      "featuredWorks": ["《验尸官的午餐》"],
+      "tags": ["法医推理", "老挝", "历史推理", "制度观察"],
+      "sourceIds": ["soho-dr-siri-series", "soho-coroners-lunch"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-025",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "埃伦杜尔·斯维恩松",
+        "original": "Erlendur Sveinsson",
+        "en": "Erlendur Sveinsson",
+        "aliases": ["埃伦杜尔探长", "Inspector Erlendur", "Erlendur", "Erlendur Sveinsson"]
+      },
+      "region": "冰岛",
+      "creatorName": "阿诺德·英德里达松",
+      "mediaTypes": ["NOVEL", "FILM", "SERIES"],
+      "summary": "雷克雅未克警探，关注失踪者与旧案，以克制的程序调查揭开家庭记忆和社会变迁中的长期伤痕。",
+      "featuredWorks": ["Jar City"],
+      "tags": ["北欧犯罪", "警察小说", "冰岛", "冷案"],
+      "sourceIds": ["macmillan-erlendur-series", "macmillan-jar-city"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
