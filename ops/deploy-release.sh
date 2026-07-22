@@ -56,7 +56,7 @@ mkdir -p "$state_directory"
 wait_until_ready() {
   attempt=0
   while [ "$attempt" -lt 30 ]; do
-    if curl --fail --silent --show-error --max-time 5 http://127.0.0.1:3000/ready >/dev/null 2>&1; then
+    if curl --fail --silent --show-error --max-time 5 "$runtime_base_url/ready" >/dev/null 2>&1; then
       return 0
     fi
     attempt=$((attempt + 1))
@@ -79,6 +79,19 @@ set -a
 # The production file is a trusted, deployment-owned shell environment file.
 . "$env_file"
 set +a
+
+api_bind_port="${API_BIND_PORT:-3000}"
+case "$api_bind_port" in
+  ""|*[!0-9]*)
+    echo "API_BIND_PORT must be an integer between 1 and 65535" >&2
+    exit 1
+    ;;
+esac
+if [ "$api_bind_port" -lt 1 ] || [ "$api_bind_port" -gt 65535 ]; then
+  echo "API_BIND_PORT must be an integer between 1 and 65535" >&2
+  exit 1
+fi
+runtime_base_url="http://127.0.0.1:$api_bind_port"
 
 if [ -z "$readiness_file" ]; then
   readiness_file="${LAUNCH_READINESS_FILE:-ops/launch-readiness.json}"
@@ -119,7 +132,7 @@ if ! wait_until_ready; then
   release_ok=false
 elif ! npm run check:db; then
   release_ok=false
-elif ! RUNTIME_BASE_URL=http://127.0.0.1:3000 \
+elif ! RUNTIME_BASE_URL="$runtime_base_url" \
   METRICS_AUTH_TOKEN="$METRICS_AUTH_TOKEN" npm run check:runtime; then
   release_ok=false
 fi
@@ -130,7 +143,7 @@ if [ "$release_ok" != true ]; then
     echo "Restoring previous application image: $previous_tag" >&2
     API_ENV_FILE="$env_file" IMAGE_TAG="$previous_tag" docker compose up -d --no-build api
     if ! wait_until_ready || ! npm run check:db || \
-      ! RUNTIME_BASE_URL=http://127.0.0.1:3000 \
+      ! RUNTIME_BASE_URL="$runtime_base_url" \
         METRICS_AUTH_TOKEN="$METRICS_AUTH_TOKEN" npm run check:runtime; then
       echo "Automatic rollback also failed readiness checks" >&2
     fi

@@ -115,6 +115,8 @@ npm run dev:api
 - `GET /api/v1/admin/audit-logs`
 - `GET|PATCH /api/v1/admin/work-link-feedback`
 
+容器发布默认也只把 API 映射到宿主机回环端口 3000；共享服务器发生端口冲突时，可在生产环境文件和 Caddy 环境中设置同一个 `API_BIND_PORT`，发布与回滚探测会自动跟随该端口。
+
 ### 4. 打开小程序
 
 使用微信开发者工具导入仓库根目录。开发阶段使用游客 AppID，接口地址由 `apps/miniprogram/app.js` 中的 `apiBaseUrl` 控制。

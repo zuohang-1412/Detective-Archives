@@ -57,6 +57,7 @@ const wechatSecret = `release-${randomBytes(24).toString("hex")}`;
 const adminPassword = `release-${randomBytes(24).toString("hex")}`;
 const metricsToken = `release-${randomBytes(24).toString("hex")}`;
 const backupEncryptionPassphrase = `backup-${randomBytes(32).toString("hex")}`;
+const apiBindPort = "31000";
 const composeFiles = [
   path.join(root, "compose.yaml"),
   path.join(root, "ops", "compose.release-drill.yaml")
@@ -70,6 +71,7 @@ const commonEnvironment = {
   DATABASE_URL: hostDatabaseUrl.toString(),
   DETECTIVE_DB_NAME: drillDatabaseName,
   PGDATABASE: drillDatabaseName,
+  API_BIND_PORT: apiBindPort,
   RELEASE_STATE_DIRECTORY: stateDirectory
 };
 
@@ -115,6 +117,7 @@ await mkdir(backupDirectory, { recursive: true });
 await writeFile(envFile, [
   "API_HOST=0.0.0.0",
   "API_PORT=3000",
+  `API_BIND_PORT=${apiBindPort}`,
   "CORS_ORIGIN=https://api.detective.invalid",
   "TRUST_PROXY=true",
   "LOG_LEVEL=warn",
@@ -185,7 +188,7 @@ try {
   run("docker", ["compose", "up", "-d", "--no-build", "api"], baselineEnvironment);
   run("node", ["scripts/check-runtime-smoke.mjs"], {
     ...baselineEnvironment,
-    RUNTIME_BASE_URL: "http://127.0.0.1:3000",
+    RUNTIME_BASE_URL: `http://127.0.0.1:${apiBindPort}`,
     METRICS_AUTH_TOKEN: metricsToken
   });
   assert.deepEqual(activeContainer(baselineEnvironment), {

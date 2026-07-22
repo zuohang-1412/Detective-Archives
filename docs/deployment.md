@@ -77,7 +77,7 @@ PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- \
 
 ## 4. HTTPS 与网络
 
-- API 容器只绑定宿主机 `127.0.0.1:3000`，由 Caddy 对公网提供 443。
+- API 容器只绑定宿主机回环地址，默认端口为 `127.0.0.1:3000`，由 Caddy 对公网提供 443。共享服务器端口冲突时，在生产环境文件和 Caddy 进程环境中设置相同的 `API_BIND_PORT`；容器内服务仍固定监听 3000，发布、回滚和运行探测会自动使用新的宿主机端口。
 - 防火墙只开放 SSH、HTTP 和 HTTPS；PostgreSQL 端口仅允许数据库私网或安全组访问。
 - `CORS_ORIGIN` 只能包含真实 HTTPS 来源，多个来源使用英文逗号分隔。
 - 生产 PostgreSQL 优先使用 `PGSSLMODE=verify-full`；若云厂商仅提供私网非 SSL 连接，应通过安全组隔离并记录风险接受。

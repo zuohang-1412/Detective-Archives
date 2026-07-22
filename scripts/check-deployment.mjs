@@ -114,9 +114,26 @@ assert.match(dockerfile, /org\.opencontainers\.image\.revision/, "Runtime images
 assert.match(compose, /read_only:\s*true/, "API filesystem must be read-only");
 assert.match(compose, /SOURCE_COMMIT:\s*\$\{SOURCE_COMMIT:-unknown\}/, "Compose builds must accept the source revision");
 assert.match(compose, /no-new-privileges:true/, "API must disable privilege escalation");
-assert.match(compose, /127\.0\.0\.1:3000:3000/, "API port must bind to loopback");
+assert.match(
+  compose,
+  /127\.0\.0\.1:\$\{API_BIND_PORT:-3000\}:3000/,
+  "API port must bind to a configurable loopback port"
+);
 assert.match(compose, /healthcheck:[\s\S]*\/ready/, "Compose must probe database readiness");
-assert.match(caddyfile, /reverse_proxy\s+127\.0\.0\.1:3000/, "Caddy must proxy to loopback API");
+assert.match(
+  caddyfile,
+  /reverse_proxy\s+127\.0\.0\.1:\{\$API_BIND_PORT:3000\}/,
+  "Caddy must share the configurable loopback API port"
+);
+for (const releaseScript of [deployScript, rollbackScript]) {
+  assert.match(releaseScript, /API_BIND_PORT:-3000/, "Release scripts must default the host API port safely");
+  assert.match(
+    releaseScript,
+    /runtime_base_url="http:\/\/127\.0\.0\.1:\$api_bind_port"/,
+    "Release scripts must probe the configured loopback API port"
+  );
+  assert.match(releaseScript, /65535/, "Release scripts must reject an invalid host API port");
+}
 assert.match(qualityWorkflow, /services:[\s\S]*postgres:/, "CI must provide PostgreSQL");
 assert.match(qualityWorkflow, /npm run check:db-api/, "CI must exercise the database API lifecycle");
 assert.match(qualityWorkflow, /docker run[\s\S]*detective-archives-api:test/, "CI must start the built image");

@@ -47,7 +47,7 @@ fi
 wait_until_ready() {
   attempt=0
   while [ "$attempt" -lt 30 ]; do
-    if curl --fail --silent --show-error --max-time 5 http://127.0.0.1:3000/ready >/dev/null 2>&1; then
+    if curl --fail --silent --show-error --max-time 5 "$runtime_base_url/ready" >/dev/null 2>&1; then
       return 0
     fi
     attempt=$((attempt + 1))
@@ -70,13 +70,26 @@ set -a
 . "$env_file"
 set +a
 
+api_bind_port="${API_BIND_PORT:-3000}"
+case "$api_bind_port" in
+  ""|*[!0-9]*)
+    echo "API_BIND_PORT must be an integer between 1 and 65535" >&2
+    exit 1
+    ;;
+esac
+if [ "$api_bind_port" -lt 1 ] || [ "$api_bind_port" -gt 65535 ]; then
+  echo "API_BIND_PORT must be an integer between 1 and 65535" >&2
+  exit 1
+fi
+runtime_base_url="http://127.0.0.1:$api_bind_port"
+
 echo "Rolling back application to detective-archives-api:$requested_tag"
 API_ENV_FILE="$env_file" IMAGE_TAG="$requested_tag" docker compose up -d --no-build api
 
 rollback_ok=true
 if ! wait_until_ready; then
   rollback_ok=false
-elif ! RUNTIME_BASE_URL=http://127.0.0.1:3000 \
+elif ! RUNTIME_BASE_URL="$runtime_base_url" \
   METRICS_AUTH_TOKEN="$METRICS_AUTH_TOKEN" npm run check:runtime; then
   rollback_ok=false
 fi
@@ -88,7 +101,7 @@ if [ "$rollback_ok" != true ]; then
     echo "Restoring the application image that was active before rollback: $current_tag" >&2
     API_ENV_FILE="$env_file" IMAGE_TAG="$current_tag" docker compose up -d --no-build api
     if wait_until_ready; then
-      RUNTIME_BASE_URL=http://127.0.0.1:3000 \
+      RUNTIME_BASE_URL="$runtime_base_url" \
         METRICS_AUTH_TOKEN="$METRICS_AUTH_TOKEN" npm run check:runtime || true
     fi
   fi
