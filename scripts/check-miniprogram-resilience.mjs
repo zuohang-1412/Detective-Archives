@@ -198,6 +198,36 @@ await archive.retrySearch();
 assert.equal(archive.data.error, "");
 assert.equal(archive.data.coverage.total, 0);
 
+let communityFails = true;
+const community = await loadPage("community", {
+  async listCommunityReviews() {
+    if (communityFails) throw new Error("社区动态网络失败");
+    return {
+      data: [{
+        id: "review-community-1",
+        body: "公开评价",
+        containsSpoiler: false,
+        reviewType: "SHORT",
+        author: { displayName: "测试读者" },
+        work: { slug: "work-1", titleZh: "测试作品" },
+        likeCount: 0,
+        commentCount: 0,
+        createdAt: "2026-07-22T00:00:00.000Z"
+      }],
+      pagination: { page: 1, totalPages: 1 }
+    };
+  }
+});
+community.feedRequestId = 0;
+await community.loadFeed();
+assert.equal(community.data.loading, false);
+assert.equal(community.data.error, "社区动态网络失败");
+communityFails = false;
+await community.retryFeed();
+assert.equal(community.data.error, "");
+assert.equal(community.data.reviews.length, 1);
+assert.equal(community.data.reviews[0].authorInitial, "测");
+
 let detectiveFails = true;
 const detective = await loadPage("detective", {
   async getDetective() {
@@ -443,6 +473,7 @@ assert.equal(reviewEditor.data.body, "测试正文");
 const retryBindings = [
   ["home", "loadFeatured", "轻触重试"],
   ["archive", "retrySearch", "重新检索"],
+  ["community", "retryFeed", "重新读取动态"],
   ["detective", "retryLoad", "重新读取"],
   ["work", "loadWork", "重新读取"],
   ["work", "retryReviews", "重新读取评价"],

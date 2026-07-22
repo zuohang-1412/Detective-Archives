@@ -1,0 +1,226 @@
+.community-hero {
+  position: relative;
+  overflow: hidden;
+  margin: -32rpx -28rpx 48rpx;
+  padding: 62rpx 42rpx 54rpx;
+  background: #101820;
+  color: #fffaf0;
+}
+
+.community-hero::after {
+  position: absolute;
+  right: -70rpx;
+  bottom: -150rpx;
+  width: 330rpx;
+  height: 330rpx;
+  border: 1rpx solid rgba(215, 168, 75, 0.36);
+  border-radius: 50%;
+  content: "";
+}
+
+.hero-kicker,
+.hero-title,
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.hero-kicker {
+  color: #d7a84b;
+  font-size: 21rpx;
+  letter-spacing: 5rpx;
+}
+
+.hero-title {
+  margin-top: 22rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48rpx;
+  font-weight: 700;
+}
+
+.hero-copy {
+  max-width: 590rpx;
+  margin-top: 20rpx;
+  color: rgba(255, 250, 240, 0.72);
+  font-size: 25rpx;
+  line-height: 1.7;
+}
+
+.feed-heading,
+.feed-meta,
+.feed-footer,
+.author-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.archive-link {
+  color: #9f3123;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.review-filters {
+  display: flex;
+  gap: 14rpx;
+  margin-bottom: 28rpx;
+}
+
+.review-filter {
+  min-width: 104rpx;
+  padding: 14rpx 22rpx;
+  border: 1rpx solid #cdbfa9;
+  border-radius: 999rpx;
+  color: #6f665b;
+  font-size: 23rpx;
+  text-align: center;
+}
+
+.review-filter.active {
+  border-color: #9f3123;
+  background: #9f3123;
+  color: #fffaf0;
+}
+
+.feed-card {
+  padding: 30rpx;
+}
+
+.author-line {
+  justify-content: flex-start;
+  gap: 16rpx;
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #182026;
+  color: #d7a84b;
+  font-family: Georgia, serif;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.author-name {
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.publish-date {
+  margin-top: 5rpx;
+  color: #91887c;
+  font-size: 20rpx;
+}
+
+.review-type {
+  padding: 7rpx 14rpx;
+  border-radius: 999rpx;
+  background: #eee2cf;
+  color: #725e42;
+  font-size: 20rpx;
+}
+
+.work-chip {
+  display: inline-block;
+  margin-top: 24rpx;
+  color: #9f3123;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.review-title {
+  margin-top: 20rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34rpx;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.review-body {
+  margin-top: 18rpx;
+  color: #4f4a43;
+  font-size: 26rpx;
+  line-height: 1.75;
+}
+
+.spoiler-cover {
+  margin-top: 20rpx;
+  padding: 34rpx 24rpx;
+  border: 1rpx dashed #9f3123;
+  border-radius: 14rpx;
+  background: #efe2d4;
+  color: #7a2c23;
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.feed-footer {
+  align-items: flex-end;
+  gap: 18rpx;
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(24, 32, 38, 0.09);
+}
+
+.rating {
+  color: #8a6422;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.interaction {
+  margin-left: auto;
+  color: #777269;
+  font-size: 21rpx;
+}
+
+.empty-feed {
+  padding: 72rpx 30rpx;
+  border: 1rpx dashed #c9bca8;
+  border-radius: 18rpx;
+  text-align: center;
+}
+
+.empty-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.empty-copy {
+  margin-top: 16rpx;
+  color: #777269;
+  font-size: 24rpx;
+  line-height: 1.65;
+}
+
+.empty-action,
+.load-more {
+  margin-top: 28rpx;
+  border-radius: 9rpx;
+  background: #9f3123;
+  color: #fffaf0;
+  font-size: 24rpx;
+}
+
+.empty-action::after,
+.load-more::after {
+  border: 0;
+}
+
+.load-more {
+  width: 320rpx;
+}
+
+.feed-complete {
+  padding: 26rpx 0 8rpx;
+  color: #8b8175;
+  font-size: 22rpx;
+  text-align: center;
+}

@@ -19,7 +19,8 @@ for (const [name, value, minimum, maximum] of [
 const routes = [
   "/api/v1/detectives?pageSize=30",
   "/api/v1/works?pageSize=20",
-  "/api/v1/picture-book?pageSize=30"
+  "/api/v1/picture-book?pageSize=30",
+  "/api/v1/community/reviews?pageSize=20"
 ];
 
 async function timedRequest(pathname) {

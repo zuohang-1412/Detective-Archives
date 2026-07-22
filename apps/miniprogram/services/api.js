@@ -232,6 +232,10 @@ function listReviews(workId, params = {}) {
   return request(`/api/v1/works/${encodeURIComponent(workId)}/reviews`, { data: params });
 }
 
+function listCommunityReviews(params = {}) {
+  return request("/api/v1/community/reviews", { data: params });
+}
+
 function getReview(reviewId, params = {}) {
   return request(`/api/v1/reviews/${encodeURIComponent(reviewId)}`, { data: params });
 }
@@ -325,6 +329,7 @@ module.exports = {
   getWork,
   getReview,
   listArchiveDirectory,
+  listCommunityReviews,
   listDetectives,
   listPictureBookEntries,
   listMyReviews,

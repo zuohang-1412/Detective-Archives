@@ -1,0 +1,85 @@
+<view class="page-shell">
+  <view class="community-hero">
+    <text class="hero-kicker">READERS' SALON</text>
+    <view class="hero-title">推理读者的公开笔记</view>
+    <view class="hero-copy">从不同作品的短评与长评中发现线索。所有内容经过审核，剧透默认隐藏。</view>
+  </view>
+
+  <view class="feed-heading">
+    <view>
+      <text class="eyebrow">LATEST NOTES</text>
+      <view class="section-title">最新动态</view>
+    </view>
+    <text class="archive-link" bindtap="goToArchive">发现作品</text>
+  </view>
+
+  <view class="review-filters">
+    <view
+      wx:for="{{filters}}"
+      wx:key="label"
+      class="review-filter {{activeReviewType === item.value ? 'active' : ''}}"
+      data-review-type="{{item.value}}"
+      bindtap="selectReviewType"
+    >{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="state-message">正在读取社区动态…</view>
+  <view wx:elif="{{error}}" class="state-message">
+    <view class="state-copy">{{error}}</view>
+    <view class="state-actions">
+      <button class="state-action" bindtap="retryFeed">重新读取动态</button>
+    </view>
+  </view>
+  <view wx:elif="{{!reviews.length}}" class="empty-feed">
+    <view class="empty-title">还没有公开{{activeReviewType === 'LONG' ? '长评' : activeReviewType === 'SHORT' ? '短评' : '动态'}}</view>
+    <view class="empty-copy">先从一部作品开始，写下你的第一份阅读或观看记录。</view>
+    <button class="empty-action" bindtap="goToArchive">去发现作品</button>
+  </view>
+  <view wx:else>
+    <view
+      wx:for="{{reviews}}"
+      wx:key="id"
+      class="card feed-card"
+      data-review-id="{{item.id}}"
+      bindtap="openReview"
+    >
+      <view class="feed-meta">
+        <view class="author-line">
+          <view class="avatar-placeholder">{{item.authorInitial}}</view>
+          <view>
+            <view class="author-name">{{item.author.displayName}}</view>
+            <view class="publish-date">{{item.publishedAtLabel}}</view>
+          </view>
+        </view>
+        <text class="review-type">{{item.reviewTypeLabel}}</text>
+      </view>
+
+      <view
+        class="work-chip"
+        data-slug="{{item.work.slug}}"
+        catchtap="openWork"
+      >《{{item.work.titleZh}}》</view>
+      <view wx:if="{{item.title}}" class="review-title">{{item.title}}</view>
+      <view
+        wx:if="{{item.containsSpoiler && !item.spoilerRevealed}}"
+        class="spoiler-cover"
+        data-index="{{index}}"
+        catchtap="revealSpoiler"
+      >含剧透，轻触后查看这条笔记</view>
+      <view wx:else class="review-body">{{item.bodyPreview}}</view>
+
+      <view class="feed-footer">
+        <text wx:if="{{item.rating}}" class="rating">评分 {{item.rating}} / 5</text>
+        <text class="interaction">赞 {{item.likeCount}} · 回复 {{item.commentCount}} · 查看讨论 ›</text>
+      </view>
+    </view>
+
+    <button
+      wx:if="{{hasMore}}"
+      class="load-more"
+      loading="{{loadingMore}}"
+      bindtap="loadMore"
+    >加载更多动态</button>
+    <view wx:else class="feed-complete">已展示当前筛选的全部公开笔记</view>
+  </view>
+</view>

@@ -83,6 +83,8 @@ for (const page of appConfig.pages) {
 const archiveScript = await readFile(path.join(root, "pages/archive/archive.js"), "utf8");
 const archiveTemplate = await readFile(path.join(root, "pages/archive/archive.wxml"), "utf8");
 const apiScript = await readFile(path.join(root, "services/api.js"), "utf8");
+const communityScript = await readFile(path.join(root, "pages/community/community.js"), "utf8");
+const communityTemplate = await readFile(path.join(root, "pages/community/community.wxml"), "utf8");
 const meScript = await readFile(path.join(root, "pages/me/me.js"), "utf8");
 const meTemplate = await readFile(path.join(root, "pages/me/me.wxml"), "utf8");
 const reviewEditorScript = await readFile(path.join(root, "pages/review-editor/review-editor.js"), "utf8");
@@ -118,7 +120,8 @@ for (const apiBehavior of [
   "deleteReview",
   "deleteComment",
   "createAppeal",
-  "downloadAccountData"
+  "downloadAccountData",
+  "listCommunityReviews"
 ]) {
   if (!apiScript.includes(`function ${apiBehavior}(`)) {
     throw new Error(`Mini Program API must implement ${apiBehavior}`);
@@ -174,6 +177,30 @@ if (!workScript.includes("loadMoreReviews(") || !workTemplate.includes('bindtap=
 }
 if (!workScript.includes("链接已失效或暂不可用") || !workScript.includes("无法继续打开这条正版渠道")) {
   throw new Error("Work detail must stop when server-side link validation fails");
+}
+if (!appConfig.pages.includes("pages/community/community")
+  || !appConfig.tabBar?.list?.some((item) => item.pagePath === "pages/community/community")) {
+  throw new Error("Mini Program must expose the public community feed as a tab page");
+}
+for (const behavior of ["selectReviewType", "loadMore", "retryFeed", "revealSpoiler", "openReview", "openWork"]) {
+  if (!communityScript.includes(`${behavior}(`)) {
+    throw new Error(`Community feed must implement ${behavior}`);
+  }
+}
+for (const binding of [
+  'bindtap="selectReviewType"',
+  'bindtap="loadMore"',
+  'bindtap="retryFeed"',
+  'catchtap="revealSpoiler"',
+  'bindtap="openReview"',
+  'catchtap="openWork"'
+]) {
+  if (!communityTemplate.includes(binding)) {
+    throw new Error(`Community feed must expose ${binding}`);
+  }
+}
+if (!communityTemplate.includes("含剧透") || communityTemplate.includes("{{item.body}}")) {
+  throw new Error("Community feed must protect spoiler content and render only bounded previews");
 }
 if (!reviewDetailScript.includes("loadMoreComments(") || !reviewDetailTemplate.includes('bindtap="loadMoreComments"')) {
   throw new Error("Review detail must expose public comment pagination");

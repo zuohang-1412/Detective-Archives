@@ -80,6 +80,12 @@ const publicReviewSelect = `
       'displayName', author.display_name,
       'avatarUrl', author.avatar_url
     ) AS author,
+    jsonb_build_object(
+      'id', work.id,
+      'slug', work.slug,
+      'titleZh', work.title_zh,
+      'titleOriginal', work.title_original
+    ) AS work,
     (SELECT COUNT(*)::int FROM review_likes likes WHERE likes.review_id = review.id) AS "likeCount",
     (SELECT COUNT(*)::int FROM comments comment
       WHERE comment.review_id = review.id
@@ -91,6 +97,7 @@ const publicReviewSelect = `
     ) END AS "likedByMe"
   FROM reviews review
   JOIN users author ON author.id = review.user_id
+  JOIN works work ON work.id = review.work_id
 `;
 
 export async function listPublicReviews(
@@ -102,8 +109,14 @@ export async function listPublicReviews(
 ) {
   const countResult = await queryRows<{ total: string }>(database, `
     SELECT COUNT(*)::text AS total
-    FROM reviews
-    WHERE work_id = $1 AND status = 'PUBLISHED' AND deleted_at IS NULL
+    FROM reviews review
+    JOIN users author ON author.id = review.user_id
+    JOIN works work ON work.id = review.work_id
+    WHERE review.work_id = $1
+      AND review.status = 'PUBLISHED'
+      AND review.deleted_at IS NULL
+      AND author.is_active = TRUE
+      AND work.status = 'PUBLISHED'
   `, [workId]);
   const result = await queryRows<ReviewRow>(database, `
     ${publicReviewSelect}
@@ -111,6 +124,7 @@ export async function listPublicReviews(
       AND review.status = 'PUBLISHED'
       AND review.deleted_at IS NULL
       AND author.is_active = TRUE
+      AND work.status = 'PUBLISHED'
     ORDER BY review.published_at DESC, review.created_at DESC, review.id
     LIMIT $3 OFFSET $4
   `, [viewerId, workId, pageSize, (page - 1) * pageSize]);
@@ -131,8 +145,43 @@ export async function getPublicReview(
       AND review.status = 'PUBLISHED'
       AND review.deleted_at IS NULL
       AND author.is_active = TRUE
+      AND work.status = 'PUBLISHED'
   `, [viewerId, reviewId]);
   return result.rows[0] ?? null;
+}
+
+export async function listCommunityReviews(
+  database: DatabaseClient,
+  viewerId: string | null,
+  reviewType: ReviewType | null,
+  page: number,
+  pageSize: number
+) {
+  const countResult = await queryRows<{ total: string }>(database, `
+    SELECT COUNT(*)::text AS total
+    FROM reviews review
+    JOIN users author ON author.id = review.user_id
+    JOIN works work ON work.id = review.work_id
+    WHERE review.status = 'PUBLISHED'
+      AND review.deleted_at IS NULL
+      AND author.is_active = TRUE
+      AND work.status = 'PUBLISHED'
+      AND ($1::review_type IS NULL OR review.review_type = $1)
+  `, [reviewType]);
+  const result = await queryRows<ReviewRow>(database, `
+    ${publicReviewSelect}
+    WHERE review.status = 'PUBLISHED'
+      AND review.deleted_at IS NULL
+      AND author.is_active = TRUE
+      AND work.status = 'PUBLISHED'
+      AND ($2::review_type IS NULL OR review.review_type = $2)
+    ORDER BY review.published_at DESC, review.created_at DESC, review.id
+    LIMIT $3 OFFSET $4
+  `, [viewerId, reviewType, pageSize, (page - 1) * pageSize]);
+  return {
+    data: result.rows,
+    total: Number.parseInt(countResult.rows[0]?.total ?? "0", 10)
+  };
 }
 
 const myReviewSelect = `
@@ -356,10 +405,17 @@ export async function listPublicComments(
     SELECT COUNT(*)::text AS total
     FROM comments comment
     JOIN users author ON author.id = comment.user_id
+    JOIN reviews review ON review.id = comment.review_id
+    JOIN users review_author ON review_author.id = review.user_id
+    JOIN works work ON work.id = review.work_id
     WHERE comment.review_id = $1
       AND comment.status = 'PUBLISHED'
       AND comment.deleted_at IS NULL
       AND author.is_active = TRUE
+      AND review.status = 'PUBLISHED'
+      AND review.deleted_at IS NULL
+      AND review_author.is_active = TRUE
+      AND work.status = 'PUBLISHED'
   `, [reviewId]);
   const result = await queryRows<CommentRow>(database, `
     SELECT
@@ -382,10 +438,17 @@ export async function listPublicComments(
       ) END AS "likedByMe"
     FROM comments comment
     JOIN users author ON author.id = comment.user_id
+    JOIN reviews review ON review.id = comment.review_id
+    JOIN users review_author ON review_author.id = review.user_id
+    JOIN works work ON work.id = review.work_id
     WHERE comment.review_id = $2
       AND comment.status = 'PUBLISHED'
       AND comment.deleted_at IS NULL
       AND author.is_active = TRUE
+      AND review.status = 'PUBLISHED'
+      AND review.deleted_at IS NULL
+      AND review_author.is_active = TRUE
+      AND work.status = 'PUBLISHED'
     ORDER BY comment.published_at, comment.created_at, comment.id
     LIMIT $3 OFFSET $4
   `, [viewerId, reviewId, pageSize, (page - 1) * pageSize]);
@@ -412,9 +475,13 @@ export async function createComment(
       )
       SELECT review.id, $1, $3, $4, $5, 'PENDING_REVIEW'
       FROM reviews review
+      JOIN users review_author ON review_author.id = review.user_id
+      JOIN works work ON work.id = review.work_id
       WHERE review.id = $2
         AND review.status = 'PUBLISHED'
         AND review.deleted_at IS NULL
+        AND review_author.is_active = TRUE
+        AND work.status = 'PUBLISHED'
         AND (
           $3::uuid IS NULL
           OR EXISTS (
@@ -475,12 +542,36 @@ export async function setLike(
   liked: boolean
 ) {
   const table = targetType === "REVIEW" ? "review_likes" : "comment_likes";
-  const targetTable = targetType === "REVIEW" ? "reviews" : "comments";
   const targetColumn = targetType === "REVIEW" ? "review_id" : "comment_id";
+  const visibleTargetFrom = (targetIdPlaceholder: string) => targetType === "REVIEW"
+    ? `
+      FROM reviews target
+      JOIN users author ON author.id = target.user_id
+      JOIN works work ON work.id = target.work_id
+      WHERE target.id = ${targetIdPlaceholder}
+        AND target.status = 'PUBLISHED'
+        AND target.deleted_at IS NULL
+        AND author.is_active = TRUE
+        AND work.status = 'PUBLISHED'
+    `
+    : `
+      FROM comments target
+      JOIN users author ON author.id = target.user_id
+      JOIN reviews review ON review.id = target.review_id
+      JOIN users review_author ON review_author.id = review.user_id
+      JOIN works work ON work.id = review.work_id
+      WHERE target.id = ${targetIdPlaceholder}
+        AND target.status = 'PUBLISHED'
+        AND target.deleted_at IS NULL
+        AND author.is_active = TRUE
+        AND review.status = 'PUBLISHED'
+        AND review.deleted_at IS NULL
+        AND review_author.is_active = TRUE
+        AND work.status = 'PUBLISHED'
+    `;
   const target = await queryRows<{ exists: boolean }>(database, `
     SELECT EXISTS (
-      SELECT 1 FROM ${targetTable}
-      WHERE id = $1 AND status = 'PUBLISHED' AND deleted_at IS NULL
+      SELECT 1 ${visibleTargetFrom("$1")}
     ) AS exists
   `, [targetId]);
   if (!target.rows[0]?.exists) return null;
@@ -488,10 +579,7 @@ export async function setLike(
     await database.query(`
       INSERT INTO ${table} (user_id, ${targetColumn})
       SELECT $1, target.id
-      FROM ${targetTable} target
-      WHERE target.id = $2
-        AND target.status = 'PUBLISHED'
-        AND target.deleted_at IS NULL
+      ${visibleTargetFrom("$2")}
       ON CONFLICT DO NOTHING
     `, [userId, targetId]);
   } else {
@@ -524,13 +612,32 @@ export async function createReport(
       SELECT $1, $2::varchar, $3::uuid, $4, $5
       WHERE (
         $2::varchar = 'REVIEW' AND EXISTS (
-          SELECT 1 FROM reviews
-          WHERE id = $3::uuid AND status = 'PUBLISHED' AND deleted_at IS NULL
+          SELECT 1
+          FROM reviews review
+          JOIN users author ON author.id = review.user_id
+          JOIN works work ON work.id = review.work_id
+          WHERE review.id = $3::uuid
+            AND review.status = 'PUBLISHED'
+            AND review.deleted_at IS NULL
+            AND author.is_active = TRUE
+            AND work.status = 'PUBLISHED'
         )
       ) OR (
         $2::varchar = 'COMMENT' AND EXISTS (
-          SELECT 1 FROM comments
-          WHERE id = $3::uuid AND status = 'PUBLISHED' AND deleted_at IS NULL
+          SELECT 1
+          FROM comments comment
+          JOIN users author ON author.id = comment.user_id
+          JOIN reviews review ON review.id = comment.review_id
+          JOIN users review_author ON review_author.id = review.user_id
+          JOIN works work ON work.id = review.work_id
+          WHERE comment.id = $3::uuid
+            AND comment.status = 'PUBLISHED'
+            AND comment.deleted_at IS NULL
+            AND author.is_active = TRUE
+            AND review.status = 'PUBLISHED'
+            AND review.deleted_at IS NULL
+            AND review_author.is_active = TRUE
+            AND work.status = 'PUBLISHED'
         )
       )
       RETURNING id, status::text

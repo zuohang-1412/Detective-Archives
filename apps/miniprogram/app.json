@@ -5,6 +5,7 @@
     "pages/archive/archive",
     "pages/detective/detective",
     "pages/work/work",
+    "pages/community/community",
     "pages/me/me",
     "pages/review-editor/review-editor",
     "pages/review-detail/review-detail",
@@ -30,6 +31,10 @@
       {
         "pagePath": "pages/archive/archive",
         "text": "档案"
+      },
+      {
+        "pagePath": "pages/community/community",
+        "text": "社区"
       },
       {
         "pagePath": "pages/me/me",

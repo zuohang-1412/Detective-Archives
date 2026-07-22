@@ -145,25 +145,27 @@ async function cleanupTestUsers() {
   }
 }
 await cleanupTestUsers();
-const expectedDataExportIndexes = [
+const expectedIntegrationIndexes = [
   "idx_reviews_user_export",
   "idx_comments_user_export",
   "idx_reports_reporter_export",
   "idx_work_link_feedback_user_export",
   "idx_work_link_click_events_user_export",
   "idx_moderation_records_target_export",
-  "idx_audit_logs_actor_export"
+  "idx_audit_logs_actor_export",
+  "idx_reviews_public_feed",
+  "idx_reviews_public_feed_type"
 ];
-const dataExportIndexResult = await database.query(`
+const integrationIndexResult = await database.query(`
   SELECT indexname
   FROM pg_indexes
   WHERE schemaname = current_schema()
     AND indexname = ANY($1::text[])
-`, [expectedDataExportIndexes]);
+`, [expectedIntegrationIndexes]);
 assert.deepEqual(
-  dataExportIndexResult.rows.map(({ indexname }) => indexname).sort(),
-  [...expectedDataExportIndexes].sort(),
-  "personal data export indexes must be applied"
+  integrationIndexResult.rows.map(({ indexname }) => indexname).sort(),
+  [...expectedIntegrationIndexes].sort(),
+  "feature query indexes must be applied"
 );
 const app = await buildApp({
   database,
@@ -715,6 +717,83 @@ try {
   });
   assert.equal(publicManagedWork.statusCode, 200, publicManagedWork.body);
   assert.equal(publicManagedWork.json().data.links.length, 1);
+  const managedWorkReviewResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/works/${managedWorkId}/reviews`,
+    headers: secondaryAuthorization,
+    payload: {
+      reviewType: "SHORT",
+      body: "这条公开评价用于验证作品下架后的社区可见性。",
+      rating: 4,
+      containsSpoiler: false
+    }
+  });
+  assert.equal(managedWorkReviewResponse.statusCode, 201, managedWorkReviewResponse.body);
+  const managedWorkReviewId = managedWorkReviewResponse.json().data.id;
+  const publishManagedWorkReviewResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/REVIEW/${managedWorkReviewId}`,
+    headers: adminAuthorization,
+    payload: { action: "PUBLISH", reason: "验证社区动态下架一致性" }
+  });
+  assert.equal(
+    publishManagedWorkReviewResponse.statusCode,
+    200,
+    publishManagedWorkReviewResponse.body
+  );
+  const communityBeforeWorkHiddenResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/community/reviews?reviewType=SHORT&pageSize=50"
+  });
+  assert.equal(
+    communityBeforeWorkHiddenResponse.statusCode,
+    200,
+    communityBeforeWorkHiddenResponse.body
+  );
+  assert.ok(
+    communityBeforeWorkHiddenResponse.json().data.some((item) => item.id === managedWorkReviewId)
+  );
+  assert.equal(
+    communityBeforeWorkHiddenResponse.json().data.find((item) => item.id === managedWorkReviewId)
+      .work.slug,
+    testWorkSlug
+  );
+  await database.query("UPDATE users SET is_active = FALSE WHERE id = $1", [
+    secondaryLoginResponse.json().data.user.id
+  ]);
+  const communityWithInactiveAuthorResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/community/reviews?reviewType=SHORT&pageSize=50"
+  });
+  assert.equal(
+    communityWithInactiveAuthorResponse.statusCode,
+    200,
+    communityWithInactiveAuthorResponse.body
+  );
+  assert.equal(
+    communityWithInactiveAuthorResponse.json().data.some((item) => item.id === managedWorkReviewId),
+    false
+  );
+  const workReviewsWithInactiveAuthorResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${managedWorkId}/reviews?pageSize=50`
+  });
+  assert.equal(
+    workReviewsWithInactiveAuthorResponse.statusCode,
+    200,
+    workReviewsWithInactiveAuthorResponse.body
+  );
+  assert.equal(workReviewsWithInactiveAuthorResponse.json().pagination.total, 0);
+  await database.query("UPDATE users SET is_active = TRUE WHERE id = $1", [
+    secondaryLoginResponse.json().data.user.id
+  ]);
+  const communityAfterAuthorRestoreResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/community/reviews?reviewType=SHORT&pageSize=50"
+  });
+  assert.ok(
+    communityAfterAuthorRestoreResponse.json().data.some((item) => item.id === managedWorkReviewId)
+  );
   const managedShelfResponse = await app.inject({
     method: "PUT",
     url: `/api/v1/me/shelf/${managedWorkId}`,
@@ -735,6 +814,49 @@ try {
     url: `/api/v1/works/${testWorkSlug}`
   });
   assert.equal(hiddenPublicWorkResponse.statusCode, 404, hiddenPublicWorkResponse.body);
+  const hiddenWorkReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/reviews/${managedWorkReviewId}`
+  });
+  assert.equal(hiddenWorkReviewResponse.statusCode, 404, hiddenWorkReviewResponse.body);
+  const communityAfterWorkHiddenResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/community/reviews?reviewType=SHORT&pageSize=50"
+  });
+  assert.equal(
+    communityAfterWorkHiddenResponse.statusCode,
+    200,
+    communityAfterWorkHiddenResponse.body
+  );
+  assert.equal(
+    communityAfterWorkHiddenResponse.json().data.some((item) => item.id === managedWorkReviewId),
+    false
+  );
+  const hiddenWorkCommentResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/reviews/${managedWorkReviewId}/comments`,
+    headers: authorization,
+    payload: { body: "下架作品的评价不能继续回复。", containsSpoiler: false }
+  });
+  assert.equal(hiddenWorkCommentResponse.statusCode, 404, hiddenWorkCommentResponse.body);
+  const hiddenWorkLikeResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/reviews/${managedWorkReviewId}/like`,
+    headers: authorization
+  });
+  assert.equal(hiddenWorkLikeResponse.statusCode, 404, hiddenWorkLikeResponse.body);
+  const hiddenWorkReportResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/reports",
+    headers: authorization,
+    payload: {
+      targetType: "REVIEW",
+      targetId: managedWorkReviewId,
+      reasonCode: "OTHER",
+      description: "下架作品的评价不应继续接受举报写入"
+    }
+  });
+  assert.equal(hiddenWorkReportResponse.statusCode, 404, hiddenWorkReportResponse.body);
   const retainedShelfItemResponse = await app.inject({
     method: "GET",
     url: `/api/v1/me/shelf/${managedWorkId}`,
@@ -768,6 +890,11 @@ try {
     payload: { status: "PUBLISHED" }
   });
   assert.equal(restoreManagedWorkResponse.statusCode, 200, restoreManagedWorkResponse.body);
+  const restoredWorkReviewResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/reviews/${managedWorkReviewId}`
+  });
+  assert.equal(restoredWorkReviewResponse.statusCode, 200, restoredWorkReviewResponse.body);
   const trackedManagedWorkViewResponse = await app.inject({
     method: "GET",
     url: `/api/v1/works/${testWorkSlug}`,
@@ -1035,6 +1162,28 @@ try {
   });
   assert.equal(publicReviewResponse.statusCode, 200, publicReviewResponse.body);
   assert.equal(publicReviewResponse.json().data[0].containsSpoiler, true);
+  const communityReviewResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/community/reviews?reviewType=SHORT&pageSize=50",
+    headers: secondaryAuthorization
+  });
+  assert.equal(communityReviewResponse.statusCode, 200, communityReviewResponse.body);
+  const communityReview = communityReviewResponse.json().data.find((item) => item.id === reviewId);
+  assert.ok(communityReview);
+  assert.equal(communityReview.work.id, workId);
+  assert.equal(communityReview.containsSpoiler, true);
+  assert.equal(communityReview.likedByMe, false);
+  const longCommunityResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/community/reviews?reviewType=LONG&pageSize=50"
+  });
+  assert.equal(longCommunityResponse.statusCode, 200, longCommunityResponse.body);
+  assert.equal(longCommunityResponse.json().data.some((item) => item.id === reviewId), false);
+  const invalidCommunityPageResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/community/reviews?pageSize=51"
+  });
+  assert.equal(invalidCommunityPageResponse.statusCode, 400, invalidCommunityPageResponse.body);
 
   const hideReviewForAppealResponse = await app.inject({
     method: "POST",
@@ -1491,7 +1640,7 @@ try {
   assert.ok(analytics.communityModeration.appealRecoveryRate > 0);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, personal data export, product analytics, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account, community and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, community feed, personal data export, product analytics, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();

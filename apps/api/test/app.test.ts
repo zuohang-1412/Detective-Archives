@@ -271,6 +271,20 @@ describe("detective archives API", () => {
   });
 
   it("validates community content before database writes", async () => {
+    const communityResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/community/reviews"
+    });
+    assert.equal(communityResponse.statusCode, 503);
+    assert.equal(communityResponse.json().code, "DATABASE_REQUIRED");
+
+    const invalidCommunityResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/community/reviews?reviewType=UNKNOWN"
+    });
+    assert.equal(invalidCommunityResponse.statusCode, 400);
+    assert.equal(invalidCommunityResponse.json().code, "INVALID_COMMUNITY_QUERY");
+
     const reviewsResponse = await app.inject({
       method: "GET",
       url: "/api/v1/works/00000000-0000-4000-8000-000000000001/reviews"

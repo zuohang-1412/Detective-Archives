@@ -12,6 +12,7 @@ import {
   type ContentSafetyAudit,
   getMyReview,
   getPublicReview,
+  listCommunityReviews,
   listMyReviews,
   listPublicComments,
   listPublicReviews,
@@ -25,6 +26,9 @@ const uuidParamsSchema = z.object({ workId: z.uuid().optional(), reviewId: z.uui
 const reviewListSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(50).default(20)
+});
+const communityListSchema = reviewListSchema.extend({
+  reviewType: z.enum(["SHORT", "LONG"]).optional()
 });
 const reviewDetailQuerySchema = z.object({
   commentPage: z.coerce.number().int().min(1).default(1),
@@ -123,6 +127,36 @@ export const communityRoutes: FastifyPluginAsync<CommunityRouteOptions> = async 
   app,
   options
 ) => {
+  app.get("/community/reviews", async (request, reply) => {
+    const query = communityListSchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.code(400).send({
+        code: "INVALID_COMMUNITY_QUERY",
+        message: "社区动态查询条件不合法"
+      });
+    }
+    if (!options.database) {
+      return reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
+    }
+    const viewer = await optionalViewer(options.database, request);
+    const result = await listCommunityReviews(
+      options.database,
+      viewer?.id ?? null,
+      query.data.reviewType ?? null,
+      query.data.page,
+      query.data.pageSize
+    );
+    return {
+      data: result.data,
+      pagination: {
+        page: query.data.page,
+        pageSize: query.data.pageSize,
+        total: result.total,
+        totalPages: Math.ceil(result.total / query.data.pageSize)
+      }
+    };
+  });
+
   app.get("/works/:workId/reviews", async (request, reply) => {
     const params = uuidParamsSchema.safeParse(request.params);
     const query = reviewListSchema.safeParse(request.query);
