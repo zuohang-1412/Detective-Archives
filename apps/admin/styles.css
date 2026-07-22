@@ -41,7 +41,7 @@ label { display: grid; gap: 8px; margin: 20px 0; font-size: 14px; font-weight: 7
 input, select, textarea { width: 100%; padding: 13px 14px; border: 1px solid #cbbda8; border-radius: 8px; background: #fff; }
 textarea { min-height: 110px; resize: vertical; }
 
-.primary-button, .secondary-button, .text-button, .approve-button, .reject-button {
+.primary-button, .secondary-button, .text-button, .approve-button, .reject-button, .spoiler-button {
   border: 0;
   border-radius: 8px;
   cursor: pointer;
@@ -74,9 +74,10 @@ textarea { min-height: 110px; resize: vertical; }
 .report-description { padding: 10px; border-radius: 7px; background: #eee5d7; }
 .spoiler-tag { display: inline-block; padding: 4px 8px; border-radius: 999px; background: #ead7b7; color: #73571f; font-size: 11px; }
 .card-actions { display: flex; gap: 9px; margin-top: 18px; }
-.approve-button, .reject-button { padding: 9px 13px; font-size: 12px; font-weight: 700; }
+.approve-button, .reject-button, .spoiler-button { padding: 9px 13px; font-size: 12px; font-weight: 700; }
 .approve-button { background: #dce8d8; color: #42603f; }
 .reject-button { background: #f0d8d2; color: #8c3428; }
+.spoiler-button { background: #ead7b7; color: #73571f; }
 .empty { padding: 20px; border: 1px dashed #c8baa6; border-radius: 10px; color: #7d756b; font-size: 13px; text-align: center; }
 .content-section { margin-top: 62px; }
 .content-grid { display: grid; grid-template-columns: minmax(300px, .72fr) minmax(460px, 1.28fr); gap: 24px; align-items: start; }

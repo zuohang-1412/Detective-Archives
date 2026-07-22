@@ -241,6 +241,15 @@ function renderContentQueue(container, items, targetType) {
     if (item.containsSpoiler) card.append(textElement("span", "spoiler-tag", "含剧透"));
     const actions = document.createElement("div");
     actions.className = "card-actions";
+    actions.append(actionButton(
+      item.containsSpoiler ? "取消剧透" : "标记剧透",
+      "spoiler-button",
+      () => moderate(
+        targetType,
+        item.id,
+        item.containsSpoiler ? "UNMARK_SPOILER" : "MARK_SPOILER"
+      )
+    ));
     actions.append(actionButton("发布", "approve-button", () => moderate(targetType, item.id, "PUBLISH")));
     actions.append(actionButton("拒绝", "reject-button", () => moderate(targetType, item.id, "REJECT")));
     card.append(actions);
@@ -271,6 +280,17 @@ function renderReports(items) {
     if (item.description) card.append(textElement("p", "report-description", item.description));
     const actions = document.createElement("div");
     actions.className = "card-actions";
+    if (item.targetPreview) {
+      actions.append(actionButton(
+        item.targetContainsSpoiler ? "取消剧透" : "标记剧透",
+        "spoiler-button",
+        () => moderate(
+          item.targetType,
+          item.targetId,
+          item.targetContainsSpoiler ? "UNMARK_SPOILER" : "MARK_SPOILER"
+        )
+      ));
+    }
     actions.append(actionButton("已处理", "approve-button", () => resolveReport(item.id, "RESOLVED")));
     actions.append(actionButton("驳回", "reject-button", () => resolveReport(item.id, "REJECTED")));
     card.append(actions);

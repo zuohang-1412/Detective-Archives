@@ -38,7 +38,14 @@ const contentParamsSchema = z.object({
   targetId: z.uuid()
 });
 const moderationBodySchema = z.object({
-  action: z.enum(["PUBLISH", "HIDE", "RESTORE", "REJECT"]),
+  action: z.enum([
+    "PUBLISH",
+    "HIDE",
+    "RESTORE",
+    "REJECT",
+    "MARK_SPOILER",
+    "UNMARK_SPOILER"
+  ]),
   reason: z.string().trim().min(2).max(500)
 });
 const reportParamsSchema = z.object({ reportId: z.uuid() });

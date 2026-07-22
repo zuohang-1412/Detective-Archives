@@ -1174,7 +1174,7 @@ try {
       reviewType: "SHORT",
       body: "这段评价需要人工复核，但仍应保持待审核。",
       rating: 5,
-      containsSpoiler: true
+      containsSpoiler: false
     }
   });
   assert.equal(reviewResponse.statusCode, 201, reviewResponse.body);
@@ -1314,6 +1314,43 @@ try {
   assert.equal(pendingReviewQueue.statusCode, 200, pendingReviewQueue.body);
   assert.ok(pendingReviewQueue.json().data.reviews.some((item) => item.id === reviewId));
   assert.ok(pendingReviewQueue.json().pagination.reviews.total >= 1);
+  const forbiddenEditorSpoilerMarkResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/REVIEW/${reviewId}`,
+    headers: editorAuthorization,
+    payload: { action: "MARK_SPOILER", reason: "编辑角色不能执行审核标记" }
+  });
+  assert.equal(
+    forbiddenEditorSpoilerMarkResponse.statusCode,
+    403,
+    forbiddenEditorSpoilerMarkResponse.body
+  );
+  const concurrentMarkReviewSpoilerResponses = await Promise.all(Array.from({ length: 2 }, () => app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/REVIEW/${reviewId}`,
+    headers: adminAuthorization,
+    payload: { action: "MARK_SPOILER", reason: "审核发现正文包含关键谜底" }
+  })));
+  for (const response of concurrentMarkReviewSpoilerResponses) {
+    assert.equal(response.statusCode, 200, response.body);
+    assert.equal(response.json().data.status, "PENDING_REVIEW");
+    assert.equal(response.json().data.containsSpoiler, true);
+  }
+  assert.deepEqual(
+    concurrentMarkReviewSpoilerResponses
+      .map((response) => response.json().data.unchanged)
+      .sort(),
+    [false, true]
+  );
+  const reviewSpoilerAuditResult = await database.query(`
+    SELECT
+      (SELECT COUNT(*)::int FROM moderation_records
+       WHERE target_type = 'REVIEW' AND target_id = $1 AND action = 'MARK_SPOILER') AS records,
+      (SELECT COUNT(*)::int FROM audit_logs
+       WHERE resource_type = 'REVIEW' AND resource_id = $1
+         AND action = 'MODERATION_MARK_SPOILER') AS audits
+  `, [reviewId]);
+  assert.deepEqual(reviewSpoilerAuditResult.rows[0], { records: 1, audits: 1 });
   const oversizedModerationPageResponse = await app.inject({
     method: "GET",
     url: "/api/v1/admin/moderation?pageSize=51",
@@ -1345,6 +1382,26 @@ try {
   assert.equal(communityReview.work.id, workId);
   assert.equal(communityReview.containsSpoiler, true);
   assert.equal(communityReview.likedByMe, false);
+  const unmarkPublishedReviewSpoilerResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/REVIEW/${reviewId}`,
+    headers: adminAuthorization,
+    payload: { action: "UNMARK_SPOILER", reason: "复核确认正文没有泄露关键谜底" }
+  });
+  assert.equal(
+    unmarkPublishedReviewSpoilerResponse.statusCode,
+    200,
+    unmarkPublishedReviewSpoilerResponse.body
+  );
+  assert.equal(unmarkPublishedReviewSpoilerResponse.json().data.status, "PUBLISHED");
+  assert.equal(unmarkPublishedReviewSpoilerResponse.json().data.containsSpoiler, false);
+  assert.equal(unmarkPublishedReviewSpoilerResponse.json().data.unchanged, false);
+  const publicReviewAfterUnmarkResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${workId}/reviews`
+  });
+  assert.equal(publicReviewAfterUnmarkResponse.statusCode, 200, publicReviewAfterUnmarkResponse.body);
+  assert.equal(publicReviewAfterUnmarkResponse.json().data[0].containsSpoiler, false);
   const longCommunityResponse = await app.inject({
     method: "GET",
     url: "/api/v1/community/reviews?reviewType=LONG&pageSize=50"
@@ -1432,6 +1489,14 @@ try {
   assert.equal(commentResponse.statusCode, 201, commentResponse.body);
   assert.equal(commentResponse.json().data.status, "PENDING_REVIEW");
   const commentId = commentResponse.json().data.id;
+  const markCommentSpoilerResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/moderation/COMMENT/${commentId}`,
+    headers: adminAuthorization,
+    payload: { action: "MARK_SPOILER", reason: "回复包含案件真相，需要折叠" }
+  });
+  assert.equal(markCommentSpoilerResponse.statusCode, 200, markCommentSpoilerResponse.body);
+  assert.equal(markCommentSpoilerResponse.json().data.containsSpoiler, true);
   const publishCommentResponse = await app.inject({
     method: "POST",
     url: `/api/v1/admin/moderation/COMMENT/${commentId}`,
@@ -1448,6 +1513,7 @@ try {
   });
   assert.equal(reviewDetailResponse.statusCode, 200, reviewDetailResponse.body);
   assert.equal(reviewDetailResponse.json().data.comments.length, 1);
+  assert.equal(reviewDetailResponse.json().data.comments[0].containsSpoiler, true);
   assert.equal(reviewDetailResponse.json().data.commentPagination.total, 1);
   assert.equal(reviewDetailResponse.json().data.commentPagination.totalPages, 1);
   assert.equal(reviewDetailResponse.json().data.likedByMe, false);
@@ -1477,6 +1543,7 @@ try {
     (item) => item.targetId === commentId
   );
   assert.ok(queuedReport);
+  assert.equal(queuedReport.targetContainsSpoiler, true);
   const concurrentResolveResponses = await Promise.all(Array.from({ length: 2 }, () => app.inject({
     method: "PATCH",
     url: `/api/v1/admin/reports/${queuedReport.id}`,

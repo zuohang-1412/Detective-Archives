@@ -45,7 +45,9 @@ const [
   wechatPublicationTemplate,
   wechatPublicationLibrary,
   acceptanceExecution,
-  qaReport
+  qaReport,
+  moderatorSpoilerMigration,
+  completionAudit
 ] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
@@ -88,7 +90,9 @@ const [
   readFile(path.join(root, "ops/wechat-publication-event.example.json"), "utf8"),
   readFile(path.join(root, "scripts/lib/wechat-publication.mjs"), "utf8"),
   readFile(path.join(root, "docs/acceptance-execution.md"), "utf8"),
-  readFile(path.join(root, "docs/qa-report-2026-07-22.md"), "utf8")
+  readFile(path.join(root, "docs/qa-report-2026-07-22.md"), "utf8"),
+  readFile(path.join(root, "database/migrations/015_moderator_spoiler_controls.sql"), "utf8"),
+  readFile(path.join(root, "docs/mvp-completion-audit-2026-07-22.md"), "utf8")
 ]);
 
 const startupSteps = [
@@ -275,6 +279,10 @@ for (const field of ["REVIEW_SUBMITTED", "candidateVersion", "evidenceReference"
 assert.match(wechatPublicationLibrary, /wechatAcceptanceReceiptSha256/, "Publication evidence must bind WeChat acceptance");
 assert.match(wechatPublicationLibrary, /Next publication event must be/, "Publication evidence must reject lifecycle jumps");
 assert.match(launchReadinessLibrary, /validWechatPublicationReceipt/, "Release gates must require publication evidence");
+assert.match(moderatorSpoilerMigration, /MARK_SPOILER/, "The database must support moderator spoiler marking");
+assert.match(moderatorSpoilerMigration, /UNMARK_SPOILER/, "The database must support moderator spoiler unmarking");
+assert.match(completionAudit, /6\.5 短评、长评与评分/, "The completion audit must cover PRD section 6.5");
+assert.match(completionAudit, /外部上线条件/, "The completion audit must preserve external launch blockers");
 
 const acceptanceRows = [...acceptanceExecution.matchAll(
   /^\| (PASS|BLOCKED|FAIL|PENDING) \| (AT-[^| ]+) \|/gm

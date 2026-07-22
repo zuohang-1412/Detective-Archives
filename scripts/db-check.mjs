@@ -126,6 +126,13 @@ try {
     FROM information_schema.columns
     WHERE table_schema = 'public' AND table_name = 'work_links'
   `);
+  const moderationSpoilerActions = await client.query(`
+    SELECT COUNT(*)::int AS count
+    FROM pg_enum enum_value
+    JOIN pg_type enum_type ON enum_type.oid = enum_value.enumtypid
+    WHERE enum_type.typname = 'moderation_action'
+      AND enum_value.enumlabel IN ('MARK_SPOILER', 'UNMARK_SPOILER')
+  `);
   const detectiveCounts = await client.query(`
     SELECT catalog_collection::text AS collection, COUNT(*)::int AS count
     FROM detectives
@@ -213,6 +220,7 @@ try {
   expect(analyticsSchema.rows[0].click_visitor_hash, true, "link click visitor hash column");
   expect(linkReviewSchema.rows[0].column_count, 5, "work link manual review column count");
   expect(linkReviewSchema.rows[0].queue_index, true, "work link manual review queue index");
+  expect(moderationSpoilerActions.rows[0].count, 2, "moderator spoiler action count");
   for (const [collection, count] of expectedDetectiveCounts) {
     expect(counts.get(collection) ?? 0, count, `${collection} detective count`);
   }

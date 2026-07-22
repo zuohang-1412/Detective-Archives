@@ -138,7 +138,15 @@ export async function getModerationQueue(
           WHEN report.target_type = 'COMMENT' THEN (
             SELECT LEFT(comment.body, 300) FROM comments comment WHERE comment.id = report.target_id
           )
-        END AS "targetPreview"
+        END AS "targetPreview",
+        COALESCE(CASE
+          WHEN report.target_type = 'REVIEW' THEN (
+            SELECT review.contains_spoiler FROM reviews review WHERE review.id = report.target_id
+          )
+          WHEN report.target_type = 'COMMENT' THEN (
+            SELECT comment.contains_spoiler FROM comments comment WHERE comment.id = report.target_id
+          )
+        END, FALSE) AS "targetContainsSpoiler"
       FROM reports report
       JOIN users reporter ON reporter.id = report.reporter_id
       WHERE report.status IN ('OPEN', 'PROCESSING')
@@ -191,11 +199,79 @@ export async function moderateContent(
   moderatorId: string,
   targetType: "REVIEW" | "COMMENT",
   targetId: string,
-  action: "PUBLISH" | "HIDE" | "RESTORE" | "REJECT",
+  action: "PUBLISH" | "HIDE" | "RESTORE" | "REJECT" | "MARK_SPOILER" | "UNMARK_SPOILER",
   reason: string,
   requestId: string
 ) {
   const table = targetType === "REVIEW" ? "reviews" : "comments";
+  if (action === "MARK_SPOILER" || action === "UNMARK_SPOILER") {
+    const containsSpoiler = action === "MARK_SPOILER";
+    return withTransaction(database, async (connection) => {
+      const currentResult = await queryRows<{
+        id: string;
+        status: string;
+        containsSpoiler: boolean;
+      }>(connection, `
+        SELECT
+          id,
+          status::text AS status,
+          contains_spoiler AS "containsSpoiler"
+        FROM ${table}
+        WHERE id = $1
+          AND deleted_at IS NULL
+          AND status IN ('PENDING_REVIEW', 'PUBLISHED', 'HIDDEN')
+        FOR UPDATE
+      `, [targetId]);
+      const current = currentResult.rows[0];
+      if (!current) return null;
+      if (current.containsSpoiler === containsSpoiler) {
+        return { ...current, unchanged: true };
+      }
+
+      const changedResult = await queryRows<{
+        id: string;
+        status: string;
+        containsSpoiler: boolean;
+      }>(connection, `
+        UPDATE ${table}
+        SET contains_spoiler = $2,
+          updated_at = NOW()
+        WHERE id = $1
+        RETURNING
+          id,
+          status::text AS status,
+          contains_spoiler AS "containsSpoiler"
+      `, [targetId, containsSpoiler]);
+      const changed = changedResult.rows[0];
+      if (!changed) return null;
+      await connection.query(`
+        INSERT INTO moderation_records (moderator_id, target_type, target_id, action, reason)
+        VALUES ($1, $2, $3, $4, $5)
+      `, [moderatorId, targetType, targetId, action, reason]);
+      await connection.query(`
+        INSERT INTO audit_logs (
+          actor_id, action, resource_type, resource_id, request_id, metadata
+        ) VALUES (
+          $1, $2, $3, $4, $5,
+          jsonb_build_object(
+            'reason', $6::text,
+            'previousContainsSpoiler', $7::boolean,
+            'containsSpoiler', $8::boolean
+          )
+        )
+      `, [
+        moderatorId,
+        `MODERATION_${action}`,
+        targetType,
+        targetId,
+        requestId,
+        reason,
+        current.containsSpoiler,
+        containsSpoiler
+      ]);
+      return { ...changed, unchanged: false };
+    });
+  }
   const status = action === "PUBLISH" || action === "RESTORE"
     ? "PUBLISHED"
     : action === "REJECT"

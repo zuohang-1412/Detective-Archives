@@ -35,6 +35,16 @@ for (const appealCapability of ["appealQueue", "renderAppeals", "/admin/appeals/
     throw new Error(`Admin UI must expose content appeals: ${appealCapability}`);
   }
 }
+for (const spoilerCapability of [
+  "MARK_SPOILER",
+  "UNMARK_SPOILER",
+  "targetContainsSpoiler",
+  "spoiler-button"
+]) {
+  if (!script.includes(spoilerCapability)) {
+    throw new Error(`Admin UI must expose moderator spoiler controls: ${spoilerCapability}`);
+  }
+}
 for (const linkReviewCapability of [
   "linkReviewList",
   "renderLinkReviews",
