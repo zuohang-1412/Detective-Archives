@@ -6,11 +6,12 @@ import { loadCatalogBatches } from "./lib/catalog-batches.mjs";
 const dataDirectory = path.resolve("apps/api/src/data");
 const readJson = (filename) => readFile(path.join(dataDirectory, filename), "utf8").then(JSON.parse);
 
-const [audit, pictureBookIndex, archiveDirectory, { batches }] = await Promise.all([
+const [audit, pictureBookIndex, archiveDirectory, { batches }, dataSourcesDocument] = await Promise.all([
   readJson("content-audit-sample-2026-07-22.json"),
   readJson("picture-book-index.json"),
   readJson("archive-directory-index.json"),
-  loadCatalogBatches()
+  loadCatalogBatches(),
+  readFile(path.resolve("docs/data-sources.md"), "utf8")
 ]);
 
 assert.equal(audit.schemaVersion, 1);
@@ -121,9 +122,24 @@ for (const category of [
 }
 
 const corrected = audit.samples.filter((sample) => sample.result === "CORRECTED");
+const passed = audit.samples.filter((sample) => sample.result === "PASS");
 const followUps = audit.samples.filter((sample) => sample.result === "FOLLOW_UP");
 assert.equal(corrected.length, 7, "the recorded content-fix batches must cover seven audit corrections");
 assert.equal(followUps.length, 0, "all sampled follow-up records must be resolved");
+assert.equal(
+  dataSourcesDocument.includes(
+    `共抽样 ${audit.samples.length} 条：${pictureSamples.length} 条图鉴记录、${directorySamples.length} 条扩展/历史目录记录`
+  ),
+  true,
+  "data-sources audit coverage summary must match the machine-readable evidence"
+);
+assert.equal(
+  dataSourcesDocument.includes(
+    `${audit.samples.length} 条样本现为 ${corrected.length} 条已纠正、${passed.length} 条通过、${followUps.length} 条待补证；当前 ${effectiveDetectives.size} 位正式人物记录均达到 \`PRIMARY_SOURCE_CONFIRMED\``
+  ),
+  true,
+  "data-sources audit result summary must match the machine-readable evidence"
+);
 
 const unconfirmedCatalogRecords = [...effectiveDetectives.values()]
   .filter((detective) => detective.verification !== "PRIMARY_SOURCE_CONFIRMED")
@@ -146,5 +162,5 @@ for (const [catalogId, detective] of effectiveDetectives) {
 }
 
 console.log(
-  `Content audit: OK (${audit.samples.length} samples, ${corrected.length} corrections, ${followUps.length} documented follow-up)`
+  `Content audit: OK (${audit.samples.length} samples, ${passed.length} passed, ${corrected.length} corrections, ${followUps.length} documented follow-up)`
 );
