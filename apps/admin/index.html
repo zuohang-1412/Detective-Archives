@@ -75,10 +75,16 @@
           </div>
           <div class="content-grid">
             <form id="workForm" class="panel work-form">
-              <h3>新建作品草稿</h3>
+              <h3 id="workFormTitle">新建作品草稿</h3>
               <label>中文标题<input id="workTitle" required maxlength="200"></label>
+              <label>原文标题<input id="workOriginalTitle" maxlength="240"></label>
               <label>英文标识<input id="workSlug" required maxlength="120" pattern="[a-z0-9]+(?:-[a-z0-9]+)*"></label>
-              <label>创作者<input id="workCreator" maxlength="120"></label>
+              <label>创作者与身份
+                <textarea id="workCreators" maxlength="3000" placeholder="每行一位，例如：阿加莎·克里斯蒂|作者&#10;某某|导演"></textarea>
+              </label>
+              <p class="form-help">身份可填写：作者、编剧、导演、绘者、编辑、其他；省略时默认为作者。</p>
+              <label>关联侦探搜索<input id="workDetectiveSearch" maxlength="80" placeholder="输入姓名、编号或英文标识"></label>
+              <div id="workDetectiveOptions" class="detective-picker" role="group" aria-label="选择作品关联侦探"></div>
               <div class="inline-fields">
                 <label>类型
                   <select id="workType">
@@ -95,7 +101,11 @@
                 <label>首发年份<input id="workYear" type="number" min="1000" max="2200"></label>
               </div>
               <label>无剧透简介<textarea id="workSummary" maxlength="5000"></textarea></label>
-              <button class="primary-button" type="submit">保存草稿</button>
+              <label>封面地址<input id="workCoverUrl" type="url" maxlength="1000" placeholder="https://"></label>
+              <div class="form-actions">
+                <button id="workSubmitButton" class="primary-button" type="submit">保存草稿</button>
+                <button id="cancelWorkEdit" class="secondary-button hidden" type="button">取消编辑</button>
+              </div>
               <p id="workFormError" class="error" role="alert"></p>
             </form>
             <section>

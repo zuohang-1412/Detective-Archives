@@ -16,6 +16,7 @@ const testAdminPassword = "integration-admin-password";
 const testVisitorId = "db_api_analytics_visitor_123456";
 const testVisitorHash = createHash("sha256").update(testVisitorId).digest("hex");
 const testWorkSlug = "database-api-check-work";
+const testWorkCreatorNames = ["自动化测试作者", "自动化测试绘者"];
 const coreDetectives = JSON.parse(await readFile(
   new URL("../apps/api/src/data/core-detectives.json", import.meta.url), "utf8"
 ));
@@ -131,6 +132,16 @@ async function cleanupTestUsers() {
     testDetectiveSlug,
     testDetectiveUpdatedSlug
   ]]);
+  await database.query(`
+    DELETE FROM creators creator
+    WHERE creator.name_zh = ANY($1)
+      AND NOT EXISTS (
+        SELECT 1 FROM detective_creators relation WHERE relation.creator_id = creator.id
+      )
+      AND NOT EXISTS (
+        SELECT 1 FROM work_creators relation WHERE relation.creator_id = creator.id
+      )
+  `, [testWorkCreatorNames]);
   await database.query(`
     DELETE FROM users
     WHERE id IN (
@@ -621,20 +632,66 @@ try {
   assert.equal(adminDetectiveListResponse.json().data[0].id, managedDetectiveId);
   assert.equal(adminDetectiveListResponse.json().pagination.total, 1);
 
+  const secondWorkDetectiveResult = await database.query(`
+    SELECT id
+    FROM detectives
+    WHERE slug = $1 AND id <> $2 AND status = 'PUBLISHED'
+  `, [coreDetectives[0].slug, managedDetectiveId]);
+  const secondWorkDetectiveId = secondWorkDetectiveResult.rows[0]?.id;
+  assert.ok(secondWorkDetectiveId, "A second published detective is required for work relation checks");
+  const workPayload = {
+    slug: testWorkSlug,
+    titleZh: "数据库接口检查作品",
+    titleOriginal: "Database API Check Work",
+    mediaType: "NOVEL",
+    releaseYear: 2026,
+    summary: "仅用于自动化集成检查的作品草稿。",
+    coverUrl: "https://example.com/database-api-check-cover.jpg",
+    creators: [
+      { nameZh: testWorkCreatorNames[0], creditType: "AUTHOR" },
+      { nameZh: testWorkCreatorNames[1], creditType: "ILLUSTRATOR" }
+    ],
+    detectiveIds: [managedDetectiveId, secondWorkDetectiveId]
+  };
+  const missingDetectiveId = "00000000-0000-4000-8000-000000000001";
+  const missingDetectiveCreateResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/admin/works",
+    headers: editorAuthorization,
+    payload: { ...workPayload, detectiveIds: [missingDetectiveId] }
+  });
+  assert.equal(missingDetectiveCreateResponse.statusCode, 404, missingDetectiveCreateResponse.body);
+  assert.equal(missingDetectiveCreateResponse.json().code, "DETECTIVE_NOT_FOUND");
+  const duplicateCreatorResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/admin/works",
+    headers: editorAuthorization,
+    payload: { ...workPayload, creators: [workPayload.creators[0], workPayload.creators[0]] }
+  });
+  assert.equal(duplicateCreatorResponse.statusCode, 400, duplicateCreatorResponse.body);
+
   const createWorkResponse = await app.inject({
     method: "POST",
     url: "/api/v1/admin/works",
     headers: editorAuthorization,
-    payload: {
-      slug: testWorkSlug,
-      titleZh: "数据库接口检查作品",
-      mediaType: "NOVEL",
-      releaseYear: 2026,
-      summary: "仅用于自动化集成检查的作品草稿。"
-    }
+    payload: workPayload
   });
   assert.equal(createWorkResponse.statusCode, 201, createWorkResponse.body);
   const managedWorkId = createWorkResponse.json().data.id;
+  const workCreateAuditResult = await database.query(
+    `SELECT metadata
+       FROM audit_logs
+      WHERE action = 'WORK_CREATE'
+        AND resource_type = 'WORK'
+        AND resource_id = $1
+      ORDER BY created_at DESC
+      LIMIT 1`,
+    [managedWorkId]
+  );
+  assert.deepEqual(workCreateAuditResult.rows[0]?.metadata, {
+    creatorCount: 2,
+    detectiveCount: 2
+  });
   const adminWorkListResponse = await app.inject({
     method: "GET",
     url: "/api/v1/admin/works?q=database-api-check&pageSize=1",
@@ -642,6 +699,46 @@ try {
   });
   assert.equal(adminWorkListResponse.statusCode, 200, adminWorkListResponse.body);
   assert.equal(adminWorkListResponse.json().pagination.total, 1);
+  assert.deepEqual(
+    adminWorkListResponse.json().data[0].creators.map(({ nameZh, creditType }) => ({ nameZh, creditType })),
+    workPayload.creators
+  );
+  assert.deepEqual(
+    adminWorkListResponse.json().data[0].detectives.map(({ id }) => id),
+    workPayload.detectiveIds
+  );
+  const workByCreatorResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/admin/works?q=${encodeURIComponent(testWorkCreatorNames[1])}`,
+    headers: adminAuthorization
+  });
+  assert.equal(workByCreatorResponse.statusCode, 200, workByCreatorResponse.body);
+  assert.equal(workByCreatorResponse.json().pagination.total, 1);
+  assert.equal(workByCreatorResponse.json().data[0].id, managedWorkId);
+  const missingDetectiveUpdateResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/works/${managedWorkId}`,
+    headers: editorAuthorization,
+    payload: { ...workPayload, detectiveIds: [missingDetectiveId] }
+  });
+  assert.equal(missingDetectiveUpdateResponse.statusCode, 404, missingDetectiveUpdateResponse.body);
+  const workAfterFailedRelationUpdateResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/works?q=database-api-check",
+    headers: adminAuthorization
+  });
+  assert.deepEqual(
+    workAfterFailedRelationUpdateResponse.json().data[0].detectives.map(({ id }) => id),
+    workPayload.detectiveIds,
+    "A failed relation update must roll back all work changes"
+  );
+  const updateDraftWorkResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/works/${managedWorkId}`,
+    headers: editorAuthorization,
+    payload: { ...workPayload, summary: "编辑后的多人物、多创作者作品资料。" }
+  });
+  assert.equal(updateDraftWorkResponse.statusCode, 200, updateDraftWorkResponse.body);
   const forbiddenEditorPublish = await app.inject({
     method: "POST",
     url: `/api/v1/admin/works/${managedWorkId}/status`,
@@ -654,9 +751,9 @@ try {
     url: "/api/v1/admin/works",
     headers: adminAuthorization,
     payload: {
-      slug: testWorkSlug,
+      ...workPayload,
       titleZh: "重复标识",
-      mediaType: "NOVEL"
+      detectiveIds: []
     }
   });
   assert.equal(duplicateWorkResponse.statusCode, 409, duplicateWorkResponse.body);
@@ -696,15 +793,26 @@ try {
     payload: { status: "PUBLISHED" }
   });
   assert.equal(publishWorkResponse.statusCode, 200, publishWorkResponse.body);
+  const publicManagedWorkResponse = await app.inject({
+    method: "GET",
+    url: `/api/v1/works/${testWorkSlug}`
+  });
+  assert.equal(publicManagedWorkResponse.statusCode, 200, publicManagedWorkResponse.body);
+  assert.deepEqual(
+    publicManagedWorkResponse.json().data.creators.map(({ nameZh, creditType }) => ({ nameZh, creditType })),
+    workPayload.creators
+  );
+  assert.deepEqual(
+    publicManagedWorkResponse.json().data.detectives.map(({ slug }) => slug),
+    [testDetectiveUpdatedSlug, coreDetectives[0].slug]
+  );
   const forbiddenPublishedWorkEdit = await app.inject({
     method: "PATCH",
     url: `/api/v1/admin/works/${managedWorkId}`,
     headers: editorAuthorization,
     payload: {
-      slug: testWorkSlug,
+      ...workPayload,
       titleZh: "编辑不应直接改已发布作品",
-      mediaType: "NOVEL",
-      releaseYear: 2026,
       summary: "该修改应被拒绝。"
     }
   });

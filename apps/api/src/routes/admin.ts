@@ -73,6 +73,10 @@ const analyticsQuerySchema = z.object({
   days: z.coerce.number().int().min(30).max(365).default(90)
 });
 const workQuerySchema = listQuerySchema.extend({ q: z.string().trim().max(80).optional() });
+const workCreatorCreditSchema = z.object({
+  nameZh: z.string().trim().min(1).max(120),
+  creditType: z.enum(["AUTHOR", "SCREENWRITER", "DIRECTOR", "ILLUSTRATOR", "EDITOR", "OTHER"])
+});
 const workInputSchema = z.object({
   slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120),
   titleZh: z.string().trim().min(1).max(200),
@@ -81,8 +85,22 @@ const workInputSchema = z.object({
   releaseYear: z.number().int().min(1000).max(2200).optional(),
   summary: z.string().trim().max(5000).optional(),
   coverUrl: z.url().max(1000).optional(),
-  creatorName: z.string().trim().max(120).optional()
-});
+  creatorName: z.string().trim().min(1).max(120).optional(),
+  creators: z.array(workCreatorCreditSchema).max(20).optional(),
+  detectiveIds: z.array(z.uuid()).max(20).default([])
+}).superRefine((input, context) => {
+  const creators = input.creators ?? [];
+  const creatorKeys = creators.map((creator) => `${creator.nameZh.toLocaleLowerCase("zh-CN")}\u0000${creator.creditType}`);
+  if (new Set(creatorKeys).size !== creatorKeys.length) {
+    context.addIssue({ code: "custom", path: ["creators"], message: "创作者与身份不能重复" });
+  }
+  if (new Set(input.detectiveIds).size !== input.detectiveIds.length) {
+    context.addIssue({ code: "custom", path: ["detectiveIds"], message: "关联侦探不能重复" });
+  }
+}).transform(({ creatorName, creators, ...input }) => ({
+  ...input,
+  creators: creators ?? (creatorName ? [{ nameZh: creatorName, creditType: "AUTHOR" as const }] : [])
+}));
 const workStatusSchema = z.object({
   status: z.enum(["DRAFT", "PENDING_REVIEW", "PUBLISHED", "HIDDEN", "ARCHIVED"])
 });
@@ -398,8 +416,13 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
       const work = await createAdminWork(options.database, user.id, body.data, request.id);
       return reply.code(201).send({ data: work });
     } catch (error) {
-      if (typeof error === "object" && error !== null && "code" in error && error.code === "23505") {
-        return reply.code(409).send({ code: "WORK_SLUG_EXISTS", message: "作品标识已经存在" });
+      if (typeof error === "object" && error !== null && "code" in error) {
+        if (error.code === "23505") {
+          return reply.code(409).send({ code: "WORK_SLUG_EXISTS", message: "作品标识已经存在" });
+        }
+        if (error.code === "WORK_DETECTIVE_NOT_FOUND") {
+          return reply.code(404).send({ code: "DETECTIVE_NOT_FOUND", message: "关联侦探不存在" });
+        }
       }
       throw error;
     }
@@ -413,14 +436,27 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
     }
     const user = await authorizeRoles(options.database, request, reply, ["EDITOR", "ADMIN"]);
     if (!user || !options.database) return;
-    const work = await updateAdminWork(
-      options.database,
-      user.id,
-      params.data.workId,
-      body.data,
-      request.id,
-      user.role === "EDITOR"
-    );
+    let work;
+    try {
+      work = await updateAdminWork(
+        options.database,
+        user.id,
+        params.data.workId,
+        body.data,
+        request.id,
+        user.role === "EDITOR"
+      );
+    } catch (error) {
+      if (typeof error === "object" && error !== null && "code" in error) {
+        if (error.code === "23505") {
+          return reply.code(409).send({ code: "WORK_SLUG_EXISTS", message: "作品标识已经存在" });
+        }
+        if (error.code === "WORK_DETECTIVE_NOT_FOUND") {
+          return reply.code(404).send({ code: "DETECTIVE_NOT_FOUND", message: "关联侦探不存在" });
+        }
+      }
+      throw error;
+    }
     if (!work) {
       return user.role === "EDITOR"
         ? reply.code(409).send({ code: "WORK_NOT_EDITABLE", message: "已发布作品需由管理员维护" })

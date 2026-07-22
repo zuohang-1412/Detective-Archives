@@ -45,6 +45,18 @@ for (const spoilerCapability of [
     throw new Error(`Admin UI must expose moderator spoiler controls: ${spoilerCapability}`);
   }
 }
+for (const workRelationCapability of [
+  "parseWorkCreators",
+  "renderWorkDetectiveOptions",
+  "selectedWorkDetectiveIds",
+  "editWork(item)",
+  "detectiveIds",
+  "creators: parseWorkCreators"
+]) {
+  if (!script.includes(workRelationCapability)) {
+    throw new Error(`Admin UI must maintain work creator and detective relations: ${workRelationCapability}`);
+  }
+}
 for (const linkReviewCapability of [
   "linkReviewList",
   "renderLinkReviews",
@@ -75,6 +87,18 @@ for (const linkReviewElement of [
 ]) {
   if (!html.includes(`id="${linkReviewElement}"`)) {
     throw new Error(`Admin HTML must include ${linkReviewElement}`);
+  }
+}
+for (const workRelationElement of [
+  "workFormTitle",
+  "workCreators",
+  "workDetectiveSearch",
+  "workDetectiveOptions",
+  "workSubmitButton",
+  "cancelWorkEdit"
+]) {
+  if (!html.includes(`id="${workRelationElement}"`)) {
+    throw new Error(`Admin HTML must include ${workRelationElement}`);
   }
 }
 

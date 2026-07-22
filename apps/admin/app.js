@@ -22,12 +22,19 @@ const elements = {
   reportCount: document.querySelector("#reportCount"),
   appealCount: document.querySelector("#appealCount"),
   workForm: document.querySelector("#workForm"),
+  workFormTitle: document.querySelector("#workFormTitle"),
   workTitle: document.querySelector("#workTitle"),
+  workOriginalTitle: document.querySelector("#workOriginalTitle"),
   workSlug: document.querySelector("#workSlug"),
-  workCreator: document.querySelector("#workCreator"),
+  workCreators: document.querySelector("#workCreators"),
+  workDetectiveSearch: document.querySelector("#workDetectiveSearch"),
+  workDetectiveOptions: document.querySelector("#workDetectiveOptions"),
   workType: document.querySelector("#workType"),
   workYear: document.querySelector("#workYear"),
   workSummary: document.querySelector("#workSummary"),
+  workCoverUrl: document.querySelector("#workCoverUrl"),
+  workSubmitButton: document.querySelector("#workSubmitButton"),
+  cancelWorkEdit: document.querySelector("#cancelWorkEdit"),
   workFormError: document.querySelector("#workFormError"),
   workList: document.querySelector("#workList"),
   detectiveForm: document.querySelector("#detectiveForm"),
@@ -67,8 +74,11 @@ const elements = {
 };
 
 let editingDetective = null;
+let editingWork = null;
 let currentAdminRole = null;
 let linkReviewQuery = "";
+let availableWorkDetectives = [];
+let selectedWorkDetectiveIds = new Set();
 
 function getToken() {
   return sessionStorage.getItem(tokenKey) || "";
@@ -452,9 +462,22 @@ function renderWorks(items) {
     heading.append(textElement("span", `status status-${item.status.toLowerCase()}`, item.status));
     card.append(heading);
     card.append(textElement("div", "queue-context", `${item.slug} · ${item.mediaType}`));
+    if (item.creators.length) {
+      card.append(textElement(
+        "p",
+        "case-list",
+        `创作者：${item.creators.map((creator) => `${creator.nameZh}（${creatorCreditLabels[creator.creditType] || creator.creditType}）`).join("、")}`
+      ));
+    }
+    if (item.detectives.length) {
+      card.append(textElement("p", "case-list", `关联侦探：${item.detectives.map((detective) => detective.nameZh).join("、")}`));
+    }
     if (item.summary) card.append(textElement("p", "queue-body", item.summary));
     const actions = document.createElement("div");
     actions.className = "card-actions";
+    if (currentAdminRole === "ADMIN" || ["DRAFT", "PENDING_REVIEW"].includes(item.status)) {
+      actions.append(actionButton("编辑", "secondary-small", () => editWork(item)));
+    }
     if (item.status === "DRAFT") {
       actions.append(actionButton("提交审核", "approve-button", () => changeWorkStatus(item.id, "PENDING_REVIEW")));
     } else if (item.status === "PENDING_REVIEW") {
@@ -499,6 +522,114 @@ function commaValues(value) {
 
 function lineValues(value) {
   return [...new Set(value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean))];
+}
+
+const creatorCreditLabels = {
+  AUTHOR: "作者",
+  SCREENWRITER: "编剧",
+  DIRECTOR: "导演",
+  ILLUSTRATOR: "绘者",
+  EDITOR: "编辑",
+  OTHER: "其他"
+};
+const creatorCreditCodes = new Map(
+  Object.entries(creatorCreditLabels).flatMap(([code, label]) => [[code, code], [label, code]])
+);
+
+function parseWorkCreators(value) {
+  const creators = lineValues(value).map((line) => {
+    const [nameValue, creditValue = "作者", ...extra] = line.split("|").map((item) => item.trim());
+    if (!nameValue || extra.length) throw new Error(`创作者格式不正确：${line}`);
+    const creditType = creatorCreditCodes.get(creditValue.toUpperCase()) || creatorCreditCodes.get(creditValue);
+    if (!creditType) throw new Error(`不支持的创作者身份：${creditValue}`);
+    return { nameZh: nameValue, creditType };
+  });
+  const keys = creators.map((creator) => `${creator.nameZh.toLocaleLowerCase("zh-CN")}\u0000${creator.creditType}`);
+  if (new Set(keys).size !== keys.length) throw new Error("创作者与身份不能重复");
+  return creators;
+}
+
+function formatWorkCreators(creators) {
+  return creators
+    .map((creator) => `${creator.nameZh}|${creatorCreditLabels[creator.creditType] || creator.creditType}`)
+    .join("\n");
+}
+
+function renderWorkDetectiveOptions() {
+  const query = elements.workDetectiveSearch.value.trim().toLocaleLowerCase("zh-CN");
+  const filtered = availableWorkDetectives.filter((detective) => !query || [
+    detective.nameZh,
+    detective.nameOriginal,
+    detective.nameEn,
+    detective.catalogId,
+    detective.slug
+  ].filter(Boolean).join(" ").toLocaleLowerCase("zh-CN").includes(query));
+  if (!filtered.length) {
+    elements.workDetectiveOptions.replaceChildren(textElement("p", "empty", "没有匹配的侦探"));
+    return;
+  }
+  elements.workDetectiveOptions.replaceChildren(...filtered.map((detective) => {
+    const label = document.createElement("label");
+    label.className = "detective-option";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = selectedWorkDetectiveIds.has(detective.id);
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) selectedWorkDetectiveIds.add(detective.id);
+      else selectedWorkDetectiveIds.delete(detective.id);
+    });
+    label.append(checkbox, textElement(
+      "span",
+      "",
+      `${detective.catalogId || "未编号"} · ${detective.nameZh} · ${detective.status}`
+    ));
+    return label;
+  }));
+}
+
+function workPayload() {
+  return {
+    titleZh: elements.workTitle.value.trim(),
+    titleOriginal: elements.workOriginalTitle.value.trim() || undefined,
+    slug: elements.workSlug.value.trim(),
+    creators: parseWorkCreators(elements.workCreators.value),
+    detectiveIds: [...selectedWorkDetectiveIds],
+    mediaType: elements.workType.value,
+    releaseYear: elements.workYear.value ? Number(elements.workYear.value) : undefined,
+    summary: elements.workSummary.value.trim() || undefined,
+    coverUrl: elements.workCoverUrl.value.trim() || undefined
+  };
+}
+
+function resetWorkForm() {
+  editingWork = null;
+  selectedWorkDetectiveIds = new Set();
+  elements.workForm.reset();
+  elements.workFormTitle.textContent = "新建作品草稿";
+  elements.workSubmitButton.textContent = "保存草稿";
+  elements.cancelWorkEdit.classList.add("hidden");
+  elements.workFormError.textContent = "";
+  renderWorkDetectiveOptions();
+}
+
+function editWork(item) {
+  editingWork = item;
+  elements.workTitle.value = item.titleZh || "";
+  elements.workOriginalTitle.value = item.titleOriginal || "";
+  elements.workSlug.value = item.slug || "";
+  elements.workCreators.value = formatWorkCreators(item.creators || []);
+  selectedWorkDetectiveIds = new Set((item.detectives || []).map((detective) => detective.id));
+  elements.workDetectiveSearch.value = "";
+  elements.workType.value = item.mediaType || "NOVEL";
+  elements.workYear.value = item.releaseYear || "";
+  elements.workSummary.value = item.summary || "";
+  elements.workCoverUrl.value = item.coverUrl || "";
+  elements.workFormTitle.textContent = `编辑：${item.titleZh}`;
+  elements.workSubmitButton.textContent = "保存修改";
+  elements.cancelWorkEdit.classList.remove("hidden");
+  elements.workFormError.textContent = "";
+  renderWorkDetectiveOptions();
+  elements.workForm.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function detectivePayload() {
@@ -728,6 +859,8 @@ async function loadWorkspace() {
     renderContentQueue(elements.commentQueue, queue.comments, "COMMENT");
     renderReports(queue.reports);
     renderAppeals(queue.appeals);
+    availableWorkDetectives = detectives.data;
+    renderWorkDetectiveOptions();
     renderWorks(works.data);
     renderDetectives(detectives.data);
     renderLinkReviews(linkReviews.data, linkReviews.total);
@@ -773,23 +906,18 @@ elements.workForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   elements.workFormError.textContent = "";
   try {
-    await api("/admin/works", {
-      method: "POST",
-      data: {
-        titleZh: elements.workTitle.value.trim(),
-        slug: elements.workSlug.value.trim(),
-        creatorName: elements.workCreator.value.trim() || undefined,
-        mediaType: elements.workType.value,
-        releaseYear: elements.workYear.value ? Number(elements.workYear.value) : undefined,
-        summary: elements.workSummary.value.trim() || undefined
-      }
+    await api(editingWork ? `/admin/works/${editingWork.id}` : "/admin/works", {
+      method: editingWork ? "PATCH" : "POST",
+      data: workPayload()
     });
-    elements.workForm.reset();
+    resetWorkForm();
     await loadWorkspace();
   } catch (error) {
     elements.workFormError.textContent = error.message;
   }
 });
+elements.workDetectiveSearch.addEventListener("input", renderWorkDetectiveOptions);
+elements.cancelWorkEdit.addEventListener("click", resetWorkForm);
 
 elements.detectiveForm.addEventListener("submit", async (event) => {
   event.preventDefault();

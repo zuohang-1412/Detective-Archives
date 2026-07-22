@@ -398,7 +398,11 @@ export interface AdminWorkInput {
   releaseYear?: number | undefined;
   summary?: string | undefined;
   coverUrl?: string | undefined;
-  creatorName?: string | undefined;
+  creators: Array<{
+    nameZh: string;
+    creditType: "AUTHOR" | "SCREENWRITER" | "DIRECTOR" | "ILLUSTRATOR" | "EDITOR" | "OTHER";
+  }>;
+  detectiveIds: string[];
 }
 
 export async function listAdminWorks(
@@ -412,6 +416,24 @@ export async function listAdminWorks(
       OR work.title_zh ILIKE '%' || $1 || '%'
       OR work.title_original ILIKE '%' || $1 || '%'
       OR work.slug ILIKE '%' || $1 || '%'
+      OR EXISTS (
+        SELECT 1
+        FROM work_creators relation
+        JOIN creators creator ON creator.id = relation.creator_id
+        WHERE relation.work_id = work.id
+          AND creator.name_zh ILIKE '%' || $1 || '%'
+      )
+      OR EXISTS (
+        SELECT 1
+        FROM detective_works relation
+        JOIN detectives detective ON detective.id = relation.detective_id
+        WHERE relation.work_id = work.id
+          AND (
+            detective.name_zh ILIKE '%' || $1 || '%'
+            OR detective.slug ILIKE '%' || $1 || '%'
+            OR detective.catalog_id ILIKE '%' || $1 || '%'
+          )
+      )
   `, [options.q ?? null]);
   const result = await queryRows(database, `
     SELECT
@@ -425,6 +447,30 @@ export async function listAdminWorks(
       work.cover_url AS "coverUrl",
       work.status::text AS status,
       work.updated_at AS "updatedAt",
+      COALESCE((
+        SELECT jsonb_agg(jsonb_build_object(
+          'id', creator.id,
+          'nameZh', creator.name_zh,
+          'creditType', relation.credit_type
+        ) ORDER BY relation.credit_type, creator.name_zh)
+        FROM work_creators relation
+        JOIN creators creator ON creator.id = relation.creator_id
+        WHERE relation.work_id = work.id
+      ), '[]'::jsonb) AS creators,
+      COALESCE((
+        SELECT jsonb_agg(jsonb_build_object(
+          'id', detective.id,
+          'catalogId', detective.catalog_id,
+          'slug', detective.slug,
+          'nameZh', detective.name_zh,
+          'status', detective.status::text,
+          'isRecommended', relation.is_recommended,
+          'recommendationOrder', relation.recommendation_order
+        ) ORDER BY relation.recommendation_order NULLS LAST, detective.name_zh)
+        FROM detective_works relation
+        JOIN detectives detective ON detective.id = relation.detective_id
+        WHERE relation.work_id = work.id
+      ), '[]'::jsonb) AS detectives,
       COALESCE((
         SELECT jsonb_agg(jsonb_build_object(
           'id', link.id,
@@ -462,29 +508,75 @@ export async function listAdminWorks(
       OR work.title_zh ILIKE '%' || $1 || '%'
       OR work.title_original ILIKE '%' || $1 || '%'
       OR work.slug ILIKE '%' || $1 || '%'
+      OR EXISTS (
+        SELECT 1
+        FROM work_creators relation
+        JOIN creators creator ON creator.id = relation.creator_id
+        WHERE relation.work_id = work.id
+          AND creator.name_zh ILIKE '%' || $1 || '%'
+      )
+      OR EXISTS (
+        SELECT 1
+        FROM detective_works relation
+        JOIN detectives detective ON detective.id = relation.detective_id
+        WHERE relation.work_id = work.id
+          AND (
+            detective.name_zh ILIKE '%' || $1 || '%'
+            OR detective.slug ILIKE '%' || $1 || '%'
+            OR detective.catalog_id ILIKE '%' || $1 || '%'
+          )
+      )
     ORDER BY work.updated_at DESC, work.id
     LIMIT $2 OFFSET $3
   `, [options.q ?? null, options.pageSize, (options.page - 1) * options.pageSize]);
   return { data: result.rows, total: count.rows[0]?.total ?? 0 };
 }
 
-async function replaceWorkCreator(
+function workDetectiveNotFoundError() {
+  return Object.assign(new Error("One or more work detectives do not exist"), {
+    code: "WORK_DETECTIVE_NOT_FOUND"
+  });
+}
+
+async function replaceWorkRelations(
   connection: { query(sql: string, values?: unknown[]): Promise<unknown> },
   workId: string,
-  creatorName?: string | undefined
+  input: AdminWorkInput
 ) {
-  if (!creatorName) return;
-  const creator = await queryRows<{ id: string }>(connection, `
-    INSERT INTO creators (name_zh, status)
-    VALUES ($1, 'PUBLISHED')
-    ON CONFLICT (name_zh) DO UPDATE SET updated_at = NOW()
-    RETURNING id
-  `, [creatorName]);
-  await connection.query("DELETE FROM work_creators WHERE work_id = $1 AND credit_type = 'AUTHOR'", [workId]);
-  await connection.query(`
-    INSERT INTO work_creators (work_id, creator_id, credit_type)
-    VALUES ($1, $2, 'AUTHOR')
-  `, [workId, creator.rows[0]?.id]);
+  await connection.query("DELETE FROM work_creators WHERE work_id = $1", [workId]);
+  for (const creatorInput of input.creators) {
+    const creator = await queryRows<{ id: string }>(connection, `
+      INSERT INTO creators (name_zh, status)
+      VALUES ($1, 'PUBLISHED')
+      ON CONFLICT (name_zh) DO UPDATE SET
+        status = 'PUBLISHED',
+        updated_at = NOW()
+      RETURNING id
+    `, [creatorInput.nameZh]);
+    await connection.query(`
+      INSERT INTO work_creators (work_id, creator_id, credit_type)
+      VALUES ($1, $2, $3)
+    `, [workId, creator.rows[0]?.id, creatorInput.creditType]);
+  }
+
+  await connection.query("DELETE FROM detective_works WHERE work_id = $1", [workId]);
+  if (input.detectiveIds.length === 0) return;
+  const inserted = await queryRows<{ detectiveId: string }>(connection, `
+    INSERT INTO detective_works (
+      detective_id, work_id, is_recommended, recommendation_order
+    )
+    SELECT
+      detective.id,
+      $1,
+      TRUE,
+      (requested.ordinality - 1)::smallint
+    FROM unnest($2::uuid[]) WITH ORDINALITY AS requested(id, ordinality)
+    JOIN detectives detective ON detective.id = requested.id
+    RETURNING detective_id AS "detectiveId"
+  `, [workId, input.detectiveIds]);
+  if (inserted.rowCount !== input.detectiveIds.length) {
+    throw workDetectiveNotFoundError();
+  }
 }
 
 export async function createAdminWork(
@@ -511,11 +603,15 @@ export async function createAdminWork(
     ]);
     const work = result.rows[0];
     if (!work) throw new Error("Work creation did not return a record");
-    await replaceWorkCreator(connection, work.id, input.creatorName);
+    await replaceWorkRelations(connection, work.id, input);
     await connection.query(`
-      INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
-      VALUES ($1, 'WORK_CREATE', 'WORK', $2, $3)
-    `, [actorId, work.id, requestId]);
+      INSERT INTO audit_logs (
+        actor_id, action, resource_type, resource_id, request_id, metadata
+      ) VALUES (
+        $1, 'WORK_CREATE', 'WORK', $2, $3,
+        jsonb_build_object('creatorCount', $4::int, 'detectiveCount', $5::int)
+      )
+    `, [actorId, work.id, requestId, input.creators.length, input.detectiveIds.length]);
     return work;
   });
 }
@@ -558,11 +654,15 @@ export async function updateAdminWork(
       draftOnly
     ]);
     if (!result.rows[0]) return null;
-    await replaceWorkCreator(connection, workId, input.creatorName);
+    await replaceWorkRelations(connection, workId, input);
     await connection.query(`
-      INSERT INTO audit_logs (actor_id, action, resource_type, resource_id, request_id)
-      VALUES ($1, 'WORK_UPDATE', 'WORK', $2, $3)
-    `, [actorId, workId, requestId]);
+      INSERT INTO audit_logs (
+        actor_id, action, resource_type, resource_id, request_id, metadata
+      ) VALUES (
+        $1, 'WORK_UPDATE', 'WORK', $2, $3,
+        jsonb_build_object('creatorCount', $4::int, 'detectiveCount', $5::int)
+      )
+    `, [actorId, workId, requestId, input.creators.length, input.detectiveIds.length]);
     return result.rows[0];
   });
 }
