@@ -1,0 +1,34 @@
+services:
+  database:
+    image: postgres:16-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${PGDATABASE:?PGDATABASE is required}
+      POSTGRES_USER: ${PGUSER:?PGUSER is required}
+      POSTGRES_PASSWORD: ${PGPASSWORD:?PGPASSWORD is required}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    volumes:
+      - candidate-postgres:/var/lib/postgresql/data
+    tmpfs:
+      - /var/run/postgresql:size=16m,mode=3775
+      - /tmp:size=32m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready --username="$$POSTGRES_USER" --dbname="$$POSTGRES_DB"
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    stop_grace_period: 60s
+
+  api:
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+
+volumes:
+  candidate-postgres:

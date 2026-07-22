@@ -6,6 +6,9 @@ const root = path.resolve();
 const [
   dockerfile,
   compose,
+  candidateCompose,
+  candidateDeployScript,
+  candidateEnvExample,
   caddyfile,
   qualityWorkflow,
   actionlintConfig,
@@ -51,6 +54,9 @@ const [
 ] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
+  readFile(path.join(root, "ops/compose.candidate.yaml"), "utf8"),
+  readFile(path.join(root, "ops/deploy-candidate.sh"), "utf8"),
+  readFile(path.join(root, "ops/candidate.env.example"), "utf8"),
   readFile(path.join(root, "ops/Caddyfile.example"), "utf8"),
   readFile(path.join(root, ".github/workflows/quality.yml"), "utf8"),
   readFile(path.join(root, ".github/actionlint.yaml"), "utf8"),
@@ -120,6 +126,38 @@ assert.match(
   "API port must bind to a configurable loopback port"
 );
 assert.match(compose, /healthcheck:[\s\S]*\/ready/, "Compose must probe database readiness");
+const candidateDatabaseBlock = candidateCompose.match(/\n  database:\n([\s\S]*?)\n  api:\n/)?.[1];
+assert.ok(candidateDatabaseBlock, "Candidate Compose must define an isolated database service");
+assert.match(candidateDatabaseBlock, /image:\s*postgres:16-bookworm/, "Candidate PostgreSQL must pin major version 16");
+assert.match(candidateDatabaseBlock, /candidate-postgres:\/var\/lib\/postgresql\/data/,
+  "Candidate PostgreSQL must use a named persistent volume");
+assert.match(candidateDatabaseBlock, /pg_isready/, "Candidate PostgreSQL must expose a health check");
+assert.match(candidateDatabaseBlock, /no-new-privileges:true/,
+  "Candidate PostgreSQL must disable privilege escalation");
+assert.doesNotMatch(candidateDatabaseBlock, /\n\s+ports:/,
+  "Candidate PostgreSQL must never publish a host port");
+assert.match(candidateCompose, /condition:\s*service_healthy/,
+  "Candidate API must wait for PostgreSQL readiness");
+assert.match(candidateDeployScript, /CANDIDATE_DEPLOYMENT:-/,
+  "Candidate deployment must require an explicit one-shot opt-in");
+assert.match(candidateDeployScript, /must use its private Compose database, not DATABASE_URL/,
+  "Candidate deployment must reject an external database URL");
+assert.match(candidateDeployScript, /Candidate database must not publish a host port/,
+  "Candidate deployment must inspect database port isolation");
+assert.match(candidateDeployScript, /Candidate database must use a named persistent volume/,
+  "Candidate deployment must inspect database persistence");
+assert.match(candidateDeployScript, /flock -n 9/,
+  "Candidate deployment must reject concurrent deployment attempts");
+assert.match(candidateDeployScript, /org\.opencontainers\.image\.revision/,
+  "Candidate deployment must bind the image to a full source commit");
+assert.match(candidateDeployScript, /scripts\/check-runtime-smoke\.mjs/,
+  "Candidate deployment must execute runtime smoke checks");
+assert.match(candidateDeployScript, /scripts\/check-runtime-performance\.mjs/,
+  "Candidate deployment must execute runtime performance checks");
+assert.match(candidateEnvExample, /^PGHOST=database$/m,
+  "Candidate runtime must address PostgreSQL only by its private service name");
+assert.match(candidateEnvExample, /^PGSSLMODE=disable$/m,
+  "Candidate runtime must explicitly document private-network transport semantics");
 assert.match(
   caddyfile,
   /reverse_proxy\s+127\.0\.0\.1:\{\$API_BIND_PORT:3000\}/,
@@ -213,6 +251,7 @@ assert.match(deployScript, /Restoring previous application image/, "Failed deplo
 assert.match(rollbackScript, /docker image inspect/, "Rollback must require an existing local image");
 assert.match(rollbackScript, /npm run check:runtime/, "Rollback must verify the restored runtime");
 assert.match(rootPackage, /"check:release-rollback"/, "The release rollback drill must have an npm entrypoint");
+assert.match(rootPackage, /"candidate:deploy"/, "The isolated candidate deployment must have an npm entrypoint");
 assert.match(rootPackage, /"operations:drill:record"/, "The operations drill must have an npm entrypoint");
 assert.match(rootPackage, /"release:drill:production"/, "The production rollback drill must have an npm entrypoint");
 assert.match(rootPackage, /"check:production-release-drill"/, "The production rollback evidence must have an automated check");

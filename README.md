@@ -149,6 +149,19 @@ npm run miniprogram:upload
 
 正式服务器完成两个不同提交的受控部署后，使用 `PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- --env-file=.env.production --manifest=ops/launch-readiness.json --state-directory=/var/lib/detective-archives/release-state` 留下生产回滚回执。该命令会真实切换候选版、上一版和候选恢复版，从公网验证 HTTPS 与核心服务，并把当前提交、镜像、备份和三阶段探测结果写入实际上线清单；不得手工填写旧的 TLS/回滚布尔项。
 
+## 候选服务器部署
+
+共享测试服务器可以使用仓库提供的隔离候选覆盖层。它会创建项目专属 PostgreSQL 16 私网容器和持久卷，数据库不开放宿主机端口，API 只绑定可配置的回环端口；启动成功后自动执行运行与性能检查：
+
+```bash
+cp ops/candidate.env.example .env.candidate
+chmod 600 .env.candidate
+# 填写随机凭据、完整 SOURCE_COMMIT 和 IMAGE_TAG 后执行：
+CANDIDATE_DEPLOYMENT=true npm run candidate:deploy -- .env.candidate
+```
+
+候选环境不会被上线审计当作正式生产证据；正式发布仍需要托管私网数据库、备案 HTTPS 域名、真实微信配置和全部回执。
+
 ## 质量检查
 
 ```bash

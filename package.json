@@ -13,6 +13,7 @@
     "catalog:apply": "node scripts/run-catalog-imports.mjs --apply",
     "catalog:rollback:preflight": "node scripts/catalog-import.mjs --rollback",
     "catalog:rollback:apply": "node scripts/catalog-import.mjs --rollback --apply",
+    "candidate:deploy": "sh ops/deploy-candidate.sh",
     "backup:decrypt": "node scripts/encrypted-backup.mjs decrypt",
     "backup:encrypt": "node scripts/encrypted-backup.mjs encrypt",
     "backup:verify-encrypted": "node scripts/encrypted-backup.mjs verify",

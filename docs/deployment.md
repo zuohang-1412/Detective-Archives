@@ -60,6 +60,21 @@ API_ENV_FILE=.env.production sh ops/rollback-release.sh
 
 GitHub Quality 会为演练创建独立空库，并在隔离的 Compose 项目中构建两个不同镜像；启动基线镜像后实际调用 `deploy-release.sh`，核对强制备份、镜像 ID、`.release-state`，再调用 `rollback-release.sh` 并复核数据库与 HTTP，最后删除专用数据库和镜像。该演练保证脚本每次提交都可执行且不受其他集成测试数据影响，但不能替代正式服务器上的域名、TLS、监控、生产数据库网络和真实上一镜像演练。
 
+### 隔离候选环境
+
+在共享测试服务器验证真实 Linux、Docker、数据库初始化和性能时，不要连接公网测试库，也不要复用正式 Compose 项目。复制候选环境模板并生成独立随机凭据：
+
+```bash
+cp ops/candidate.env.example .env.candidate
+chmod 600 .env.candidate
+# 填写随机数据库/后台/监控凭据、候选微信凭据，以及当前 SOURCE_COMMIT 和 IMAGE_TAG。
+CANDIDATE_DEPLOYMENT=true npm run candidate:deploy -- .env.candidate
+```
+
+该入口叠加 `ops/compose.candidate.yaml`：PostgreSQL 16 只加入候选 Compose 私网，不映射宿主机端口；数据保存在项目专属命名卷中。API 仍只绑定 `127.0.0.1:${API_BIND_PORT}`。工具会拒绝外部 `DATABASE_URL`、开发微信身份、非候选项目名、宽松配置文件权限和不完整提交号，并在启动后核对数据库端口隔离、持久卷、OCI 源码标签、运行探测和性能阈值。重复部署保留数据库卷并幂等执行迁移与内容批次。
+
+候选覆盖层只用于发布前验证，不能替代正式服务器、托管数据库、HTTPS、备份、监控、真机验收或微信审核回执；正式环境仍执行本节前述 `deploy-release.sh` 流程。
+
 ### 正式服务器回滚演练与回执
 
 正式环境部署成功且本机保留上一稳定镜像后，执行一次自动化回滚演练。首次使用本能力前，候选镜像和上一镜像都必须由当前版本的 `deploy-release.sh` 构建，二者携带不同的 40 位源码提交标签；重新部署两个不同提交后再演练，不能使用标签为 `unknown` 的旧镜像。工作区除生产配置生成器允许的两个文件外必须无未提交修改，最近一次带 SHA-256 边车的部署备份不得超过 26 小时。
