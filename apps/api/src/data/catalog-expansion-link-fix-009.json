@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-009",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace the indirect Penguin Random House author profile used for The Black Echo with Hachette Book Group's current title-specific publisher page; retain the former destination as inactive audit history and leave the published work, detective relationship and creator attribution unchanged.",
+  "sources": [
+    {
+      "id": "penguin-michael-connelly",
+      "label": "Penguin Random House: Michael Connelly",
+      "url": "https://www.penguinrandomhouse.com/authors/5522/michael-connelly/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "hachette-the-black-echo",
+      "label": "Hachette Book Group: The Black Echo",
+      "url": "https://www.hachettebookgroup.com/titles/michael-connelly/the-black-echo/9780316608237/",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-WL-005",
+      "pictureBookEntryIds": [],
+      "slug": "harry-bosch",
+      "nameZh": "哈里·博斯",
+      "nameOriginal": "Harry Bosch",
+      "nameEn": "Harry Bosch",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "洛杉矶警探，坚持追索旧案和被忽视受害者的真相。",
+      "creatorName": "迈克尔·康奈利",
+      "aliases": ["Hieronymus Bosch", "博斯警探"],
+      "tags": ["硬汉派", "警察小说", "洛杉矶"],
+      "featuredCases": ["《黑色回声》"],
+      "sourceIds": ["penguin-michael-connelly"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-black-echo",
+          "titleZh": "黑色回声",
+          "titleOriginal": "The Black Echo",
+          "mediaType": "NOVEL",
+          "releaseYear": 1992,
+          "summary": "一名越战老兵被发现死于洛杉矶排水管道，博斯在旧日战场经历和当前案件之间追查联系。",
+          "sourceId": "hachette-the-black-echo",
+          "linkType": "PUBLISHER",
+          "providerName": "Hachette Book Group",
+          "region": "GLOBAL",
+          "deactivateLinkUrls": [
+            "https://www.penguinrandomhouse.com/authors/5522/michael-connelly/"
+          ]
+        }
+      ]
+    }
+  ]
+}

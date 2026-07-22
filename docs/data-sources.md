@@ -155,6 +155,10 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-recommendation-map-004.json` 是第 31 个不可变批次。它以 Detective Conan Wiki 图鉴总表交叉核验第 93～108 卷的推荐标题，并以小学馆第 105 卷特装版页面确认“工藤新一”特殊条目、读者实物核验记录转写推荐标题《最初の挨拶》。其中 16 条映射到既有正式作品；特装版新增小学馆《名侦探柯南 21》正式入口，因该卷明确收录 File 4《最初の挨拶》。至此 109/109 条图鉴推荐均已映射到带启用正版/权威入口的正式作品，重新执行同步脚本也会保留全部人工核验结果。
 
+`apps/api/src/data/catalog-expansion-link-fix-009.json` 是第 32 个不可变批次。它把《黑色回声》原先指向企鹅兰登作者聚合页的间接入口替换为 Hachette Book Group 的作品详情页，并停用旧入口；人物、作品及其关联保持不变。新入口在线巡检返回 200，使有效入口重新纳入自动健康证据。
+
+2026-07-22 对 161 条有效入口完成重新巡检和证据复核：107 条由自动巡检确认健康，51 条因地区连接超时、内容协商限制或证书链问题，已依据同一官方地址的标题、作者、ISBN、馆藏或节目元数据完成人工确认，并记录证据地址、操作者和时间；仅 3 条因缺少足够的同址证据继续留在复核队列，0 条确认失效。人工确认有效期为 90 天，过期或后续自动检测到 400/404/410 时会重新入队。
+
 `apps/api/src/data/catalog-expansion-manifest.json` 维护不可变批次的执行顺序。每轮先执行 `npm run catalog:preflight`，逐批检查编号、slug、来源引用、图鉴编号和数据库冲突；确认无错误后执行 `npm run catalog:apply`。数据库保存批次键、原文件 SHA-256 校验和、变更摘要和应用时间，同一批次内容一旦应用后不得原地修改，后续扩充必须创建新文件与新批次键。
 
 错误批次采用前向补偿，不删除可能已有书架、评价或审计引用的记录。补偿文件必须位于清单末尾，以 `rollbackOf` 指向紧邻的最新批次、填写不少于 10 字的 `rollbackReason`，并恢复旧档案、通过 `archiveDetectiveSlugs` / `archiveWorkSlugs` 归档新内容，或用 `pictureBookRecommendationUnmappings` 解除错误推荐映射。先执行 `npm run catalog:rollback:preflight -- --file=...`，确认差异后再执行 `npm run catalog:rollback:apply -- --file=...`。成功后原批次标记为 `ROLLED_BACK`，补偿批次标记为 `APPLIED`，重复执行保持幂等；归档作品的公开链接会同步停用，原始图鉴推荐标签始终保留。
