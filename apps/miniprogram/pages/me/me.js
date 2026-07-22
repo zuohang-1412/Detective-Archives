@@ -1,4 +1,5 @@
 const {
+  acceptCurrentAgreements,
   createAppeal,
   deactivateAccount,
   deleteReview,
@@ -43,7 +44,9 @@ Page({
     ],
     loading: false,
     loggingIn: false,
+    acceptingAgreements: false,
     agreementsAccepted: false,
+    agreementReconsentRequired: false,
     platformPrivacyRequired: false,
     platformPrivacyContractName: "《小程序用户隐私保护指引》",
     shelfActionId: "",
@@ -71,6 +74,7 @@ Page({
         user: null,
         items: [],
         reviews: [],
+        agreementReconsentRequired: false,
         loading: false,
         loadError: ""
       });
@@ -79,12 +83,25 @@ Page({
     this.setData({ loading: true, loadError: "", error: "" });
     try {
       const userResponse = await getCurrentUser();
+      if (userResponse.data.agreementsCurrent === false) {
+        this.setData({
+          loggedIn: true,
+          user: userResponse.data,
+          items: [],
+          reviews: [],
+          agreementReconsentRequired: true,
+          restrictedUntilLabel: formatRestrictedUntil(userResponse.data.suspendedUntil),
+          loadError: ""
+        });
+        return;
+      }
       if (userResponse.data.isSuspended) {
         this.setData({
           loggedIn: true,
           user: userResponse.data,
           items: [],
           reviews: [],
+          agreementReconsentRequired: false,
           restrictedUntilLabel: formatRestrictedUntil(userResponse.data.suspendedUntil),
           loadError: ""
         });
@@ -115,7 +132,14 @@ Page({
           CANCELLED: "申诉已取消"
         }[review.appeal?.status] || ""
       }));
-      this.setData({ loggedIn: true, user: userResponse.data, items, reviews, loadError: "" });
+      this.setData({
+        loggedIn: true,
+        user: userResponse.data,
+        items,
+        reviews,
+        agreementReconsentRequired: false,
+        loadError: ""
+      });
     } catch (error) {
       this.setData({
         loggedIn: hasAuthToken(),
@@ -193,7 +217,7 @@ Page({
     if (this.data.loggingIn) return;
     this.setData({ loggingIn: true, error: "" });
     try {
-      await loginWechat({ termsAccepted: true, privacyAccepted: true });
+      await loginWechat();
       await this.refresh();
       wx.showToast({ title: "登录成功", icon: "success" });
     } catch (error) {
@@ -205,6 +229,44 @@ Page({
 
   toggleAgreements(event) {
     this.setData({ agreementsAccepted: event.detail.value.length > 0, error: "" });
+  },
+
+  async confirmAgreementUpdate() {
+    if (this.data.acceptingAgreements) return;
+    if (!this.data.agreementsAccepted) {
+      this.setData({ error: "请先阅读并同意更新后的用户协议和隐私政策" });
+      return;
+    }
+    const platformPrivacyRequired = await this.checkPlatformPrivacy();
+    if (platformPrivacyRequired) {
+      this.setData({ error: "请先阅读并同意微信平台的隐私保护指引" });
+      return;
+    }
+    await this.performAgreementUpdate();
+  },
+
+  async handleReconsentPrivacyAuthorization() {
+    this.setData({ platformPrivacyRequired: false, error: "" });
+    if (!this.data.agreementsAccepted) {
+      this.setData({ error: "请继续阅读并同意更新后的用户协议和隐私政策" });
+      return;
+    }
+    await this.performAgreementUpdate();
+  },
+
+  async performAgreementUpdate() {
+    if (this.data.acceptingAgreements) return;
+    this.setData({ acceptingAgreements: true, error: "" });
+    try {
+      await acceptCurrentAgreements();
+      this.setData({ agreementsAccepted: false, agreementReconsentRequired: false });
+      await this.refresh();
+      wx.showToast({ title: "协议确认已更新", icon: "success" });
+    } catch (error) {
+      this.setData({ error: error.message || "协议确认失败，请稍后重试" });
+    } finally {
+      this.setData({ acceptingAgreements: false });
+    }
   },
 
   openLegal(event) {

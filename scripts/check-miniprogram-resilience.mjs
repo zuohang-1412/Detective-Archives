@@ -335,10 +335,54 @@ const suspendedMe = await loadPage("me", {
 await suspendedMe.refresh();
 assert.equal(suspendedMe.data.loggedIn, true);
 assert.equal(suspendedMe.data.user.isSuspended, true);
-assert.equal(suspendedShelfReads, 0);
-assert.match(suspendedMe.data.restrictedUntilLabel, /^2026-07-23 /);
+  assert.equal(suspendedShelfReads, 0);
+  assert.match(suspendedMe.data.restrictedUntilLabel, /^2026-07-23 /);
 
-let sharedExport;
+  let agreementsCurrent = false;
+  let agreementAcceptCount = 0;
+  let agreementProtectedReads = 0;
+  const agreementMe = await loadPage("me", {
+    async acceptCurrentAgreements() {
+      agreementAcceptCount += 1;
+      agreementsCurrent = true;
+    },
+    async getCurrentUser() {
+      return {
+        data: {
+          id: "user-agreement-update",
+          displayName: "协议更新读者",
+          agreementsCurrent
+        }
+      };
+    },
+    hasAuthToken: () => true,
+    async listMyReviews() {
+      agreementProtectedReads += 1;
+      return { data: [] };
+    },
+    async listShelf() {
+      agreementProtectedReads += 1;
+      return { data: [] };
+    }
+  }, {
+    getPrivacySetting(options) {
+      options.success({ needAuthorization: false });
+    }
+  });
+  await agreementMe.refresh();
+  assert.equal(agreementMe.data.agreementReconsentRequired, true);
+  assert.equal(agreementProtectedReads, 0);
+  await agreementMe.confirmAgreementUpdate();
+  assert.equal(agreementAcceptCount, 0);
+  assert.equal(agreementMe.data.error, "请先阅读并同意更新后的用户协议和隐私政策");
+  agreementMe.setData({ agreementsAccepted: true });
+  await agreementMe.confirmAgreementUpdate();
+  assert.equal(agreementAcceptCount, 1);
+  assert.equal(agreementMe.data.agreementReconsentRequired, false);
+  assert.equal(agreementProtectedReads, 2);
+  assert.equal(agreementMe.data.acceptingAgreements, false);
+
+  let sharedExport;
 const exportMe = await loadPage("me", {
   async downloadAccountData() {
     return {

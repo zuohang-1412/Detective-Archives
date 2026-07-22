@@ -95,6 +95,65 @@
   font-size: 23rpx;
 }
 
+.agreement-update-panel {
+  padding: 34rpx;
+  border: 1rpx solid #d8b29f;
+  border-radius: 24rpx;
+  background: #fbefe9;
+}
+
+.agreement-update-title {
+  color: #8f2f23;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.agreement-update-copy {
+  margin-top: 14rpx;
+  color: #6f554a;
+  font-size: 23rpx;
+  line-height: 1.65;
+}
+
+.agreement-update-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5rpx;
+  margin-top: 24rpx;
+  color: #6f554a;
+  font-size: 21rpx;
+}
+
+.agreement-update-row label {
+  display: flex;
+  align-items: center;
+}
+
+.agreement-update-row checkbox {
+  transform: scale(.72);
+}
+
+.agreement-update-button {
+  margin-top: 28rpx;
+  border-radius: 9rpx;
+  background: #9f3123;
+  color: #fffaf0;
+  font-size: 24rpx;
+}
+
+.agreement-update-button::after {
+  border: 0;
+}
+
+.agreement-rights-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26rpx;
+  margin-top: 28rpx;
+  font-size: 21rpx;
+}
+
 .shelf-tabs {
   display: flex;
   gap: 8rpx;

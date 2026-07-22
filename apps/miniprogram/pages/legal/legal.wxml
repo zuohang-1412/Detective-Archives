@@ -1,7 +1,7 @@
 <view class="page-shell">
   <text class="eyebrow">LEGAL & PRIVACY</text>
   <view class="section-title">{{document.title}}</view>
-  <view class="updated-at">更新日期：{{document.updatedAt}}</view>
+  <view class="updated-at">当前版本：{{document.version}} · 更新日期：{{document.updatedAt}}</view>
 
   <view class="operator-card">
     <view>运营主体：{{operatorName}}</view>

@@ -26,7 +26,9 @@ export async function exportUserData(
           'isActive', account.is_active,
           'suspendedUntil', account.suspended_until,
           'termsAcceptedAt', account.terms_accepted_at,
+          'termsVersion', account.terms_version,
           'privacyAcceptedAt', account.privacy_accepted_at,
+          'privacyVersion', account.privacy_version,
           'createdAt', account.created_at,
           'updatedAt', account.updated_at
         ),

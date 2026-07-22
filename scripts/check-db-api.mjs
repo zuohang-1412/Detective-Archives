@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { buildApp } from "../apps/api/dist/app.js";
+import { currentAgreementVersions } from "../apps/api/dist/auth/agreements.js";
 import { createDatabasePoolFromEnv } from "../apps/api/dist/db/pool.js";
 import {
   catalogSlugify,
@@ -15,6 +16,11 @@ const testAdminLoginId = "detective-archives-admin-check";
 const testAdminPassword = "integration-admin-password";
 const testVisitorId = "db_api_analytics_visitor_123456";
 const testVisitorHash = createHash("sha256").update(testVisitorId).digest("hex");
+const currentAgreementAcceptance = {
+  termsAccepted: true,
+  privacyAccepted: true,
+  ...currentAgreementVersions
+};
 const testWorkSlug = "database-api-check-work";
 const testWorkCreatorNames = ["自动化测试作者", "自动化测试绘者"];
 const coreDetectives = JSON.parse(await readFile(
@@ -330,12 +336,27 @@ try {
     payload: { code: "missing-consent" }
   });
   assert.equal(missingConsentResponse.statusCode, 400, missingConsentResponse.body);
+  const outdatedConsentResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/wechat",
+    payload: {
+      code: "database-api-check",
+      agreements: {
+        termsAccepted: true,
+        privacyAccepted: true,
+        termsVersion: "2025-01-01",
+        privacyVersion: "2025-01-01"
+      }
+    }
+  });
+  assert.equal(outdatedConsentResponse.statusCode, 409, outdatedConsentResponse.body);
+  assert.equal(outdatedConsentResponse.json().code, "AGREEMENT_VERSION_OUTDATED");
   const loginResponse = await app.inject({
     method: "POST",
     url: "/api/v1/auth/wechat",
     payload: {
       code: "database-api-check",
-      agreements: { termsAccepted: true, privacyAccepted: true },
+      agreements: currentAgreementAcceptance,
       profile: { displayName: "集成测试用户" }
     }
   });
@@ -349,7 +370,7 @@ try {
     url: "/api/v1/auth/wechat",
     payload: {
       code: "database-api-check",
-      agreements: { termsAccepted: true, privacyAccepted: true },
+      agreements: currentAgreementAcceptance,
       profile: { displayName: "不会重复创建" }
     }
   });
@@ -391,6 +412,91 @@ try {
   });
   assert.equal(meResponse.statusCode, 200, meResponse.body);
   assert.equal(meResponse.json().data.displayName, "集成测试用户");
+  assert.equal(meResponse.json().data.agreementsCurrent, true);
+  assert.deepEqual(meResponse.json().data.agreementVersions, currentAgreementVersions);
+
+  await database.query(`
+    UPDATE users
+    SET terms_version = '2025-01-01', privacy_version = '2025-01-01'
+    WHERE id = $1
+  `, [userId]);
+  const staleAgreementMeResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: authorization
+  });
+  assert.equal(staleAgreementMeResponse.statusCode, 200, staleAgreementMeResponse.body);
+  assert.equal(staleAgreementMeResponse.json().data.agreementsCurrent, false);
+  assert.deepEqual(
+    staleAgreementMeResponse.json().data.agreementVersions,
+    currentAgreementVersions
+  );
+  const staleAgreementShelfResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/shelf",
+    headers: authorization
+  });
+  assert.equal(staleAgreementShelfResponse.statusCode, 428, staleAgreementShelfResponse.body);
+  assert.equal(
+    staleAgreementShelfResponse.json().code,
+    "AGREEMENT_RECONSENT_REQUIRED"
+  );
+  const staleAgreementRefreshResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/refresh",
+    headers: authorization
+  });
+  assert.equal(staleAgreementRefreshResponse.statusCode, 200, staleAgreementRefreshResponse.body);
+  assert.equal(staleAgreementRefreshResponse.json().data.user.agreementsCurrent, false);
+  authorization = {
+    authorization: `Bearer ${staleAgreementRefreshResponse.json().data.token}`
+  };
+  const outdatedAgreementResponse = await app.inject({
+    method: "PUT",
+    url: "/api/v1/me/agreements",
+    headers: authorization,
+    payload: {
+      termsAccepted: true,
+      privacyAccepted: true,
+      termsVersion: "2025-01-01",
+      privacyVersion: "2025-01-01"
+    }
+  });
+  assert.equal(outdatedAgreementResponse.statusCode, 409, outdatedAgreementResponse.body);
+  assert.equal(outdatedAgreementResponse.json().code, "AGREEMENT_VERSION_OUTDATED");
+  const agreementAcceptanceResponses = await Promise.all(Array.from({ length: 2 }, () =>
+    app.inject({
+      method: "PUT",
+      url: "/api/v1/me/agreements",
+      headers: authorization,
+      payload: currentAgreementAcceptance
+    })
+  ));
+  agreementAcceptanceResponses.forEach((response) => {
+    assert.equal(response.statusCode, 200, response.body);
+    assert.equal(response.json().data.agreementsCurrent, true);
+  });
+  assert.deepEqual(
+    agreementAcceptanceResponses.map((response) => response.json().data.updated).sort(),
+    [false, true]
+  );
+  const acceptedAgreementRecord = await database.query(`
+    SELECT terms_version, privacy_version,
+      (SELECT COUNT(*)::int FROM audit_logs
+        WHERE actor_id = users.id
+          AND action = 'AGREEMENTS_ACCEPT'
+          AND metadata->>'source' = 'RECONSENT') AS reconsent_audit_count
+    FROM users WHERE id = $1
+  `, [userId]);
+  assert.equal(
+    acceptedAgreementRecord.rows[0].terms_version,
+    currentAgreementVersions.termsVersion
+  );
+  assert.equal(
+    acceptedAgreementRecord.rows[0].privacy_version,
+    currentAgreementVersions.privacyVersion
+  );
+  assert.equal(acceptedAgreementRecord.rows[0].reconsent_audit_count, 1);
 
   const wishlistResponse = await app.inject({
     method: "PUT",
@@ -456,7 +562,7 @@ try {
     url: "/api/v1/auth/wechat",
     payload: {
       code: "secondary-user",
-      agreements: { termsAccepted: true, privacyAccepted: true }
+      agreements: currentAgreementAcceptance
     }
   });
   assert.equal(secondaryLoginResponse.statusCode, 201, secondaryLoginResponse.body);
@@ -475,7 +581,7 @@ try {
     url: "/api/v1/auth/wechat",
     payload: {
       code: "editor-user",
-      agreements: { termsAccepted: true, privacyAccepted: true }
+      agreements: currentAgreementAcceptance
     }
   });
   assert.equal(editorLoginResponse.statusCode, 201, editorLoginResponse.body);
@@ -496,7 +602,7 @@ try {
     url: "/api/v1/auth/wechat",
     payload: {
       code: "concurrent-user",
-      agreements: { termsAccepted: true, privacyAccepted: true }
+      agreements: currentAgreementAcceptance
     }
   })));
   concurrentLoginResponses.forEach((response) => {
@@ -1878,7 +1984,7 @@ try {
     url: "/api/v1/auth/wechat",
     payload: {
       code: "deactivation-user",
-      agreements: { termsAccepted: true, privacyAccepted: true }
+      agreements: currentAgreementAcceptance
     }
   });
   assert.equal(deactivationLoginResponse.statusCode, 201, deactivationLoginResponse.body);
@@ -1887,10 +1993,14 @@ try {
     authorization: `Bearer ${deactivationLoginResponse.json().data.token}`
   };
   const consentRecord = await database.query(`
-    SELECT terms_accepted_at, privacy_accepted_at FROM users WHERE id = $1
+    SELECT terms_accepted_at, terms_version,
+      privacy_accepted_at, privacy_version
+    FROM users WHERE id = $1
   `, [deactivatedTestUserId]);
   assert.ok(consentRecord.rows[0].terms_accepted_at);
   assert.ok(consentRecord.rows[0].privacy_accepted_at);
+  assert.equal(consentRecord.rows[0].terms_version, currentAgreementVersions.termsVersion);
+  assert.equal(consentRecord.rows[0].privacy_version, currentAgreementVersions.privacyVersion);
   const deactivationShelfResponse = await app.inject({
     method: "PUT",
     url: `/api/v1/me/shelf/${workId}`,
@@ -2026,7 +2136,7 @@ try {
   assert.ok(analytics.communityModeration.appealRecoveryRate > 0);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, community feed, personal data export, product analytics, session rotation, role and audit administration, detective publishing, link feedback and manual review, concurrency, account and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, versioned agreement reconsent, community feed, personal data export, product analytics, session rotation, role and audit administration, detective publishing, link feedback and manual review, concurrency, account and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();

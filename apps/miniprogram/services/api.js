@@ -122,7 +122,18 @@ function listArchiveDirectory(params = {}) {
   return request("/api/v1/archive-directory", { data: params });
 }
 
-function loginWechat(agreements) {
+async function currentAgreementAcceptance() {
+  const response = await request("/api/v1/auth/agreements");
+  return {
+    termsAccepted: true,
+    privacyAccepted: true,
+    termsVersion: response.data.termsVersion,
+    privacyVersion: response.data.privacyVersion
+  };
+}
+
+async function loginWechat() {
+  const agreements = await currentAgreementAcceptance();
   return new Promise((resolve, reject) => {
     wx.login({
       timeout: 8000,
@@ -148,6 +159,14 @@ function loginWechat(agreements) {
       },
       fail: (error) => reject(new Error(error.errMsg || "微信登录失败"))
     });
+  });
+}
+
+async function acceptCurrentAgreements() {
+  const agreements = await currentAgreementAcceptance();
+  return request("/api/v1/me/agreements", {
+    method: "PUT",
+    data: agreements
   });
 }
 
@@ -312,6 +331,7 @@ async function deactivateAccount() {
 }
 
 module.exports = {
+  acceptCurrentAgreements,
   createAppeal,
   createComment,
   createWorkLinkFeedback,

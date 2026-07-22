@@ -24,6 +24,13 @@ export async function requireActiveSession(
     });
     return null;
   }
+  if (accountRights && !accountRights.agreementsCurrent) {
+    await reply.code(428).send({
+      code: "AGREEMENT_RECONSENT_REQUIRED",
+      message: "用户协议或隐私政策已更新，请重新阅读并确认"
+    });
+    return null;
+  }
   await reply.code(401).send({ code: "AUTH_REQUIRED", message: "请先登录" });
   return null;
 }

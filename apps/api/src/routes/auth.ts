@@ -1,5 +1,9 @@
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import {
+  currentAgreementVersions,
+  hasCurrentAgreementVersions
+} from "../auth/agreements.js";
 import type { AdminCredentialValidator } from "../auth/admin.js";
 import {
   bearerToken,
@@ -10,6 +14,7 @@ import type { WechatCodeExchange } from "../auth/wechat.js";
 import { WechatCodeExchangeError } from "../auth/wechat.js";
 import type { DatabaseClient } from "../db/types.js";
 import {
+  acceptCurrentUserAgreements,
   deactivateUserAccount,
   loginAdminUser,
   loginWechatUser,
@@ -17,12 +22,15 @@ import {
 } from "../repositories/users.js";
 import { exportUserData } from "../repositories/user-data-export.js";
 
+const agreementAcceptanceSchema = z.object({
+  termsAccepted: z.literal(true),
+  privacyAccepted: z.literal(true),
+  termsVersion: z.string().trim().min(1).max(20),
+  privacyVersion: z.string().trim().min(1).max(20)
+});
 const loginSchema = z.object({
   code: z.string().trim().min(1).max(200),
-  agreements: z.object({
-    termsAccepted: z.literal(true),
-    privacyAccepted: z.literal(true)
-  }),
+  agreements: agreementAcceptanceSchema,
   profile: z.object({
     displayName: z.string().trim().min(1).max(60).default("推理读者"),
     avatarUrl: z.url().max(1000).optional()
@@ -60,6 +68,10 @@ async function requireAccountRightsSession(
 }
 
 export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, options) => {
+  app.get("/auth/agreements", async () => ({
+    data: { ...currentAgreementVersions }
+  }));
+
   app.post("/auth/admin", {
     config: { rateLimit: { max: 5, timeWindow: "1 minute" } }
   }, async (request, reply) => {
@@ -98,6 +110,13 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
         message: "登录服务尚未配置"
       });
     }
+    if (!hasCurrentAgreementVersions(parsed.data.agreements)) {
+      return reply.code(409).send({
+        code: "AGREEMENT_VERSION_OUTDATED",
+        message: "用户协议或隐私政策已更新，请重新阅读后确认",
+        data: { ...currentAgreementVersions }
+      });
+    }
 
     try {
       const identity = await options.wechatCodeExchange(parsed.data.code);
@@ -105,7 +124,8 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
         options.database,
         identity,
         parsed.data.profile,
-        options.sessionTtlSeconds ?? 2_592_000
+        options.sessionTtlSeconds ?? 2_592_000,
+        request.id
       );
       return reply.code(201).send({ data: result });
     } catch (error) {
@@ -128,7 +148,12 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
       wechatOpenId: _wechatOpenId,
       ...user
     } = session;
-    return { data: user };
+    return {
+      data: {
+        ...user,
+        agreementVersions: { ...currentAgreementVersions }
+      }
+    };
   });
 
   app.post("/auth/refresh", {
@@ -158,6 +183,49 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
       WHERE token_hash = $1 AND revoked_at IS NULL
     `, [sessionTokenHash(token)]);
     return reply.code(204).send();
+  });
+
+  app.put("/me/agreements", async (request, reply) => {
+    const body = agreementAcceptanceSchema.safeParse(request.body);
+    if (!body.success) {
+      return reply.code(400).send({
+        code: "INVALID_AGREEMENT_ACCEPTANCE",
+        message: "请完整阅读并确认用户协议和隐私政策"
+      });
+    }
+    if (!hasCurrentAgreementVersions(body.data)) {
+      return reply.code(409).send({
+        code: "AGREEMENT_VERSION_OUTDATED",
+        message: "用户协议或隐私政策已更新，请重新阅读后确认",
+        data: { ...currentAgreementVersions }
+      });
+    }
+    const session = await requireAccountRightsSession(options.database, request, reply);
+    if (!session || !options.database) return;
+    if (!session.wechatOpenId) {
+      return reply.code(403).send({
+        code: "AGREEMENT_ACCEPTANCE_NOT_AVAILABLE",
+        message: "当前账号无需确认用户协议"
+      });
+    }
+    const acceptanceResult = await acceptCurrentUserAgreements(
+      options.database,
+      session.id,
+      request.id
+    );
+    if (acceptanceResult === "UNAVAILABLE") {
+      return reply.code(409).send({
+        code: "AGREEMENT_ACCEPTANCE_UNAVAILABLE",
+        message: "当前账号无法更新协议确认状态"
+      });
+    }
+    return {
+      data: {
+        agreementsCurrent: true,
+        updated: acceptanceResult === "ACCEPTED",
+        agreementVersions: { ...currentAgreementVersions }
+      }
+    };
   });
 
   app.get("/me/data-export", {

@@ -4,6 +4,7 @@ import { after, before, describe, it } from "node:test";
 import type { FastifyInstance } from "fastify";
 import pino from "pino";
 import { buildApp } from "../src/app.js";
+import { currentAgreementVersions } from "../src/auth/agreements.js";
 import { createLoggerOptions } from "../src/logging.js";
 
 describe("detective archives API", () => {
@@ -28,6 +29,12 @@ describe("detective archives API", () => {
     assert.equal(typeof response.headers["x-request-id"], "string");
     assert.equal(response.headers["x-content-type-options"], "nosniff");
     assert.match(response.headers["content-security-policy"] ?? "", /default-src 'self'/);
+  });
+
+  it("publishes the current agreement versions", async () => {
+    const response = await app.inject({ method: "GET", url: "/api/v1/auth/agreements" });
+    assert.equal(response.statusCode, 200);
+    assert.deepEqual(response.json(), { data: currentAgreementVersions });
   });
 
   it("protects metrics when a monitoring token is configured", async () => {
@@ -233,7 +240,11 @@ describe("detective archives API", () => {
       url: "/api/v1/auth/wechat",
       payload: {
         code: "temporary-code",
-        agreements: { termsAccepted: true, privacyAccepted: true }
+        agreements: {
+          termsAccepted: true,
+          privacyAccepted: true,
+          ...currentAgreementVersions
+        }
       }
     });
     assert.equal(loginResponse.statusCode, 503);

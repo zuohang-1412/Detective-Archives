@@ -44,7 +44,46 @@
     </view>
   </view>
 
-  <block wx:if="{{loggedIn && !loadError}}">
+  <view wx:if="{{loggedIn && !loadError && agreementReconsentRequired}}" class="agreement-update-panel">
+    <view class="agreement-update-title">协议与隐私政策已更新</view>
+    <view class="agreement-update-copy">
+      继续使用书架和社区功能前，请重新阅读并确认当前版本。账号退出、个人数据导出和注销功能不受影响。
+    </view>
+    <checkbox-group class="agreement-update-row" bindchange="toggleAgreements">
+      <label>
+        <checkbox value="accepted" color="#9f3123" checked="{{agreementsAccepted}}" />
+        <text>我已阅读并同意</text>
+      </label>
+      <text class="legal-link" data-type="terms" catchtap="openLegal">《用户协议》</text>
+      <text>和</text>
+      <text class="legal-link" data-type="privacy" catchtap="openLegal">《隐私政策》</text>
+    </checkbox-group>
+    <view wx:if="{{platformPrivacyRequired}}" class="agreement-update-copy">
+      微信还需要同步平台隐私授权状态，请先阅读
+      <text class="legal-link" bindtap="openPlatformPrivacy">{{platformPrivacyContractName}}</text>
+    </view>
+    <button
+      wx:if="{{platformPrivacyRequired}}"
+      id="reconsent-privacy-button"
+      class="agreement-update-button"
+      loading="{{acceptingAgreements}}"
+      open-type="agreePrivacyAuthorization"
+      bindagreeprivacyauthorization="handleReconsentPrivacyAuthorization"
+    >同意更新并继续使用</button>
+    <button
+      wx:else
+      class="agreement-update-button"
+      loading="{{acceptingAgreements}}"
+      bindtap="confirmAgreementUpdate"
+    >确认更新并继续使用</button>
+    <view class="agreement-rights-actions">
+      <text class="legal-link" bindtap="requestDataExport">{{exportingData ? '导出中…' : '导出我的数据'}}</text>
+      <text class="legal-link" bindtap="confirmLogout">退出登录</text>
+      <text class="deactivate-link" bindtap="confirmDeactivate">注销账号</text>
+    </view>
+  </view>
+
+  <block wx:if="{{loggedIn && !loadError && !agreementReconsentRequired}}">
     <view wx:if="{{user.isSuspended}}" class="account-restricted">
       <view class="restricted-title">账号当前处于受限状态</view>
       <view class="restricted-copy">

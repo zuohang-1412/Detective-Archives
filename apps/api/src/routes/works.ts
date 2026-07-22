@@ -121,6 +121,12 @@ export const workRoutes: FastifyPluginAsync<WorkRouteOptions> = async (app, opti
           message: "账号当前受限，不能提交链接反馈"
         });
       }
+      if (accountRights && !accountRights.agreementsCurrent) {
+        return reply.code(428).send({
+          code: "AGREEMENT_RECONSENT_REQUIRED",
+          message: "用户协议或隐私政策已更新，请重新阅读并确认"
+        });
+      }
     }
     try {
       const feedback = await createWorkLinkFeedback(
