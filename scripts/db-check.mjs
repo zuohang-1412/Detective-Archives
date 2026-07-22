@@ -113,6 +113,19 @@ try {
           AND column_name = 'visitor_hash'
       ) AS click_visitor_hash
   `);
+  const linkReviewSchema = await client.query(`
+    SELECT
+      COUNT(*) FILTER (WHERE column_name IN (
+        'manual_review_status',
+        'manual_review_note',
+        'manual_review_evidence',
+        'manual_reviewed_at',
+        'manual_reviewer_id'
+      ))::int AS column_count,
+      to_regclass('public.idx_work_links_manual_review_queue') IS NOT NULL AS queue_index
+    FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'work_links'
+  `);
   const detectiveCounts = await client.query(`
     SELECT catalog_collection::text AS collection, COUNT(*)::int AS count
     FROM detectives
@@ -198,6 +211,8 @@ try {
   expect(analyticsSchema.rows[0].content_appeals, true, "content appeals table");
   expect(analyticsSchema.rows[0].shelf_engagement, true, "shelf engagement facts table");
   expect(analyticsSchema.rows[0].click_visitor_hash, true, "link click visitor hash column");
+  expect(linkReviewSchema.rows[0].column_count, 5, "work link manual review column count");
+  expect(linkReviewSchema.rows[0].queue_index, true, "work link manual review queue index");
   for (const [collection, count] of expectedDetectiveCounts) {
     expect(counts.get(collection) ?? 0, count, `${collection} detective count`);
   }

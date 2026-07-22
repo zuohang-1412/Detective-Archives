@@ -35,6 +35,18 @@ for (const appealCapability of ["appealQueue", "renderAppeals", "/admin/appeals/
     throw new Error(`Admin UI must expose content appeals: ${appealCapability}`);
   }
 }
+for (const linkReviewCapability of [
+  "linkReviewList",
+  "renderLinkReviews",
+  "/admin/work-link-reviews",
+  "/review",
+  "人工确认有效",
+  "确认失效并停用"
+]) {
+  if (!script.includes(linkReviewCapability)) {
+    throw new Error(`Admin UI must expose auditable link review: ${linkReviewCapability}`);
+  }
+}
 
 const html = await readFile(path.join(root, "index.html"), "utf8");
 for (const asset of ["/admin/styles.css", "/admin/app.js"]) {
@@ -43,6 +55,16 @@ for (const asset of ["/admin/styles.css", "/admin/app.js"]) {
 for (const analyticsElement of ["analyticsMetrics", "analyticsPeriod"]) {
   if (!html.includes(`id="${analyticsElement}"`)) {
     throw new Error(`Admin HTML must include ${analyticsElement}`);
+  }
+}
+for (const linkReviewElement of [
+  "linkReviewCount",
+  "linkReviewList",
+  "linkReviewSearchForm",
+  "linkReviewSearch"
+]) {
+  if (!html.includes(`id="${linkReviewElement}"`)) {
+    throw new Error(`Admin HTML must include ${linkReviewElement}`);
   }
 }
 

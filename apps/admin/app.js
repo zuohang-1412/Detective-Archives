@@ -57,12 +57,18 @@ const elements = {
   cancelDetectiveEdit: document.querySelector("#cancelDetectiveEdit"),
   detectiveFormError: document.querySelector("#detectiveFormError"),
   detectiveList: document.querySelector("#detectiveList"),
+  linkReviewCount: document.querySelector("#linkReviewCount"),
+  linkReviewList: document.querySelector("#linkReviewList"),
+  linkReviewSearchForm: document.querySelector("#linkReviewSearchForm"),
+  linkReviewSearch: document.querySelector("#linkReviewSearch"),
   linkFeedbackList: document.querySelector("#linkFeedbackList"),
   userList: document.querySelector("#userList"),
   auditList: document.querySelector("#auditList")
 };
 
 let editingDetective = null;
+let currentAdminRole = null;
+let linkReviewQuery = "";
 
 function getToken() {
   return sessionStorage.getItem(tokenKey) || "";
@@ -142,6 +148,7 @@ function textElement(tag, className, text) {
 
 function showLogin() {
   sessionStorage.removeItem(tokenKey);
+  currentAdminRole = null;
   elements.loginPanel.classList.remove("hidden");
   elements.workspace.classList.add("hidden");
   elements.logoutButton.classList.add("hidden");
@@ -329,6 +336,86 @@ async function toggleWorkLink(link) {
     data: { isActive: !link.isActive }
   });
   await loadWorkspace();
+}
+
+async function reviewWorkLink(item, decision) {
+  const note = window.prompt(
+    decision === "VERIFIED" ? "说明确认有效的依据（至少 5 个字）" : "说明确认失效的依据（至少 5 个字）"
+  );
+  if (!note) return;
+  const evidenceReference = window.prompt(
+    "证据引用，例如出版社页面、工单号或受控截图编号；不要粘贴带令牌或签名的地址"
+  );
+  if (!evidenceReference) return;
+  elements.workspaceError.textContent = "";
+  try {
+    await api(`/admin/work-links/${item.id}/review`, {
+      method: "PATCH",
+      data: { decision, note, evidenceReference }
+    });
+    await loadWorkspace();
+  } catch (error) {
+    elements.workspaceError.textContent = error.message;
+  }
+}
+
+function renderLinkReviews(items, total) {
+  elements.linkReviewCount.textContent = String(total);
+  if (!items.length) {
+    elements.linkReviewList.replaceChildren(textElement("p", "empty", "当前没有待人工复核的正版链接"));
+    return;
+  }
+  const stateLabels = {
+    BROKEN: "自动巡检确认失效",
+    NEVER_CHECKED: "尚未巡检",
+    STALE: "超过 90 天未确认",
+    UNCONFIRMED: "自动巡检无法确认"
+  };
+  elements.linkReviewList.replaceChildren(...items.map((item) => {
+    const card = document.createElement("article");
+    card.className = "queue-card";
+    card.append(textElement("h4", "queue-title", item.work.titleZh));
+    card.append(textElement(
+      "div",
+      "queue-context",
+      `${item.providerName} · ${stateLabels[item.reviewState] || item.reviewState}`
+    ));
+    const details = item.lastCheckError || item.lastStatusCode
+      ? `巡检结果：${item.lastCheckError || `HTTP ${item.lastStatusCode}`}`
+      : "巡检结果：暂无自动证据";
+    card.append(textElement("p", "queue-body", details));
+    if (item.manualReviewedAt) {
+      card.append(textElement(
+        "p",
+        "report-description",
+        `上次人工结论：${item.manualReviewStatus} · ${item.manualReviewer?.displayName || "未知人员"} · ${new Date(item.manualReviewedAt).toLocaleString("zh-CN")}`
+      ));
+    }
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    try {
+      const url = new URL(item.url);
+      if (url.protocol === "https:") {
+        const anchor = textElement("a", "text-button", "打开正版入口");
+        anchor.href = url.toString();
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        actions.append(anchor);
+      }
+    } catch {
+      // Invalid stored URLs remain visible to administrators but are not made clickable.
+    }
+    if (currentAdminRole === "ADMIN") {
+      if (item.reviewState !== "BROKEN") {
+        actions.append(actionButton("人工确认有效", "approve-button", () => reviewWorkLink(item, "VERIFIED")));
+      }
+      actions.append(actionButton("确认失效并停用", "reject-button", () => reviewWorkLink(item, "REJECTED")));
+    } else {
+      actions.append(textElement("span", "queue-context", "需管理员登记最终结论"));
+    }
+    card.append(actions);
+    return card;
+  }));
 }
 
 function renderWorks(items) {
@@ -595,12 +682,16 @@ function renderAuditLogs(items) {
 async function loadWorkspace() {
   elements.workspaceError.textContent = "";
   try {
-    const [dashboard, analytics, moderation, works, detectives, linkFeedback, users, audits] = await Promise.all([
+    const linkReviewPath = linkReviewQuery
+      ? `/admin/work-link-reviews?q=${encodeURIComponent(linkReviewQuery)}`
+      : "/admin/work-link-reviews";
+    const [dashboard, analytics, moderation, works, detectives, linkReviews, linkFeedback, users, audits] = await Promise.all([
       api("/admin/dashboard"),
       api("/admin/analytics?days=90"),
       listAllModerationPages(),
       listAllAdminPages("/admin/works"),
       listAllAdminPages("/admin/detectives"),
+      listAllAdminPages(linkReviewPath),
       listAllAdminPages("/admin/work-link-feedback"),
       listAllAdminPages("/admin/users"),
       listAllAdminPages("/admin/audit-logs")
@@ -619,6 +710,7 @@ async function loadWorkspace() {
     renderAppeals(queue.appeals);
     renderWorks(works.data);
     renderDetectives(detectives.data);
+    renderLinkReviews(linkReviews.data, linkReviews.total);
     renderLinkFeedback(linkFeedback.data);
     renderUsers(users.data);
     renderAuditLogs(audits.data);
@@ -636,6 +728,7 @@ elements.loginForm.addEventListener("submit", async (event) => {
       data: { loginId: elements.loginId.value, password: elements.password.value }
     });
     sessionStorage.setItem(tokenKey, response.data.token);
+    currentAdminRole = response.data.user.role;
     elements.password.value = "";
     await loadWorkspace();
   } catch (error) {
@@ -651,6 +744,11 @@ elements.logoutButton.addEventListener("click", async () => {
   }
 });
 elements.refreshButton.addEventListener("click", loadWorkspace);
+elements.linkReviewSearchForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  linkReviewQuery = elements.linkReviewSearch.value.trim();
+  await loadWorkspace();
+});
 elements.workForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   elements.workFormError.textContent = "";
@@ -700,6 +798,7 @@ async function restoreAdminSession() {
   try {
     const response = await api("/auth/refresh", { method: "POST" });
     sessionStorage.setItem(tokenKey, response.data.token);
+    currentAdminRole = response.data.user.role;
     await loadWorkspace();
   } catch (error) {
     showLogin();

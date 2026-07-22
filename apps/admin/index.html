@@ -188,6 +188,21 @@
         <div class="content-section">
           <div class="section-head">
             <div>
+              <span class="eyebrow">LINK REVIEW QUEUE</span>
+              <h2>正版链接人工复核 <span id="linkReviewCount">0</span></h2>
+              <p class="section-note">自动巡检不确定、确认失效或超过 90 天的入口会进入此处；每次结论均写入审计记录。</p>
+            </div>
+            <form id="linkReviewSearchForm" class="link-review-search">
+              <label>搜索作品或渠道<input id="linkReviewSearch" maxlength="80" placeholder="作品、标识或出版社"></label>
+              <button class="secondary-button" type="submit">筛选</button>
+            </form>
+          </div>
+          <div id="linkReviewList" class="queue-grid"></div>
+        </div>
+
+        <div class="content-section">
+          <div class="section-head">
+            <div>
               <span class="eyebrow">LINK QUALITY</span>
               <h2>正版链接反馈</h2>
             </div>

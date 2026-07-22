@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   classifyLinkHealth,
   isHealthyLinkStatus,
+  linkHealthErrorCode,
   linkHealthOutcome
 } from "./lib/link-health.mjs";
 import { isPrivateAddress, validateUrlShape } from "./lib/link-safety.mjs";
@@ -38,5 +39,12 @@ for (const status of [405, 429, 451, 500, 503]) {
   assert.equal(classifyLinkHealth(status), linkHealthOutcome.UNCONFIRMED);
 }
 assert.equal(classifyLinkHealth(null, "TIMEOUT"), linkHealthOutcome.UNCONFIRMED);
+assert.equal(
+  linkHealthErrorCode(Object.assign(new TypeError("fetch failed"), {
+    cause: Object.assign(new Error("connect timeout"), { code: "UND_ERR_CONNECT_TIMEOUT" })
+  })),
+  "UND_ERR_CONNECT_TIMEOUT"
+);
+assert.equal(linkHealthErrorCode(Object.assign(new Error("aborted"), { name: "AbortError" })), "TIMEOUT");
 
 console.log("Link safety checks: OK (unsafe destinations blocked; hard failures separated from transient checks)");

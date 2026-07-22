@@ -717,6 +717,172 @@ try {
     payload: { isActive: true }
   });
   assert.equal(enableLinkResponse.statusCode, 200, enableLinkResponse.body);
+  await database.query(`
+    UPDATE work_links
+    SET last_checked_at = NOW(),
+      last_check_ok = NULL,
+      last_status_code = NULL,
+      last_check_error = 'UND_ERR_CONNECT_TIMEOUT'
+    WHERE id = $1
+  `, [managedLinkId]);
+  const linkReviewQueueResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/work-link-reviews?q=database-api-check",
+    headers: adminAuthorization
+  });
+  assert.equal(linkReviewQueueResponse.statusCode, 200, linkReviewQueueResponse.body);
+  assert.ok(linkReviewQueueResponse.json().data.some((item) => (
+    item.id === managedLinkId
+      && item.reviewState === "UNCONFIRMED"
+      && item.lastCheckError === "UND_ERR_CONNECT_TIMEOUT"
+  )));
+  const forbiddenEditorLinkReview = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}/review`,
+    headers: editorAuthorization,
+    payload: {
+      decision: "VERIFIED",
+      note: "编辑不应直接登记人工复核结论",
+      evidenceReference: "publisher-review-ticket-editor"
+    }
+  });
+  assert.equal(forbiddenEditorLinkReview.statusCode, 403, forbiddenEditorLinkReview.body);
+  const unsafeLinkReviewEvidence = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}/review`,
+    headers: adminAuthorization,
+    payload: {
+      decision: "VERIFIED",
+      note: "证据引用不应携带访问令牌",
+      evidenceReference: "https://example.com/evidence?access_token=secret-value"
+    }
+  });
+  assert.equal(unsafeLinkReviewEvidence.statusCode, 400, unsafeLinkReviewEvidence.body);
+  const verifiedReviewPayload = {
+    decision: "VERIFIED",
+    note: "已在出版社页面人工确认作品和入口一致",
+    evidenceReference: "publisher-review-ticket-verified"
+  };
+  const concurrentVerifyLinkReviewResponses = await Promise.all([
+    app.inject({
+      method: "PATCH",
+      url: `/api/v1/admin/work-links/${managedLinkId}/review`,
+      headers: adminAuthorization,
+      payload: verifiedReviewPayload
+    }),
+    app.inject({
+      method: "PATCH",
+      url: `/api/v1/admin/work-links/${managedLinkId}/review`,
+      headers: adminAuthorization,
+      payload: verifiedReviewPayload
+    })
+  ]);
+  assert.ok(concurrentVerifyLinkReviewResponses.every((response) => response.statusCode === 200));
+  assert.deepEqual(
+    concurrentVerifyLinkReviewResponses.map((response) => response.json().data.unchanged).sort(),
+    [false, true]
+  );
+  assert.ok(concurrentVerifyLinkReviewResponses.every((response) => (
+    response.json().data.decision === "VERIFIED"
+  )));
+  const resolvedLinkReviewQueueResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/work-link-reviews?q=database-api-check",
+    headers: adminAuthorization
+  });
+  assert.equal(
+    resolvedLinkReviewQueueResponse.json().data.some((item) => item.id === managedLinkId),
+    false
+  );
+  await database.query(`
+    UPDATE work_links
+    SET last_checked_at = NOW(),
+      last_check_ok = FALSE,
+      last_status_code = 404,
+      last_check_error = 'HTTP_404'
+    WHERE id = $1
+  `, [managedLinkId]);
+  const brokenOverridesManualReviewResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/admin/work-link-reviews?q=database-api-check",
+    headers: adminAuthorization
+  });
+  assert.ok(brokenOverridesManualReviewResponse.json().data.some((item) => (
+    item.id === managedLinkId && item.reviewState === "BROKEN"
+  )));
+  const cannotVerifyAutomaticallyBrokenLinkResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}/review`,
+    headers: adminAuthorization,
+    payload: {
+      decision: "VERIFIED",
+      note: "自动确认失效后不能由人工结论直接覆盖",
+      evidenceReference: "publisher-review-ticket-broken"
+    }
+  });
+  assert.equal(
+    cannotVerifyAutomaticallyBrokenLinkResponse.statusCode,
+    409,
+    cannotVerifyAutomaticallyBrokenLinkResponse.body
+  );
+  assert.equal(
+    cannotVerifyAutomaticallyBrokenLinkResponse.json().code,
+    "WORK_LINK_AUTOMATICALLY_BROKEN"
+  );
+  const rejectLinkReviewResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}/review`,
+    headers: adminAuthorization,
+    payload: {
+      decision: "REJECTED",
+      note: "官方入口确认已经移除该作品页面",
+      evidenceReference: "publisher-review-ticket-rejected"
+    }
+  });
+  assert.equal(rejectLinkReviewResponse.statusCode, 200, rejectLinkReviewResponse.body);
+  assert.equal(rejectLinkReviewResponse.json().data.isActive, false);
+  const inactiveVerifiedLinkReviewResponse = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}/review`,
+    headers: adminAuthorization,
+    payload: {
+      decision: "VERIFIED",
+      note: "停用链接不能直接确认有效",
+      evidenceReference: "publisher-review-ticket-inactive"
+    }
+  });
+  assert.equal(inactiveVerifiedLinkReviewResponse.statusCode, 409, inactiveVerifiedLinkReviewResponse.body);
+  const manualReviewAuditResult = await database.query(`
+    SELECT COUNT(*)::int AS count
+    FROM audit_logs
+    WHERE resource_type = 'WORK_LINK'
+      AND resource_id = $1
+      AND action IN ('WORK_LINK_MANUAL_VERIFIED', 'WORK_LINK_MANUAL_REJECTED')
+  `, [managedLinkId]);
+  assert.equal(manualReviewAuditResult.rows[0].count, 2);
+  const reenableAfterManualRejection = await app.inject({
+    method: "PATCH",
+    url: `/api/v1/admin/work-links/${managedLinkId}`,
+    headers: adminAuthorization,
+    payload: { isActive: true }
+  });
+  assert.equal(reenableAfterManualRejection.statusCode, 200, reenableAfterManualRejection.body);
+  const resetLinkReviewResult = await database.query(`
+    SELECT
+      is_active AS "isActive",
+      last_checked_at AS "lastCheckedAt",
+      last_check_ok AS "lastCheckOk",
+      manual_review_status AS "manualReviewStatus",
+      manual_reviewed_at AS "manualReviewedAt"
+    FROM work_links WHERE id = $1
+  `, [managedLinkId]);
+  assert.deepEqual(resetLinkReviewResult.rows[0], {
+    isActive: true,
+    lastCheckedAt: null,
+    lastCheckOk: null,
+    manualReviewStatus: null,
+    manualReviewedAt: null
+  });
   const publicManagedWork = await app.inject({
     method: "GET",
     url: `/api/v1/works/${testWorkSlug}`
@@ -1646,7 +1812,7 @@ try {
   assert.ok(analytics.communityModeration.appealRecoveryRate > 0);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, community feed, personal data export, product analytics, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, community feed, personal data export, product analytics, session rotation, role and audit administration, detective publishing, link feedback and manual review, concurrency, account and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();

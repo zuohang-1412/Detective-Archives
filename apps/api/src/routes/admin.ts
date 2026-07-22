@@ -8,8 +8,10 @@ import {
   getAdminDashboard,
   getModerationQueue,
   handleReport,
+  listAdminWorkLinkReviews,
   listAdminWorks,
   moderateContent,
+  reviewAdminWorkLink,
   setAdminWorkLinkActive,
   setAdminWorkStatus,
   suspendUser,
@@ -84,6 +86,15 @@ const workLinkSchema = z.object({
   region: z.string().trim().min(1).max(30).default("CN")
 });
 const linkStatusSchema = z.object({ isActive: z.boolean() });
+const unsafeEvidenceReferencePattern = /(?:^\s*(?:data|javascript):|[?&](?:access_?token|api_?key|key|password|secret|signature|sig)=|bearer\s|-----BEGIN)/i;
+const workLinkReviewSchema = z.object({
+  decision: z.enum(["VERIFIED", "REJECTED"]),
+  note: z.string().trim().min(5).max(500),
+  evidenceReference: z.string().trim().min(3).max(500).refine(
+    (value) => !unsafeEvidenceReferencePattern.test(value),
+    "证据引用不能包含密钥、签名或内联内容"
+  )
+});
 const detectiveParamsSchema = z.object({ detectiveId: z.uuid() });
 const detectiveCategorySchema = z.enum([
   "WORLD_LITERATURE",
@@ -346,6 +357,25 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
     };
   });
 
+  app.get("/admin/work-link-reviews", async (request, reply) => {
+    const query = workQuerySchema.safeParse(request.query);
+    if (!query.success) {
+      return reply.code(400).send({ code: "INVALID_QUERY", message: "链接复核队列分页条件不合法" });
+    }
+    const user = await authorizeRoles(options.database, request, reply, ["EDITOR", "ADMIN"]);
+    if (!user || !options.database) return;
+    const result = await listAdminWorkLinkReviews(options.database, query.data);
+    return {
+      data: result.data,
+      pagination: {
+        page: query.data.page,
+        pageSize: query.data.pageSize,
+        total: result.total,
+        totalPages: Math.ceil(result.total / query.data.pageSize)
+      }
+    };
+  });
+
   app.post("/admin/works", async (request, reply) => {
     const body = workInputSchema.safeParse(request.body);
     if (!body.success) {
@@ -458,6 +488,42 @@ export const adminRoutes: FastifyPluginAsync<AdminRouteOptions> = async (app, op
       return reply.code(404).send({ code: "WORK_LINK_NOT_FOUND", message: "未找到该链接" });
     }
     return { data: link };
+  });
+
+  app.patch("/admin/work-links/:linkId/review", async (request, reply) => {
+    const params = linkParamsSchema.safeParse(request.params);
+    const body = workLinkReviewSchema.safeParse(request.body);
+    if (!params.success || !body.success) {
+      return reply.code(400).send({
+        code: "INVALID_WORK_LINK_REVIEW",
+        message: "链接人工复核信息不合法"
+      });
+    }
+    const user = await authorizeRoles(options.database, request, reply, ["ADMIN"]);
+    if (!user || !options.database) return;
+    const result = await reviewAdminWorkLink(
+      options.database,
+      user.id,
+      params.data.linkId,
+      body.data,
+      request.id
+    );
+    if (result.kind === "NOT_FOUND") {
+      return reply.code(404).send({ code: "WORK_LINK_NOT_FOUND", message: "未找到该链接" });
+    }
+    if (result.kind === "INACTIVE") {
+      return reply.code(409).send({
+        code: "WORK_LINK_INACTIVE",
+        message: "停用链接不能确认有效，请先重新启用并重新巡检"
+      });
+    }
+    if (result.kind === "AUTOMATICALLY_BROKEN") {
+      return reply.code(409).send({
+        code: "WORK_LINK_AUTOMATICALLY_BROKEN",
+        message: "自动巡检已确认链接失效，请停用链接或更新为新的正版入口"
+      });
+    }
+    return { data: { ...result.review, unchanged: result.unchanged } };
   });
 
   app.get("/admin/detectives", async (request, reply) => {

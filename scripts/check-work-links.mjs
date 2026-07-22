@@ -2,6 +2,7 @@ import { createDatabasePoolFromEnv } from "../apps/api/dist/db/pool.js";
 import {
   classifyLinkHealth,
   isHealthyLinkStatus,
+  linkHealthErrorCode,
   linkHealthOutcome
 } from "./lib/link-health.mjs";
 import { validatePublicHttpsUrl } from "./lib/link-safety.mjs";
@@ -68,14 +69,6 @@ async function fetchWithSafeRedirects(initialUrl, method) {
   throw Object.assign(new Error("TOO_MANY_REDIRECTS"), { code: "TOO_MANY_REDIRECTS" });
 }
 
-function errorCode(error) {
-  if (error instanceof Error && error.name === "AbortError") return "TIMEOUT";
-  if (typeof error === "object" && error !== null && "code" in error) {
-    return String(error.code).slice(0, 80);
-  }
-  return "FETCH_FAILED";
-}
-
 async function checkLink(link) {
   const startedAt = Date.now();
   try {
@@ -130,7 +123,7 @@ async function checkLink(link) {
       errorCode: outcome === linkHealthOutcome.HEALTHY ? null : `HTTP_${statusCode}`
     };
   } catch (error) {
-    const code = errorCode(error);
+    const code = linkHealthErrorCode(error);
     return {
       link,
       statusCode: null,

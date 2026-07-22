@@ -148,4 +148,4 @@ npm run check:directory
 
 错误批次采用前向补偿，不删除可能已有书架、评价或审计引用的记录。补偿文件必须位于清单末尾，以 `rollbackOf` 指向紧邻的最新批次、填写不少于 10 字的 `rollbackReason`，并恢复旧档案、通过 `archiveDetectiveSlugs` / `archiveWorkSlugs` 归档新内容，或用 `pictureBookRecommendationUnmappings` 解除错误推荐映射。先执行 `npm run catalog:rollback:preflight -- --file=...`，确认差异后再执行 `npm run catalog:rollback:apply -- --file=...`。成功后原批次标记为 `ROLLED_BACK`，补偿批次标记为 `APPLIED`，重复执行保持幂等；归档作品的公开链接会同步停用，原始图鉴推荐标签始终保留。
 
-正版链接通过 `npm run links:check` 定时巡检。巡检区分健康、确认失效和暂无法确认三种结果：只有 GET 明确返回 400、404 或 410 才累计确认失败；超时、反爬、429、451、5xx 或抓取失败保存为待人工复核。任何结果都不会自动下架，运营人员须在后台复核并记录处理动作。
+正版链接通过 `npm run links:check` 定时巡检。巡检区分健康、确认失效和暂无法确认三种结果：只有 GET 明确返回 400、404 或 410 才累计确认失败；超时、TLS、DNS、反爬、429、451、5xx 或抓取失败保存底层错误码并进入人工复核。自动结果不会直接下架；管理员须在后台填写不含令牌/签名的证据引用，确认有效结论 90 天内关闭不确定/超期队列，确认失效则在同一事务停用链接并记录审计。后续自动确认失效不会被旧人工结论遮蔽。

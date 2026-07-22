@@ -24,3 +24,16 @@ export function classifyLinkHealth(statusCode, errorCode = null) {
   }
   return linkHealthOutcome.UNCONFIRMED;
 }
+
+export function linkHealthErrorCode(error) {
+  let current = error;
+  for (let depth = 0; depth < 5; depth += 1) {
+    if (current instanceof Error && current.name === "AbortError") return "TIMEOUT";
+    if (typeof current !== "object" || current === null) break;
+    if ("code" in current && typeof current.code === "string" && current.code.trim()) {
+      return current.code.trim().slice(0, 80);
+    }
+    current = "cause" in current ? current.cause : null;
+  }
+  return "FETCH_FAILED";
+}

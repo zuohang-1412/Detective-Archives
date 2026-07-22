@@ -32,10 +32,19 @@ export async function getAdminDashboard(database: DatabaseClient) {
         WHERE is_active = TRUE
           AND last_check_ok IS NULL
           AND last_checked_at IS NOT NULL
-          AND last_check_error IS NOT NULL) AS "unconfirmedLinkCount",
+          AND last_check_error IS NOT NULL
+          AND NOT (
+            manual_review_status = 'VERIFIED'
+            AND manual_reviewed_at >= NOW() - INTERVAL '90 days'
+          )) AS "unconfirmedLinkCount",
       (SELECT COUNT(*)::int FROM work_links
         WHERE is_active = TRUE
-          AND (last_checked_at IS NULL OR last_checked_at < NOW() - INTERVAL '90 days')) AS "staleLinkCount",
+          AND last_check_ok IS DISTINCT FROM FALSE
+          AND (last_checked_at IS NULL OR last_checked_at < NOW() - INTERVAL '90 days')
+          AND NOT (
+            manual_review_status = 'VERIFIED'
+            AND manual_reviewed_at >= NOW() - INTERVAL '90 days'
+          )) AS "staleLinkCount",
       (SELECT COUNT(*)::int FROM work_link_feedback
         WHERE status = 'OPEN') AS "openLinkFeedbackCount"
   `);
@@ -353,6 +362,14 @@ export async function listAdminWorks(
           'lastStatusCode', link.last_status_code,
           'lastCheckError', link.last_check_error,
           'consecutiveFailures', link.consecutive_failures,
+          'manualReviewStatus', link.manual_review_status,
+          'manualReviewNote', link.manual_review_note,
+          'manualReviewEvidence', link.manual_review_evidence,
+          'manualReviewedAt', link.manual_reviewed_at,
+          'manualReviewer', (
+            SELECT jsonb_build_object('id', reviewer.id, 'displayName', reviewer.display_name)
+            FROM users reviewer WHERE reviewer.id = link.manual_reviewer_id
+          ),
           'clickCount', (
             SELECT COUNT(*)::int FROM work_link_click_events click
             WHERE click.work_link_id = link.id
@@ -545,6 +562,177 @@ export async function createAdminWorkLink(
   return result.rows[0] ?? null;
 }
 
+const workLinkReviewPredicate = `
+  link.is_active = TRUE
+  AND (
+    link.last_check_ok = FALSE
+    OR link.last_checked_at IS NULL
+    OR link.last_checked_at < NOW() - INTERVAL '90 days'
+    OR (link.last_check_ok IS NULL AND link.last_check_error IS NOT NULL)
+  )
+  AND (
+    link.last_check_ok = FALSE
+    OR link.manual_review_status IS DISTINCT FROM 'VERIFIED'
+    OR link.manual_reviewed_at IS NULL
+    OR link.manual_reviewed_at < NOW() - INTERVAL '90 days'
+  )
+`;
+
+export async function listAdminWorkLinkReviews(
+  database: DatabaseClient,
+  options: { q?: string | undefined; page: number; pageSize: number }
+) {
+  const count = await queryRows<{ total: number }>(database, `
+    SELECT COUNT(*)::int AS total
+    FROM work_links link
+    JOIN works work ON work.id = link.work_id
+    WHERE work.status = 'PUBLISHED' AND ${workLinkReviewPredicate}
+      AND (
+        $1::text IS NULL
+        OR work.title_zh ILIKE '%' || $1 || '%'
+        OR work.slug ILIKE '%' || $1 || '%'
+        OR link.provider_name ILIKE '%' || $1 || '%'
+      )
+  `, [options.q ?? null]);
+  const result = await queryRows(database, `
+    SELECT
+      link.id,
+      link.provider_name AS "providerName",
+      link.url,
+      link.region,
+      link.last_checked_at AS "lastCheckedAt",
+      link.last_check_ok AS "lastCheckOk",
+      link.last_status_code AS "lastStatusCode",
+      link.last_check_error AS "lastCheckError",
+      link.consecutive_failures AS "consecutiveFailures",
+      link.manual_review_status AS "manualReviewStatus",
+      link.manual_review_note AS "manualReviewNote",
+      link.manual_review_evidence AS "manualReviewEvidence",
+      link.manual_reviewed_at AS "manualReviewedAt",
+      CASE
+        WHEN link.last_check_ok = FALSE THEN 'BROKEN'
+        WHEN link.last_checked_at IS NULL THEN 'NEVER_CHECKED'
+        WHEN link.last_checked_at < NOW() - INTERVAL '90 days' THEN 'STALE'
+        ELSE 'UNCONFIRMED'
+      END AS "reviewState",
+      jsonb_build_object('id', work.id, 'slug', work.slug, 'titleZh', work.title_zh) AS work,
+      (
+        SELECT jsonb_build_object('id', reviewer.id, 'displayName', reviewer.display_name)
+        FROM users reviewer WHERE reviewer.id = link.manual_reviewer_id
+      ) AS "manualReviewer"
+    FROM work_links link
+    JOIN works work ON work.id = link.work_id
+    WHERE work.status = 'PUBLISHED' AND ${workLinkReviewPredicate}
+      AND (
+        $1::text IS NULL
+        OR work.title_zh ILIKE '%' || $1 || '%'
+        OR work.slug ILIKE '%' || $1 || '%'
+        OR link.provider_name ILIKE '%' || $1 || '%'
+      )
+    ORDER BY
+      CASE
+        WHEN link.last_check_ok = FALSE THEN 0
+        WHEN link.last_checked_at IS NULL THEN 1
+        WHEN link.last_checked_at < NOW() - INTERVAL '90 days' THEN 2
+        ELSE 3
+      END,
+      link.last_checked_at ASC NULLS FIRST,
+      link.id
+    LIMIT $2 OFFSET $3
+  `, [options.q ?? null, options.pageSize, (options.page - 1) * options.pageSize]);
+  return { data: result.rows, total: count.rows[0]?.total ?? 0 };
+}
+
+export async function reviewAdminWorkLink(
+  database: DatabaseClient,
+  actorId: string,
+  linkId: string,
+  input: {
+    decision: "VERIFIED" | "REJECTED";
+    note: string;
+    evidenceReference: string;
+  },
+  requestId: string
+) {
+  return withTransaction(database, async (connection) => {
+    const existingResult = await queryRows<{
+      id: string;
+      isActive: boolean;
+      manualReviewStatus: string | null;
+      manualReviewNote: string | null;
+      manualReviewEvidence: string | null;
+      manualReviewerId: string | null;
+      lastCheckOk: boolean | null;
+    }>(connection, `
+      SELECT
+        id,
+        is_active AS "isActive",
+        manual_review_status AS "manualReviewStatus",
+        manual_review_note AS "manualReviewNote",
+        manual_review_evidence AS "manualReviewEvidence",
+        manual_reviewer_id AS "manualReviewerId",
+        last_check_ok AS "lastCheckOk"
+      FROM work_links
+      WHERE id = $1
+      FOR UPDATE
+    `, [linkId]);
+    const existing = existingResult.rows[0];
+    if (!existing) return { kind: "NOT_FOUND" as const };
+    if (input.decision === "VERIFIED" && !existing.isActive) {
+      return { kind: "INACTIVE" as const };
+    }
+    if (input.decision === "VERIFIED" && existing.lastCheckOk === false) {
+      return { kind: "AUTOMATICALLY_BROKEN" as const };
+    }
+    const unchanged = existing.manualReviewStatus === input.decision
+      && existing.manualReviewNote === input.note
+      && existing.manualReviewEvidence === input.evidenceReference
+      && existing.manualReviewerId === actorId;
+    if (unchanged) {
+      return {
+        kind: "REVIEWED" as const,
+        review: { id: existing.id, isActive: existing.isActive, decision: input.decision },
+        unchanged: true
+      };
+    }
+    const changed = await queryRows<{
+      id: string;
+      isActive: boolean;
+      decision: "VERIFIED" | "REJECTED";
+      reviewedAt: string;
+    }>(connection, `
+      UPDATE work_links
+      SET manual_review_status = $3::text,
+        manual_review_note = $4,
+        manual_review_evidence = $5,
+        manual_reviewed_at = NOW(),
+        manual_reviewer_id = $1,
+        is_active = CASE WHEN $3::text = 'REJECTED' THEN FALSE ELSE is_active END,
+        updated_at = NOW()
+      WHERE id = $2
+      RETURNING
+        id,
+        is_active AS "isActive",
+        manual_review_status AS decision,
+        manual_reviewed_at AS "reviewedAt"
+    `, [actorId, linkId, input.decision, input.note, input.evidenceReference]);
+    const review = changed.rows[0];
+    await connection.query(`
+      INSERT INTO audit_logs (
+        actor_id, action, resource_type, resource_id, request_id, metadata
+      ) VALUES (
+        $1, 'WORK_LINK_MANUAL_' || $3::text, 'WORK_LINK', $2, $6,
+        jsonb_build_object(
+          'decision', $3::text,
+          'note', $4::text,
+          'evidenceReference', $5::text
+        )
+      )
+    `, [actorId, linkId, input.decision, input.note, input.evidenceReference, requestId]);
+    return { kind: "REVIEWED" as const, review, unchanged: false };
+  });
+}
+
 export async function setAdminWorkLinkActive(
   database: DatabaseClient,
   actorId: string,
@@ -553,17 +741,40 @@ export async function setAdminWorkLinkActive(
   requestId: string
 ) {
   const result = await queryRows<{ id: string; isActive: boolean }>(database, `
-    WITH changed AS (
-      UPDATE work_links
-      SET is_active = $3, updated_at = NOW()
+    WITH current AS (
+      SELECT id, is_active
+      FROM work_links
       WHERE id = $2
-      RETURNING id, is_active AS "isActive"
+      FOR UPDATE
+    ), changed AS (
+      UPDATE work_links link
+      SET is_active = $3,
+        manual_review_status = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.manual_review_status END,
+        manual_review_note = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.manual_review_note END,
+        manual_review_evidence = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.manual_review_evidence END,
+        manual_reviewed_at = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.manual_reviewed_at END,
+        manual_reviewer_id = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.manual_reviewer_id END,
+        last_checked_at = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.last_checked_at END,
+        last_status_code = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.last_status_code END,
+        last_check_ok = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.last_check_ok END,
+        last_check_error = CASE WHEN $3 AND current.is_active = FALSE THEN NULL ELSE link.last_check_error END,
+        consecutive_failures = CASE WHEN $3 AND current.is_active = FALSE THEN 0 ELSE link.consecutive_failures END,
+        updated_at = NOW()
+      FROM current
+      WHERE link.id = current.id
+      RETURNING
+        link.id,
+        link.is_active AS "isActive",
+        ($3::boolean AND current.is_active = FALSE) AS "verificationReset"
     ), audit AS (
       INSERT INTO audit_logs (
         actor_id, action, resource_type, resource_id, request_id, metadata
       )
       SELECT $1, 'WORK_LINK_STATUS', 'WORK_LINK', id, $4,
-        jsonb_build_object('isActive', $3::boolean)
+        jsonb_build_object(
+          'isActive', $3::boolean,
+          'verificationReset', changed."verificationReset"
+        )
       FROM changed
     )
     SELECT id, "isActive" FROM changed
