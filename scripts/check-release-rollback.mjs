@@ -56,6 +56,7 @@ const appId = `wx${randomBytes(8).toString("hex")}`;
 const wechatSecret = `release-${randomBytes(24).toString("hex")}`;
 const adminPassword = `release-${randomBytes(24).toString("hex")}`;
 const metricsToken = `release-${randomBytes(24).toString("hex")}`;
+const backupEncryptionPassphrase = `backup-${randomBytes(32).toString("hex")}`;
 const composeFiles = [
   path.join(root, "compose.yaml"),
   path.join(root, "ops", "compose.release-drill.yaml")
@@ -206,7 +207,23 @@ try {
 
   const backups = (await readdir(backupDirectory)).filter((name) => name.endsWith(".dump"));
   assert.equal(backups.length, 1, "Deployment must create exactly one pre-release backup");
-  run("sh", ["ops/verify-backup.sh", path.join(backupDirectory, backups[0])]);
+  const deploymentBackup = path.join(backupDirectory, backups[0]);
+  const decryptedBackup = path.join(backupDirectory, "encrypted-restore-probe.dump");
+  run("sh", ["ops/verify-backup.sh", deploymentBackup]);
+  run("node", ["scripts/encrypted-backup.mjs", "encrypt", deploymentBackup], {
+    ...commonEnvironment,
+    BACKUP_ENCRYPTION_PASSPHRASE: backupEncryptionPassphrase
+  });
+  run("node", ["scripts/encrypted-backup.mjs", "verify", `${deploymentBackup}.enc`], {
+    ...commonEnvironment,
+    BACKUP_ENCRYPTION_PASSPHRASE: backupEncryptionPassphrase
+  });
+  run("node", ["scripts/encrypted-backup.mjs", "decrypt", `${deploymentBackup}.enc`, decryptedBackup], {
+    ...commonEnvironment,
+    BACKUP_ENCRYPTION_PASSPHRASE: backupEncryptionPassphrase
+  });
+  run("sh", ["ops/verify-backup.sh", decryptedBackup]);
+  await rm(decryptedBackup, { force: true });
 
   const rollbackStartedAt = performance.now();
   run("sh", ["ops/rollback-release.sh", "", envFile]);
@@ -227,6 +244,7 @@ try {
     distinctImageIds: true,
     isolatedDatabase: true,
     backupVerified: true,
+    encryptedBackupVerified: true,
     rollbackDurationMs,
     restoredImageTag: baselineTag
   }, null, 2));

@@ -188,7 +188,7 @@ BACKUP_RETENTION_DAYS=14 \
 sh ops/backup-postgres.sh
 ```
 
-备份目录必须加密并同步到独立存储。脚本会生成 custom-format 归档、校验目录可读性，并只清理专用目录内超过保留期的匹配文件。
+基础脚本会生成 custom-format 归档、校验目录可读性，并只清理专用目录内超过保留期的明文、密文及对应 SHA-256 边车。手工执行基础脚本时会保留明文，必须放在加密磁盘；每日工作流会在验证密文可解密后自动删除本次明文。
 
 校验归档：
 
@@ -196,7 +196,21 @@ sh ops/backup-postgres.sh
 sh ops/verify-backup.sh /var/backups/detective-archives/detective-archives-TIMESTAMP.dump
 ```
 
-真实恢复必须在隔离数据库执行：先创建空库，再运行 `pg_restore --clean --if-exists --no-owner --dbname="$RESTORE_DATABASE_URL" backup.dump`，最后执行 `npm run check:db` 和 `npm run check:db-api`。禁止直接覆盖生产库进行演练。
+从离站存储下载密文和同名 `.sha256` 后，在仓库外的受控临时目录执行：
+
+```bash
+read -r -s -p '输入对应 BACKUP_KEY_ID 的恢复密钥：' BACKUP_ENCRYPTION_PASSPHRASE
+export BACKUP_ENCRYPTION_PASSPHRASE
+printf '\n'
+npm run backup:verify-encrypted -- /secure/restore/detective-archives-TIMESTAMP.dump.enc
+npm run backup:decrypt -- \
+  /secure/restore/detective-archives-TIMESTAMP.dump.enc \
+  /secure/restore/decrypted-TIMESTAMP.dump
+sh ops/verify-backup.sh /secure/restore/decrypted-TIMESTAMP.dump
+unset BACKUP_ENCRYPTION_PASSPHRASE
+```
+
+工具拒绝相对路径、符号链接输入、空文件、错误密钥、缺少或不匹配的 SHA-256、篡改密文及任何已有输出覆盖；口令不进入日志或制品。解密完成后再创建隔离空库，运行 `pg_restore --clean --if-exists --no-owner --dbname="$RESTORE_DATABASE_URL" decrypted-TIMESTAMP.dump`，最后执行 `npm run check:db` 和 `npm run check:db-api`。禁止直接覆盖生产库进行演练；完成后安全删除临时明文。
 
 ## 内容批次回滚
 
@@ -211,14 +225,17 @@ sh ops/verify-backup.sh /var/backups/detective-archives/detective-archives-TIMES
 
 工具会拒绝非最新批次、缺少原因、同批次同时恢复和归档同一人物、未知归档对象及校验和变化。若后续批次已经应用，应新建新的前向纠错批次，不得跨批次逆序回滚。
 
-仓库提供 `.github/workflows/database-backup.yml` 每日备份模板。它固定在生产私网的 `detective-archives` 自托管 Runner 上执行，默认关闭。启用前需要：
+仓库提供 `.github/workflows/database-backup.yml` 每日备份模板。它固定在生产私网的 `detective-archives` 自托管 Runner 上执行，默认关闭；手工触发不要求先启用定时开关。启用前需要：
 
-1. 配置 Secret `DETECTIVE_ARCHIVES_DATABASE_URL`。
-2. 把变量 `DETECTIVE_ARCHIVES_BACKUP_DIRECTORY` 指向已经加密并同步到独立存储的专用绝对目录。
-3. 设置 `DETECTIVE_ARCHIVES_PGSSLMODE=verify-full`（或记录过风险接受的实际模式），按需设置 `DETECTIVE_ARCHIVES_BACKUP_RETENTION_DAYS`，默认 14 天。
-4. 确认 Runner 已安装与数据库主版本完全一致的 `psql`、`pg_dump`、`pg_restore` 及 `sha256sum`，再设置变量 `DATABASE_BACKUP_ENABLED=true`。脚本会拒绝客户端与服务端主版本不一致的备份，避免生成无法无错误恢复的归档。
+1. 在 GitHub 创建 `production-backup` Environment，只允许默认分支使用；每日任务不能设置人工审批等待。以下 Secret 和变量优先配置在该 Environment，并保护默认分支，避免未审核工作流读取备份凭证。
+2. 配置 Secret `DETECTIVE_ARCHIVES_DATABASE_URL`。
+3. 配置仅用于备份的 Secret `DETECTIVE_ARCHIVES_BACKUP_PASSPHRASE`，至少 32 个随机字符；把恢复副本保存在仓库和 Runner 之外的密码管理器，禁止复用其他凭证。
+4. 把变量 `DETECTIVE_ARCHIVES_BACKUP_DIRECTORY` 指向专用绝对目录；设置 `DETECTIVE_ARCHIVES_BACKUP_KEY_ID`（默认 `primary`，只含字母数字、点、下划线或连字符），用于标记制品对应的密钥代次。
+5. 设置 `DETECTIVE_ARCHIVES_PGSSLMODE=verify-full`（或记录过风险接受的实际模式），按需设置本机 `DETECTIVE_ARCHIVES_BACKUP_RETENTION_DAYS`（默认 14 天）和离站 `DETECTIVE_ARCHIVES_OFFSITE_RETENTION_DAYS`（默认 30 天，GitHub 通常最多 90 天或以仓库设置为准）。
+6. 确认 Runner 已安装 Node.js 24，以及与数据库主版本完全一致的 `psql`、`pg_dump`、`pg_restore` 和 `sha256sum`。先手工运行一次 `Database Backup`，确认日志不含口令、本机只留下 `.dump.enc`/`.sha256`、制品页可下载两个文件。
+7. 从制品页下载刚生成的密文，按上面的步骤完成真实隔离恢复并记录开始时间、恢复完成时间、数据时间点、RPO、RTO 和负责人；成功后设置变量 `DATABASE_BACKUP_ENABLED=true`，再把实际上线清单的 `offsiteBackupReady` 设为 `true`。
 
-任务会校验新归档并在日志记录 SHA-256，但日志摘要不能替代异地复制和每周恢复演练。数据库不得为了定时任务开放到公网。
+任务使用随机盐、随机 IV、scrypt 派生密钥和 AES-256-GCM 认证密文；同一明文重复加密也不会得到相同输出。GitHub 制品是与生产主机分离的首层离站副本，但不能代替长期对象锁或多云灾备；每周仍需抽取制品恢复，重要运营期应另行复制到受控对象存储。数据库不得为了定时任务开放到公网。轮换密钥时先修改 `BACKUP_KEY_ID` 并保存旧密钥，旧制品过期后才能销毁旧密钥。
 
 ## 故障处置
 

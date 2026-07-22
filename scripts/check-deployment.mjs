@@ -11,6 +11,9 @@ const [
   actionlintConfig,
   linkHealthWorkflow,
   backupWorkflow,
+  encryptedBackupCommand,
+  backupEncryptionLibrary,
+  backupEncryptionCheck,
   productionMonitoringWorkflow,
   productionMonitoringCommand,
   productionMonitoringLibrary,
@@ -46,6 +49,9 @@ const [
   readFile(path.join(root, ".github/actionlint.yaml"), "utf8"),
   readFile(path.join(root, ".github/workflows/link-health.yml"), "utf8"),
   readFile(path.join(root, ".github/workflows/database-backup.yml"), "utf8"),
+  readFile(path.join(root, "scripts/encrypted-backup.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/lib/backup-encryption.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/check-backup-encryption.mjs"), "utf8"),
   readFile(path.join(root, ".github/workflows/production-monitoring.yml"), "utf8"),
   readFile(path.join(root, "scripts/monitor-production.mjs"), "utf8"),
   readFile(path.join(root, "scripts/lib/production-monitoring.mjs"), "utf8"),
@@ -110,8 +116,24 @@ assert.match(linkHealthWorkflow, /--fail-on-broken/, "Scheduled link checks must
 assert.match(backupWorkflow, /schedule:[\s\S]*cron:/, "Database backups must support a daily schedule");
 assert.match(backupWorkflow, /DATABASE_BACKUP_ENABLED/, "Scheduled backups must require explicit enablement");
 assert.match(backupWorkflow, /runs-on:\s*\[self-hosted, detective-archives\]/, "Backups must run inside the private deployment network");
+assert.match(backupWorkflow, /environment:\s*production-backup/, "Backup secrets must be isolated in a production environment");
 assert.match(backupWorkflow, /backup-postgres\.sh/, "Scheduled backups must use the verified backup script");
 assert.match(backupWorkflow, /verify-backup\.sh/, "Scheduled backups must verify the new archive");
+assert.match(backupWorkflow, /DETECTIVE_ARCHIVES_BACKUP_PASSPHRASE/, "Scheduled backups must use a separate encryption secret");
+assert.match(backupWorkflow, /DETECTIVE_ARCHIVES_BACKUP_KEY_ID/, "Encrypted backup artifacts must identify the recovery key generation");
+assert.match(backupWorkflow, /encrypted-backup\.mjs encrypt/, "Scheduled backups must encrypt the verified archive");
+assert.match(backupWorkflow, /encrypted-backup\.mjs verify/, "Scheduled backups must authenticate the encrypted archive");
+assert.match(backupWorkflow, /rm -f -- "\$latest_backup"/, "Scheduled backups must remove the local plaintext after encryption");
+assert.match(backupWorkflow, /actions\/upload-artifact@v7/, "Encrypted backups must be copied to independent artifact storage");
+assert.match(backupWorkflow, /DETECTIVE_ARCHIVES_OFFSITE_RETENTION_DAYS/, "Off-host backup retention must be configurable");
+assert.match(backupWorkflow, /if-no-files-found:\s*error/, "Missing encrypted artifacts must fail the backup job");
+assert.match(encryptedBackupCommand, /encryptBackup[\s\S]*decryptBackup[\s\S]*verifyEncryptedBackup/, "Encrypted backup operations must share one validated command");
+assert.match(backupEncryptionLibrary, /aes-256-gcm/, "Backups must use authenticated encryption");
+assert.match(backupEncryptionLibrary, /scrypt/, "Backup keys must be derived with a password KDF");
+assert.match(backupEncryptionLibrary, /refusing to overwrite/, "Backup encryption must not overwrite existing archives");
+assert.match(backupEncryptionLibrary, /timingSafeEqual/, "Encrypted backup checksum comparison must be timing safe");
+assert.match(backupEncryptionCheck, /wrong passphrase/, "Encryption checks must cover incorrect keys");
+assert.match(backupEncryptionCheck, /Promise\.allSettled/, "Encryption checks must cover concurrent publication");
 assert.match(productionMonitoringWorkflow, /cron:\s*"3\/5 \* \* \* \*"/, "Public production monitoring must run every five minutes");
 assert.match(productionMonitoringWorkflow, /PRODUCTION_MONITORING_ENABLED/, "Scheduled production monitoring must require explicit enablement");
 assert.match(productionMonitoringWorkflow, /runs-on:\s*ubuntu-24\.04/, "Public monitoring must run outside the private production host");
@@ -132,6 +154,7 @@ assert.match(productionMonitoringCheck, /must reject requests/, "Monitoring chec
 assert.match(backupScript, /BACKUP_DIRECTORY must be an absolute dedicated directory/, "Backup cleanup must require a dedicated absolute directory");
 assert.match(backupScript, /client\/server major version mismatch/, "Backups must reject a PostgreSQL client/server major version mismatch");
 assert.match(backupScript, /sha256sum/, "Backups must record an integrity checksum");
+assert.match(backupScript, /detective-archives-\*\.dump\.enc/, "Backup retention must clean encrypted archives");
 assert.match(apiServer, /createWechatContentSafetyCheckFromEnv/, "Production API must initialize WeChat content safety");
 assert.match(deployScript, /npm run release:check/, "Deployments must run the production release gate");
 assert.match(deployScript, /git rev-parse HEAD/, "Deployments must resolve the full source commit");
@@ -154,6 +177,9 @@ assert.match(rootPackage, /"check:release-rollback"/, "The release rollback dril
 assert.match(rootPackage, /"operations:drill:record"/, "The operations drill must have an npm entrypoint");
 assert.match(rootPackage, /"release:drill:production"/, "The production rollback drill must have an npm entrypoint");
 assert.match(rootPackage, /"check:production-release-drill"/, "The production rollback evidence must have an automated check");
+assert.match(rootPackage, /"backup:encrypt"/, "Backup encryption must have an npm entrypoint");
+assert.match(rootPackage, /"backup:decrypt"/, "Backup decryption must have an npm entrypoint");
+assert.match(rootPackage, /"check:backup-encryption"/, "Backup encryption must have an automated check");
 assert.match(rootPackage, /"monitor:production"/, "Production monitoring must have an npm entrypoint");
 assert.match(rootPackage, /"check:production-monitoring"/, "Production monitoring must have an automated check");
 assert.match(rootPackage, /"wechat:acceptance:record"/, "WeChat acceptance must have a recording entrypoint");
@@ -172,6 +198,7 @@ assert.match(releaseRollbackDrill, /ops\/rollback-release\.sh/, "The drill must 
 assert.match(releaseRollbackDrill, /Candidate and baseline images must have different IDs/, "The drill must prove that two distinct images are switched");
 assert.match(releaseRollbackDrill, /previous-image-tag/, "The drill must verify persisted rollback state");
 assert.match(releaseRollbackDrill, /ops\/verify-backup\.sh/, "The drill must verify the mandatory deployment backup");
+assert.match(releaseRollbackDrill, /encryptedBackupVerified/, "The real backup drill must verify encrypted recovery");
 assert.match(catalogSeedScript, /FROM catalog_import_batches/, "Base seeding must detect immutable content history");
 assert.match(catalogSeedScript, /preserved existing catalog/, "Redeployment must preserve batch-owned catalog fields and relations");
 assert.match(

@@ -101,6 +101,10 @@ find "$BACKUP_DIRECTORY" -type f -name 'detective-archives-*.dump' \
   -mtime "+$BACKUP_RETENTION_DAYS" -delete
 find "$BACKUP_DIRECTORY" -type f -name 'detective-archives-*.dump.sha256' \
   -mtime "+$BACKUP_RETENTION_DAYS" -delete
+find "$BACKUP_DIRECTORY" -type f -name 'detective-archives-*.dump.enc' \
+  -mtime "+$BACKUP_RETENTION_DAYS" -delete
+find "$BACKUP_DIRECTORY" -type f -name 'detective-archives-*.dump.enc.sha256' \
+  -mtime "+$BACKUP_RETENTION_DAYS" -delete
 
 echo "Backup completed: $final_file"
 echo "Checksum recorded: $checksum_file"
