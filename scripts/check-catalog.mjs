@@ -16,7 +16,7 @@ assert(catalog.coverage?.firstVolume === 1, "coverage must start at volume 1");
 assert(catalog.coverage?.latestPublishedVolume === 108, "latest published volume must be 108");
 assert(catalog.coverage?.standardVolumeCount === 108, "standard volume count must be 108");
 assert(catalog.coverage?.entryCount === 109, "entry count must include 108 standard + 1 special");
-assert(catalog.coverage?.entriesWithRecommendedWorks === 73, "73 entries should have recommendations");
+assert(catalog.coverage?.entriesWithRecommendedWorks === 92, "92 entries should have recommendations");
 
 const ids = new Set();
 const standardVolumes = new Set();
@@ -32,6 +32,12 @@ for (const entry of catalog.entries) {
   assert(typeof entry.names?.zh === "string" && entry.names.zh.length > 0, `missing Chinese name: ${entry.id}`);
   assert(Array.isArray(entry.names?.aliases), `aliases must be an array: ${entry.id}`);
   assert(Array.isArray(entry.recommendedWorks), `recommendedWorks must be an array: ${entry.id}`);
+  assert(
+    entry.recommendedWorks.length === 0
+      ? entry.verification.recommendedWorks === "MISSING"
+      : ["SOURCE_CAPTURED", "PRIMARY_SOURCE_CONFIRMED"].includes(entry.verification.recommendedWorks),
+    `recommendation verification does not match captured labels: ${entry.id}`
+  );
   assert(Array.isArray(entry.sourceIds) && entry.sourceIds.length > 0, `missing source: ${entry.id}`);
   assert(entry.sourceIds.every((id) => knownSourceIds.has(id)), `unknown source id: ${entry.id}`);
   assert(entry.sourceUrls.every((url) => url.startsWith("https://")), `source URL must use HTTPS: ${entry.id}`);
@@ -43,6 +49,25 @@ for (const entry of catalog.entries) {
     standardVolumes.add(entry.volumeNo);
   }
 }
+
+const entriesWithRecommendations = catalog.entries
+  .filter((entry) => entry.recommendedWorks.length > 0);
+assert(
+  entriesWithRecommendations.length === catalog.coverage.entriesWithRecommendedWorks,
+  "recommendation coverage must match the captured entries"
+);
+const missingRecommendationIds = catalog.entries
+  .filter((entry) => entry.recommendedWorks.length === 0)
+  .map((entry) => entry.id);
+assert(
+  JSON.stringify(missingRecommendationIds) === JSON.stringify([
+    "PB-093-STD", "PB-094-STD", "PB-095-STD", "PB-096-STD",
+    "PB-097-STD", "PB-098-STD", "PB-099-STD", "PB-100-STD",
+    "PB-101-STD", "PB-102-STD", "PB-103-STD", "PB-104-STD",
+    "PB-105-STD", "PB-105-SP", "PB-106-STD", "PB-107-STD", "PB-108-STD"
+  ]),
+  "only source entries without readable recommendation labels may remain missing"
+);
 
 for (let volume = 1; volume <= 108; volume += 1) {
   assert(standardVolumes.has(volume), `missing standard volume: ${volume}`);

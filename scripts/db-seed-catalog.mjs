@@ -399,6 +399,44 @@ async function seedPictureBook(client, detectiveIdsBySlug) {
   }
 }
 
+async function syncPictureBookRecommendationsAdditively(client) {
+  const entriesWithRecommendations = pictureBookCatalog.entries
+    .filter((entry) => entry.recommendedWorks.length > 0);
+  const existingEntries = await client.query(
+    "SELECT id FROM picture_book_entries WHERE id = ANY($1)",
+    [entriesWithRecommendations.map((entry) => entry.id)]
+  );
+  const existingEntryIds = new Set(existingEntries.rows.map((entry) => entry.id));
+  const missingEntryIds = entriesWithRecommendations
+    .map((entry) => entry.id)
+    .filter((entryId) => !existingEntryIds.has(entryId));
+  if (missingEntryIds.length > 0) {
+    throw new Error(
+      `Cannot synchronize recommendations for missing picture-book entries: ${missingEntryIds.join(", ")}`
+    );
+  }
+
+  let synchronizedCount = 0;
+  for (const entry of entriesWithRecommendations) {
+    for (let index = 0; index < entry.recommendedWorks.length; index += 1) {
+      await client.query(
+        `
+          INSERT INTO picture_book_recommendations (
+            entry_id, source_label, display_order, verification
+          )
+          VALUES ($1, $2, $3, $4)
+          ON CONFLICT (entry_id, source_label) DO UPDATE SET
+            display_order = EXCLUDED.display_order,
+            verification = EXCLUDED.verification
+        `,
+        [entry.id, entry.recommendedWorks[index], index, entry.verification.recommendedWorks]
+      );
+      synchronizedCount += 1;
+    }
+  }
+  return synchronizedCount;
+}
+
 const client = new Client(postgresConfig(targetDatabaseName()));
 let seedLockHeld = false;
 
@@ -410,9 +448,17 @@ try {
     "SELECT COUNT(*)::int AS count FROM catalog_import_batches"
   );
   if (importedBatchCount.rows[0].count > 0) {
-    console.log(
-      `Catalog seed: preserved existing catalog (${importedBatchCount.rows[0].count} recorded content batches)`
-    );
+    await client.query("BEGIN");
+    try {
+      const synchronizedRecommendationCount = await syncPictureBookRecommendationsAdditively(client);
+      await client.query("COMMIT");
+      console.log(
+        `Catalog seed: preserved existing catalog (${importedBatchCount.rows[0].count} recorded content batches; ${synchronizedRecommendationCount} recommendations synchronized additively)`
+      );
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    }
   } else {
     await client.query("BEGIN");
     try {

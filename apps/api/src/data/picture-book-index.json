@@ -7,7 +7,7 @@
     "latestPublishedVolume": 108,
     "standardVolumeCount": 108,
     "entryCount": 109,
-    "entriesWithRecommendedWorks": 73
+    "entriesWithRecommendedWorks": 92
   },
   "sources": [
     {
@@ -1628,7 +1628,9 @@
         "sourceLabel": "布朗克斯区的妈妈",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "妈妈什么都知道"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -1639,7 +1641,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -1734,7 +1736,9 @@
         "sourceLabel": "神户大助",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "密室的富豪警官"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -1745,7 +1749,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2083,7 +2087,9 @@
         "sourceLabel": "林肯.莱姆",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "人骨拼图"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2094,7 +2100,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2108,7 +2114,9 @@
         "sourceLabel": "榎本径",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "玻璃之锤"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2119,7 +2127,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2133,7 +2141,9 @@
         "sourceLabel": "白鸟圭辅",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "巴提斯塔的荣光"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2144,7 +2154,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2158,7 +2168,9 @@
         "sourceLabel": "刀城言耶",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "首无·作祟之物"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2169,7 +2181,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2183,7 +2195,9 @@
         "sourceLabel": "篠川栞子",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "古书堂事件簿——栞子小姐和她的奇异宾客"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2194,7 +2208,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2208,7 +2222,9 @@
         "sourceLabel": "薄野的便利屋",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "打给那位侦探的电话"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2219,7 +2235,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2233,7 +2249,9 @@
         "sourceLabel": "影山",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "美丽的蔷薇中蕴含着杀意"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2244,7 +2262,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2258,7 +2276,9 @@
         "sourceLabel": "折木奉太郎",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "冰菓"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2269,7 +2289,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2283,7 +2303,9 @@
         "sourceLabel": "莉丝·莎兰德",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "龙文身的女孩"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2294,7 +2316,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2308,7 +2330,9 @@
         "sourceLabel": "福家警部补",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "奥卡姆的剃刀"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2319,7 +2343,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2333,7 +2357,9 @@
         "sourceLabel": "吉敷竹史",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "奇想·天动"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2344,7 +2370,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2358,7 +2384,9 @@
         "sourceLabel": "江神二郎",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "双头恶魔"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2369,7 +2397,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2383,7 +2411,9 @@
         "sourceLabel": "掟上今日子",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "掟上今日子的备忘录"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2394,7 +2424,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2408,7 +2438,9 @@
         "sourceLabel": "九条樱子",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "你的家在何方"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2419,7 +2451,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2433,7 +2465,9 @@
         "sourceLabel": "怪盗山猫",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "怪盗侦探山猫"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2444,7 +2478,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2458,7 +2492,9 @@
         "sourceLabel": "凛田莉子",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "万能鉴定士Q的事件簿1，2"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2469,7 +2505,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2483,7 +2519,9 @@
         "sourceLabel": "华冈信一郎",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "嗅覚捜査官"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
@@ -2494,7 +2532,7 @@
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {

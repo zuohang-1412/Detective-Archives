@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-recommendation-map-003",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Capture the newly verified picture-book recommendation labels exactly as shown by the cited catalog transcription, map them to source-backed formal works or the official series containing the named item, and add only original short summaries plus authoritative publisher links.",
+  "sources": [
+    {
+      "id": "kobunsha-hayabusa-catalog",
+      "label": "光文社：2026年4月电子书目录（《改订完全版 寝台特急“隼”号1/60秒的障壁》）",
+      "url": "https://pr.kobunsha.com/denshishoseki/pdf/all_202604.pdf",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kobunsha-kisou-ten",
+      "label": "光文社：2026年3月电子书目录（《改订完全版 奇想、天を動かす》）",
+      "url": "https://pr.kobunsha.com/denshishoseki/pdf/all_202603.pdf",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tsogen-egami-series",
+      "label": "东京创元社：江神二郎系列",
+      "url": "https://www.tsogen.co.jp/sp/searchresult.html?ser_id=238",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "tsogen-soutou-no-akuma",
+      "label": "东京创元社：《双頭の悪魔》",
+      "url": "https://www.tsogen.co.jp/np/isbn/9784488414030",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-bannou-q",
+      "label": "KADOKAWA：《万能鉴定士Q的事件簿 I》",
+      "url": "https://www.kadokawa.co.jp/product/200912000591/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "kadokawa-bannou-q-all",
+      "label": "KADOKAWA：《万能鑑定士Q：全事件簿》",
+      "url": "https://www.kadokawa.co.jp/product/301403002137/",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-086-STD",
+      "pictureBookEntryIds": [],
+      "slug": "takeshi-yoshiki",
+      "nameZh": "吉敷竹史",
+      "nameOriginal": "吉敷竹史",
+      "nameEn": "Takeshi Yoshiki",
+      "country": "日本",
+      "era": "20世纪后期至当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": [
+        "NOVEL",
+        "SERIES"
+      ],
+      "summary": "岛田庄司笔下警视厅搜查一课刑警，长期调查与铁路时刻、地域传说和社会问题交织的复杂命案，重视实地走访、时间线验证及犯罪动机。",
+      "creatorName": "岛田庄司",
+      "aliases": [
+        "刑警吉敷竹史",
+        "Takeshi Yoshiki"
+      ],
+      "tags": [
+        "警察侦探",
+        "铁路推理",
+        "不在场证明"
+      ],
+      "featuredCases": [
+        "《寝台特急“隼”号1/60秒的障壁》",
+        "《奇想·天动》"
+      ],
+      "sourceIds": [
+        "kobunsha-hayabusa-catalog",
+        "kobunsha-kisou-ten"
+      ],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "hayabusa-one-sixtieth-second-wall",
+          "titleZh": "寝台特急“隼”号1/60秒的障壁",
+          "titleOriginal": "寝台特急「はやぶさ」1/60秒の壁",
+          "mediaType": "NOVEL",
+          "releaseYear": 1984,
+          "summary": "公寓浴室出现身份被破坏的女尸，但死亡推定时刻显示被害人应在寝台特急“隼”号上；吉敷竹史从列车时刻和身份线索挑战时间障壁。",
+          "sourceId": "kobunsha-hayabusa-catalog",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        },
+        {
+          "slug": "kisou-ten-wo-ugokasu",
+          "titleZh": "奇想·天动",
+          "titleOriginal": "奇想、天を動かす",
+          "mediaType": "NOVEL",
+          "summary": "吉敷竹史从眼前案件追入一桩跨越三十余年的巨大谜团，在持续走访与验证中，把社会处境、犯罪动机和宏大的本格诡计重新拼合。",
+          "sourceId": "kobunsha-kisou-ten",
+          "linkType": "PUBLISHER",
+          "providerName": "光文社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-087-STD",
+      "pictureBookEntryIds": [],
+      "slug": "jiro-egami",
+      "nameZh": "江神二郎",
+      "nameOriginal": "江神二郎",
+      "nameEn": "Jiro Egami",
+      "country": "日本",
+      "era": "昭和末期至平成题材",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": [
+        "NOVEL"
+      ],
+      "summary": "有栖川有栖“学生爱丽丝”系列中英都大学推理小说研究会会长，性格沉静，善于整理封闭环境中的证词、空间关系与逻辑可能性。",
+      "creatorName": "有栖川有栖",
+      "aliases": [
+        "江神部长",
+        "学生爱丽丝系列的江神",
+        "Jiro Egami"
+      ],
+      "tags": [
+        "大学生侦探",
+        "本格推理",
+        "封闭空间"
+      ],
+      "featuredCases": [
+        "《月光游戏 Y的悲剧'88》",
+        "《双头恶魔》"
+      ],
+      "sourceIds": [
+        "tsogen-egami-series",
+        "tsogen-soutou-no-akuma"
+      ],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "gekkou-game-y-no-higeki-88",
+          "titleZh": "月光游戏 Y的悲剧'88",
+          "titleOriginal": "月光ゲーム Yの悲劇'88",
+          "mediaType": "NOVEL",
+          "releaseYear": 1989,
+          "summary": "大学生露营者因火山活动被困在矢吹山营地，连续杀人随之发生；江神二郎从临终讯息、营地布局和幸存者证词中锁定真相。",
+          "sourceId": "tsogen-egami-series",
+          "linkType": "PUBLISHER",
+          "providerName": "东京创元社",
+          "region": "JP"
+        },
+        {
+          "slug": "soutou-no-akuma",
+          "titleZh": "双头恶魔",
+          "titleOriginal": "双頭の悪魔",
+          "mediaType": "NOVEL",
+          "releaseYear": 1999,
+          "summary": "暴雨冲断山村与外界的交通后，推理研究会成员被河流分隔在两侧，并分别卷入杀人事件；江神二郎等人必须在受限信息中各自推进真相。",
+          "sourceId": "tsogen-soutou-no-akuma",
+          "linkType": "PUBLISHER",
+          "providerName": "东京创元社",
+          "region": "JP"
+        }
+      ]
+    },
+    {
+      "catalogId": "PB-091-STD",
+      "pictureBookEntryIds": [],
+      "slug": "riko-rinda",
+      "nameZh": "凜田莉子",
+      "nameOriginal": "凜田莉子",
+      "nameEn": "Riko Rinda",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": [
+        "NOVEL",
+        "COMIC",
+        "FILM"
+      ],
+      "summary": "松冈圭祐“万能鉴定士Q”系列的年轻鉴定师，凭观察、广泛知识和逻辑判断识别艺术品、商品及社会现象中的伪装，特点是以非暴力调查解决骗局。",
+      "creatorName": "松冈圭祐",
+      "aliases": [
+        "凛田莉子",
+        "万能鉴定士Q",
+        "Riko Rinda"
+      ],
+      "tags": [
+        "鉴定师",
+        "知识推理",
+        "女性侦探"
+      ],
+      "featuredCases": [
+        "《万能鉴定士Q的事件簿 I》",
+        "《万能鉴定士Q的事件簿 I、II》"
+      ],
+      "sourceIds": [
+        "kadokawa-bannou-q",
+        "kadokawa-bannou-q-all"
+      ],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "bannou-kanteishi-q-case-files-1",
+          "titleZh": "万能鉴定士Q的事件簿 I",
+          "titleOriginal": "万能鑑定士Ｑの事件簿 I",
+          "mediaType": "NOVEL",
+          "releaseYear": 2010,
+          "summary": "凜田莉子成长为万能鉴定士后，与记者小笠原悠斗调查遍布东京的力士贴纸异象，并追索一场足以扰乱社会的连锁骗局。",
+          "sourceId": "kadokawa-bannou-q",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        },
+        {
+          "slug": "bannou-kanteishi-q-all-case-files",
+          "titleZh": "万能鉴定士Q：全事件簿",
+          "titleOriginal": "万能鑑定士Q：全事件簿",
+          "mediaType": "SERIES",
+          "releaseYear": 2014,
+          "summary": "收录“万能鉴定士Q的事件簿”全十二卷的官方合本系列；凜田莉子以鉴定知识、观察与逻辑处理物品真伪、骗局和社会性谜题，其中包含图鉴点名的第一、二卷。",
+          "sourceId": "kadokawa-bannou-q-all",
+          "linkType": "PUBLISHER",
+          "providerName": "KADOKAWA",
+          "region": "JP"
+        }
+      ]
+    }
+  ],
+  "pictureBookRecommendationMappings": [
+    {
+      "entryId": "PB-059-STD",
+      "sourceLabel": "妈妈什么都知道",
+      "workSlug": "my-mother-the-detective"
+    },
+    {
+      "entryId": "PB-063-STD",
+      "sourceLabel": "密室的富豪警官",
+      "workSlug": "fugou-keiji"
+    },
+    {
+      "entryId": "PB-076-STD",
+      "sourceLabel": "人骨拼图",
+      "workSlug": "the-bone-collector"
+    },
+    {
+      "entryId": "PB-077-STD",
+      "sourceLabel": "玻璃之锤",
+      "workSlug": "the-glass-hammer"
+    },
+    {
+      "entryId": "PB-078-STD",
+      "sourceLabel": "巴提斯塔的荣光",
+      "workSlug": "the-glory-of-team-batista"
+    },
+    {
+      "entryId": "PB-079-STD",
+      "sourceLabel": "首无·作祟之物",
+      "workSlug": "kubinashi-no-gotoki-tataru-mono"
+    },
+    {
+      "entryId": "PB-080-STD",
+      "sourceLabel": "古书堂事件簿——栞子小姐和她的奇异宾客",
+      "workSlug": "biblia-bookstore-first"
+    },
+    {
+      "entryId": "PB-081-STD",
+      "sourceLabel": "打给那位侦探的电话",
+      "workSlug": "tantei-wa-bar-ni-iru"
+    },
+    {
+      "entryId": "PB-082-STD",
+      "sourceLabel": "美丽的蔷薇中蕴含着杀意",
+      "workSlug": "nazotoki-wa-dinner-no-ato-de"
+    },
+    {
+      "entryId": "PB-083-STD",
+      "sourceLabel": "冰菓",
+      "workSlug": "hyouka"
+    },
+    {
+      "entryId": "PB-084-STD",
+      "sourceLabel": "龙文身的女孩",
+      "workSlug": "the-girl-with-the-dragon-tattoo"
+    },
+    {
+      "entryId": "PB-085-STD",
+      "sourceLabel": "奥卡姆的剃刀",
+      "workSlug": "fukuie-keibuho-no-aisatsu"
+    },
+    {
+      "entryId": "PB-086-STD",
+      "sourceLabel": "奇想·天动",
+      "workSlug": "kisou-ten-wo-ugokasu"
+    },
+    {
+      "entryId": "PB-087-STD",
+      "sourceLabel": "双头恶魔",
+      "workSlug": "soutou-no-akuma"
+    },
+    {
+      "entryId": "PB-088-STD",
+      "sourceLabel": "掟上今日子的备忘录",
+      "workSlug": "okitegami-kyouko-no-bibouroku"
+    },
+    {
+      "entryId": "PB-089-STD",
+      "sourceLabel": "你的家在何方",
+      "workSlug": "sakurako-san-no-ashimoto"
+    },
+    {
+      "entryId": "PB-090-STD",
+      "sourceLabel": "怪盗侦探山猫",
+      "workSlug": "kaitou-tantei-yamaneko"
+    },
+    {
+      "entryId": "PB-091-STD",
+      "sourceLabel": "万能鉴定士Q的事件簿1，2",
+      "workSlug": "bannou-kanteishi-q-all-case-files"
+    },
+    {
+      "entryId": "PB-092-STD",
+      "sourceLabel": "嗅覚捜査官",
+      "workSlug": "the-sniffer-japan"
+    }
+  ],
+  "pictureBookRecommendationUnmappings": []
+}

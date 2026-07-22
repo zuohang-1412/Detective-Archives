@@ -8,6 +8,15 @@ import {
 } from "./lib/catalog-batches.mjs";
 
 const { manifest, batches } = await loadCatalogBatches();
+const pictureBookCatalog = JSON.parse(await readFile(
+  path.resolve("apps/api/src/data/picture-book-index.json"),
+  "utf8"
+));
+const capturedRecommendationKeys = new Set(
+  pictureBookCatalog.entries.flatMap((entry) => entry.recommendedWorks.map(
+    (sourceLabel) => `${entry.id}\u0000${sourceLabel}`
+  ))
+);
 assert.equal(manifest.schemaVersion, 1);
 
 const batchKeys = new Set();
@@ -129,6 +138,11 @@ for (const { input, filename } of batches) {
     assert.match(mapping.entryId, /^PB-\d{3}-(STD|SP)$/);
     assert.equal(knownWorkSlugs.has(mapping.workSlug), true, `${filename}: unknown mapped work ${mapping.workSlug}`);
     const key = `${mapping.entryId}\u0000${mapping.sourceLabel}`;
+    assert.equal(
+      capturedRecommendationKeys.has(key),
+      true,
+      `${filename}: recommendation label is missing from the picture-book index: ${mapping.entryId}`
+    );
     assert.equal(mappingKeys.has(key), false, `${filename}: duplicate recommendation mapping ${mapping.entryId}`);
     mappingKeys.add(key);
   }
@@ -149,6 +163,18 @@ for (const { input, filename } of batches) {
 
 const uniqueWorks = uniqueImportedWorks(batches);
 const recommendationMappings = linkedPictureBookRecommendations(batches);
+assert.equal(
+  recommendationMappings.size,
+  capturedRecommendationKeys.size,
+  "every captured picture-book recommendation must have one effective formal-work mapping"
+);
+for (const key of capturedRecommendationKeys) {
+  assert.equal(
+    recommendationMappings.has(key),
+    true,
+    `captured picture-book recommendation is not mapped: ${key.replace("\u0000", " / ")}`
+  );
+}
 const [packageJson, importerScript, runnerScript, runnerLibrary] = await Promise.all([
   readFile(path.resolve("package.json"), "utf8").then(JSON.parse),
   readFile(path.resolve("scripts/catalog-import.mjs"), "utf8"),

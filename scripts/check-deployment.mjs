@@ -144,6 +144,16 @@ assert.match(releaseRollbackDrill, /previous-image-tag/, "The drill must verify 
 assert.match(releaseRollbackDrill, /ops\/verify-backup\.sh/, "The drill must verify the mandatory deployment backup");
 assert.match(catalogSeedScript, /FROM catalog_import_batches/, "Base seeding must detect immutable content history");
 assert.match(catalogSeedScript, /preserved existing catalog/, "Redeployment must preserve batch-owned catalog fields and relations");
+assert.match(
+  catalogSeedScript,
+  /syncPictureBookRecommendationsAdditively/,
+  "Redeployment must synchronize newly captured picture-book recommendations"
+);
+assert.match(
+  catalogSeedScript,
+  /ON CONFLICT \(entry_id, source_label\) DO UPDATE SET[\s\S]*display_order = EXCLUDED\.display_order[\s\S]*verification = EXCLUDED\.verification/,
+  "Recommendation synchronization must preserve existing work mappings"
+);
 assert.match(catalogImportRunner, /isTransientCatalogImportFailure/, "Catalog startup must classify transient database failures");
 assert.match(catalogImportRunner, /attempt >= maxTransientRetries/, "Catalog startup must stop after bounded transient database retries");
 assert.match(catalogImportRunner, /!transient \|\| attempt >= maxTransientRetries/, "Catalog startup must fail fast after deterministic or exhausted failures");
