@@ -1,10 +1,12 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { loadCatalogBatches } from "./lib/catalog-batches.mjs";
 
 const directoryPath = path.resolve("apps/api/src/data/archive-directory-index.json");
 const pictureBookPath = path.resolve("apps/api/src/data/picture-book-index.json");
 const directory = JSON.parse(await readFile(directoryPath, "utf8"));
 const pictureBook = JSON.parse(await readFile(pictureBookPath, "utf8"));
+const { batches } = await loadCatalogBatches();
 const errors = [];
 
 function assert(condition, message) {
@@ -15,6 +17,10 @@ function assert(condition, message) {
 
 function normalized(value) {
   return value.trim().toLocaleLowerCase("zh-CN").replace(/[·・\s]/g, "");
+}
+
+function sameSet(left, right) {
+  return JSON.stringify([...left].sort()) === JSON.stringify([...right].sort());
 }
 
 assert(directory.schemaVersion === 1, "schemaVersion must be 1");
@@ -41,6 +47,12 @@ const pictureBookNames = new Set(
 
 const ids = new Set();
 const directoryNameOwners = new Map();
+const latestImportedByCatalogId = new Map();
+for (const { input } of batches) {
+  for (const detective of input.detectives) {
+    latestImportedByCatalogId.set(detective.catalogId, detective);
+  }
+}
 let extensionCount = 0;
 let historicalCount = 0;
 
@@ -72,6 +84,37 @@ for (const entry of directory.entries) {
   assert(entry.sourceIds.every((id) => sourceIds.has(id)), `unknown source id: ${entry.id}`);
   assert(!("imageUrl" in entry), `source image must not be stored: ${entry.id}`);
   assert(!("sourceDescription" in entry), `source description must not be copied: ${entry.id}`);
+
+  const imported = latestImportedByCatalogId.get(entry.id);
+  if (imported) {
+    const expectedVerification = imported.verification === "PRIMARY_SOURCE_CONFIRMED"
+      ? "AUTHORITATIVE_SOURCE_CONFIRMED"
+      : imported.verification;
+    assert(imported.status === "PUBLISHED", `fallback entry must match a published catalog record: ${entry.id}`);
+    assert(entry.names.zh === imported.nameZh, `fallback Chinese name drifted from catalog batch: ${entry.id}`);
+    assert(
+      entry.names.original === (imported.nameOriginal ?? imported.nameZh),
+      `fallback original name drifted from catalog batch: ${entry.id}`
+    );
+    assert(
+      entry.names.en === (imported.nameEn ?? null),
+      `fallback English name drifted from catalog batch: ${entry.id}`
+    );
+    assert(entry.region === (imported.country ?? ""), `fallback region drifted from catalog batch: ${entry.id}`);
+    assert(
+      entry.creatorName === (imported.creatorName ?? null),
+      `fallback creator drifted from catalog batch: ${entry.id}`
+    );
+    assert(entry.summary === imported.summary, `fallback summary drifted from catalog batch: ${entry.id}`);
+    assert(
+      entry.verification === expectedVerification,
+      `fallback verification drifted from catalog batch: ${entry.id}`
+    );
+    assert(sameSet(entry.names.aliases, imported.aliases), `fallback aliases drifted from catalog batch: ${entry.id}`);
+    assert(sameSet(entry.mediaTypes, imported.mediaTypes), `fallback media types drifted from catalog batch: ${entry.id}`);
+    assert(sameSet(entry.tags, imported.tags), `fallback tags drifted from catalog batch: ${entry.id}`);
+    assert(sameSet(entry.sourceIds, imported.sourceIds), `fallback sources drifted from catalog batch: ${entry.id}`);
+  }
 
   if (entry.collection === "ARCHIVE_EXTENSION") {
     extensionCount += 1;

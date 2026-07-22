@@ -6,6 +6,7 @@ const sourceQualitySchema = z.enum([
   "OFFICIAL_CREATOR",
   "OFFICIAL_PLATFORM",
   "ACADEMIC_PUBLISHER",
+  "AUTHORITATIVE_LITERARY_MEDIA",
   "LIBRARY",
   "PUBLIC_INSTITUTION"
 ]);
@@ -16,6 +17,7 @@ const mediaTypeSchema = z.enum([
   "COMIC",
   "ANIMATION",
   "FILM",
+  "TELEVISION",
   "SERIES",
   "OPERA",
   "HISTORY",

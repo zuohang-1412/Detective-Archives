@@ -136,6 +136,8 @@ npm run check:directory
 
 `apps/api/src/data/catalog-expansion-content-fix-002.json` 是第 19 个不可变批次。它使用东映官方全话目录、鲁邦官方人物页和中央公论新社书目，解决扩展图鉴审计发现的两条 `SOURCE_CAPTURED` 人物记录：纠正工藤俊作的推荐话标题和无来源地点描述，为钱形幸一补入图鉴真正推荐的《鲁邦三世⑥》及出版社入口；图鉴旧译继续保留在代表案件标签中用于检索和审计。
 
+静态扩展目录与不可变批次的最终人物状态必须保持一致。`check:directory` 会对两侧共有的目录编号逐项核对名称、地区、创作者、简介、别名、媒介、标签、来源与核验等级；鲁平和方木在 `catalog-expansion-china-001` 中补齐的中国作家网来源也同步进入静态回退数据，避免数据库在线与无数据库回退接口展示不同的证据等级。
+
 `apps/api/src/data/catalog-expansion-recommendation-map-001.json` 是第 20 个不可变批次。它不新增或改写人物、作品和原始图鉴标签，只把 42 条名称可精确对应的推荐记录关联到既有正式作品；图鉴 API 和小程序因此可以直接进入作品详情与正版渠道。其余 31 条继续保持未映射，等待独立来源核验。导入器会校验图鉴编号、原始标签和作品 slug，补偿批次可通过 `pictureBookRecommendationUnmappings` 解除错误映射而不删除原始事实。
 
 `apps/api/src/data/catalog-expansion-core-001.json` 是第 21 个不可变批次。它以 Project Gutenberg《The Valley of Fear》、青空文库《黄金仮面》和 Agatha Christie Official《Death on the Nile》补齐第 1～3 卷基础种子人物的来源、时代、分类、别名和图鉴指定作品，并将“恐怖谷”“黄金甲面人”“尼罗河上的惨案”三个原始标签关联到正式作品。由此推荐直达达到 45/73，三位核心人物均升级为 `PRIMARY_SOURCE_CONFIRMED`；原图鉴旧译仍原样保留。

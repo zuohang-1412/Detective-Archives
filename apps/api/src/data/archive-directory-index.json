@@ -117,10 +117,22 @@
       "quality": "LIBRARY"
     },
     {
+      "id": "chinawriter-lu-ping",
+      "label": "中国作家网：亚森·罗平的诞生与在中国的传播",
+      "url": "https://www.chinawriter.com.cn/n1/2021/0223/c404092-32034284.html",
+      "quality": "AUTHORITATIVE_LITERARY_MEDIA"
+    },
+    {
       "id": "worldcat-criminal-minds",
       "label": "WorldCat：《心理罪：第七个读者》",
       "url": "https://search.worldcat.org/title/%3A-Criminal-minds/oclc/908319065",
       "quality": "LIBRARY"
+    },
+    {
+      "id": "chinawriter-fang-mu",
+      "label": "中国作家网：雷米——虚实交融让悬疑写作更加迷人",
+      "url": "https://www.chinawriter.com.cn/n1/2023/0215/c403994-32623965.html",
+      "quality": "AUTHORITATIVE_LITERARY_MEDIA"
     },
     {
       "id": "hayakawa-death-notice",
@@ -739,7 +751,7 @@
       },
       "region": "意大利",
       "creatorName": "唐娜·莱昂",
-      "mediaTypes": ["NOVEL", "SERIES"],
+      "mediaTypes": ["NOVEL", "TELEVISION", "SERIES"],
       "summary": "威尼斯警务委员，在城市人情、行政体系与社会不平等之间，以耐心走访和道德判断推进调查。",
       "featuredWorks": ["《拉·费尼切之死》"],
       "tags": ["警察小说", "威尼斯", "社会派", "意大利推理"],
@@ -758,7 +770,7 @@
       },
       "region": "加拿大",
       "creatorName": "露易丝·佩妮",
-      "mediaTypes": ["NOVEL", "SERIES"],
+      "mediaTypes": ["NOVEL", "TELEVISION", "SERIES"],
       "summary": "魁北克省警察局重案调查负责人，重视倾听、团队判断与社区关系，在表面宁静的环境中识别隐蔽冲突。",
       "featuredWorks": ["《静物》"],
       "tags": ["警察小说", "加拿大推理", "魁北克", "乡村谜案"],
@@ -1006,11 +1018,11 @@
       "region": "中国",
       "creatorName": "孙了红",
       "mediaTypes": ["NOVEL", "SHORT_STORY"],
-      "summary": "兼具侠盗与调查者身份的民国推理人物，以冒险和反侦察见长。",
+      "summary": "孙了红创造的民国侠盗人物，兼具反侦探故事中的行动者与调查者身份，常以乔装、心理判断和反侦察手段惩恶济弱。",
       "featuredWorks": ["《侠盗鲁平》", "《血纸人》"],
-      "tags": ["华语经典", "民国推理", "侠盗"],
-      "sourceIds": ["quzhou-library-lu-ping"],
-      "verification": "SOURCE_CAPTURED"
+      "tags": ["华语经典", "民国推理", "侠盗", "反侦探"],
+      "sourceIds": ["quzhou-library-lu-ping", "chinawriter-lu-ping"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
       "id": "EXT-CN-003",
@@ -1025,11 +1037,11 @@
       "region": "中国",
       "creatorName": "雷米",
       "mediaTypes": ["NOVEL", "SERIES", "FILM"],
-      "summary": "以犯罪心理分析协助调查的推理人物，关注罪案背后的心理机制。",
+      "summary": "雷米《心理罪》系列的主角，凭犯罪心理画像和现场行为分析协助刑事调查；人物成长贯穿《第七个读者》《画像》等作品。",
       "featuredWorks": ["《心理罪：第七个读者》", "《心理罪：画像》"],
-      "tags": ["犯罪心理", "华语推理", "刑事调查"],
-      "sourceIds": ["worldcat-criminal-minds"],
-      "verification": "SOURCE_CAPTURED"
+      "tags": ["犯罪心理", "华语推理", "刑事调查", "心理画像"],
+      "sourceIds": ["worldcat-criminal-minds", "chinawriter-fang-mu"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {
       "id": "EXT-CN-004",

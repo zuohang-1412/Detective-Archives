@@ -545,6 +545,20 @@ describe("detective archives API", () => {
     assert.equal(extensionResponse.statusCode, 200);
     assert.equal(extensionBody.data.names.zh, "姆玛·拉莫茨韦");
     assert.equal(extensionBody.sources[0].quality, "PUBLISHER");
+
+    const chineseExtensionResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory/ext-cn-002"
+    });
+    const chineseExtensionBody = chineseExtensionResponse.json();
+    assert.equal(chineseExtensionResponse.statusCode, 200);
+    assert.equal(chineseExtensionBody.data.verification, "AUTHORITATIVE_SOURCE_CONFIRMED");
+    assert.equal(chineseExtensionBody.sources.length, 2);
+    assert.ok(
+      chineseExtensionBody.sources.some(
+        (source: { quality: string }) => source.quality === "AUTHORITATIVE_LITERARY_MEDIA"
+      )
+    );
   });
 
   it("rejects an invalid archive-directory collection", async () => {
