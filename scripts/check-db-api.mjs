@@ -220,9 +220,15 @@ try {
       assert.ok(body.data.every((detective) => detective.subjectKind === "FICTIONAL"));
       assert.ok(body.data.every((detective) => detective.tags.includes("本格推理")));
     }],
-    ["/api/v1/archive-directory?pageSize=50", (body) => assert.equal(body.pagination.total, 23)],
+    ["/api/v1/archive-directory?pageSize=50", (body) => {
+      assert.equal(body.pagination.total, archiveDirectory.coverage.entryCount);
+      assert.equal(body.coverage.extensionCount, archiveDirectory.coverage.extensionCount);
+    }],
     ["/api/v1/archive-directory?q=%E5%BF%83%E7%90%86%E7%BD%AA", (body) => {
       assert.equal(body.data[0].id, "EXT-CN-003");
+    }],
+    ["/api/v1/archive-directory?q=%E6%B3%95%E5%8C%BB%E6%8E%A8%E7%90%86", (body) => {
+      assert.equal(body.data[0].id, "EXT-WL-014");
     }],
     ["/api/v1/picture-book?pageSize=150", (body) => {
       assert.equal(body.pagination.total, 109);

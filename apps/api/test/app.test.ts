@@ -489,8 +489,8 @@ describe("detective archives API", () => {
     });
     const extensionsBody = extensionsResponse.json();
     assert.equal(extensionsResponse.statusCode, 200);
-    assert.equal(extensionsBody.data.length, 20);
-    assert.equal(extensionsBody.coverage.extensionCount, 20);
+    assert.equal(extensionsBody.data.length, 26);
+    assert.equal(extensionsBody.coverage.extensionCount, 26);
     assert.ok(extensionsBody.data.every((entry: { id: string }) => entry.id.startsWith("EXT-")));
 
     const historicalResponse = await app.inject({
@@ -517,6 +517,13 @@ describe("detective archives API", () => {
     });
     assert.equal(workResponse.statusCode, 200);
     assert.equal(workResponse.json().data[0].id, "EXT-CN-003");
+
+    const forensicResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory?q=%E6%B3%95%E5%8C%BB%E6%8E%A8%E7%90%86"
+    });
+    assert.equal(forensicResponse.statusCode, 200);
+    assert.equal(forensicResponse.json().data[0].id, "EXT-WL-014");
   });
 
   it("returns one archive-directory entry and its sources", async () => {
@@ -529,6 +536,15 @@ describe("detective archives API", () => {
     assert.equal(body.data.names.zh, "宋慈");
     assert.equal(body.sources.length, 1);
     assert.equal(body.sources[0].quality, "PUBLIC_INSTITUTION");
+
+    const extensionResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/archive-directory/ext-wl-009"
+    });
+    const extensionBody = extensionResponse.json();
+    assert.equal(extensionResponse.statusCode, 200);
+    assert.equal(extensionBody.data.names.zh, "姆玛·拉莫茨韦");
+    assert.equal(extensionBody.sources[0].quality, "PUBLISHER");
   });
 
   it("rejects an invalid archive-directory collection", async () => {

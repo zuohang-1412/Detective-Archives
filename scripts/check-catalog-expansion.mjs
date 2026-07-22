@@ -149,10 +149,11 @@ for (const { input, filename } of batches) {
 
 const uniqueWorks = uniqueImportedWorks(batches);
 const recommendationMappings = linkedPictureBookRecommendations(batches);
-const [packageJson, importerScript, runnerScript] = await Promise.all([
+const [packageJson, importerScript, runnerScript, runnerLibrary] = await Promise.all([
   readFile(path.resolve("package.json"), "utf8").then(JSON.parse),
   readFile(path.resolve("scripts/catalog-import.mjs"), "utf8"),
-  readFile(path.resolve("scripts/run-catalog-imports.mjs"), "utf8")
+  readFile(path.resolve("scripts/run-catalog-imports.mjs"), "utf8"),
+  readFile(path.resolve("scripts/lib/catalog-import-runner.mjs"), "utf8")
 ]);
 assert.match(packageJson.scripts["catalog:rollback:preflight"], /--rollback/);
 assert.match(packageJson.scripts["catalog:rollback:apply"], /--rollback --apply/);
@@ -167,7 +168,9 @@ for (const rollbackCapability of [
 ]) {
   assert.ok(importerScript.includes(rollbackCapability), `catalog importer must implement ${rollbackCapability}`);
 }
-assert.match(runnerScript, /batch\.input\.rollbackOf/);
+assert.match(runnerScript, /runCatalogImports/);
+assert.match(runnerLibrary, /batch\.input\.rollbackOf/);
+assert.match(runnerLibrary, /isTransientCatalogImportFailure/);
 console.log(
   `Catalog expansion integrity: OK (${batches.length} batches, ${detectiveRecordCount} detective records, ${uniqueWorks.size} formal works, ${pictureBookIds.size} picture-book links, ${recommendationMappings.size} recommendation mappings)`
 );

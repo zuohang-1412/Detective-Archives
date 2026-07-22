@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "snapshotDate": "2026-07-21",
+  "snapshotDate": "2026-07-22",
   "contentPolicy": "Store factual catalog fields, original short summaries and source links only; do not copy source descriptions, covers or stills.",
   "coverage": {
-    "extensionCount": 20,
+    "extensionCount": 26,
     "historicalCount": 3,
-    "entryCount": 23
+    "entryCount": 29
   },
   "sources": [
     {
@@ -145,6 +145,42 @@
       "label": "最高人民检察院：《洗冤集录》与宋慈",
       "url": "https://www.spp.gov.cn/spp/llyj/201806/t20180619_382132.shtml",
       "quality": "PUBLIC_INSTITUTION"
+    },
+    {
+      "id": "penguin-precious-ramotswe",
+      "label": "Penguin Random House: The No. 1 Ladies' Detective Agency",
+      "url": "https://www.penguinrandomhouse.com/books/110419/the-no-1-ladies-detective-agency-by-alexander-mccall-smith/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-kinsey-millhone",
+      "label": "Penguin Random House: A Is for Alibi",
+      "url": "https://www.penguinrandomhouse.com/books/70206/a-is-for-alibi-by-sue-grafton/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-flavia-de-luce",
+      "label": "Penguin Random House: The Sweetness at the Bottom of the Pie",
+      "url": "https://www.penguinrandomhouse.com/books/17186/the-sweetness-at-the-bottom-of-the-pie-by-alan-bradley/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "orion-john-rebus",
+      "label": "Orion: Knots and Crosses",
+      "url": "https://www.orionbooks.co.uk/titles/ian-rankin/knots-and-crosses/9780752883533/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "hachette-brother-cadfael",
+      "label": "Hachette UK: A Morbid Taste for Bones",
+      "url": "https://www.hachette.co.uk/titles/ellis-peters-4/a-morbid-taste-for-bones/9780751543827/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "simon-schuster-temperance-brennan",
+      "label": "Simon & Schuster: Deja Dead",
+      "url": "https://www.simonandschuster.com/books/Deja-Dead/Kathy-Reichs/A-Temperance-Brennan-Novel/9781416570981",
+      "quality": "PUBLISHER"
     }
   ],
   "entries": [
@@ -298,6 +334,120 @@
       "featuredWorks": ["《古钟之谜》"],
       "tags": ["青少年推理", "女性侦探", "业余侦探"],
       "sourceIds": ["simon-schuster-nancy-drew"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-009",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "姆玛·拉莫茨韦",
+        "original": "Mma Precious Ramotswe",
+        "en": "Precious Ramotswe",
+        "aliases": ["普蕾莎丝·拉莫茨韦", "Mma Ramotswe"]
+      },
+      "region": "博茨瓦纳",
+      "creatorName": "亚历山大·麦考尔·史密斯",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "在博茨瓦纳经营女子侦探社的私人侦探，善于从日常关系、耐心倾听和常识判断中解决委托。",
+      "featuredWorks": ["《第一女子侦探事务所》"],
+      "tags": ["女性侦探", "私人侦探", "博茨瓦纳", "日常推理"],
+      "sourceIds": ["penguin-precious-ramotswe"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-010",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "金茜·米尔虹",
+        "original": "Kinsey Millhone",
+        "en": "Kinsey Millhone",
+        "aliases": ["金西·米尔霍恩", "Kinsey"]
+      },
+      "region": "美国",
+      "creatorName": "苏·格拉夫顿",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "独立执业的加州私家侦探，曾任警察，依靠档案、走访和持续追踪重建案件事实。",
+      "featuredWorks": ["《A代表不在场证明》"],
+      "tags": ["女性侦探", "私人侦探", "字母系列", "加州"],
+      "sourceIds": ["penguin-kinsey-millhone"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-011",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "弗拉维娅·德·卢斯",
+        "original": "Flavia de Luce",
+        "en": "Flavia de Luce",
+        "aliases": ["芙拉维亚·德卢斯", "Flavia"]
+      },
+      "region": "英国",
+      "creatorName": "艾伦·布拉德利",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "生活在英国乡间的少年业余侦探，热衷化学与毒物知识，以实验观察和敏锐好奇心破解谜案。",
+      "featuredWorks": ["《派底甜蜜的死亡》"],
+      "tags": ["少年侦探", "业余侦探", "化学", "历史推理"],
+      "sourceIds": ["penguin-flavia-de-luce"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-012",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "约翰·雷布思",
+        "original": "John Rebus",
+        "en": "John Rebus",
+        "aliases": ["雷布思探长", "Inspector Rebus"]
+      },
+      "region": "英国",
+      "creatorName": "伊恩·兰金",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "在爱丁堡工作的苏格兰刑警，常从城市关系、旧案压力和个人经历中追查复杂犯罪。",
+      "featuredWorks": ["《结与十字架》"],
+      "tags": ["警察小说", "苏格兰", "爱丁堡", "社会派"],
+      "sourceIds": ["orion-john-rebus"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-013",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "卡德法尔修士",
+        "original": "Brother Cadfael",
+        "en": "Brother Cadfael",
+        "aliases": ["卡德菲尔修士", "Cadfael"]
+      },
+      "region": "英国",
+      "creatorName": "埃利斯·彼得斯",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "什鲁斯伯里修道院的本笃会修士，凭草药知识、人生阅历和对人情的理解调查中世纪案件。",
+      "featuredWorks": ["《圣女骸骨之谜》"],
+      "tags": ["历史推理", "修道院", "草药", "中世纪"],
+      "sourceIds": ["hachette-brother-cadfael"],
+      "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
+    },
+    {
+      "id": "EXT-WL-014",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "names": {
+        "zh": "坦普兰斯·布伦南",
+        "original": "Temperance Brennan",
+        "en": "Temperance Brennan",
+        "aliases": ["唐普兰丝·布兰纳", "Tempe Brennan"]
+      },
+      "region": "美国",
+      "creatorName": "凯西·莱克斯",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "从事司法人类学工作的调查者，以骨骼检验、科学证据和现场关联协助警方识别受害者并追查案件。",
+      "featuredWorks": ["《死亡时间表》"],
+      "tags": ["法医推理", "司法人类学", "女性调查者", "科学侦查"],
+      "sourceIds": ["simon-schuster-temperance-brennan"],
       "verification": "AUTHORITATIVE_SOURCE_CONFIRMED"
     },
     {

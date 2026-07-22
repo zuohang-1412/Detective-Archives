@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-world-literature-002",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Add six internationally influential detective characters using publisher pages for identity, series context and a legitimate first-work entry; store only factual catalog fields and original short summaries.",
+  "sources": [
+    {
+      "id": "penguin-precious-ramotswe",
+      "label": "Penguin Random House: The No. 1 Ladies' Detective Agency",
+      "url": "https://www.penguinrandomhouse.com/books/110419/the-no-1-ladies-detective-agency-by-alexander-mccall-smith/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-kinsey-millhone",
+      "label": "Penguin Random House: A Is for Alibi",
+      "url": "https://www.penguinrandomhouse.com/books/70206/a-is-for-alibi-by-sue-grafton/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "penguin-flavia-de-luce",
+      "label": "Penguin Random House: The Sweetness at the Bottom of the Pie",
+      "url": "https://www.penguinrandomhouse.com/books/17186/the-sweetness-at-the-bottom-of-the-pie-by-alan-bradley/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "orion-john-rebus",
+      "label": "Orion: Knots and Crosses",
+      "url": "https://www.orionbooks.co.uk/titles/ian-rankin/knots-and-crosses/9780752883533/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "hachette-brother-cadfael",
+      "label": "Hachette UK: A Morbid Taste for Bones",
+      "url": "https://www.hachette.co.uk/titles/ellis-peters-4/a-morbid-taste-for-bones/9780751543827/",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "simon-schuster-temperance-brennan",
+      "label": "Simon & Schuster: Deja Dead",
+      "url": "https://www.simonandschuster.com/books/Deja-Dead/Kathy-Reichs/A-Temperance-Brennan-Novel/9781416570981",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "EXT-WL-009",
+      "pictureBookEntryIds": [],
+      "slug": "precious-ramotswe",
+      "nameZh": "姆玛·拉莫茨韦",
+      "nameOriginal": "Mma Precious Ramotswe",
+      "nameEn": "Precious Ramotswe",
+      "country": "博茨瓦纳",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "在博茨瓦纳经营女子侦探社的私人侦探，善于从日常关系、耐心倾听和常识判断中解决委托。",
+      "creatorName": "亚历山大·麦考尔·史密斯",
+      "aliases": ["普蕾莎丝·拉莫茨韦", "Mma Ramotswe"],
+      "tags": ["女性侦探", "私人侦探", "博茨瓦纳", "日常推理"],
+      "featuredCases": ["《第一女子侦探事务所》"],
+      "sourceIds": ["penguin-precious-ramotswe"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-no-1-ladies-detective-agency",
+          "titleZh": "第一女子侦探事务所",
+          "titleOriginal": "The No. 1 Ladies' Detective Agency",
+          "mediaType": "NOVEL",
+          "releaseYear": 1998,
+          "summary": "拉莫茨韦在哈博罗内开设侦探社，先后调查失踪、欺诈与家庭委托，并逐步形成重视理解和公正的办案方式。",
+          "creatorName": "亚历山大·麦考尔·史密斯",
+          "sourceId": "penguin-precious-ramotswe",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-010",
+      "pictureBookEntryIds": [],
+      "slug": "kinsey-millhone",
+      "nameZh": "金茜·米尔虹",
+      "nameOriginal": "Kinsey Millhone",
+      "nameEn": "Kinsey Millhone",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "独立执业的加州私家侦探，曾任警察，依靠档案、走访和持续追踪重建案件事实。",
+      "creatorName": "苏·格拉夫顿",
+      "aliases": ["金西·米尔霍恩", "Kinsey"],
+      "tags": ["女性侦探", "私人侦探", "字母系列", "加州"],
+      "featuredCases": ["《A代表不在场证明》"],
+      "sourceIds": ["penguin-kinsey-millhone"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "a-is-for-alibi",
+          "titleZh": "A代表不在场证明",
+          "titleOriginal": "A Is for Alibi",
+          "mediaType": "NOVEL",
+          "releaseYear": 1982,
+          "summary": "一名获释女子委托金茜重查丈夫遇害案，金茜从多年以前的证词、关系和遗留线索中寻找真正凶手。",
+          "creatorName": "苏·格拉夫顿",
+          "sourceId": "penguin-kinsey-millhone",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-011",
+      "pictureBookEntryIds": [],
+      "slug": "flavia-de-luce",
+      "nameZh": "弗拉维娅·德·卢斯",
+      "nameOriginal": "Flavia de Luce",
+      "nameEn": "Flavia de Luce",
+      "country": "英国",
+      "era": "20世纪中叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "生活在英国乡间的少年业余侦探，热衷化学与毒物知识，以实验观察和敏锐好奇心破解谜案。",
+      "creatorName": "艾伦·布拉德利",
+      "aliases": ["芙拉维亚·德卢斯", "Flavia"],
+      "tags": ["少年侦探", "业余侦探", "化学", "历史推理"],
+      "featuredCases": ["《派底甜蜜的死亡》"],
+      "sourceIds": ["penguin-flavia-de-luce"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "the-sweetness-at-the-bottom-of-the-pie",
+          "titleZh": "派底甜蜜的死亡",
+          "titleOriginal": "The Sweetness at the Bottom of the Pie",
+          "mediaType": "NOVEL",
+          "releaseYear": 2009,
+          "summary": "庄园接连出现带邮票的死鸟和菜园尸体，弗拉维娅利用化学兴趣与家族往事追查两起事件的联系。",
+          "creatorName": "艾伦·布拉德利",
+          "sourceId": "penguin-flavia-de-luce",
+          "linkType": "PUBLISHER",
+          "providerName": "Penguin Random House",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-012",
+      "pictureBookEntryIds": [],
+      "slug": "john-rebus",
+      "nameZh": "约翰·雷布思",
+      "nameOriginal": "John Rebus",
+      "nameEn": "John Rebus",
+      "country": "英国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "在爱丁堡工作的苏格兰刑警，常从城市关系、旧案压力和个人经历中追查复杂犯罪。",
+      "creatorName": "伊恩·兰金",
+      "aliases": ["雷布思探长", "Inspector Rebus"],
+      "tags": ["警察小说", "苏格兰", "爱丁堡", "社会派"],
+      "featuredCases": ["《结与十字架》"],
+      "sourceIds": ["orion-john-rebus"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "knots-and-crosses",
+          "titleZh": "结与十字架",
+          "titleOriginal": "Knots and Crosses",
+          "mediaType": "NOVEL",
+          "releaseYear": 1987,
+          "summary": "爱丁堡发生年轻女孩接连失踪遇害案，雷布思收到只对自己有意义的绳结与火柴十字信息，被迫面对旧日经历。",
+          "creatorName": "伊恩·兰金",
+          "sourceId": "orion-john-rebus",
+          "linkType": "PUBLISHER",
+          "providerName": "Orion",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-013",
+      "pictureBookEntryIds": [],
+      "slug": "brother-cadfael",
+      "nameZh": "卡德法尔修士",
+      "nameOriginal": "Brother Cadfael",
+      "nameEn": "Brother Cadfael",
+      "country": "英国",
+      "era": "12世纪",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "什鲁斯伯里修道院的本笃会修士，凭草药知识、人生阅历和对人情的理解调查中世纪案件。",
+      "creatorName": "埃利斯·彼得斯",
+      "aliases": ["卡德菲尔修士", "Cadfael"],
+      "tags": ["历史推理", "修道院", "草药", "中世纪"],
+      "featuredCases": ["《圣女骸骨之谜》"],
+      "sourceIds": ["hachette-brother-cadfael"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "a-morbid-taste-for-bones",
+          "titleZh": "圣女骸骨之谜",
+          "titleOriginal": "A Morbid Taste for Bones",
+          "mediaType": "NOVEL",
+          "releaseYear": 1977,
+          "summary": "修道院前往威尔士迎取圣女遗骨时遭遇反对者被杀，卡德法尔在宗教诉求、村民立场与箭伤线索间寻找真相。",
+          "creatorName": "埃利斯·彼得斯",
+          "sourceId": "hachette-brother-cadfael",
+          "linkType": "PUBLISHER",
+          "providerName": "Hachette UK",
+          "region": "GLOBAL"
+        }
+      ]
+    },
+    {
+      "catalogId": "EXT-WL-014",
+      "pictureBookEntryIds": [],
+      "slug": "temperance-brennan",
+      "nameZh": "坦普兰斯·布伦南",
+      "nameOriginal": "Temperance Brennan",
+      "nameEn": "Temperance Brennan",
+      "country": "美国",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "ARCHIVE_EXTENSION",
+      "category": "WORLD_LITERATURE",
+      "mediaTypes": ["NOVEL", "SERIES"],
+      "summary": "从事司法人类学工作的调查者，以骨骼检验、科学证据和现场关联协助警方识别受害者并追查案件。",
+      "creatorName": "凯西·莱克斯",
+      "aliases": ["唐普兰丝·布兰纳", "Tempe Brennan"],
+      "tags": ["法医推理", "司法人类学", "女性调查者", "科学侦查"],
+      "featuredCases": ["《死亡时间表》"],
+      "sourceIds": ["simon-schuster-temperance-brennan"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "deja-dead",
+          "titleZh": "死亡时间表",
+          "titleOriginal": "Déjà Dead",
+          "mediaType": "NOVEL",
+          "releaseYear": 1997,
+          "summary": "布伦南检验一具被分割的女性遗体时发现可能存在连续案件，并以法医证据推动警方重新审视受害者之间的联系。",
+          "creatorName": "凯西·莱克斯",
+          "sourceId": "simon-schuster-temperance-brennan",
+          "linkType": "PUBLISHER",
+          "providerName": "Simon & Schuster",
+          "region": "GLOBAL"
+        }
+      ]
+    }
+  ]
+}

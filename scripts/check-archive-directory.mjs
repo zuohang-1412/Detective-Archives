@@ -18,9 +18,9 @@ function normalized(value) {
 }
 
 assert(directory.schemaVersion === 1, "schemaVersion must be 1");
-assert(directory.coverage?.extensionCount === 20, "extension count must be 20");
+assert(directory.coverage?.extensionCount === 26, "extension count must be 26");
 assert(directory.coverage?.historicalCount === 3, "historical count must be 3");
-assert(directory.coverage?.entryCount === 23, "directory entry count must be 23");
+assert(directory.coverage?.entryCount === 29, "directory entry count must be 29");
 assert(directory.entries.length === directory.coverage.entryCount, "coverage entry count must match data");
 
 const sourceIds = new Set();

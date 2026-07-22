@@ -18,6 +18,7 @@ const [
   releaseDrillCompose,
   rootPackage,
   catalogSeedScript,
+  catalogImportRunner,
   operationsDrillScript,
   operationsDrillTemplate,
   operationsRunbook,
@@ -47,6 +48,7 @@ const [
   readFile(path.join(root, "ops/compose.release-drill.yaml"), "utf8"),
   readFile(path.join(root, "package.json"), "utf8"),
   readFile(path.join(root, "scripts/db-seed-catalog.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/lib/catalog-import-runner.mjs"), "utf8"),
   readFile(path.join(root, "scripts/record-operations-drill.mjs"), "utf8"),
   readFile(path.join(root, "ops/operations-drill-record.example.json"), "utf8"),
   readFile(path.join(root, "docs/runbook.md"), "utf8"),
@@ -142,6 +144,9 @@ assert.match(releaseRollbackDrill, /previous-image-tag/, "The drill must verify 
 assert.match(releaseRollbackDrill, /ops\/verify-backup\.sh/, "The drill must verify the mandatory deployment backup");
 assert.match(catalogSeedScript, /FROM catalog_import_batches/, "Base seeding must detect immutable content history");
 assert.match(catalogSeedScript, /preserved existing catalog/, "Redeployment must preserve batch-owned catalog fields and relations");
+assert.match(catalogImportRunner, /isTransientCatalogImportFailure/, "Catalog startup must classify transient database failures");
+assert.match(catalogImportRunner, /attempt >= maxTransientRetries/, "Catalog startup must stop after bounded transient database retries");
+assert.match(catalogImportRunner, /!transient \|\| attempt >= maxTransientRetries/, "Catalog startup must fail fast after deterministic or exhausted failures");
 assert.match(operationsDrillScript, /recordOperationsDrill/, "The operations drill command must persist validated evidence");
 for (const scenario of [
   "CONTENT_MODERATION",

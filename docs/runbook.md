@@ -170,7 +170,7 @@ sh ops/verify-backup.sh /var/backups/detective-archives/detective-archives-TIMES
 
 ## 内容批次回滚
 
-内容批次导入在单一事务内执行；事务失败不会留下部分数据。若已应用的最新批次需要撤销，禁止改写原 JSON 或直接删除数据库记录：
+内容批次导入在单一事务内执行；事务失败不会留下部分数据。清单运行器对连接重置、超时、DNS 临时失败和数据库重启等明确的瞬时故障默认重试 2 次，校验、约束或 SQL 错误立即失败；可用 `--transient-retries=0` 关闭重试，允许范围为 0～5。若已应用的最新批次需要撤销，禁止改写原 JSON 或直接删除数据库记录：
 
 1. 先确认上线前整库备份可读，并暂停新的目录导入。
 2. 新建补偿批次，`rollbackOf` 必须指向当前最新 `APPLIED` 批次，填写 `rollbackReason`。
