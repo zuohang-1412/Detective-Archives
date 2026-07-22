@@ -95,8 +95,8 @@ for (const sample of audit.samples) {
 
 const pictureSamples = audit.samples.filter((sample) => sample.recordSet === "PICTURE_BOOK");
 const directorySamples = audit.samples.filter((sample) => sample.recordSet === "ARCHIVE_DIRECTORY");
-assert.ok(pictureSamples.length >= 20, "audit must include at least 20 picture-book entries");
-assert.ok(directorySamples.length >= 6, "audit must include at least 6 archive-directory entries");
+assert.ok(pictureSamples.length >= 40, "audit must include at least 40 picture-book entries");
+assert.ok(directorySamples.length >= 20, "audit must include at least 20 archive-directory entries");
 
 const sampledVolumes = pictureSamples.map((sample) => pictureBookEntries.get(sample.recordId).volumeNo);
 for (const [minimum, maximum] of [[1, 25], [26, 58], [59, 80], [81, 102], [103, 108]]) {

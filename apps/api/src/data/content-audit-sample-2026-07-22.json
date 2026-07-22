@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "auditDate": "2026-07-22",
-  "method": "Stratified sample across picture-book volumes 1-25, 26-58, 59-80, 81-102, 103-108, the volume 105 special edition, every archive-directory category, and all twelve entries in the two latest global-detective batches. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official creator, public institution or library records.",
-  "sampleCount": 42,
+  "method": "Expanded stratified sample of 40 picture-book entries across volumes 1-25, 26-58, 59-80, 81-102, 103-108 and the volume 105 special edition, plus 20 archive-directory records spanning every category and all twelve entries in the two latest global-detective batches. Community indexes establish Aoyama picture-book labels; formal identity and work facts are checked against publisher, official creator, public institution or library records.",
+  "sampleCount": 60,
   "samples": [
     {
       "recordId": "PB-004-STD",
@@ -562,6 +562,254 @@
       "evidenceSourceIds": ["macmillan-erlendur-series", "macmillan-jar-city"],
       "result": "PASS",
       "note": "Macmillan's series and title pages confirm Inspector Erlendur, Arnaldur Indridason and Jar City."
+    },
+    {
+      "recordId": "PB-001-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "sherlock-holmes",
+      "workSlug": "the-valley-of-fear",
+      "expected": {
+        "nameZh": "夏洛克·福尔摩斯",
+        "creatorName": "阿瑟·柯南·道尔",
+        "featuredCase": "《恐怖谷》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "gutenberg-valley-of-fear"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Project Gutenberg confirms Sherlock Holmes, Arthur Conan Doyle and The Valley of Fear."
+    },
+    {
+      "recordId": "PB-002-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "kogoro-akechi",
+      "workSlug": "kogoro-akechi-golden-mask",
+      "expected": {
+        "nameZh": "明智小五郎",
+        "creatorName": "江户川乱步",
+        "featuredCase": "《黄金甲面人》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "aozora-golden-mask"],
+      "result": "PASS",
+      "note": "The community index establishes the Aoyama label; Aozora Bunko confirms the original title and Edogawa Ranpo authorship."
+    },
+    {
+      "recordId": "PB-003-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "hercule-poirot",
+      "workSlug": "death-on-the-nile-novel",
+      "expected": {
+        "nameZh": "赫尔克里·波洛",
+        "creatorName": "阿加莎·克里斯蒂",
+        "featuredCase": "《尼罗河上的惨案》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "agatha-christie-death-on-the-nile"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Agatha Christie Official confirms Poirot and Death on the Nile."
+    },
+    {
+      "recordId": "PB-009-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "philip-marlowe",
+      "workSlug": "the-long-goodbye",
+      "expected": {
+        "nameZh": "菲利普·马洛",
+        "creatorName": "雷蒙德·钱德勒",
+        "featuredCase": "《漫长的告别》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "prh-long-goodbye"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Penguin Random House confirms Philip Marlowe, Raymond Chandler and The Long Goodbye."
+    },
+    {
+      "recordId": "PB-013-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "father-brown",
+      "workSlug": "the-innocence-of-father-brown",
+      "expected": {
+        "nameZh": "布朗神父",
+        "creatorName": "G. K. 切斯特顿",
+        "featuredCase": "《奇妙的脚步声》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "gutenberg-father-brown"],
+      "result": "PASS",
+      "note": "The community index identifies the translated story label; Project Gutenberg confirms Father Brown, G. K. Chesterton and The Queer Feet in the collection."
+    },
+    {
+      "recordId": "PB-017-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "nero-wolfe",
+      "workSlug": "too-many-cooks",
+      "expected": {
+        "nameZh": "尼禄·伍尔夫",
+        "creatorName": "雷克斯·斯托特",
+        "featuredCase": "《厨师太多了》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "prh-too-many-cooks"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Penguin Random House confirms Nero Wolfe, Rex Stout and Too Many Cooks."
+    },
+    {
+      "recordId": "PB-020-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "jane-marple",
+      "workSlug": "a-murder-is-announced",
+      "expected": {
+        "nameZh": "简·马普尔",
+        "creatorName": "阿加莎·克里斯蒂",
+        "featuredCase": "《谋杀启事》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "agatha-christie-murder-announced"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Agatha Christie Official confirms Miss Marple and A Murder is Announced."
+    },
+    {
+      "recordId": "PB-027-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "james-bond",
+      "workSlug": "goldfinger-novel",
+      "expected": {
+        "nameZh": "詹姆斯·邦德",
+        "creatorName": "伊恩·弗莱明",
+        "featuredCase": "《金手指》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "ian-fleming-goldfinger"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Ian Fleming's official site confirms James Bond and Goldfinger."
+    },
+    {
+      "recordId": "PB-030-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "john-thorndyke",
+      "workSlug": "the-singing-bone",
+      "expected": {
+        "nameZh": "约翰·桑代克",
+        "creatorName": "R·奥斯汀·弗里曼",
+        "featuredCase": "《唱歌的白骨》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "gutenberg-singing-bone"],
+      "result": "PASS",
+      "note": "The community index establishes the translated label; Project Gutenberg confirms Dr. Thorndyke, R. Austin Freeman and The Singing Bone."
+    },
+    {
+      "recordId": "PB-040-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "kiyoshi-mitarai",
+      "workSlug": "the-tokyo-zodiac-murders",
+      "expected": {
+        "nameZh": "御手洗洁",
+        "creatorName": "岛田庄司",
+        "featuredCase": "《占星术杀人魔法》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "kodansha-astrology-murder-case"],
+      "result": "PASS",
+      "note": "The community index preserves the Chinese recommendation label; Kodansha confirms the work, Shimada Soji and Mitarai's debut."
+    },
+    {
+      "recordId": "PB-045-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "eitaro-imanishi",
+      "workSlug": "suna-no-utsuwa",
+      "expected": {
+        "nameZh": "今西荣太郎",
+        "creatorName": "松本清张",
+        "featuredCase": "《砂器》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "shinchosha-suna-no-utsuwa"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Shinchosha confirms Seicho Matsumoto, Suna no Utsuwa and detective Imanishi."
+    },
+    {
+      "recordId": "PB-050-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "hideo-himura",
+      "workSlug": "the-46th-locked-room",
+      "expected": {
+        "nameZh": "火村英生",
+        "creatorName": "有栖川有栖",
+        "featuredCase": "《第46间密室》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "kodansha-46th-locked-room"],
+      "result": "PASS",
+      "note": "The community index preserves the translated title; Kodansha confirms Arisugawa Alice, the 46th locked room and the Himura series."
+    },
+    {
+      "recordId": "PB-057-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "joseph-french",
+      "workSlug": "the-1230-from-croydon",
+      "expected": {
+        "nameZh": "约瑟夫·弗伦奇警督",
+        "creatorName": "弗里曼·威尔斯·克罗夫茨",
+        "featuredCase": "《12:30从克罗伊登出发》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "british-library-croydon-1230"],
+      "result": "PASS",
+      "note": "The community index preserves the translated label; the British Library confirms Inspector French, Freeman Wills Crofts and The 12.30 from Croydon."
+    },
+    {
+      "recordId": "PB-065-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "robert-langdon",
+      "workSlug": "the-da-vinci-code",
+      "expected": {
+        "nameZh": "罗伯特·兰登教授",
+        "creatorName": "丹·布朗",
+        "featuredCase": "《达·芬奇密码》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "danbrown-da-vinci-code"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Dan Brown's official site confirms Robert Langdon and The Da Vinci Code."
+    },
+    {
+      "recordId": "PB-074-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "inspector-onitsura",
+      "workSlug": "the-black-trunk",
+      "expected": {
+        "nameZh": "鬼贯警部",
+        "creatorName": "鲇川哲也",
+        "featuredCase": "《黑色皮箱》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "tsogen-black-trunk"],
+      "result": "PASS",
+      "note": "The community index preserves the Chinese recommendation label; Tokyo Sogensha confirms Tetsuya Ayukawa, the black trunk and Inspector Onitsura."
+    },
+    {
+      "recordId": "PB-084-STD",
+      "recordSet": "PICTURE_BOOK",
+      "detectiveSlug": "lisbeth-salander",
+      "workSlug": "the-girl-with-the-dragon-tattoo",
+      "expected": {
+        "nameZh": "莉丝贝特·莎兰德",
+        "creatorName": "斯蒂格·拉森",
+        "featuredCase": "《龙纹身的女孩》"
+      },
+      "evidenceSourceIds": ["bilibili-opus-636222280260648982", "prh-dragon-tattoo"],
+      "result": "PASS",
+      "note": "The community index establishes the volume label; Penguin Random House confirms Lisbeth Salander, Stieg Larsson and The Girl with the Dragon Tattoo."
+    },
+    {
+      "recordId": "EXT-WL-002",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "莫尔斯探长",
+        "creatorName": "科林·德克斯特",
+        "featuredCase": "《开往伍德斯托克的末班车》"
+      },
+      "evidenceSourceIds": ["pan-macmillan-inspector-morse"],
+      "result": "PASS",
+      "note": "Pan Macmillan confirms Inspector Morse, Colin Dexter and Last Bus to Woodstock as the first case in the series."
+    },
+    {
+      "recordId": "EXT-JP-001",
+      "recordSet": "ARCHIVE_DIRECTORY",
+      "expected": {
+        "nameZh": "L",
+        "creatorName": "大场鸫、小畑健",
+        "featuredCase": "《死亡笔记》"
+      },
+      "evidenceSourceIds": ["viz-death-note"],
+      "result": "PASS",
+      "note": "VIZ identifies Death Note, creators Tsugumi Ohba and Takeshi Obata, and genius detective L's pursuit of the murders."
     }
   ]
 }
