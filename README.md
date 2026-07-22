@@ -142,6 +142,8 @@ npm run miniprogram:upload
 
 候选上传后，真实验收人员使用仓库外的 `ops/wechat-acceptance-record.example.json` 副本记录平台配置、内容安全四路径和 iOS/Android 双端主链，执行 `npm run wechat:acceptance:record -- --record=/absolute/path/wechat-acceptance.json --env-file=.env.production`。生成的回执绑定 AppID、候选版本、当前提交、配置摘要、生产域名和设备证据；旧提交、缺场景或手工布尔值不能通过提审门禁。
 
+完成真机验收后，发布负责人从仓库外的 `ops/wechat-publication-event.example.json` 副本依次登记 `REVIEW_SUBMITTED`、`REVIEW_APPROVED` 和 `PRODUCTION_RELEASED`，每次执行 `npm run wechat:publication:record -- --record=/absolute/path/wechat-publication-event.json --env-file=.env.production`。记录器禁止跳级或改写历史，并把三个平台状态绑定到同一候选、验收回执、源码提交、生产域名和运行手册；重新上传候选会清除旧验收与发布状态。
+
 正式服务器完成两个不同提交的受控部署后，使用 `PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- --env-file=.env.production --manifest=ops/launch-readiness.json --state-directory=/var/lib/detective-archives/release-state` 留下生产回滚回执。该命令会真实切换候选版、上一版和候选恢复版，从公网验证 HTTPS 与核心服务，并把当前提交、镜像、备份和三阶段探测结果写入实际上线清单；不得手工填写旧的 TLS/回滚布尔项。
 
 ## 质量检查

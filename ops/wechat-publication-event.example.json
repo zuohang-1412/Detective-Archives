@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "status": "PASSED",
+  "event": "REVIEW_SUBMITTED",
+  "appid": "wx上线前填写真实AppID",
+  "candidateVersion": "0.1.0",
+  "publisher": "上线前指定微信发布负责人",
+  "completedAt": "2026-07-22T08:00:00.000Z",
+  "evidenceReference": "WX-PUBLISH-2026-0722#REVIEW_SUBMITTED"
+}

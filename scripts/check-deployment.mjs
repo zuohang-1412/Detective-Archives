@@ -27,6 +27,9 @@ const [
   wechatAcceptanceCommand,
   wechatAcceptanceTemplate,
   wechatAcceptanceLibrary,
+  wechatPublicationCommand,
+  wechatPublicationTemplate,
+  wechatPublicationLibrary,
   acceptanceExecution,
   qaReport
 ] = await Promise.all([
@@ -53,6 +56,9 @@ const [
   readFile(path.join(root, "scripts/record-wechat-acceptance.mjs"), "utf8"),
   readFile(path.join(root, "ops/wechat-acceptance-record.example.json"), "utf8"),
   readFile(path.join(root, "scripts/lib/wechat-acceptance.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/record-wechat-publication.mjs"), "utf8"),
+  readFile(path.join(root, "ops/wechat-publication-event.example.json"), "utf8"),
+  readFile(path.join(root, "scripts/lib/wechat-publication.mjs"), "utf8"),
   readFile(path.join(root, "docs/acceptance-execution.md"), "utf8"),
   readFile(path.join(root, "docs/qa-report-2026-07-22.md"), "utf8")
 ]);
@@ -120,6 +126,8 @@ assert.match(rootPackage, /"release:drill:production"/, "The production rollback
 assert.match(rootPackage, /"check:production-release-drill"/, "The production rollback evidence must have an automated check");
 assert.match(rootPackage, /"wechat:acceptance:record"/, "WeChat acceptance must have a recording entrypoint");
 assert.match(rootPackage, /"check:wechat-acceptance"/, "WeChat acceptance must have an automated check");
+assert.match(rootPackage, /"wechat:publication:record"/, "WeChat publication must have a recording entrypoint");
+assert.match(rootPackage, /"check:wechat-publication"/, "WeChat publication must have an automated check");
 assert.match(qualityWorkflow, /npm run check:release-rollback/, "CI must execute the real release rollback drill");
 assert.match(qualityWorkflow, /postgres:16/, "CI PostgreSQL must match the explicitly installed backup client major version");
 assert.match(qualityWorkflow, /postgresql-client-16/, "CI must install a matching PostgreSQL backup client");
@@ -145,6 +153,7 @@ for (const scenario of [
 }
 assert.match(operationsRunbook, /operations:drill:record/, "The runbook must explain how to record the operations drill");
 assert.match(operationsRunbook, /wechat:acceptance:record/, "The runbook must explain how to record WeChat acceptance");
+assert.match(operationsRunbook, /wechat:publication:record/, "The runbook must explain the WeChat publication lifecycle");
 assert.match(launchReadinessLibrary, /item\("operations_drill", "SUBMISSION"/, "Submission must require operations drill evidence");
 assert.match(productionDrillCommand, /PRODUCTION_ROLLBACK_DRILL/, "Production rollback must require a one-shot opt-in");
 assert.match(productionDrillCommand, /inspectRecentBackup/, "Production rollback must require recent backup evidence");
@@ -168,6 +177,14 @@ for (const scenario of [
 }
 assert.match(wechatAcceptanceLibrary, /candidateUploadReceiptSha256/, "WeChat acceptance must bind the exact uploaded candidate");
 assert.match(launchReadinessLibrary, /validWechatAcceptanceReceipt/, "Submission gates must require WeChat acceptance evidence");
+assert.match(wechatPublicationCommand, /assertReleaseGitStatus/, "WeChat publication must require committed candidate source");
+assert.match(wechatPublicationCommand, /recordWechatPublication/, "WeChat publication command must persist evidence");
+for (const field of ["REVIEW_SUBMITTED", "candidateVersion", "evidenceReference"]) {
+  assert.match(wechatPublicationTemplate, new RegExp(field), `Publication event template must include ${field}`);
+}
+assert.match(wechatPublicationLibrary, /wechatAcceptanceReceiptSha256/, "Publication evidence must bind WeChat acceptance");
+assert.match(wechatPublicationLibrary, /Next publication event must be/, "Publication evidence must reject lifecycle jumps");
+assert.match(launchReadinessLibrary, /validWechatPublicationReceipt/, "Release gates must require publication evidence");
 
 const acceptanceRows = [...acceptanceExecution.matchAll(
   /^\| (PASS|BLOCKED|FAIL|PENDING) \| (AT-[^| ]+) \|/gm

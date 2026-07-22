@@ -5,14 +5,12 @@
     "privacyContact": "上线前填写隐私联系人",
     "contentModerator": "上线前指定内容审核负责人",
     "alertResponder": "上线前指定生产告警负责人",
-    "wechatTester": "上线前指定微信真机验收负责人"
+    "wechatTester": "上线前指定微信真机验收负责人",
+    "wechatPublisher": "上线前指定微信发布负责人"
   },
   "wechat": {
     "candidateUploaded": false,
-    "candidateUploadReceipt": null,
-    "reviewSubmitted": false,
-    "reviewApproved": false,
-    "released": false
+    "candidateUploadReceipt": null
   },
   "infrastructure": {
     "serverProvisioned": false,
@@ -24,6 +22,7 @@
   "validation": {
     "productionReleaseReceipt": null,
     "wechatAcceptanceReceipt": null,
+    "wechatPublicationReceipt": null,
     "operationsDrillReceipt": null
   }
 }

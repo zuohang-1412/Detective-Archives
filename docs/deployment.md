@@ -131,7 +131,16 @@ npm run operations:drill:record -- \
 
 记录器只把负责人、场景结果、证据引用、提交号和运行手册摘要写入忽略目录及实际上线清单，不复制测试正文或密钥；缺场景、旧证据、负责人错配和运行手册变更都会阻止 `SUBMISSION` 阶段通过。
 
-随后在公众平台完成版本说明复核、隐私接口声明和审核提交。审核通过后选择全量发布；首次发布后保留体验版用于生产回归。`miniprogram-ci` 只完成预览和代码上传，不能替代真机、平台声明、人工提审和发布确认。参考[微信官方 miniprogram-ci 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html)。
+随后在公众平台完成版本说明复核、隐私接口声明和审核提交。每取得一个真实平台结果，就把 `ops/wechat-publication-event.example.json` 复制到仓库外，填写当前事件后执行：
+
+```bash
+npm run wechat:publication:record -- \
+  --record=/secure/release/wechat-publication-event.json \
+  --env-file=.env.production \
+  --manifest=ops/launch-readiness.json
+```
+
+事件必须严格依次为 `REVIEW_SUBMITTED`、`REVIEW_APPROVED`、`PRODUCTION_RELEASED`。记录器只接受清单中命名的 `wechatPublisher`，禁止跳级、重复改写或使用带令牌/签名的证据引用；三个阶段都绑定精确上传候选、微信验收回执、当前提交、生产域名和运行手册。审核通过后选择全量发布；首次发布后保留体验版用于生产回归。`miniprogram-ci` 只完成预览和代码上传，不能替代真机、平台声明、人工提审和发布确认。参考[微信官方 miniprogram-ci 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html)。
 
 客户端已接入 `wx.getPrivacySetting`、`wx.openPrivacyContract` 和 `agreePrivacyAuthorization`，会在微信侧存在待同步授权时先展示平台隐私指引，再进入业务登录。提审时仍需在公众平台“服务内容声明 → 用户隐私保护指引”填写与实际功能一致的处理目的；平台配置为空或声明与调用不一致时，微信会禁用相关接口或拦截提审。参考[微信官方小程序隐私协议开发指南](https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)。
 
@@ -145,7 +154,7 @@ npm run launch:audit -- --env-file=.env.production --phase=submission
 npm run launch:audit -- --env-file=.env.production --phase=release
 ```
 
-只有 `RELEASE` 阶段显示 `READY`，才表示生产 API、真实微信真机、平台审核和全量发布均有证据。不得为了通过门禁预先把未执行的布尔项改为 `true`。
+只有 `RELEASE` 阶段显示 `READY`，才表示生产 API、真实微信真机、平台审核和全量发布均有证据。不得手工添加旧发布布尔项或跳过平台事件记录。
 
 ## 6. 发布验证
 

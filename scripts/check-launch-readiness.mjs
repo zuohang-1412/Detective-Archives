@@ -10,6 +10,7 @@ import {
   WECHAT_DEVICE_SCENARIOS,
   WECHAT_PLATFORM_SETTINGS
 } from "./lib/wechat-acceptance.mjs";
+import { buildWechatPublicationReceipt } from "./lib/wechat-publication.mjs";
 
 const operationsRunbookSource = await readFile(
   new URL("../docs/runbook.md", import.meta.url),
@@ -178,14 +179,12 @@ const manifest = {
     privacyContact: environment.PRIVACY_CONTACT,
     contentModerator: "内容审核负责人",
     alertResponder: "生产告警负责人",
-    wechatTester: "微信候选验收负责人"
+    wechatTester: "微信候选验收负责人",
+    wechatPublisher: "微信发布负责人"
   },
   wechat: {
     candidateUploaded: true,
-    candidateUploadReceipt,
-    reviewSubmitted: true,
-    reviewApproved: true,
-    released: true
+    candidateUploadReceipt
   },
   infrastructure: {
     serverProvisioned: true,
@@ -221,6 +220,27 @@ const manifest = {
   }
 };
 
+for (const event of ["REVIEW_SUBMITTED", "REVIEW_APPROVED", "PRODUCTION_RELEASED"]) {
+  const result = buildWechatPublicationReceipt({
+    record: {
+      schemaVersion: 1,
+      status: "PASSED",
+      event,
+      appid: environment.MINIPROGRAM_APP_ID,
+      candidateVersion: candidateUploadReceipt.version,
+      publisher: manifest.operator.wechatPublisher,
+      completedAt: productionReleaseCompletedAt,
+      evidenceReference: `WX-PUBLISH-20260722#${event}`
+    },
+    manifest,
+    environment,
+    sourceCommit,
+    runbookSource: operationsRunbookSource,
+    now: Date.parse(productionReleaseCompletedAt)
+  });
+  manifest.validation.wechatPublicationReceipt = result.receipt;
+}
+
 const readyItems = auditLaunchReadiness({
   environment,
   manifest,
@@ -240,12 +260,10 @@ for (const secret of Object.values(secretValues)) {
 const beforeDeployment = structuredClone(manifest);
 delete beforeDeployment.validation.productionReleaseReceipt;
 delete beforeDeployment.validation.wechatAcceptanceReceipt;
+delete beforeDeployment.validation.wechatPublicationReceipt;
 beforeDeployment.infrastructure.monitoringReady = false;
 beforeDeployment.infrastructure.offsiteBackupReady = false;
 beforeDeployment.wechat.candidateUploaded = false;
-beforeDeployment.wechat.reviewSubmitted = false;
-beforeDeployment.wechat.reviewApproved = false;
-beforeDeployment.wechat.released = false;
 const phasedItems = auditLaunchReadiness({
   environment,
   manifest: beforeDeployment,
@@ -353,6 +371,22 @@ for (const id of [
   );
 }
 
+const missingPublication = structuredClone(manifest);
+delete missingPublication.validation.wechatPublicationReceipt;
+const missingPublicationItems = auditLaunchReadiness({
+  environment,
+  manifest: missingPublication,
+  operationsRunbookSha256,
+  sourceCommit
+});
+for (const id of ["review_submitted", "platform_review", "production_released"]) {
+  assert.equal(
+    missingPublicationItems.find((entry) => entry.id === id).status,
+    "MISSING_OR_INVALID",
+    `${id} must require publication lifecycle evidence`
+  );
+}
+
 const changedCandidateEvidence = structuredClone(manifest);
 changedCandidateEvidence.wechat.candidateUploadReceipt.projectConfigSha256 = "f".repeat(64);
 const changedCandidateItems = auditLaunchReadiness({
@@ -370,6 +404,11 @@ assert.equal(
   changedCandidateItems.find((entry) => entry.id === "ios_device_flow").status,
   "MISSING_OR_INVALID",
   "Device acceptance must be bound to the exact candidate receipt"
+);
+assert.equal(
+  changedCandidateItems.find((entry) => entry.id === "production_released").status,
+  "MISSING_OR_INVALID",
+  "Publication evidence must be bound to the exact candidate and acceptance receipt"
 );
 
 const unresolvedSourceItems = auditLaunchReadiness({

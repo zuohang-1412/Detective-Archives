@@ -202,6 +202,9 @@ if (launchManifest) {
   }
   launchManifest.wechat.candidateUploaded = true;
   launchManifest.wechat.candidateUploadReceipt = receipt;
+  launchManifest.validation ??= {};
+  delete launchManifest.validation.wechatAcceptanceReceipt;
+  delete launchManifest.validation.wechatPublicationReceipt;
   const temporaryManifestPath = `${plan.launchManifestPath}.${process.pid}.tmp`;
   await writeFile(temporaryManifestPath, `${JSON.stringify(launchManifest, null, 2)}\n`, {
     flag: "wx",

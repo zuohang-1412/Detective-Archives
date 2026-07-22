@@ -2,6 +2,7 @@ import { validCandidateUploadReceipt } from "./miniprogram-release.mjs";
 import { validOperationsDrillReceipt } from "./operations-drill.mjs";
 import { validProductionReleaseReceipt } from "./production-release-drill.mjs";
 import { validWechatAcceptanceReceipt } from "./wechat-acceptance.mjs";
+import { validWechatPublicationReceipt } from "./wechat-publication.mjs";
 
 const PHASES = ["PRE_DEPLOY", "POST_DEPLOY", "SUBMISSION", "RELEASE"];
 const placeholderPattern = /(?:replace|example|your[-_. ]|strong-password|managed-postgres|change-?me|dummy|test-only|ci-only|上线前|待填写|todo)/i;
@@ -99,6 +100,37 @@ export function auditLaunchReadiness({
         runbookSha256: operationsRunbookSha256
       }
     );
+  const wechatPublicationOptions = {
+    appid: appId,
+    sourceCommit,
+    publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+    candidateUploadReceipt,
+    wechatAcceptanceReceipt: nested(manifest, "validation", "wechatAcceptanceReceipt"),
+    tester: nested(manifest, "operator", "wechatTester"),
+    publisher: nested(manifest, "operator", "wechatPublisher"),
+    runbookSha256: operationsRunbookSha256
+  };
+  const wechatPublicationReceipt = nested(
+    manifest,
+    "validation",
+    "wechatPublicationReceipt"
+  );
+  const publicationSubmitted = sourceCommitValid
+    && wechatAcceptanceReceiptValid
+    && validWechatPublicationReceipt(wechatPublicationReceipt, {
+      ...wechatPublicationOptions,
+      targetStage: "SUBMITTED"
+    });
+  const publicationApproved = publicationSubmitted
+    && validWechatPublicationReceipt(wechatPublicationReceipt, {
+      ...wechatPublicationOptions,
+      targetStage: "APPROVED"
+    });
+  const publicationReleased = publicationApproved
+    && validWechatPublicationReceipt(wechatPublicationReceipt, {
+      ...wechatPublicationOptions,
+      targetStage: "RELEASED"
+    });
 
   return [
     item("database_configuration", "PRE_DEPLOY", "ENGINEERING", databaseConfigured(environment),
@@ -131,8 +163,9 @@ export function auditLaunchReadiness({
     item("operations_ownership", "PRE_DEPLOY", "OPERATIONS",
       present(nested(manifest, "operator", "contentModerator"), 2)
         && present(nested(manifest, "operator", "alertResponder"), 2)
-        && present(nested(manifest, "operator", "wechatTester"), 2),
-      "Content moderation, production alert and WeChat acceptance owners are named."),
+        && present(nested(manifest, "operator", "wechatTester"), 2)
+        && present(nested(manifest, "operator", "wechatPublisher"), 2),
+      "Content moderation, alerts, WeChat acceptance and publication owners are named."),
     item("production_server", "PRE_DEPLOY", "INFRASTRUCTURE",
       nested(manifest, "infrastructure", "serverProvisioned") === true,
       "The production server is provisioned and access-controlled."),
@@ -196,15 +229,15 @@ export function auditLaunchReadiness({
         ),
       "The verified candidate has a valid successful upload receipt for this AppID and source commit."),
     item("review_submitted", "SUBMISSION", "WECHAT_OWNER",
-      nested(manifest, "wechat", "reviewSubmitted") === true,
-      "The candidate and required declarations were submitted for review."),
+      publicationSubmitted,
+      "A candidate-bound lifecycle receipt proves review submission."),
 
     item("platform_review", "RELEASE", "WECHAT_OWNER",
-      nested(manifest, "wechat", "reviewApproved") === true,
-      "WeChat platform review is approved for this candidate."),
+      publicationApproved,
+      "The lifecycle receipt proves WeChat approved this exact candidate."),
     item("production_released", "RELEASE", "WECHAT_OWNER",
-      nested(manifest, "wechat", "released") === true,
-      "The approved Mini Program version is released to production users.")
+      publicationReleased,
+      "The lifecycle receipt proves the approved version was released to production users.")
   ];
 }
 

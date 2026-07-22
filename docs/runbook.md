@@ -75,6 +75,20 @@ npm run launch:audit -- --env-file=.env.production --phase=submission
 
 记录器要求已提交源码，只允许生产配置生成器造成的两个预期文件修改；执行人必须与上线清单中预先命名的 `wechatTester` 一致，真实 AppID、当前提交和实际候选上传回执也必须一致。成功回执写入 `.release-state/wechat-acceptance/` 并原子更新实际上线清单。候选版本、源码提交、配置摘要、公网域名、验收负责人或本运行手册变化后必须重新验收；不得手工恢复旧的七个布尔字段。
 
+真机验收通过后，由清单中的 `wechatPublisher` 在公众平台每完成一步就登记一次发布事件：
+
+```bash
+cp ops/wechat-publication-event.example.json /secure/release/wechat-publication-event.json
+# 依次填写 REVIEW_SUBMITTED、REVIEW_APPROVED、PRODUCTION_RELEASED
+npm run wechat:publication:record -- \
+  --record=/secure/release/wechat-publication-event.json \
+  --env-file=.env.production \
+  --manifest=ops/launch-readiness.json
+npm run launch:audit -- --env-file=.env.production --phase=release
+```
+
+每个事件的原始记录留在仓库外，受控证据引用不得含访问令牌、签名参数或 URL 凭证。记录器从实际上线清单读取前一状态，拒绝跳级、改写和候选错配；相同事件原样重放保持幂等。新候选上传后必须重新完成微信验收和三个发布事件，旧回执不得沿用。
+
 ## 日常检查
 
 - 每 1 分钟探测 `/ready`；连续 3 次失败触发告警。

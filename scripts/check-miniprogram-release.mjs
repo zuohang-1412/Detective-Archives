@@ -149,7 +149,9 @@ for (const requiredText of [
   "MINIPROGRAM_CI_REGISTRY",
   'npmRuntime.command, [...npmRuntime.prefix, "run", "release:check"]',
   "sanitizeCiEnvironment(process.env)",
-  "candidateUploadReceipt"
+  "candidateUploadReceipt",
+  "delete launchManifest.validation.wechatAcceptanceReceipt",
+  "delete launchManifest.validation.wechatPublicationReceipt"
 ]) {
   assert.ok(releaseScript.includes(requiredText), `release script must include ${requiredText}`);
 }
