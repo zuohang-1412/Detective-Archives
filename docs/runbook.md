@@ -235,7 +235,7 @@ unset BACKUP_ENCRYPTION_PASSPHRASE
 4. 把变量 `DETECTIVE_ARCHIVES_BACKUP_DIRECTORY` 指向专用绝对目录；设置 `DETECTIVE_ARCHIVES_BACKUP_KEY_ID`（默认 `primary`，只含字母数字、点、下划线或连字符），用于标记制品对应的密钥代次。
 5. 设置 `DETECTIVE_ARCHIVES_PGSSLMODE=verify-full`（或记录过风险接受的实际模式），按需设置本机 `DETECTIVE_ARCHIVES_BACKUP_RETENTION_DAYS`（默认 14 天）和离站 `DETECTIVE_ARCHIVES_OFFSITE_RETENTION_DAYS`（默认 30 天，GitHub 通常最多 90 天或以仓库设置为准）。
 6. 确认 Runner 已安装 Node.js 24，以及与数据库主版本完全一致的 `psql`、`pg_dump`、`pg_restore` 和 `sha256sum`。先手工运行一次 `Database Backup`，确认日志不含口令、本机只留下 `.dump.enc`/`.sha256`、制品页可下载两个文件。
-7. 从制品页下载刚生成的密文和 `.sha256`，按上面的步骤完成真实隔离恢复并记录制品 Run/Artifact 编号、密钥代次、密文文件名/SHA-256、下载时间、恢复点、开始/完成时间、负责人以及 `check:db` / `check:db-api` 的 150/160/109/92 数据库基线结果（160 部作品记录含 1 条归档历史）。
+7. 从制品页下载刚生成的密文和 `.sha256`，按上面的步骤完成真实隔离恢复并记录制品 Run/Artifact 编号、密钥代次、密文文件名/SHA-256、下载时间、恢复点、开始/完成时间、负责人以及 `check:db` / `check:db-api` 的 150/161/109/109 数据库基线结果（161 部作品记录含 1 条归档历史）。
 8. 把 `ops/offsite-backup-drill-record.example.json` 复制到仓库外受控目录，准确计算 `rpoSeconds=恢复完成时间-归档恢复点`、`rtoSeconds=恢复完成时间-恢复开始时间`，执行 `npm run backup:drill:record -- --record=/secure/evidence/offsite-backup-drill.json --env-file=.env.production`。回执要求 RPO 不超过 26 小时、RTO 不超过 4 小时、所有恢复步骤为 `PASSED`，且绑定当前提交、真实域名和清单负责人；旧 `offsiteBackupReady` 布尔字段不再生效。
 9. `launch:audit --phase=post_deploy` 中 `offsite_backup` 为 `READY` 后设置变量 `DATABASE_BACKUP_ENABLED=true`。制品 URL 必须是不含签名参数的 GitHub 页面地址，密钥、解密明文和临时下载链接不得写入记录。
 

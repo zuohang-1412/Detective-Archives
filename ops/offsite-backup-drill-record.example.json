@@ -34,9 +34,9 @@
     "apiCheck": "PASSED",
     "counts": {
       "detectives": 150,
-      "works": 160,
+      "works": 161,
       "pictureBookEntries": 109,
-      "recommendations": 92
+      "recommendations": 109
     },
     "evidenceReference": "BKP-YYYY-MM-DD#ISOLATED_RESTORE"
   }

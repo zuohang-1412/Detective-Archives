@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-recommendation-map-004",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Capture the remaining verified picture-book recommendation labels as short factual titles, map each label to the existing formal work that contains the named story, episode, volume or series, and add only an original summary plus the publisher entry required for the volume 105 special edition recommendation.",
+  "sources": [
+    {
+      "id": "shogakukan-conan-105-special",
+      "label": "小学馆：《名侦探柯南 105 初期设定笔记本附特装版》",
+      "url": "https://www.shogakukan.co.jp/books/09943154",
+      "quality": "PUBLISHER"
+    },
+    {
+      "id": "shogakukan-conan-21-first-greeting",
+      "label": "小学馆：《名侦探柯南 21》（收录 File 4《最初の挨拶》）",
+      "url": "https://shogakukan-comic.jp/book?isbn=9784091254917",
+      "quality": "PUBLISHER"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-105-SP",
+      "pictureBookEntryIds": [],
+      "slug": "shinichi-kudo",
+      "nameZh": "工藤新一",
+      "nameOriginal": "工藤新一",
+      "nameEn": "Shinichi Kudo",
+      "country": "日本",
+      "era": "当代",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "JAPANESE_POPULAR",
+      "mediaTypes": [
+        "COMIC",
+        "ANIMATION",
+        "FILM"
+      ],
+      "summary": "青山刚昌《名侦探柯南》中的高中生侦探，遭药物作用后以江户川柯南身份继续调查案件，擅长现场观察、逻辑演绎和还原犯罪手法。",
+      "creatorName": "青山刚昌",
+      "aliases": [
+        "江户川柯南",
+        "平成的福尔摩斯",
+        "Shinichi Kudo"
+      ],
+      "tags": [
+        "高中生侦探",
+        "本格推理",
+        "名侦探柯南"
+      ],
+      "featuredCases": [
+        "《名侦探柯南 105 初期设定笔记本附特装版》",
+        "《空中密室 工藤新一最初的事件》"
+      ],
+      "sourceIds": [
+        "shogakukan-conan-105-special",
+        "shogakukan-conan-21-first-greeting"
+      ],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "detective-conan-105-special",
+          "titleZh": "名侦探柯南 105 初期设定笔记本附特装版",
+          "titleOriginal": "名探偵コナン 105 初期設定ノート付き特装版",
+          "mediaType": "COMIC",
+          "releaseYear": 2024,
+          "summary": "《名侦探柯南》第 105 卷特装版附角色初期设定笔记，并在名侦探图鉴中专门收录工藤新一，是该卷特殊图鉴条目的官方载体。",
+          "sourceId": "shogakukan-conan-105-special",
+          "linkType": "PUBLISHER",
+          "providerName": "小学馆",
+          "region": "JP"
+        },
+        {
+          "slug": "detective-conan-21-first-greeting",
+          "titleZh": "名侦探柯南 21：最初的问候",
+          "titleOriginal": "名探偵コナン 21：最初の挨拶",
+          "mediaType": "COMIC",
+          "releaseYear": 1998,
+          "summary": "《名侦探柯南》第 21 卷 File 4，是“空中密室 工藤新一最初的事件”的开篇；兰在飞往洛杉矶的航班上回忆新一首次展开推理秀的案件。",
+          "sourceId": "shogakukan-conan-21-first-greeting",
+          "linkType": "PUBLISHER",
+          "providerName": "小学馆",
+          "region": "JP"
+        }
+      ]
+    }
+  ],
+  "pictureBookRecommendationMappings": [
+    {
+      "entryId": "PB-093-STD",
+      "sourceLabel": "新コンビ誕生",
+      "workSlug": "castle-flowers-for-your-grave"
+    },
+    {
+      "entryId": "PB-094-STD",
+      "sourceLabel": "request.01",
+      "workSlug": "99-9-criminal-lawyer-request-01"
+    },
+    {
+      "entryId": "PB-095-STD",
+      "sourceLabel": "殺人鬼の呪文",
+      "workSlug": "keiji-yugami-2-satsujinki-no-jumon"
+    },
+    {
+      "entryId": "PB-096-STD",
+      "sourceLabel": "名前のない毒",
+      "workSlug": "unnatural-namae-no-nai-doku"
+    },
+    {
+      "entryId": "PB-097-STD",
+      "sourceLabel": "クロコーチ 1〜6",
+      "workSlug": "kurokouchi-episode-1"
+    },
+    {
+      "entryId": "PB-098-STD",
+      "sourceLabel": "つかの間のトレイン",
+      "workSlug": "mystery-to-iu-nakare-train"
+    },
+    {
+      "entryId": "PB-099-STD",
+      "sourceLabel": "1巻（後宮編）",
+      "workSlug": "kusuriya-maomao-manga-1"
+    },
+    {
+      "entryId": "PB-100-STD",
+      "sourceLabel": "ベルグレービアの醜聞",
+      "workSlug": "sherlock-a-scandal-in-belgravia"
+    },
+    {
+      "entryId": "PB-101-STD",
+      "sourceLabel": "富豪村",
+      "workSlug": "kishibe-rohan-fugoumura"
+    },
+    {
+      "entryId": "PB-102-STD",
+      "sourceLabel": "勝負は一瞬",
+      "workSlug": "hakozume-shoubu-wa-isshun"
+    },
+    {
+      "entryId": "PB-103-STD",
+      "sourceLabel": "レイトン教授と不思議な町",
+      "workSlug": "professor-layton-curious-village"
+    },
+    {
+      "entryId": "PB-104-STD",
+      "sourceLabel": "科捜研の女 -劇場版-",
+      "workSlug": "kasouken-no-onna-movie"
+    },
+    {
+      "entryId": "PB-105-STD",
+      "sourceLabel": "吸血鬼",
+      "workSlug": "undead-girl-vampire"
+    },
+    {
+      "entryId": "PB-105-SP",
+      "sourceLabel": "最初の挨拶",
+      "workSlug": "detective-conan-21-first-greeting"
+    },
+    {
+      "entryId": "PB-106-STD",
+      "sourceLabel": "逆転裁判",
+      "workSlug": "phoenix-wright-ace-attorney"
+    },
+    {
+      "entryId": "PB-107-STD",
+      "sourceLabel": "甘い毒",
+      "workSlug": "psycho-pass-sweet-poison"
+    },
+    {
+      "entryId": "PB-108-STD",
+      "sourceLabel": "オーダーメイドの毒薬",
+      "workSlug": "ameku-odameido-no-dokuyaku"
+    }
+  ],
+  "pictureBookRecommendationUnmappings": []
+}

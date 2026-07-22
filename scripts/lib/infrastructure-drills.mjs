@@ -21,9 +21,9 @@ export const MONITORING_DRILL_SCENARIOS = Object.freeze([
 
 export const OFFSITE_BACKUP_CONTENT_BASELINE = Object.freeze({
   detectives: 150,
-  works: 160,
+  works: 161,
   pictureBookEntries: 109,
-  recommendations: 92
+  recommendations: 109
 });
 
 const maximumRecordBytes = 128 * 1024;

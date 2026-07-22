@@ -3,8 +3,10 @@ import path from "node:path";
 
 const BILIBILI_URL = "https://www.bilibili.com/opus/636222280260648982";
 const TIEBA_URL = "https://tieba.baidu.com/p/1501858385";
+const PICTURE_BOOK_URL = "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book";
+const SPECIAL_105_REVIEW_URL = "https://turquoise2134.hatenablog.com/entry/2024/04/27/100000";
 const OUTPUT_PATH = path.resolve("apps/api/src/data/picture-book-index.json");
-const SNAPSHOT_DATE = "2026-07-21";
+const SNAPSHOT_DATE = "2026-07-22";
 
 const digitMap = new Map([
   ["零", 0],
@@ -264,6 +266,45 @@ const supplementalEntries = [
   };
 });
 
+const verifiedRecommendations = new Map([
+  ["PB-059-STD", ["妈妈什么都知道"]],
+  ["PB-063-STD", ["密室的富豪警官"]],
+  ["PB-076-STD", ["人骨拼图"]],
+  ["PB-077-STD", ["玻璃之锤"]],
+  ["PB-078-STD", ["巴提斯塔的荣光"]],
+  ["PB-079-STD", ["首无·作祟之物"]],
+  ["PB-080-STD", ["古书堂事件簿——栞子小姐和她的奇异宾客"]],
+  ["PB-081-STD", ["打给那位侦探的电话"]],
+  ["PB-082-STD", ["美丽的蔷薇中蕴含着杀意"]],
+  ["PB-083-STD", ["冰菓"]],
+  ["PB-084-STD", ["龙文身的女孩"]],
+  ["PB-085-STD", ["奥卡姆的剃刀"]],
+  ["PB-086-STD", ["奇想·天动"]],
+  ["PB-087-STD", ["双头恶魔"]],
+  ["PB-088-STD", ["掟上今日子的备忘录"]],
+  ["PB-089-STD", ["你的家在何方"]],
+  ["PB-090-STD", ["怪盗侦探山猫"]],
+  ["PB-091-STD", ["万能鉴定士Q的事件簿1，2"]],
+  ["PB-092-STD", ["嗅覚捜査官"]],
+  ["PB-093-STD", ["新コンビ誕生"]],
+  ["PB-094-STD", ["request.01"]],
+  ["PB-095-STD", ["殺人鬼の呪文"]],
+  ["PB-096-STD", ["名前のない毒"]],
+  ["PB-097-STD", ["クロコーチ 1〜6"]],
+  ["PB-098-STD", ["つかの間のトレイン"]],
+  ["PB-099-STD", ["1巻（後宮編）"]],
+  ["PB-100-STD", ["ベルグレービアの醜聞"]],
+  ["PB-101-STD", ["富豪村"]],
+  ["PB-102-STD", ["勝負は一瞬"]],
+  ["PB-103-STD", ["レイトン教授と不思議な町"]],
+  ["PB-104-STD", ["科捜研の女 -劇場版-"]],
+  ["PB-105-STD", ["吸血鬼"]],
+  ["PB-105-SP", ["最初の挨拶"]],
+  ["PB-106-STD", ["逆転裁判"]],
+  ["PB-107-STD", ["甘い毒"]],
+  ["PB-108-STD", ["オーダーメイドの毒薬"]]
+]);
+
 const response = await fetch(BILIBILI_URL, {
   headers: { "user-agent": "Mozilla/5.0 DetectiveArchivesCatalogSync/1.0" }
 });
@@ -274,9 +315,41 @@ if (!response.ok) {
 const initialState = extractInitialState(await response.text());
 const bilibiliEntries = extractBilibiliEntries(extractParagraphText(initialState));
 const editionOrder = { STANDARD: 0, SPECIAL: 1 };
-const entries = [...bilibiliEntries, ...supplementalEntries].sort(
-  (left, right) => left.volumeNo - right.volumeNo || editionOrder[left.edition] - editionOrder[right.edition]
-);
+const entries = [...bilibiliEntries, ...supplementalEntries]
+  .map((entry) => {
+    const recommendedWorks = verifiedRecommendations.get(entry.id);
+    if (!recommendedWorks) return entry;
+    const specialEdition = entry.id === "PB-105-SP";
+    const recommendationSourceId = specialEdition
+      ? "turquoise-volume-105-review"
+      : entry.volumeNo >= 93
+        ? "detective-conan-world-volume-pages"
+        : null;
+    const recommendationSourceUrl = specialEdition
+      ? SPECIAL_105_REVIEW_URL
+      : entry.volumeNo >= 93
+        ? PICTURE_BOOK_URL
+        : null;
+    return {
+      ...entry,
+      recommendedWorks,
+      sourceIds: [...new Set([
+        ...entry.sourceIds,
+        ...(recommendationSourceId ? [recommendationSourceId] : [])
+      ])],
+      sourceUrls: [...new Set([
+        ...entry.sourceUrls,
+        ...(recommendationSourceUrl ? [recommendationSourceUrl] : [])
+      ])],
+      verification: {
+        ...entry.verification,
+        recommendedWorks: "SOURCE_CAPTURED"
+      }
+    };
+  })
+  .sort(
+    (left, right) => left.volumeNo - right.volumeNo || editionOrder[left.edition] - editionOrder[right.edition]
+  );
 
 const catalog = {
   schemaVersion: 1,
@@ -306,9 +379,9 @@ const catalog = {
     },
     {
       id: "detective-conan-world-volume-pages",
-      label: "Detective Conan Wiki volume pages",
-      url: "https://www.detectiveconanworld.com/wiki/Volume_101",
-      role: "Volumes 101-108 detective and release-date index",
+      label: "Detective Conan Wiki: Detective Picture Book",
+      url: PICTURE_BOOK_URL,
+      role: "Volumes 93-108 detective recommendation transcription and volumes 101-108 identity index",
       quality: "COMMUNITY_WIKI"
     },
     {
@@ -317,6 +390,13 @@ const catalog = {
       url: "https://shogakukan-comic.jp/book?isbn=9784099431549",
       role: "Volume 105 special-edition detective confirmation",
       quality: "PUBLISHER"
+    },
+    {
+      id: "turquoise-volume-105-review",
+      label: "たーこいずの宝箱：《名探偵コナン》105 卷感想",
+      url: SPECIAL_105_REVIEW_URL,
+      role: "Volume 105 special-edition recommendation transcription",
+      quality: "COMMUNITY_INDEX"
     },
     {
       id: "shogakukan-series",

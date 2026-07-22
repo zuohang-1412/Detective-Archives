@@ -16,7 +16,7 @@ assert(catalog.coverage?.firstVolume === 1, "coverage must start at volume 1");
 assert(catalog.coverage?.latestPublishedVolume === 108, "latest published volume must be 108");
 assert(catalog.coverage?.standardVolumeCount === 108, "standard volume count must be 108");
 assert(catalog.coverage?.entryCount === 109, "entry count must include 108 standard + 1 special");
-assert(catalog.coverage?.entriesWithRecommendedWorks === 92, "92 entries should have recommendations");
+assert(catalog.coverage?.entriesWithRecommendedWorks === 109, "all 109 entries should have recommendations");
 
 const ids = new Set();
 const standardVolumes = new Set();
@@ -60,13 +60,8 @@ const missingRecommendationIds = catalog.entries
   .filter((entry) => entry.recommendedWorks.length === 0)
   .map((entry) => entry.id);
 assert(
-  JSON.stringify(missingRecommendationIds) === JSON.stringify([
-    "PB-093-STD", "PB-094-STD", "PB-095-STD", "PB-096-STD",
-    "PB-097-STD", "PB-098-STD", "PB-099-STD", "PB-100-STD",
-    "PB-101-STD", "PB-102-STD", "PB-103-STD", "PB-104-STD",
-    "PB-105-STD", "PB-105-SP", "PB-106-STD", "PB-107-STD", "PB-108-STD"
-  ]),
-  "only source entries without readable recommendation labels may remain missing"
+  missingRecommendationIds.length === 0,
+  "every published picture-book entry must have a captured recommendation label"
 );
 
 for (let volume = 1; volume <= 108; volume += 1) {
@@ -78,6 +73,10 @@ assert(special105?.names.zh === "工藤新一", "volume 105 special entry must b
 assert(
   special105?.verification.identity === "PRIMARY_SOURCE_CONFIRMED",
   "volume 105 special entry must be confirmed by a primary source"
+);
+assert(
+  special105?.recommendedWorks?.includes("最初の挨拶"),
+  "volume 105 special recommendation must be captured"
 );
 
 if (errors.length > 0) {

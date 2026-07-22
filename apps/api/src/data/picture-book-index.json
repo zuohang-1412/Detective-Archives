@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "snapshotDate": "2026-07-21",
+  "snapshotDate": "2026-07-22",
   "contentPolicy": "Only factual index fields are stored; source descriptions and images are not copied.",
   "coverage": {
     "firstVolume": 1,
     "latestPublishedVolume": 108,
     "standardVolumeCount": 108,
     "entryCount": 109,
-    "entriesWithRecommendedWorks": 92
+    "entriesWithRecommendedWorks": 109
   },
   "sources": [
     {
@@ -26,9 +26,9 @@
     },
     {
       "id": "detective-conan-world-volume-pages",
-      "label": "Detective Conan Wiki volume pages",
-      "url": "https://www.detectiveconanworld.com/wiki/Volume_101",
-      "role": "Volumes 101-108 detective and release-date index",
+      "label": "Detective Conan Wiki: Detective Picture Book",
+      "url": "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book",
+      "role": "Volumes 93-108 detective recommendation transcription and volumes 101-108 identity index",
       "quality": "COMMUNITY_WIKI"
     },
     {
@@ -37,6 +37,13 @@
       "url": "https://shogakukan-comic.jp/book?isbn=9784099431549",
       "role": "Volume 105 special-edition detective confirmation",
       "quality": "PUBLISHER"
+    },
+    {
+      "id": "turquoise-volume-105-review",
+      "label": "たーこいずの宝箱：《名探偵コナン》105 卷感想",
+      "url": "https://turquoise2134.hatenablog.com/entry/2024/04/27/100000",
+      "role": "Volume 105 special-edition recommendation transcription",
+      "quality": "COMMUNITY_INDEX"
     },
     {
       "id": "shogakukan-series",
@@ -2546,18 +2553,22 @@
         "sourceLabel": "理查德·卡瑟尔",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "新コンビ誕生"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2571,18 +2582,22 @@
         "sourceLabel": "深山大翔",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "request.01"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2596,18 +2611,22 @@
         "sourceLabel": "弓神适当",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "殺人鬼の呪文"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2621,18 +2640,22 @@
         "sourceLabel": "三澄美琴",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "名前のない毒"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2646,18 +2669,22 @@
         "sourceLabel": "黒河内圭太",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "クロコーチ 1〜6"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2671,18 +2698,22 @@
         "sourceLabel": "久能整",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "つかの間のトレイン"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2696,18 +2727,22 @@
         "sourceLabel": "猫猫",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "1巻（後宮編）"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2721,18 +2756,22 @@
         "sourceLabel": "夏洛克",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "ベルグレービアの醜聞"
+      ],
       "detectiveSlug": null,
       "releaseDate": null,
       "sourceIds": [
-        "bilibili-opus-636222280260648982"
+        "bilibili-opus-636222280260648982",
+        "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.bilibili.com/opus/636222280260648982"
+        "https://www.bilibili.com/opus/636222280260648982",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2746,18 +2785,21 @@
         "sourceLabel": "Rohan Kishibe",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "富豪村"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2022-04-13",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_101"
+        "https://www.detectiveconanworld.com/wiki/Volume_101",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2771,18 +2813,21 @@
         "sourceLabel": "Seiko Fuji",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "勝負は一瞬"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2022-09-15",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_102"
+        "https://www.detectiveconanworld.com/wiki/Volume_102",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2796,18 +2841,21 @@
         "sourceLabel": "Professor Layton",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "レイトン教授と不思議な町"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2023-04-12",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_103"
+        "https://www.detectiveconanworld.com/wiki/Volume_103",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2821,18 +2869,21 @@
         "sourceLabel": "Mariko Sakaki",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "科捜研の女 -劇場版-"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2023-10-18",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_104"
+        "https://www.detectiveconanworld.com/wiki/Volume_104",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2846,18 +2897,21 @@
         "sourceLabel": "Aya Rindo",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "吸血鬼"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2024-04-10",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_105"
+        "https://www.detectiveconanworld.com/wiki/Volume_105",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2871,18 +2925,22 @@
         "sourceLabel": "Shinichi Kudo",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "最初の挨拶"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2024-04-10",
       "sourceIds": [
-        "shogakukan-volume-105-special"
+        "shogakukan-volume-105-special",
+        "turquoise-volume-105-review"
       ],
       "sourceUrls": [
-        "https://shogakukan-comic.jp/book?isbn=9784099431549"
+        "https://shogakukan-comic.jp/book?isbn=9784099431549",
+        "https://turquoise2134.hatenablog.com/entry/2024/04/27/100000"
       ],
       "verification": {
         "identity": "PRIMARY_SOURCE_CONFIRMED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2896,18 +2954,21 @@
         "sourceLabel": "Phoenix Wright",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "逆転裁判"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2024-10-18",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_106"
+        "https://www.detectiveconanworld.com/wiki/Volume_106",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2921,18 +2982,21 @@
         "sourceLabel": "Shinya Kogami",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "甘い毒"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2025-04-18",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_107"
+        "https://www.detectiveconanworld.com/wiki/Volume_107",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     },
     {
@@ -2946,18 +3010,21 @@
         "sourceLabel": "Takao Ameku",
         "aliases": []
       },
-      "recommendedWorks": [],
+      "recommendedWorks": [
+        "オーダーメイドの毒薬"
+      ],
       "detectiveSlug": null,
       "releaseDate": "2026-04-08",
       "sourceIds": [
         "detective-conan-world-volume-pages"
       ],
       "sourceUrls": [
-        "https://www.detectiveconanworld.com/wiki/Volume_108"
+        "https://www.detectiveconanworld.com/wiki/Volume_108",
+        "https://www.detectiveconanworld.com/wiki/Detective_Picture_Book"
       ],
       "verification": {
         "identity": "SOURCE_CAPTURED",
-        "recommendedWorks": "MISSING"
+        "recommendedWorks": "SOURCE_CAPTURED"
       }
     }
   ]
