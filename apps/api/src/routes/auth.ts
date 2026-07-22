@@ -1,7 +1,11 @@
-import type { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import type { AdminCredentialValidator } from "../auth/admin.js";
-import { bearerToken, findActiveSession, sessionTokenHash } from "../auth/session.js";
+import {
+  bearerToken,
+  findAccountRightsSession,
+  sessionTokenHash
+} from "../auth/session.js";
 import type { WechatCodeExchange } from "../auth/wechat.js";
 import { WechatCodeExchangeError } from "../auth/wechat.js";
 import type { DatabaseClient } from "../db/types.js";
@@ -11,6 +15,7 @@ import {
   loginWechatUser,
   refreshUserSession
 } from "../repositories/users.js";
+import { exportUserData } from "../repositories/user-data-export.js";
 
 const loginSchema = z.object({
   code: z.string().trim().min(1).max(200),
@@ -34,6 +39,24 @@ interface AuthRouteOptions {
   wechatCodeExchange?: WechatCodeExchange;
   sessionTtlSeconds?: number;
   adminCredentialValidator?: AdminCredentialValidator;
+}
+
+async function requireAccountRightsSession(
+  database: DatabaseClient | undefined,
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  if (!database) {
+    await reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
+    return null;
+  }
+  const token = bearerToken(request);
+  const session = token ? await findAccountRightsSession(database, token) : null;
+  if (!session) {
+    await reply.code(401).send({ code: "AUTH_REQUIRED", message: "请先登录" });
+    return null;
+  }
+  return session;
 }
 
 export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, options) => {
@@ -98,15 +121,13 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
   });
 
   app.get("/auth/me", async (request, reply) => {
-    if (!options.database) {
-      return reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
-    }
-    const token = bearerToken(request);
-    const session = token ? await findActiveSession(options.database, token) : null;
-    if (!session) {
-      return reply.code(401).send({ code: "AUTH_REQUIRED", message: "请先登录" });
-    }
-    const { sessionId: _sessionId, ...user } = session;
+    const session = await requireAccountRightsSession(options.database, request, reply);
+    if (!session) return;
+    const {
+      sessionId: _sessionId,
+      wechatOpenId: _wechatOpenId,
+      ...user
+    } = session;
     return { data: user };
   });
 
@@ -139,6 +160,38 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
     return reply.code(204).send();
   });
 
+  app.get("/me/data-export", {
+    config: { rateLimit: { max: 3, timeWindow: "1 hour" } }
+  }, async (request, reply) => {
+    const session = await requireAccountRightsSession(options.database, request, reply);
+    if (!session || !options.database) return;
+    if (session.role !== "USER") {
+      return reply.code(403).send({
+        code: "DATA_EXPORT_NOT_AVAILABLE",
+        message: "运营账号不能使用用户数据导出"
+      });
+    }
+    const exported = await exportUserData(
+      options.database,
+      session.id,
+      session.sessionId,
+      request.id
+    );
+    if (!exported) {
+      return reply.code(409).send({
+        code: "DATA_EXPORT_UNAVAILABLE",
+        message: "当前账号数据暂时无法导出"
+      });
+    }
+    const filenameDate = exported.generatedAt.slice(0, 10);
+    reply.header(
+      "content-disposition",
+      `attachment; filename="detective-archives-data-${filenameDate}.json"`
+    );
+    reply.type("application/json; charset=utf-8");
+    return reply.send(`${JSON.stringify(exported, null, 2)}\n`);
+  });
+
   app.delete("/me/account", async (request, reply) => {
     const body = deactivateSchema.safeParse(request.body);
     if (!body.success) {
@@ -147,14 +200,8 @@ export const authRoutes: FastifyPluginAsync<AuthRouteOptions> = async (app, opti
         message: "请确认注销账号"
       });
     }
-    if (!options.database) {
-      return reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
-    }
-    const token = bearerToken(request);
-    const session = token ? await findActiveSession(options.database, token) : null;
-    if (!session) {
-      return reply.code(401).send({ code: "AUTH_REQUIRED", message: "请先登录" });
-    }
+    const session = await requireAccountRightsSession(options.database, request, reply);
+    if (!session || !options.database) return;
     const deactivated = await deactivateUserAccount(options.database, session.id, request.id);
     if (!deactivated) {
       return reply.code(409).send({ code: "ACCOUNT_CANNOT_BE_DEACTIVATED", message: "账号无法注销" });

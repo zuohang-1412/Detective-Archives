@@ -112,6 +112,31 @@ async function assertHttpErrorMessage(statusCode, responseData, expected) {
   });
 }
 
+async function assertAccountDataDownload() {
+  const source = await readFile(path.join(root, "services/api.js"), "utf8");
+  const module = { exports: {} };
+  let downloadOptions;
+  vm.runInNewContext(source, {
+    getApp: () => ({ globalData: { apiBaseUrl: "https://api.example.test" } }),
+    module,
+    exports: module.exports,
+    wx: {
+      downloadFile(options) {
+        downloadOptions = options;
+        options.success({ statusCode: 200, tempFilePath: "wxfile://private-export.json" });
+      },
+      getStorageSync: () => "session-token",
+      removeStorageSync() {},
+      setStorageSync() {}
+    }
+  }, { filename: "services/api.js" });
+  const exported = await module.exports.downloadAccountData();
+  assert.equal(downloadOptions.url, "https://api.example.test/api/v1/me/data-export");
+  assert.equal(downloadOptions.header.authorization, "Bearer session-token");
+  assert.equal(exported.tempFilePath, "wxfile://private-export.json");
+  assert.match(exported.fileName, /^侦探档案馆-个人数据-\d{4}-\d{2}-\d{2}\.json$/);
+}
+
 await assertRequestFailureMessage(
   "request:fail timeout",
   "请求超时，请检查网络后重试"
@@ -130,6 +155,7 @@ await assertHttpErrorMessage(
   { code: "CONTENT_NOT_FOUND", message: "内容已删除或不再公开" },
   "内容已删除或不再公开"
 );
+await assertAccountDataDownload();
 
 let homeFails = true;
 const home = await loadPage("home", {
@@ -255,6 +281,52 @@ meFails = false;
 await me.refresh();
 assert.equal(me.data.loadError, "");
 assert.equal(me.data.loggedIn, true);
+
+let suspendedShelfReads = 0;
+const suspendedMe = await loadPage("me", {
+  async deactivateAccount() {},
+  async deleteReview() {},
+  async downloadAccountData() {},
+  async getCurrentUser() {
+    return {
+      data: {
+        id: "user-suspended",
+        displayName: "受限读者",
+        isSuspended: true,
+        suspendedUntil: "2026-07-23T08:30:00.000Z"
+      }
+    };
+  },
+  hasAuthToken: () => true,
+  async listMyReviews() { throw new Error("suspended reviews must not load"); },
+  async listShelf() { suspendedShelfReads += 1; },
+  async logout() {}
+});
+await suspendedMe.refresh();
+assert.equal(suspendedMe.data.loggedIn, true);
+assert.equal(suspendedMe.data.user.isSuspended, true);
+assert.equal(suspendedShelfReads, 0);
+assert.match(suspendedMe.data.restrictedUntilLabel, /^2026-07-23 /);
+
+let sharedExport;
+const exportMe = await loadPage("me", {
+  async downloadAccountData() {
+    return {
+      tempFilePath: "wxfile://private-export.json",
+      fileName: "侦探档案馆-个人数据-2026-07-22.json"
+    };
+  },
+  hasAuthToken: () => true
+}, {
+  shareFileMessage(options) {
+    sharedExport = options;
+    options.success();
+  }
+});
+await exportMe.exportMyData();
+assert.equal(sharedExport.filePath, "wxfile://private-export.json");
+assert.equal(sharedExport.fileName, "侦探档案馆-个人数据-2026-07-22.json");
+assert.equal(exportMe.data.exportingData, false);
 
 let privacyLoginCount = 0;
 const privacyMe = await loadPage("me", {

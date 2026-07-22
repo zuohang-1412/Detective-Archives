@@ -246,6 +246,13 @@ describe("detective archives API", () => {
     assert.equal(shelfResponse.statusCode, 503);
     assert.equal(shelfResponse.json().code, "DATABASE_REQUIRED");
 
+    const exportResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/me/data-export"
+    });
+    assert.equal(exportResponse.statusCode, 503);
+    assert.equal(exportResponse.json().code, "DATABASE_REQUIRED");
+
     const adminLoginResponse = await app.inject({
       method: "POST",
       url: "/api/v1/auth/admin",

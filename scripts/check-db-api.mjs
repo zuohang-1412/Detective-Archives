@@ -145,6 +145,26 @@ async function cleanupTestUsers() {
   }
 }
 await cleanupTestUsers();
+const expectedDataExportIndexes = [
+  "idx_reviews_user_export",
+  "idx_comments_user_export",
+  "idx_reports_reporter_export",
+  "idx_work_link_feedback_user_export",
+  "idx_work_link_click_events_user_export",
+  "idx_moderation_records_target_export",
+  "idx_audit_logs_actor_export"
+];
+const dataExportIndexResult = await database.query(`
+  SELECT indexname
+  FROM pg_indexes
+  WHERE schemaname = current_schema()
+    AND indexname = ANY($1::text[])
+`, [expectedDataExportIndexes]);
+assert.deepEqual(
+  dataExportIndexResult.rows.map(({ indexname }) => indexname).sort(),
+  [...expectedDataExportIndexes].sort(),
+  "personal data export indexes must be applied"
+);
 const app = await buildApp({
   database,
   contentSafetyCheck: async ({ openId, content }) => {
@@ -382,7 +402,7 @@ try {
     }
   });
   assert.equal(secondaryLoginResponse.statusCode, 201, secondaryLoginResponse.body);
-  const secondaryAuthorization = {
+  let secondaryAuthorization = {
     authorization: `Bearer ${secondaryLoginResponse.json().data.token}`
   };
   const forbiddenAdminResponse = await app.inject({
@@ -1154,6 +1174,37 @@ try {
   `, [queuedReport.id]);
   assert.equal(resolutionAuditCount.rows[0].count, 1);
 
+  const activeDataExportResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/data-export",
+    headers: authorization
+  });
+  assert.equal(activeDataExportResponse.statusCode, 200, activeDataExportResponse.body);
+  assert.match(activeDataExportResponse.headers["content-type"] ?? "", /application\/json/);
+  assert.match(
+    activeDataExportResponse.headers["content-disposition"] ?? "",
+    /attachment; filename="detective-archives-data-\d{4}-\d{2}-\d{2}\.json"/
+  );
+  assert.equal(activeDataExportResponse.headers["cache-control"], "no-store");
+  const activeDataExport = activeDataExportResponse.json();
+  assert.equal(activeDataExport.schemaVersion, 1);
+  assert.equal(activeDataExport.data.account.id, userId);
+  assert.ok(activeDataExport.data.identities.some(
+    (identity) => identity.providerSubject === testIdentitySubjects[0]
+  ));
+  assert.equal(activeDataExport.data.reports.length, 1);
+  assert.equal("resolutionNote" in activeDataExport.data.reports[0], false);
+  assert.equal("handledBy" in activeDataExport.data.reports[0], false);
+  assert.ok(activeDataExport.data.sessions.every(
+    (session) => !("tokenHash" in session) && !("id" in session)
+  ));
+  assert.equal(activeDataExportResponse.body.includes(authorization.authorization.slice(7)), false);
+  const exportAudit = await database.query(`
+    SELECT COUNT(*)::int AS count FROM audit_logs
+    WHERE actor_id = $1 AND action = 'DATA_EXPORT'
+  `, [userId]);
+  assert.equal(exportAudit.rows[0].count, 1);
+
   const wrongOwnerDeleteResponse = await app.inject({
     method: "DELETE",
     url: `/api/v1/comments/${commentId}`,
@@ -1205,7 +1256,64 @@ try {
     url: "/api/v1/auth/me",
     headers: secondaryAuthorization
   });
-  assert.equal(suspendedSessionResponse.statusCode, 401, suspendedSessionResponse.body);
+  assert.equal(suspendedSessionResponse.statusCode, 200, suspendedSessionResponse.body);
+  assert.equal(suspendedSessionResponse.json().data.isSuspended, true);
+  assert.ok(suspendedSessionResponse.json().data.suspendedUntil);
+  assert.equal("wechatOpenId" in suspendedSessionResponse.json().data, false);
+  const suspendedWriteResponse = await app.inject({
+    method: "PUT",
+    url: `/api/v1/me/shelf/${workId}`,
+    headers: secondaryAuthorization,
+    payload: { status: "WISHLIST" }
+  });
+  assert.equal(suspendedWriteResponse.statusCode, 403, suspendedWriteResponse.body);
+  assert.equal(suspendedWriteResponse.json().code, "ACCOUNT_SUSPENDED");
+  const suspendedFeedbackResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/work-links/${managedLinkId}/feedback`,
+    headers: secondaryAuthorization,
+    payload: { reasonCode: "OTHER", description: "暂停账号不得写入反馈" }
+  });
+  assert.equal(suspendedFeedbackResponse.statusCode, 403, suspendedFeedbackResponse.body);
+  assert.equal(suspendedFeedbackResponse.json().code, "ACCOUNT_SUSPENDED");
+  const suspendedDataExportResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/data-export",
+    headers: secondaryAuthorization
+  });
+  assert.equal(suspendedDataExportResponse.statusCode, 200, suspendedDataExportResponse.body);
+  assert.equal(
+    suspendedDataExportResponse.json().data.account.id,
+    secondaryLoginResponse.json().data.user.id
+  );
+  assert.equal(
+    suspendedDataExportResponse.body.includes(secondaryAuthorization.authorization.slice(7)),
+    false
+  );
+  const previousSuspendedAuthorization = secondaryAuthorization;
+  const suspendedRefreshResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/refresh",
+    headers: secondaryAuthorization
+  });
+  assert.equal(suspendedRefreshResponse.statusCode, 200, suspendedRefreshResponse.body);
+  assert.equal(suspendedRefreshResponse.json().data.user.isSuspended, true);
+  secondaryAuthorization = {
+    authorization: `Bearer ${suspendedRefreshResponse.json().data.token}`
+  };
+  const revokedSuspendedSessionResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: previousSuspendedAuthorization
+  });
+  assert.equal(revokedSuspendedSessionResponse.statusCode, 401, revokedSuspendedSessionResponse.body);
+  const refreshedSuspendedSessionResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: secondaryAuthorization
+  });
+  assert.equal(refreshedSuspendedSessionResponse.statusCode, 200, refreshedSuspendedSessionResponse.body);
+  assert.equal(refreshedSuspendedSessionResponse.json().data.isSuspended, true);
 
   const auditResponse = await database.query(`
     SELECT COUNT(*)::int AS count FROM audit_logs
@@ -1255,6 +1363,33 @@ try {
     payload: { status: "WISHLIST", progressPercent: 0 }
   });
   assert.equal(deactivationShelfResponse.statusCode, 200, deactivationShelfResponse.body);
+  const suspendDeactivationUserResponse = await app.inject({
+    method: "POST",
+    url: `/api/v1/admin/users/${deactivatedTestUserId}/suspend`,
+    headers: adminAuthorization,
+    payload: { durationHours: 1, reason: "验证受限账号仍可行使数据权利" }
+  });
+  assert.equal(suspendDeactivationUserResponse.statusCode, 200, suspendDeactivationUserResponse.body);
+  const suspendedDeactivationExportResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/data-export",
+    headers: deactivationAuthorization
+  });
+  assert.equal(
+    suspendedDeactivationExportResponse.statusCode,
+    200,
+    suspendedDeactivationExportResponse.body
+  );
+  assert.equal(
+    suspendedDeactivationExportResponse.json().data.account.id,
+    deactivatedTestUserId
+  );
+  const rateLimitedDataExportResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/me/data-export",
+    headers: deactivationAuthorization
+  });
+  assert.equal(rateLimitedDataExportResponse.statusCode, 429, rateLimitedDataExportResponse.body);
   const deactivateResponse = await app.inject({
     method: "DELETE",
     url: "/api/v1/me/account",
@@ -1280,6 +1415,23 @@ try {
   assert.equal(deactivatedRecord.rows[0].identity_count, 0);
   assert.equal(deactivatedRecord.rows[0].shelf_fact_count, 0);
   assert.equal(deactivatedRecord.rows[0].activity_day_count, 0);
+
+  const suspendedLogoutResponse = await app.inject({
+    method: "POST",
+    url: "/api/v1/auth/logout",
+    headers: secondaryAuthorization
+  });
+  assert.equal(suspendedLogoutResponse.statusCode, 204, suspendedLogoutResponse.body);
+  const loggedOutSuspendedSessionResponse = await app.inject({
+    method: "GET",
+    url: "/api/v1/auth/me",
+    headers: secondaryAuthorization
+  });
+  assert.equal(
+    loggedOutSuspendedSessionResponse.statusCode,
+    401,
+    loggedOutSuspendedSessionResponse.body
+  );
 
   const logoutResponse = await app.inject({
     method: "POST",
@@ -1339,7 +1491,7 @@ try {
   assert.ok(analytics.communityModeration.appealRecoveryRate > 0);
 
   console.log(
-    `PostgreSQL API integration: OK (${checks.length} public checks, product analytics, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account, community and moderation lifecycle)`
+    `PostgreSQL API integration: OK (${checks.length} public checks, personal data export, product analytics, session rotation, role and audit administration, detective publishing, link feedback, concurrency, account, community and moderation lifecycle)`
   );
 } finally {
   await cleanupTestUsers();

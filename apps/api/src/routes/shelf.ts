@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { bearerToken, findActiveSession } from "../auth/session.js";
+import { requireActiveSession } from "../auth/authorization.js";
 import type { DatabaseClient } from "../db/types.js";
 import {
   getShelfItem,
@@ -30,17 +30,7 @@ async function authenticatedUser(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  if (!database) {
-    await reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
-    return null;
-  }
-  const token = bearerToken(request);
-  const session = token ? await findActiveSession(database, token) : null;
-  if (!session) {
-    await reply.code(401).send({ code: "AUTH_REQUIRED", message: "请先登录" });
-    return null;
-  }
-  return session;
+  return requireActiveSession(database, request, reply);
 }
 
 export const shelfRoutes: FastifyPluginAsync<ShelfRouteOptions> = async (app, options) => {

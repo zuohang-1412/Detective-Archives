@@ -1,7 +1,7 @@
 import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { recordCatalogView, visitorHashFromRequest } from "../analytics/visitor.js";
-import { bearerToken, findActiveSession } from "../auth/session.js";
+import { bearerToken, findAccountRightsSession, findActiveSession } from "../auth/session.js";
 import type { DatabaseClient } from "../db/types.js";
 import { getWorkBySlug, listWorks } from "../repositories/works.js";
 import {
@@ -113,6 +113,15 @@ export const workRoutes: FastifyPluginAsync<WorkRouteOptions> = async (app, opti
     }
     const token = bearerToken(request);
     const session = token ? await findActiveSession(options.database, token) : null;
+    if (!session && token) {
+      const accountRights = await findAccountRightsSession(options.database, token);
+      if (accountRights?.isSuspended) {
+        return reply.code(403).send({
+          code: "ACCOUNT_SUSPENDED",
+          message: "账号当前受限，不能提交链接反馈"
+        });
+      }
+    }
     try {
       const feedback = await createWorkLinkFeedback(
         options.database,

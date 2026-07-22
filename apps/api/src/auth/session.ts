@@ -16,6 +16,11 @@ export interface SessionRow extends AuthUser {
   wechatOpenId: string | null;
 }
 
+export interface AccountRightsSessionRow extends SessionRow {
+  isSuspended: boolean;
+  suspendedUntil: string | null;
+}
+
 export function sessionTokenHash(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
@@ -70,6 +75,39 @@ export async function findActiveSession(
         event_count = user_activity_days.event_count + 1
     )
     SELECT * FROM active_session
+  `, [sessionTokenHash(token)]);
+  return result.rows[0] ?? null;
+}
+
+export async function findAccountRightsSession(
+  database: DatabaseClient,
+  token: string
+): Promise<AccountRightsSessionRow | null> {
+  const result = await queryRows<AccountRightsSessionRow>(database, `
+    UPDATE user_sessions session
+    SET last_seen_at = NOW()
+    FROM users account
+    WHERE session.token_hash = $1
+      AND session.user_id = account.id
+      AND session.revoked_at IS NULL
+      AND session.expires_at > NOW()
+      AND account.is_active = TRUE
+    RETURNING
+      session.id AS "sessionId",
+      account.id,
+      account.display_name AS "displayName",
+      account.avatar_url AS "avatarUrl",
+      account.bio,
+      account.role::text AS role,
+      account.suspended_until AS "suspendedUntil",
+      account.suspended_until IS NOT NULL
+        AND account.suspended_until > NOW() AS "isSuspended",
+      (
+        SELECT identity.provider_subject
+        FROM user_identities identity
+        WHERE identity.user_id = account.id AND identity.provider = 'WECHAT'
+        LIMIT 1
+      ) AS "wechatOpenId"
   `, [sessionTokenHash(token)]);
   return result.rows[0] ?? null;
 }

@@ -2,6 +2,7 @@ const {
   createAppeal,
   deactivateAccount,
   deleteReview,
+  downloadAccountData,
   getCurrentUser,
   hasAuthToken,
   listMyReviews,
@@ -19,6 +20,13 @@ const statusLabels = {
   PAUSED: "暂停",
   DROPPED: "搁置"
 };
+
+function formatRestrictedUntil(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const part = (number) => String(number).padStart(2, "0");
+  return `${date.getFullYear()}-${part(date.getMonth() + 1)}-${part(date.getDate())} ${part(date.getHours())}:${part(date.getMinutes())}`;
+}
 
 Page({
   data: {
@@ -41,6 +49,8 @@ Page({
     shelfActionId: "",
     reviewActionId: "",
     appealActionId: "",
+    exportingData: false,
+    restrictedUntilLabel: "",
     loadError: "",
     error: ""
   },
@@ -68,8 +78,19 @@ Page({
     }
     this.setData({ loading: true, loadError: "", error: "" });
     try {
-      const [userResponse, shelfResponse, reviewResponse] = await Promise.all([
-        getCurrentUser(),
+      const userResponse = await getCurrentUser();
+      if (userResponse.data.isSuspended) {
+        this.setData({
+          loggedIn: true,
+          user: userResponse.data,
+          items: [],
+          reviews: [],
+          restrictedUntilLabel: formatRestrictedUntil(userResponse.data.suspendedUntil),
+          loadError: ""
+        });
+        return;
+      }
+      const [shelfResponse, reviewResponse] = await Promise.all([
         listShelf(this.data.activeStatus),
         listMyReviews()
       ]);
@@ -201,6 +222,45 @@ Page({
         this.setData({ loggedIn: false, user: null, items: [], reviews: [] });
       }
     });
+  },
+
+  requestDataExport() {
+    if (this.data.exportingData) return;
+    wx.showModal({
+      title: "导出个人数据",
+      content: "导出文件包含账号资料、微信身份标识、书架、评价、回复和互动记录。请只发送到你信任的位置，并妥善保存。",
+      confirmText: "生成文件",
+      success: (result) => {
+        if (result.confirm) this.exportMyData();
+      }
+    });
+  },
+
+  async exportMyData() {
+    if (this.data.exportingData) return;
+    if (typeof wx.shareFileMessage !== "function") {
+      wx.showToast({ title: "当前微信版本不支持导出文件", icon: "none" });
+      return;
+    }
+    this.setData({ exportingData: true });
+    try {
+      const exported = await downloadAccountData();
+      await new Promise((resolve, reject) => {
+        wx.shareFileMessage({
+          filePath: exported.tempFilePath,
+          fileName: exported.fileName,
+          success: resolve,
+          fail: reject
+        });
+      });
+      wx.showToast({ title: "导出文件已生成", icon: "success" });
+    } catch (error) {
+      if (!/cancel/i.test(error?.errMsg || "")) {
+        wx.showToast({ title: error.message || "个人数据导出失败", icon: "none" });
+      }
+    } finally {
+      this.setData({ exportingData: false });
+    }
   },
 
   confirmDeactivate() {

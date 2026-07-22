@@ -277,6 +277,32 @@
   color: #536a53;
 }
 
+.account-restricted {
+  margin-top: 32rpx;
+  padding: 34rpx;
+  border: 1rpx solid #d8b29f;
+  border-radius: 24rpx;
+  background: #fbefe9;
+}
+
+.restricted-title {
+  color: #8f2f23;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.restricted-copy,
+.restricted-until {
+  margin-top: 14rpx;
+  color: #6f554a;
+  font-size: 23rpx;
+  line-height: 1.65;
+}
+
+.restricted-until {
+  font-weight: 700;
+}
+
 .account-settings {
   display: flex;
   align-items: center;

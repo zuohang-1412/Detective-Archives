@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { requireActiveSession } from "../auth/authorization.js";
 import { bearerToken, findActiveSession } from "../auth/session.js";
 import type { ContentSafetyCheck } from "../auth/wechat-content-safety.js";
 import type { DatabaseClient } from "../db/types.js";
@@ -72,17 +73,7 @@ async function requireUser(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  if (!database) {
-    await reply.code(503).send({ code: "DATABASE_REQUIRED", message: "服务暂不可用" });
-    return null;
-  }
-  const token = bearerToken(request);
-  const session = token ? await findActiveSession(database, token) : null;
-  if (!session) {
-    await reply.code(401).send({ code: "AUTH_REQUIRED", message: "请先登录" });
-    return null;
-  }
-  return session;
+  return requireActiveSession(database, request, reply);
 }
 
 async function optionalViewer(database: DatabaseClient, request: FastifyRequest) {

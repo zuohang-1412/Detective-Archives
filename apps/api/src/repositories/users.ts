@@ -12,8 +12,10 @@ export interface LoginResult {
 }
 
 interface RefreshableSession extends AuthUser {
+  isSuspended: boolean;
   sessionId: string;
   sessionTtlSeconds: number;
+  suspendedUntil: string | null;
 }
 
 export async function refreshUserSession(
@@ -32,14 +34,16 @@ export async function refreshUserSession(
         account.display_name AS "displayName",
         account.avatar_url AS "avatarUrl",
         account.bio,
-        account.role::text AS role
+        account.role::text AS role,
+        account.suspended_until AS "suspendedUntil",
+        account.suspended_until IS NOT NULL
+          AND account.suspended_until > NOW() AS "isSuspended"
       FROM user_sessions session
       JOIN users account ON account.id = session.user_id
       WHERE session.token_hash = $1
         AND session.revoked_at IS NULL
         AND session.expires_at > NOW()
         AND account.is_active = TRUE
-        AND (account.suspended_until IS NULL OR account.suspended_until <= NOW())
       FOR UPDATE OF session
     `, [sessionTokenHash(token)]);
     const session = current.rows[0];
@@ -57,14 +61,20 @@ export async function refreshUserSession(
       INSERT INTO user_sessions (user_id, token_hash, expires_at)
       VALUES ($1, $2, $3)
     `, [session.id, sessionTokenHash(refreshedToken), expiresAt]);
-    await recordUserActivity(connection, session.id);
+    if (!session.isSuspended) await recordUserActivity(connection, session.id);
 
     const {
       sessionId: _sessionId,
       sessionTtlSeconds: _sessionTtlSeconds,
+      isSuspended,
+      suspendedUntil,
       ...user
     } = session;
-    return { token: refreshedToken, expiresAt: expiresAt.toISOString(), user };
+    return {
+      token: refreshedToken,
+      expiresAt: expiresAt.toISOString(),
+      user: { ...user, isSuspended, suspendedUntil }
+    };
   });
 }
 

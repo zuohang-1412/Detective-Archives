@@ -155,6 +155,43 @@ function getCurrentUser() {
   return request("/api/v1/auth/me");
 }
 
+function downloadAccountData() {
+  return new Promise((resolve, reject) => {
+    const token = getToken();
+    if (!token) {
+      reject(new Error("请先登录"));
+      return;
+    }
+    wx.downloadFile({
+      url: `${getBaseUrl()}/api/v1/me/data-export`,
+      header: { authorization: `Bearer ${token}` },
+      timeout: 20000,
+      success(response) {
+        if (response.statusCode === 200 && response.tempFilePath) {
+          resolve({
+            tempFilePath: response.tempFilePath,
+            fileName: `侦探档案馆-个人数据-${new Date().toISOString().slice(0, 10)}.json`
+          });
+          return;
+        }
+        if (response.statusCode === 401) clearSession();
+        reject(new Error(
+          response.statusCode === 429
+            ? "导出请求过于频繁，请稍后再试"
+            : "个人数据导出失败，请稍后再试"
+        ));
+      },
+      fail(error) {
+        reject(new Error(
+          /timeout/i.test(error.errMsg || "")
+            ? "数据导出超时，请检查网络后重试"
+            : "数据导出失败，请检查网络后重试"
+        ));
+      }
+    });
+  });
+}
+
 async function refreshSession() {
   if (!hasAuthToken()) return null;
   const response = await request("/api/v1/auth/refresh", { method: "POST" });
@@ -279,6 +316,7 @@ module.exports = {
   deactivateAccount,
   deleteComment,
   deleteReview,
+  downloadAccountData,
   getCurrentUser,
   getDetective,
   getShelfItem,

@@ -112,13 +112,26 @@ if (!archiveScript.includes("openRecommendedWork(")
   || !archiveTemplate.includes("关联作品：")) {
   throw new Error("Picture-book entries must link mapped recommendations to formal works");
 }
-for (const apiBehavior of ["getMyReview", "updateReview", "deleteReview", "deleteComment", "createAppeal"]) {
+for (const apiBehavior of [
+  "getMyReview",
+  "updateReview",
+  "deleteReview",
+  "deleteComment",
+  "createAppeal",
+  "downloadAccountData"
+]) {
   if (!apiScript.includes(`function ${apiBehavior}(`)) {
     throw new Error(`Mini Program API must implement ${apiBehavior}`);
   }
 }
 if (!meScript.includes("appealMyReview(") || !meTemplate.includes('catchtap="appealMyReview"')) {
   throw new Error("My Archives must expose review appeals");
+}
+if (!meScript.includes("requestDataExport(")
+  || !meScript.includes("shareFileMessage")
+  || !meTemplate.includes('bindtap="requestDataExport"')
+  || !meTemplate.includes("user.isSuspended")) {
+  throw new Error("My Archives must keep data export and account rights available while suspended");
 }
 for (const privacyCapability of ["getPrivacySetting", "openPrivacyContract", "handleAgreePrivacyAuthorization"]) {
   if (!meScript.includes(privacyCapability)) {

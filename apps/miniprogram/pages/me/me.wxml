@@ -45,7 +45,16 @@
   </view>
 
   <block wx:if="{{loggedIn && !loadError}}">
-    <view class="shelf-tabs">
+    <view wx:if="{{user.isSuspended}}" class="account-restricted">
+      <view class="restricted-title">账号当前处于受限状态</view>
+      <view class="restricted-copy">
+        暂停期间不能修改书架、发布内容或提交反馈，但仍可导出个人数据、退出登录或注销账号。
+      </view>
+      <view wx:if="{{restrictedUntilLabel}}" class="restricted-until">限制截止：{{restrictedUntilLabel}}</view>
+    </view>
+
+    <block wx:else>
+      <view class="shelf-tabs">
       <view
         wx:for="{{tabs}}"
         wx:key="status"
@@ -91,7 +100,7 @@
       </view>
     </view>
 
-    <view class="my-reviews">
+      <view class="my-reviews">
       <text class="eyebrow">MY REVIEWS</text>
       <view class="section-title">我的评价</view>
       <view wx:if="{{!reviews.length}}" class="review-empty">还没有写过评价。</view>
@@ -127,12 +136,14 @@
         </view>
         <view class="review-status {{item.status === 'PUBLISHED' ? 'published' : ''}}">{{item.statusLabel}}</view>
       </view>
-    </view>
+      </view>
+    </block>
 
     <view class="account-settings">
       <text class="legal-link" data-type="terms" bindtap="openLegal">用户协议</text>
       <text class="legal-link" data-type="privacy" bindtap="openLegal">隐私政策</text>
       <text class="legal-link" bindtap="openPlatformPrivacy">微信隐私指引</text>
+      <text class="legal-link" bindtap="requestDataExport">{{exportingData ? '导出中…' : '导出我的数据'}}</text>
       <text class="deactivate-link" bindtap="confirmDeactivate">注销账号</text>
     </view>
   </block>
