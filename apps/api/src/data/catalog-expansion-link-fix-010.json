@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "batchKey": "catalog-expansion-link-fix-010",
+  "snapshotDate": "2026-07-22",
+  "contentPolicy": "Replace the unindexed The Roku Channel episode deep link used for Ironside with Roku's current official series page, which identifies the 1967 series, lists Message From Beyond and exposes the current legal viewing provider; retain the former destination as inactive audit history and leave the detective, work and creator attribution unchanged.",
+  "sources": [
+    {
+      "id": "roku-ironside-message-beyond",
+      "label": "The Roku Channel: Ironside — Message from Beyond",
+      "url": "https://therokuchannel.roku.com/details/0150ab4fd04b5c4692008e89fc14b7dc/message-from-beyond",
+      "quality": "OFFICIAL_STREAMING"
+    },
+    {
+      "id": "roku-ironside-series-current",
+      "label": "Roku: Ironside (1967–1975)",
+      "url": "https://www.roku.com/en-gb/whats-on/tv-shows/ironside?id=bde37c3449765d779b5aaea52d726b36",
+      "quality": "OFFICIAL_STREAMING_GUIDE"
+    }
+  ],
+  "detectives": [
+    {
+      "catalogId": "PB-052-STD",
+      "pictureBookEntryIds": [],
+      "slug": "robert-ironside",
+      "nameZh": "罗伯特·艾恩赛德",
+      "nameOriginal": "Robert T. Ironside",
+      "nameEn": "Robert T. Ironside",
+      "country": "美国",
+      "era": "20世纪后半叶",
+      "subjectKind": "FICTIONAL",
+      "collection": "CORE",
+      "category": "SCREEN_DETECTIVES",
+      "mediaTypes": ["SERIES", "FILM"],
+      "summary": "电视剧《Ironside》中因枪伤使用轮椅的前旧金山警察局侦缉处长，转任特别顾问后带领小组继续侦办重案。",
+      "creatorName": "科利尔·扬",
+      "aliases": ["轮椅神探艾恩赛德", "艾恩塞德", "Chief Ironside", "Robert T. Ironside"],
+      "tags": ["警察顾问", "团队侦查", "电视剧"],
+      "featuredCases": ["《轮椅神探艾恩赛德》"],
+      "sourceIds": ["roku-ironside-message-beyond"],
+      "verification": "PRIMARY_SOURCE_CONFIRMED",
+      "status": "PUBLISHED",
+      "works": [
+        {
+          "slug": "ironside-1967-series",
+          "titleZh": "轮椅神探艾恩赛德",
+          "titleOriginal": "Ironside",
+          "mediaType": "SERIES",
+          "releaseYear": 1967,
+          "summary": "艾恩赛德遇袭致残后成为警局特别顾问，依靠经验、推理和专属团队处理旧金山的谋杀、抢劫与有组织犯罪。",
+          "sourceId": "roku-ironside-series-current",
+          "linkType": "OFFICIAL_SITE",
+          "providerName": "Roku",
+          "region": "GB",
+          "deactivateLinkUrls": [
+            "https://therokuchannel.roku.com/details/0150ab4fd04b5c4692008e89fc14b7dc/message-from-beyond"
+          ]
+        }
+      ]
+    }
+  ]
+}
