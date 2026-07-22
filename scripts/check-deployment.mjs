@@ -23,7 +23,12 @@ const [
   operationsRunbook,
   launchReadinessLibrary,
   productionDrillCommand,
-  productionDrillLibrary
+  productionDrillLibrary,
+  wechatAcceptanceCommand,
+  wechatAcceptanceTemplate,
+  wechatAcceptanceLibrary,
+  acceptanceExecution,
+  qaReport
 ] = await Promise.all([
   readFile(path.join(root, "Dockerfile"), "utf8"),
   readFile(path.join(root, "compose.yaml"), "utf8"),
@@ -44,7 +49,12 @@ const [
   readFile(path.join(root, "docs/runbook.md"), "utf8"),
   readFile(path.join(root, "scripts/lib/launch-readiness.mjs"), "utf8"),
   readFile(path.join(root, "scripts/drill-production-release.mjs"), "utf8"),
-  readFile(path.join(root, "scripts/lib/production-release-drill.mjs"), "utf8")
+  readFile(path.join(root, "scripts/lib/production-release-drill.mjs"), "utf8"),
+  readFile(path.join(root, "scripts/record-wechat-acceptance.mjs"), "utf8"),
+  readFile(path.join(root, "ops/wechat-acceptance-record.example.json"), "utf8"),
+  readFile(path.join(root, "scripts/lib/wechat-acceptance.mjs"), "utf8"),
+  readFile(path.join(root, "docs/acceptance-execution.md"), "utf8"),
+  readFile(path.join(root, "docs/qa-report-2026-07-22.md"), "utf8")
 ]);
 
 const startupSteps = [
@@ -108,6 +118,8 @@ assert.match(rootPackage, /"check:release-rollback"/, "The release rollback dril
 assert.match(rootPackage, /"operations:drill:record"/, "The operations drill must have an npm entrypoint");
 assert.match(rootPackage, /"release:drill:production"/, "The production rollback drill must have an npm entrypoint");
 assert.match(rootPackage, /"check:production-release-drill"/, "The production rollback evidence must have an automated check");
+assert.match(rootPackage, /"wechat:acceptance:record"/, "WeChat acceptance must have a recording entrypoint");
+assert.match(rootPackage, /"check:wechat-acceptance"/, "WeChat acceptance must have an automated check");
 assert.match(qualityWorkflow, /npm run check:release-rollback/, "CI must execute the real release rollback drill");
 assert.match(qualityWorkflow, /postgres:16/, "CI PostgreSQL must match the explicitly installed backup client major version");
 assert.match(qualityWorkflow, /postgresql-client-16/, "CI must install a matching PostgreSQL backup client");
@@ -132,6 +144,7 @@ for (const scenario of [
   assert.match(operationsDrillTemplate, new RegExp(scenario), `Operations drill template must include ${scenario}`);
 }
 assert.match(operationsRunbook, /operations:drill:record/, "The runbook must explain how to record the operations drill");
+assert.match(operationsRunbook, /wechat:acceptance:record/, "The runbook must explain how to record WeChat acceptance");
 assert.match(launchReadinessLibrary, /item\("operations_drill", "SUBMISSION"/, "Submission must require operations drill evidence");
 assert.match(productionDrillCommand, /PRODUCTION_ROLLBACK_DRILL/, "Production rollback must require a one-shot opt-in");
 assert.match(productionDrillCommand, /inspectRecentBackup/, "Production rollback must require recent backup evidence");
@@ -139,5 +152,39 @@ assert.match(productionDrillCommand, /recordProductionReleaseReceipt/, "Producti
 assert.match(productionDrillLibrary, /inspectPublicTls/, "Production evidence must inspect the public TLS connection");
 assert.match(productionDrillLibrary, /CANDIDATE_RESTORED/, "Production evidence must verify candidate recovery");
 assert.match(launchReadinessLibrary, /validProductionReleaseReceipt/, "Post-deployment gates must require a production receipt");
+assert.match(wechatAcceptanceCommand, /assertReleaseGitStatus/, "WeChat acceptance must require committed candidate source");
+assert.match(wechatAcceptanceCommand, /recordWechatAcceptance/, "WeChat acceptance command must persist validated evidence");
+for (const scenario of [
+  "SERVICE_CATEGORY",
+  "PRIVACY_GUIDE",
+  "USER_AGREEMENT",
+  "REQUEST_DOMAIN",
+  "RISKY_CONTENT_REJECTED",
+  "DEPENDENCY_FAILURE_PENDING",
+  "DATA_EXPORT_AND_SHARE",
+  "ACCOUNT_DEACTIVATION"
+]) {
+  assert.match(wechatAcceptanceTemplate, new RegExp(scenario), `WeChat acceptance template must include ${scenario}`);
+}
+assert.match(wechatAcceptanceLibrary, /candidateUploadReceiptSha256/, "WeChat acceptance must bind the exact uploaded candidate");
+assert.match(launchReadinessLibrary, /validWechatAcceptanceReceipt/, "Submission gates must require WeChat acceptance evidence");
+
+const acceptanceRows = [...acceptanceExecution.matchAll(
+  /^\| (PASS|BLOCKED|FAIL|PENDING) \| (AT-[^| ]+) \|/gm
+)];
+const acceptanceIds = new Set(acceptanceRows.map((match) => match[2]));
+assert.equal(acceptanceIds.size, acceptanceRows.length, "Acceptance execution IDs must be unique");
+const acceptanceCounts = { PASS: 0, BLOCKED: 0, FAIL: 0, PENDING: 0 };
+for (const match of acceptanceRows) acceptanceCounts[match[1]] += 1;
+assert.equal(acceptanceCounts.PENDING, 0, "The published QA summary must not hide pending execution rows");
+const passRate = ((acceptanceCounts.PASS / acceptanceRows.length) * 100).toFixed(1);
+assert.match(
+  qaReport,
+  new RegExp(
+    `\\| ${acceptanceRows.length} \\| ${acceptanceCounts.PASS} \\| `
+      + `${acceptanceCounts.FAIL} \\| ${acceptanceCounts.BLOCKED} \\| ${passRate}% \\|`
+  ),
+  "QA summary counts must match the acceptance execution table"
+);
 
 console.log("Deployment structure and startup sequence: OK");

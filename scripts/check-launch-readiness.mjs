@@ -3,9 +3,20 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { auditLaunchReadiness, summarizeLaunchReadiness } from "./lib/launch-readiness.mjs";
 import { PRODUCTION_PROBE_CHECKS } from "./lib/production-release-drill.mjs";
+import {
+  buildWechatAcceptanceReceipt,
+  WECHAT_CONTENT_SAFETY_SCENARIOS,
+  WECHAT_DEVICE_PLATFORMS,
+  WECHAT_DEVICE_SCENARIOS,
+  WECHAT_PLATFORM_SETTINGS
+} from "./lib/wechat-acceptance.mjs";
 
+const operationsRunbookSource = await readFile(
+  new URL("../docs/runbook.md", import.meta.url),
+  "utf8"
+);
 const operationsRunbookSha256 = createHash("sha256")
-  .update(await readFile(new URL("../docs/runbook.md", import.meta.url), "utf8"))
+  .update(operationsRunbookSource)
   .digest("hex");
 const operationsDrillCompletedAt = new Date().toISOString();
 const sourceCommit = "a".repeat(40);
@@ -108,33 +119,70 @@ const environment = {
   PRIVACY_CONTACT: "privacy@detective-archives.test"
 };
 
+const candidateUploadReceipt = {
+  schemaVersion: 1,
+  action: "upload",
+  status: "SUCCEEDED",
+  appid: environment.MINIPROGRAM_APP_ID,
+  version: "0.1.0-rc.1",
+  sourceCommit,
+  robot: 1,
+  completedAt: productionReleaseCompletedAt,
+  ciPackage: "miniprogram-ci@2.1.31",
+  projectConfigSha256: "b".repeat(64),
+  miniProgramConfigSha256: "c".repeat(64)
+};
+const wechatEvidence = (id) => ({
+  id,
+  result: "PASSED",
+  evidenceReference: `WX-2026-0722#${id}`
+});
+const wechatAcceptanceReceipt = buildWechatAcceptanceReceipt({
+  record: {
+    schemaVersion: 1,
+    status: "PASSED",
+    appid: environment.MINIPROGRAM_APP_ID,
+    candidateVersion: candidateUploadReceipt.version,
+    publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+    tester: "微信候选验收负责人",
+    completedAt: productionReleaseCompletedAt,
+    evidenceReference: "WX-2026-0722 微信候选验收工单",
+    platformSettings: WECHAT_PLATFORM_SETTINGS.map(wechatEvidence),
+    contentSafetyScenarios: WECHAT_CONTENT_SAFETY_SCENARIOS.map(wechatEvidence),
+    deviceRuns: WECHAT_DEVICE_PLATFORMS.map((platform) => ({
+      platform,
+      deviceModel: platform === "IOS" ? "iPhone 15 Pro" : "Pixel 9 Pro",
+      osVersion: platform === "IOS" ? "iOS 18.5" : "Android 16",
+      wechatVersion: "8.0.61",
+      completedAt: productionReleaseCompletedAt,
+      evidenceReference: `WX-2026-0722#${platform}`,
+      scenarios: WECHAT_DEVICE_SCENARIOS.map(wechatEvidence)
+    }))
+  },
+  manifest: {
+    schemaVersion: 1,
+    operator: { wechatTester: "微信候选验收负责人" },
+    wechat: { candidateUploaded: true, candidateUploadReceipt },
+    validation: {}
+  },
+  environment,
+  sourceCommit,
+  runbookSource: operationsRunbookSource,
+  now: Date.parse(productionReleaseCompletedAt)
+});
+
 const manifest = {
   schemaVersion: 1,
   operator: {
     legalName: environment.OPERATOR_NAME,
     privacyContact: environment.PRIVACY_CONTACT,
     contentModerator: "内容审核负责人",
-    alertResponder: "生产告警负责人"
+    alertResponder: "生产告警负责人",
+    wechatTester: "微信候选验收负责人"
   },
   wechat: {
-    serviceCategoryConfigured: true,
-    privacyGuideConfigured: true,
-    userAgreementApproved: true,
-    requestDomainConfigured: true,
     candidateUploaded: true,
-    candidateUploadReceipt: {
-      schemaVersion: 1,
-      action: "upload",
-      status: "SUCCEEDED",
-      appid: environment.MINIPROGRAM_APP_ID,
-      version: "0.1.0-rc.1",
-      sourceCommit,
-      robot: 1,
-      completedAt: new Date().toISOString(),
-      ciPackage: "miniprogram-ci@2.1.31",
-      projectConfigSha256: "b".repeat(64),
-      miniProgramConfigSha256: "c".repeat(64)
-    },
+    candidateUploadReceipt,
     reviewSubmitted: true,
     reviewApproved: true,
     released: true
@@ -148,9 +196,7 @@ const manifest = {
   },
   validation: {
     productionReleaseReceipt,
-    contentSafetyPassed: true,
-    iosDevicePassed: true,
-    androidDevicePassed: true,
+    wechatAcceptanceReceipt,
     operationsDrillReceipt: {
       schemaVersion: 1,
       action: "operations_drill",
@@ -193,19 +239,13 @@ for (const secret of Object.values(secretValues)) {
 
 const beforeDeployment = structuredClone(manifest);
 delete beforeDeployment.validation.productionReleaseReceipt;
-beforeDeployment.validation.contentSafetyPassed = false;
+delete beforeDeployment.validation.wechatAcceptanceReceipt;
 beforeDeployment.infrastructure.monitoringReady = false;
 beforeDeployment.infrastructure.offsiteBackupReady = false;
-beforeDeployment.wechat.serviceCategoryConfigured = false;
-beforeDeployment.wechat.privacyGuideConfigured = false;
-beforeDeployment.wechat.userAgreementApproved = false;
-beforeDeployment.wechat.requestDomainConfigured = false;
 beforeDeployment.wechat.candidateUploaded = false;
 beforeDeployment.wechat.reviewSubmitted = false;
 beforeDeployment.wechat.reviewApproved = false;
 beforeDeployment.wechat.released = false;
-beforeDeployment.validation.iosDevicePassed = false;
-beforeDeployment.validation.androidDevicePassed = false;
 const phasedItems = auditLaunchReadiness({
   environment,
   manifest: beforeDeployment,
@@ -289,6 +329,48 @@ for (const id of ["tls_verified", "production_release_check", "rollback_drill"])
     "MISSING_OR_INVALID"
   );
 }
+
+const missingWechatAcceptance = structuredClone(manifest);
+delete missingWechatAcceptance.validation.wechatAcceptanceReceipt;
+const missingWechatItems = auditLaunchReadiness({
+  environment,
+  manifest: missingWechatAcceptance,
+  operationsRunbookSha256,
+  sourceCommit
+});
+for (const id of [
+  "content_safety_live",
+  "wechat_service_category",
+  "wechat_privacy_guide",
+  "user_agreement_approved",
+  "wechat_request_domain",
+  "ios_device_flow",
+  "android_device_flow"
+]) {
+  assert.equal(
+    missingWechatItems.find((entry) => entry.id === id).status,
+    "MISSING_OR_INVALID"
+  );
+}
+
+const changedCandidateEvidence = structuredClone(manifest);
+changedCandidateEvidence.wechat.candidateUploadReceipt.projectConfigSha256 = "f".repeat(64);
+const changedCandidateItems = auditLaunchReadiness({
+  environment,
+  manifest: changedCandidateEvidence,
+  operationsRunbookSha256,
+  sourceCommit
+});
+assert.equal(
+  changedCandidateItems.find((entry) => entry.id === "candidate_uploaded").status,
+  "READY",
+  "A still-valid changed candidate receipt remains upload evidence"
+);
+assert.equal(
+  changedCandidateItems.find((entry) => entry.id === "ios_device_flow").status,
+  "MISSING_OR_INVALID",
+  "Device acceptance must be bound to the exact candidate receipt"
+);
 
 const unresolvedSourceItems = auditLaunchReadiness({
   environment,

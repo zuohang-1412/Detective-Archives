@@ -146,13 +146,10 @@ await writeFile(readinessFile, JSON.stringify({
     legalName: "DetectiveArchivesVerification",
     privacyContact: "release-validation@detective.invalid",
     contentModerator: "Release Verification Moderator",
-    alertResponder: "Release Verification Responder"
+    alertResponder: "Release Verification Responder",
+    wechatTester: "Release Verification WeChat Tester"
   },
   wechat: {
-    serviceCategoryConfigured: false,
-    privacyGuideConfigured: false,
-    userAgreementApproved: false,
-    requestDomainConfigured: false,
     candidateUploaded: false,
     reviewSubmitted: false,
     reviewApproved: false,
@@ -167,9 +164,7 @@ await writeFile(readinessFile, JSON.stringify({
   },
   validation: {
     productionReleaseReceipt: null,
-    contentSafetyPassed: false,
-    iosDevicePassed: false,
-    androidDevicePassed: false
+    wechatAcceptanceReceipt: null
   }
 }, null, 2) + "\n", { mode: 0o600 });
 

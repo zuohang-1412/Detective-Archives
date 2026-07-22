@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "status": "PASSED",
+  "appid": "上线前填写真实小程序 AppID",
+  "candidateVersion": "上线前填写已上传候选版本",
+  "publicApiOrigin": "上线前填写生产 HTTPS API Origin",
+  "tester": "上线前填写实际真机验收负责人",
+  "completedAt": "上线前填写 ISO-8601 验收完成时间",
+  "evidenceReference": "上线前填写受控发布工单或证据目录引用",
+  "platformSettings": [
+    { "id": "SERVICE_CATEGORY", "result": "PASSED", "evidenceReference": "服务类目证据引用" },
+    { "id": "PRIVACY_GUIDE", "result": "PASSED", "evidenceReference": "隐私保护指引证据引用" },
+    { "id": "USER_AGREEMENT", "result": "PASSED", "evidenceReference": "用户协议证据引用" },
+    { "id": "REQUEST_DOMAIN", "result": "PASSED", "evidenceReference": "request 合法域名证据引用" }
+  ],
+  "contentSafetyScenarios": [
+    { "id": "SAFE_CONTENT_ACCEPTED", "result": "PASSED", "evidenceReference": "安全文本检查证据引用" },
+    { "id": "REVIEW_CONTENT_PENDING", "result": "PASSED", "evidenceReference": "需复核文本保持待审证据引用" },
+    { "id": "RISKY_CONTENT_REJECTED", "result": "PASSED", "evidenceReference": "风险文本拒绝证据引用（不得记录风险正文）" },
+    { "id": "DEPENDENCY_FAILURE_PENDING", "result": "PASSED", "evidenceReference": "接口故障时保持待审及审计证据引用" }
+  ],
+  "deviceRuns": [
+    {
+      "platform": "IOS",
+      "deviceModel": "填写实际 iPhone 型号",
+      "osVersion": "填写实际 iOS 版本",
+      "wechatVersion": "填写实际微信版本",
+      "completedAt": "填写 ISO-8601 真机完成时间",
+      "evidenceReference": "iOS 验收证据目录引用",
+      "scenarios": [
+        { "id": "PRIVACY_REJECTED", "result": "PASSED", "evidenceReference": "拒绝平台隐私授权证据" },
+        { "id": "PRIVACY_ACCEPTED", "result": "PASSED", "evidenceReference": "同意平台隐私授权证据" },
+        { "id": "LOGIN", "result": "PASSED", "evidenceReference": "真实微信登录证据" },
+        { "id": "CATALOG_AND_SEARCH", "result": "PASSED", "evidenceReference": "目录搜索筛选及分页证据" },
+        { "id": "SHELF_AND_PROGRESS", "result": "PASSED", "evidenceReference": "书架与进度证据" },
+        { "id": "REVIEW_AND_COMMUNITY", "result": "PASSED", "evidenceReference": "评价回复社区及剧透证据" },
+        { "id": "REPORT", "result": "PASSED", "evidenceReference": "举报证据" },
+        { "id": "DATA_EXPORT_AND_SHARE", "result": "PASSED", "evidenceReference": "个人数据导出及文件分享证据" },
+        { "id": "ACCOUNT_DEACTIVATION", "result": "PASSED", "evidenceReference": "账号注销证据" }
+      ]
+    },
+    {
+      "platform": "ANDROID",
+      "deviceModel": "填写实际 Android 型号",
+      "osVersion": "填写实际 Android 版本",
+      "wechatVersion": "填写实际微信版本",
+      "completedAt": "填写 ISO-8601 真机完成时间",
+      "evidenceReference": "Android 验收证据目录引用",
+      "scenarios": [
+        { "id": "PRIVACY_REJECTED", "result": "PASSED", "evidenceReference": "拒绝平台隐私授权证据" },
+        { "id": "PRIVACY_ACCEPTED", "result": "PASSED", "evidenceReference": "同意平台隐私授权证据" },
+        { "id": "LOGIN", "result": "PASSED", "evidenceReference": "真实微信登录证据" },
+        { "id": "CATALOG_AND_SEARCH", "result": "PASSED", "evidenceReference": "目录搜索筛选及分页证据" },
+        { "id": "SHELF_AND_PROGRESS", "result": "PASSED", "evidenceReference": "书架与进度证据" },
+        { "id": "REVIEW_AND_COMMUNITY", "result": "PASSED", "evidenceReference": "评价回复社区及剧透证据" },
+        { "id": "REPORT", "result": "PASSED", "evidenceReference": "举报证据" },
+        { "id": "DATA_EXPORT_AND_SHARE", "result": "PASSED", "evidenceReference": "个人数据导出及文件分享证据" },
+        { "id": "ACCOUNT_DEACTIVATION", "result": "PASSED", "evidenceReference": "账号注销证据" }
+      ]
+    }
+  ]
+}

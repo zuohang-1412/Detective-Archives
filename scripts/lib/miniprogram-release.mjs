@@ -187,7 +187,12 @@ export function buildMiniProgramReleasePlan({
   });
 }
 
-export function validCandidateUploadReceipt(receipt, appid, sourceCommit = null) {
+export function validCandidateUploadReceipt(
+  receipt,
+  appid,
+  sourceCommit = null,
+  now = Date.now()
+) {
   if (!receipt
     || receipt.schemaVersion !== 1
     || receipt.action !== "upload"
@@ -202,5 +207,5 @@ export function validCandidateUploadReceipt(receipt, appid, sourceCommit = null)
     || !/^[0-9a-f]{64}$/i.test(receipt.miniProgramConfigSha256 || "")) return false;
   if (!Number.isInteger(receipt.robot) || receipt.robot < 1 || receipt.robot > 30) return false;
   const completedAt = Date.parse(receipt.completedAt || "");
-  return Number.isFinite(completedAt) && completedAt <= Date.now() + 5 * 60 * 1000;
+  return Number.isFinite(completedAt) && completedAt <= now + 5 * 60 * 1000;
 }

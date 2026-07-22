@@ -1,6 +1,7 @@
 import { validCandidateUploadReceipt } from "./miniprogram-release.mjs";
 import { validOperationsDrillReceipt } from "./operations-drill.mjs";
 import { validProductionReleaseReceipt } from "./production-release-drill.mjs";
+import { validWechatAcceptanceReceipt } from "./wechat-acceptance.mjs";
 
 const PHASES = ["PRE_DEPLOY", "POST_DEPLOY", "SUBMISSION", "RELEASE"];
 const placeholderPattern = /(?:replace|example|your[-_. ]|strong-password|managed-postgres|change-?me|dummy|test-only|ci-only|上线前|待填写|todo)/i;
@@ -76,12 +77,26 @@ export function auditLaunchReadiness({
   const secureDatabaseTransport = ["verify-ca", "verify-full"].includes(sslMode)
     || (databasePrivate && ["disable", "allow", "prefer"].includes(sslMode));
   const sourceCommitValid = /^[0-9a-f]{40}$/i.test(sourceCommit || "");
+  const candidateUploadReceipt = nested(manifest, "wechat", "candidateUploadReceipt");
   const productionReleaseReceiptValid = sourceCommitValid
     && validProductionReleaseReceipt(
       nested(manifest, "validation", "productionReleaseReceipt"),
       {
         publicApiOrigin: environment.PUBLIC_API_BASE_URL,
         sourceCommit
+      }
+    );
+  const wechatAcceptanceReceiptValid = sourceCommitValid
+    && /^[0-9a-f]{64}$/i.test(operationsRunbookSha256 || "")
+    && validWechatAcceptanceReceipt(
+      nested(manifest, "validation", "wechatAcceptanceReceipt"),
+      {
+        appid: appId,
+        sourceCommit,
+        publicApiOrigin: environment.PUBLIC_API_BASE_URL,
+        candidateUploadReceipt,
+        tester: nested(manifest, "operator", "wechatTester"),
+        runbookSha256: operationsRunbookSha256
       }
     );
 
@@ -115,8 +130,9 @@ export function auditLaunchReadiness({
       "Runtime operator and privacy contact match the non-secret launch manifest."),
     item("operations_ownership", "PRE_DEPLOY", "OPERATIONS",
       present(nested(manifest, "operator", "contentModerator"), 2)
-        && present(nested(manifest, "operator", "alertResponder"), 2),
-      "Content moderation and production alert owners are named."),
+        && present(nested(manifest, "operator", "alertResponder"), 2)
+        && present(nested(manifest, "operator", "wechatTester"), 2),
+      "Content moderation, production alert and WeChat acceptance owners are named."),
     item("production_server", "PRE_DEPLOY", "INFRASTRUCTURE",
       nested(manifest, "infrastructure", "serverProvisioned") === true,
       "The production server is provisioned and access-controlled."),
@@ -142,8 +158,8 @@ export function auditLaunchReadiness({
       nested(manifest, "infrastructure", "offsiteBackupReady") === true,
       "Daily encrypted backup and independent storage are active."),
     item("content_safety_live", "POST_DEPLOY", "WECHAT_OWNER",
-      nested(manifest, "validation", "contentSafetyPassed") === true,
-      "Live WeChat content-safety pass, review, rejection and dependency-failure paths were verified."),
+      wechatAcceptanceReceiptValid,
+      "A candidate-bound receipt proves live WeChat content-safety paths were verified."),
 
     item("operations_drill", "SUBMISSION", "OPERATIONS",
       /^[0-9a-f]{64}$/i.test(operationsRunbookSha256 || "")
@@ -153,28 +169,28 @@ export function auditLaunchReadiness({
         ),
       "Named operators passed the four-scenario drill against the current operations runbook."),
     item("wechat_service_category", "SUBMISSION", "WECHAT_OWNER",
-      nested(manifest, "wechat", "serviceCategoryConfigured") === true,
-      "The Mini Program service category is configured."),
+      wechatAcceptanceReceiptValid,
+      "A candidate-bound receipt proves the Mini Program service category is configured."),
     item("wechat_privacy_guide", "SUBMISSION", "LEGAL",
-      nested(manifest, "wechat", "privacyGuideConfigured") === true,
-      "The WeChat privacy protection guide matches the product behavior."),
+      wechatAcceptanceReceiptValid,
+      "A candidate-bound receipt proves the privacy protection guide matches product behavior."),
     item("user_agreement_approved", "SUBMISSION", "LEGAL",
-      nested(manifest, "wechat", "userAgreementApproved") === true,
-      "The final user agreement and privacy text are approved."),
+      wechatAcceptanceReceiptValid,
+      "A candidate-bound receipt proves the final user agreement and privacy text were verified."),
     item("wechat_request_domain", "SUBMISSION", "WECHAT_OWNER",
-      nested(manifest, "wechat", "requestDomainConfigured") === true,
-      "The HTTPS API origin is registered as a legal request domain."),
+      wechatAcceptanceReceiptValid,
+      "A candidate-bound receipt proves the HTTPS API origin is a legal request domain."),
     item("ios_device_flow", "SUBMISSION", "QA",
-      nested(manifest, "validation", "iosDevicePassed") === true,
-      "The complete production flow passed on a real iOS WeChat device."),
+      wechatAcceptanceReceiptValid,
+      "A candidate-bound receipt proves the complete flow passed on a real iOS device."),
     item("android_device_flow", "SUBMISSION", "QA",
-      nested(manifest, "validation", "androidDevicePassed") === true,
-      "The complete production flow passed on a real Android WeChat device."),
+      wechatAcceptanceReceiptValid,
+      "A candidate-bound receipt proves the complete flow passed on a real Android device."),
     item("candidate_uploaded", "SUBMISSION", "WECHAT_OWNER",
       sourceCommitValid
         && nested(manifest, "wechat", "candidateUploaded") === true
         && validCandidateUploadReceipt(
-          nested(manifest, "wechat", "candidateUploadReceipt"),
+          candidateUploadReceipt,
           appId,
           sourceCommit
         ),

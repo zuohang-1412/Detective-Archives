@@ -110,6 +110,17 @@ npm run miniprogram:upload
 
 工具固定临时使用微信官方 `miniprogram-ci@2.1.31`，不把其旧构建依赖加入项目长期依赖；官方子进程仅继承网络、临时目录等最小环境，不继承数据库密码、AppSecret、后台密码、监控令牌或 `NODE_OPTIONS`。执行前会强制通过完整 `release:check`，仅允许生产配置生成器造成的两个预期文件改动。上传成功后，工具在被 Git 忽略的 `.release-state/miniprogram/` 写入 AppID、版本、源码提交、机器人编号、完成时间与配置 SHA-256 回执，并原子更新实际 `ops/launch-readiness.json`；失败不会写入成功证据。
 
+候选上传后，将 `ops/wechat-acceptance-record.example.json` 复制到仓库外，填写真实平台配置、内容安全四路径，以及 iOS/Android 各九个主链场景的设备与证据引用，再生成绑定当前候选的验收回执：
+
+```bash
+npm run wechat:acceptance:record -- \
+  --record=/secure/release/wechat-acceptance.json \
+  --env-file=.env.production \
+  --manifest=ops/launch-readiness.json
+```
+
+记录器不保存 AppSecret、微信 code、用户标识、测试正文或截图下载地址，只保存 AppID、候选版本、当前提交、设备版本和不含令牌的受控证据引用。平台/设备/内容安全任一场景缺失，记录超过 30 天，候选上传回执、提交或生产域名变化时，七个对应上线门禁都会拒绝。
+
 提交平台审核前，由清单中命名的内容审核负责人和告警负责人按 `docs/runbook.md` 完成内容审核、举报结案、用户限制和紧急下架四场景演练。原始记录从 `ops/operations-drill-record.example.json` 复制到仓库外受控位置，填写后生成绑定源码和运行手册的回执：
 
 ```bash

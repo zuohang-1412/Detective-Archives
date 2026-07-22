@@ -57,6 +57,24 @@ npm run launch:audit -- --env-file=.env.production --phase=submission
 - 成功回执位于 `.release-state/miniprogram/`，包含 AppID、候选版本、40 位源码提交、机器人编号、时间和配置摘要；上传命令会同步更新实际上线清单。公众平台版本列表与回执一致后，才能把候选交给人工提审。
 - 失败、超时或本地回执写入异常时，不得手工伪造 `candidateUploadReceipt`；先到公众平台确认是否已经产生候选，再决定重试或补录事件。
 
+### 微信候选验收回执
+
+候选上传成功后，把 `ops/wechat-acceptance-record.example.json` 复制到仓库外受控证据目录。实际验收负责人填写候选 AppID/版本/生产 API Origin、完成时间和证据引用；不得填写微信 code、OpenID、用户数据、测试正文、密码、令牌、带签名下载地址或风险文本原文。
+
+平台配置必须覆盖服务类目、隐私保护指引、用户协议和 `request` 合法域名；内容安全必须覆盖安全文本通过、需复核文本待审、风险文本拒绝、依赖故障保持待审四条路径；iOS 和 Android 各自必须覆盖隐私拒绝/同意、登录、目录搜索筛选、书架进度、评价社区、举报、个人数据导出/文件分享和注销九个场景。两个设备运行应在整体验收完成前 7 天内，整份回执有效期为 30 天。
+
+```bash
+cp ops/wechat-acceptance-record.example.json /secure/release/wechat-acceptance.json
+# 在仓库外填写真实结果后执行
+npm run wechat:acceptance:record -- \
+  --record=/secure/release/wechat-acceptance.json \
+  --env-file=.env.production \
+  --manifest=ops/launch-readiness.json
+npm run launch:audit -- --env-file=.env.production --phase=submission
+```
+
+记录器要求已提交源码，只允许生产配置生成器造成的两个预期文件修改；执行人必须与上线清单中预先命名的 `wechatTester` 一致，真实 AppID、当前提交和实际候选上传回执也必须一致。成功回执写入 `.release-state/wechat-acceptance/` 并原子更新实际上线清单。候选版本、源码提交、配置摘要、公网域名、验收负责人或本运行手册变化后必须重新验收；不得手工恢复旧的七个布尔字段。
+
 ## 日常检查
 
 - 每 1 分钟探测 `/ready`；连续 3 次失败触发告警。

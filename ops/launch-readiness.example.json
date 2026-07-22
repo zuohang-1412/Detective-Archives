@@ -4,13 +4,10 @@
     "legalName": "上线前填写真实运营主体",
     "privacyContact": "上线前填写隐私联系人",
     "contentModerator": "上线前指定内容审核负责人",
-    "alertResponder": "上线前指定生产告警负责人"
+    "alertResponder": "上线前指定生产告警负责人",
+    "wechatTester": "上线前指定微信真机验收负责人"
   },
   "wechat": {
-    "serviceCategoryConfigured": false,
-    "privacyGuideConfigured": false,
-    "userAgreementApproved": false,
-    "requestDomainConfigured": false,
     "candidateUploaded": false,
     "candidateUploadReceipt": null,
     "reviewSubmitted": false,
@@ -26,9 +23,7 @@
   },
   "validation": {
     "productionReleaseReceipt": null,
-    "contentSafetyPassed": false,
-    "iosDevicePassed": false,
-    "androidDevicePassed": false,
+    "wechatAcceptanceReceipt": null,
     "operationsDrillReceipt": null
   }
 }

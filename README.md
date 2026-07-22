@@ -140,6 +140,8 @@ npm run miniprogram:upload
 
 两个命令都会先执行完整 `release:check`，拒绝游客 AppID、HTTP 域名、占位主体、仓库内私钥、非预期工作区改动和重复覆盖二维码。上传成功后才生成 `.release-state/miniprogram/` 回执，并把实际 `ops/launch-readiness.json` 的候选上传门禁更新为带提交号的成功证据；示例清单不会被改写。
 
+候选上传后，真实验收人员使用仓库外的 `ops/wechat-acceptance-record.example.json` 副本记录平台配置、内容安全四路径和 iOS/Android 双端主链，执行 `npm run wechat:acceptance:record -- --record=/absolute/path/wechat-acceptance.json --env-file=.env.production`。生成的回执绑定 AppID、候选版本、当前提交、配置摘要、生产域名和设备证据；旧提交、缺场景或手工布尔值不能通过提审门禁。
+
 正式服务器完成两个不同提交的受控部署后，使用 `PRODUCTION_ROLLBACK_DRILL=true npm run release:drill:production -- --env-file=.env.production --manifest=ops/launch-readiness.json --state-directory=/var/lib/detective-archives/release-state` 留下生产回滚回执。该命令会真实切换候选版、上一版和候选恢复版，从公网验证 HTTPS 与核心服务，并把当前提交、镜像、备份和三阶段探测结果写入实际上线清单；不得手工填写旧的 TLS/回滚布尔项。
 
 ## 质量检查
