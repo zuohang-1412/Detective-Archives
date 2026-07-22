@@ -454,6 +454,7 @@ assert.equal(privacyFailureMe.data.platformPrivacyRequired, false);
 assert.equal(privacyFailureMe.data.error, "");
 
 let detailFails = true;
+let reviewNavigationTitle = "";
 const reviewDetail = await loadPage("review-detail", {
   async createComment() {},
   async createReport() {},
@@ -465,7 +466,9 @@ const reviewDetail = await loadPage("review-detail", {
     return {
       data: {
         id: "review-1",
+        title: "从红发会看福尔摩斯的推理节奏",
         author: { id: "user-2", displayName: "其他读者" },
+        work: { titleZh: "福尔摩斯探案集" },
         comments: [],
         containsSpoiler: false,
         commentPagination: { page: 1, totalPages: 1 }
@@ -475,6 +478,10 @@ const reviewDetail = await loadPage("review-detail", {
   hasAuthToken: () => false,
   async setCommentLike() {},
   async setReviewLike() {}
+}, {
+  setNavigationBarTitle(options) {
+    reviewNavigationTitle = options.title;
+  }
 });
 reviewDetail.setData({ reviewId: "review-1" });
 await reviewDetail.loadReview();
@@ -484,6 +491,10 @@ detailFails = false;
 await reviewDetail.loadReview();
 assert.equal(reviewDetail.data.error, "");
 assert.equal(reviewDetail.data.review.id, "review-1");
+assert.equal(reviewNavigationTitle, "从红发会看福尔摩斯的推理节奏");
+const reviewShare = reviewDetail.onShareAppMessage();
+assert.equal(reviewShare.title, "从红发会看福尔摩斯的推理节奏｜侦探档案馆");
+assert.equal(reviewShare.path, "/pages/review-detail/review-detail?reviewId=review-1");
 
 let editorFails = true;
 const reviewEditor = await loadPage("review-editor", {

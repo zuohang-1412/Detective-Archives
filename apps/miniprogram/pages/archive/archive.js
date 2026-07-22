@@ -94,6 +94,13 @@ Page({
     this.search();
   },
 
+  onShareAppMessage() {
+    return {
+      title: "侦探档案目录｜侦探档案馆",
+      path: "/pages/archive/archive"
+    };
+  },
+
   onQueryInput(event) {
     this.setData({ query: event.detail.value });
   },

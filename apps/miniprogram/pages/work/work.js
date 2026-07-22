@@ -49,6 +49,14 @@ Page({
     this.loadWork().finally(() => wx.stopPullDownRefresh());
   },
 
+  onShareAppMessage() {
+    const work = this.data.work;
+    return {
+      title: work ? `${work.titleZh}｜侦探档案馆` : "推理作品｜侦探档案馆",
+      path: `/pages/work/work?slug=${encodeURIComponent(this.data.slug)}`
+    };
+  },
+
   async loadWork() {
     this.setData({ loading: true, error: "" });
     try {

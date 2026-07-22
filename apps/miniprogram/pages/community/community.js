@@ -37,6 +37,13 @@ Page({
     this.loadFeed().finally(() => wx.stopPullDownRefresh());
   },
 
+  onShareAppMessage() {
+    return {
+      title: "推理社区｜侦探档案馆",
+      path: "/pages/community/community"
+    };
+  },
+
   onReachBottom() {
     this.loadMore();
   },

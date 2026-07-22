@@ -87,6 +87,9 @@ Page({
           spoilerRevealed: !comment.containsSpoiler
         }))
       };
+      wx.setNavigationBarTitle({
+        title: review.title || `${review.work.titleZh} · 评价`
+      });
       this.setData({
         review,
         spoilerRevealed: !review.containsSpoiler,
@@ -99,6 +102,17 @@ Page({
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  onShareAppMessage() {
+    const review = this.data.review;
+    const title = review
+      ? `${review.title || `${review.work.titleZh} · 评价`}｜侦探档案馆`
+      : "评价与讨论｜侦探档案馆";
+    return {
+      title,
+      path: `/pages/review-detail/review-detail?reviewId=${encodeURIComponent(this.data.reviewId)}`
+    };
   },
 
   goBack() {

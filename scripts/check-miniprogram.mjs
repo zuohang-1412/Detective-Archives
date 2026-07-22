@@ -92,6 +92,24 @@ const reviewDetailTemplate = await readFile(path.join(root, "pages/review-detail
 const reviewDetailScript = await readFile(path.join(root, "pages/review-detail/review-detail.js"), "utf8");
 const workScript = await readFile(path.join(root, "pages/work/work.js"), "utf8");
 const workTemplate = await readFile(path.join(root, "pages/work/work.wxml"), "utf8");
+const publicSharePages = ["home", "archive", "community", "detective", "work", "review-detail"];
+const publicShareScripts = await Promise.all(publicSharePages.map((page) =>
+  readFile(path.join(root, `pages/${page}/${page}.js`), "utf8")
+));
+publicShareScripts.forEach((source, index) => {
+  if (!source.includes("onShareAppMessage()") || !source.includes("path:")) {
+    throw new Error(`Public page must expose a stable share path: ${publicSharePages[index]}`);
+  }
+});
+for (const [page, source] of [
+  ["detective", publicShareScripts[3]],
+  ["work", publicShareScripts[4]],
+  ["review-detail", publicShareScripts[5]]
+]) {
+  if (!source.includes("setNavigationBarTitle")) {
+    throw new Error(`Public detail page must expose a content-specific title: ${page}`);
+  }
+}
 for (const filterName of ["country", "era", "category", "subjectKind", "tag"]) {
   if (!archiveScript.includes(`key: "${filterName}"`)) {
     throw new Error(`Archive page must expose the ${filterName} filter`);

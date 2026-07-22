@@ -15,6 +15,13 @@ Page({
     this.loadFeatured().finally(() => wx.stopPullDownRefresh());
   },
 
+  onShareAppMessage() {
+    return {
+      title: "侦探档案馆｜发现经典侦探与推理作品",
+      path: "/pages/home/home"
+    };
+  },
+
   async loadFeatured() {
     this.setData({ loading: true, error: "" });
     try {

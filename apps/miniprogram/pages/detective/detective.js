@@ -17,6 +17,14 @@ Page({
     this.loadDetective();
   },
 
+  onShareAppMessage() {
+    const detective = this.data.detective;
+    return {
+      title: detective ? `${detective.nameZh}｜侦探档案馆` : "侦探档案｜侦探档案馆",
+      path: `/pages/detective/detective?slug=${encodeURIComponent(this.data.slug)}`
+    };
+  },
+
   async loadDetective() {
     if (!this.data.slug) return;
     this.setData({ loading: true, error: "" });
