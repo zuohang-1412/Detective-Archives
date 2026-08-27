@@ -1,15 +1,21 @@
 node_modules/
 dist/
 coverage/
+tmp/
 .env
 .env.*
 !.env.example
 .DS_Store
 Thumbs.db
 *.log
+__pycache__/
+*.py[cod]
 project.private.config.json
 private.*.key
 private.*.pem
 *.miniprogram-ci.key
 .release-state/
 ops/launch-readiness.json
+
+# Reproducible WeChat Word outputs
+content/wechat/**/publish/*.docx
