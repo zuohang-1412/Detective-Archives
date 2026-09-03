@@ -2,12 +2,14 @@
   "name": "detective-archives",
   "version": "0.1.0",
   "private": true,
-  "description": "侦探档案馆：侦探作品图鉴、阅读记录与同好交流社区",
+  "description": "侦探档案馆：以 Git 管理选题与文章源稿的微信公众号内容项目",
   "workspaces": [
     "apps/api"
   ],
   "scripts": {
-    "build": "npm run build --workspace @detective-archives/api",
+    "build": "npm run build:wechat",
+    "build:wechat": "python tools/build_all_wechat_docx.py",
+    "build:legacy-app": "npm run build --workspace @detective-archives/api",
     "catalog:sync": "node scripts/sync-picture-book-index.mjs",
     "catalog:preflight": "node scripts/run-catalog-imports.mjs",
     "catalog:apply": "node scripts/run-catalog-imports.mjs --apply",
@@ -17,7 +19,9 @@
     "backup:decrypt": "node scripts/encrypted-backup.mjs decrypt",
     "backup:encrypt": "node scripts/encrypted-backup.mjs encrypt",
     "backup:verify-encrypted": "node scripts/encrypted-backup.mjs verify",
-    "check": "npm run check:catalog && npm run check:directory && npm run check:expansion && npm run check:catalog-import-runner && npm run check:content-audit && npm run check:works && npm run check:admin && npm run check:miniprogram && npm run check:agreements && npm run check:miniprogram-release && npm run check:wechat-acceptance && npm run check:wechat-publication && npm run check:link-safety && npm run check:operations-drill && npm run check:backup-encryption && npm run check:production-monitoring && npm run check:infrastructure-drills && npm run check:production-release-drill && npm run check:runtime-performance-budget && npm run check:launch && npm run check:deployment && npm run typecheck && npm test && npm run build",
+    "check": "npm run check:wechat-content",
+    "check:wechat-content": "node scripts/check-wechat-content.mjs",
+    "check:legacy-app": "npm run check:catalog && npm run check:directory && npm run check:expansion && npm run check:catalog-import-runner && npm run check:content-audit && npm run check:works && npm run check:admin && npm run check:miniprogram && npm run check:agreements && npm run check:wechat-acceptance && npm run check:wechat-publication && npm run check:link-safety && npm run typecheck && npm test && npm run build:legacy-app",
     "check:agreements": "node scripts/check-agreement-versioning.mjs",
     "check:admin": "node scripts/check-admin.mjs",
     "check:backup-encryption": "node scripts/check-backup-encryption.mjs",

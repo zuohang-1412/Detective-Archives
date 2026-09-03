@@ -8,6 +8,10 @@ tmp/
 .DS_Store
 Thumbs.db
 *.log
+*.dump
+*.dump.sha256
+*.dump.enc
+*.dump.enc.sha256
 __pycache__/
 *.py[cod]
 project.private.config.json

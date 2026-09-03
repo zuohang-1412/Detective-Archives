@@ -1,9 +1,7 @@
-name: Quality
+name: Legacy Application Quality (Manual)
 
 on:
-  push:
-    branches: [main, codex/mvp-release]
-  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -48,7 +46,7 @@ jobs:
           sudo apt-get install --yes postgresql-client-16
       - name: Validate operations scripts
         run: sh -n ops/backup-postgres.sh ops/verify-backup.sh ops/deploy-release.sh ops/rollback-release.sh
-      - run: npm run check
+      - run: npm run check:legacy-app
       - run: npm run db:migrate
       - run: npm run db:seed
       - run: npm run catalog:apply

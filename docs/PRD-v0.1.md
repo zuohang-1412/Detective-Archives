@@ -1,5 +1,7 @@
 # 侦探档案馆 MVP 产品需求文档
 
+> 历史方案：本文描述原小程序、API 与数据库产品，不再代表当前交付范围。当前有效方案见 [PRD-wechat-official-account.md](./PRD-wechat-official-account.md)。
+
 | 项目 | 内容 |
 |---|---|
 | 文档版本 | v0.1 |
